@@ -5,6 +5,12 @@ const elements = {
   listingFolderFallback: document.getElementById("listingFolderFallback"),
   listingFiles: document.getElementById("listingFiles"),
   clearListings: document.getElementById("clearListings"),
+  syncProject: document.getElementById("syncProject"),
+  syncAllProjects: document.getElementById("syncAllProjects"),
+  deleteProject: document.getElementById("deleteProject"),
+  projectSelect: document.getElementById("projectSelect"),
+  projectTable: document.getElementById("projectTable"),
+  projectSummary: document.getElementById("projectSummary"),
   listingTable: document.getElementById("listingTable"),
   summary: document.getElementById("summary"),
   importStatus: document.getElementById("importStatus"),
@@ -49,11 +55,31 @@ function setStatus(message, isError = false) {
   elements.importStatus.classList.toggle("error", isError);
 }
 
-function renderListings(listings) {
+function formatSyncTime(value) {
+  if (!value) return "Never synced";
+  return new Date(value).toLocaleString();
+}
+
+function renderProjectSelect(projects, activeProjectId) {
+  elements.projectSelect.replaceChildren(...storePilotSortProjects(projects).map(project => {
+    const option = document.createElement("option");
+    option.value = project.id;
+    option.textContent = project.name;
+    option.selected = project.id === activeProjectId;
+    return option;
+  }));
+
+  elements.projectSelect.disabled = !projects.length;
+  elements.syncProject.disabled = !projects.length;
+  elements.deleteProject.disabled = !projects.length;
+}
+
+function renderListings(project) {
+  const listings = project && project.listings ? project.listings : {};
   const locales = Object.keys(listings).sort((a, b) => a.localeCompare(b));
-  elements.summary.textContent = locales.length
-    ? `${locales.length} locale${locales.length === 1 ? "" : "s"} imported`
-    : "No listings imported";
+  elements.summary.textContent = project
+    ? `${project.name}: ${locales.length} locale${locales.length === 1 ? "" : "s"} imported`
+    : "No active project";
 
   if (!locales.length) {
     elements.listingTable.innerHTML = "";
@@ -81,6 +107,49 @@ function renderListings(listings) {
   }));
 }
 
+function renderProjectTable(projects, activeProjectId) {
+  elements.projectSummary.textContent = projects.length
+    ? `${projects.length} project${projects.length === 1 ? "" : "s"}`
+    : "No projects";
+
+  if (!projects.length) {
+    elements.projectTable.innerHTML = "";
+    return;
+  }
+
+  elements.projectTable.replaceChildren(...storePilotSortProjects(projects).map(project => {
+    const row = document.createElement("div");
+    const name = document.createElement("div");
+    const details = document.createElement("div");
+    const count = document.createElement("div");
+
+    row.className = "project-row";
+    name.className = "project-name";
+    details.className = "preview";
+    count.className = "count";
+
+    name.textContent = `${project.name}${project.id === activeProjectId ? " (active)" : ""}`;
+    details.textContent = [
+      project.sourcePath || "No source folder",
+      project.confidence ? `${project.confidence} confidence` : "",
+      formatSyncTime(project.lastSyncedAt)
+    ].filter(Boolean).join(" - ");
+    count.textContent = `${storePilotGetProjectLocaleCount(project)} locales`;
+
+    row.append(name, details, count);
+    return row;
+  }));
+}
+
+async function renderAll() {
+  const { projects, activeProjectId } = await storePilotGetProjectsState();
+  const activeProject = projects.find(project => project.id === activeProjectId) || projects[0] || null;
+
+  renderProjectSelect(projects, activeProject && activeProject.id);
+  renderListings(activeProject);
+  renderProjectTable(projects, activeProject && activeProject.id);
+}
+
 async function importListings(files) {
   const result = await storePilotImportListingFiles(files);
 
@@ -89,9 +158,9 @@ async function importListings(files) {
     return;
   }
 
-  renderListings(result.listings);
+  await renderAll();
   setStatus(
-    `Saw ${result.total} listing file${result.total === 1 ? "" : "s"}; imported ${result.imported}; skipped ${result.skipped.length}.` +
+    `Imported ${result.imported}; skipped ${result.skipped.length}.` +
       (result.skipped.length ? ` Skipped: ${result.skipped.slice(0, 5).join(", ")}${result.skipped.length > 5 ? "..." : ""}` : ""),
     result.imported === 0
   );
@@ -115,9 +184,9 @@ async function importFolder() {
       return;
     }
 
-    renderListings(result.listings);
+    await renderAll();
     setStatus(
-      `Imported ${result.imported} from ${result.sourcePath} (${result.confidence} confidence); skipped ${result.skipped.length}.` +
+      `Imported ${result.imported} into ${result.project.name} from ${result.sourcePath} (${result.confidence} confidence); skipped ${result.skipped.length}.` +
         (result.candidateCount > 1 ? ` Found ${result.candidateCount} candidate folders.` : ""),
       result.imported === 0
     );
@@ -144,6 +213,35 @@ elements.importFolder.addEventListener("click", importFolder);
 elements.listingFolderFallback.addEventListener("change", handleFileSelection);
 elements.listingFiles.addEventListener("change", handleFileSelection);
 
+elements.projectSelect.addEventListener("change", async event => {
+  await storePilotSetActiveProject(event.target.value);
+  await renderAll();
+});
+
+elements.syncProject.addEventListener("click", async () => {
+  const { activeProjectId } = await storePilotGetProjectsState();
+  const result = await storePilotSyncProject(activeProjectId, true);
+  await renderAll();
+  setStatus(result.message, !result.ok);
+});
+
+elements.syncAllProjects.addEventListener("click", async () => {
+  const results = await storePilotSyncAllProjects(true);
+  await renderAll();
+  const synced = results.filter(result => result.ok).length;
+  const failed = results.length - synced;
+  setStatus(`Synced ${synced} project${synced === 1 ? "" : "s"}; ${failed} need attention.`, failed > 0);
+});
+
+elements.deleteProject.addEventListener("click", async () => {
+  const project = await storePilotGetActiveProject();
+  if (!project || !window.confirm(`Delete StorePilot project "${project.name}"?`)) return;
+
+  await storePilotDeleteProject(project.id);
+  await renderAll();
+  setStatus(`Deleted ${project.name}.`);
+});
+
 elements.dropZone.addEventListener("dragover", event => {
   event.preventDefault();
   elements.dropZone.classList.add("dragging");
@@ -164,9 +262,16 @@ elements.dropZone.addEventListener("drop", event => {
 });
 
 elements.clearListings.addEventListener("click", async () => {
-  if (!window.confirm("Clear all imported StorePilot listings?")) return;
-  await storePilotSetListings({});
-  renderListings({});
+  const project = await storePilotGetActiveProject();
+  if (!project || !window.confirm(`Clear listings for "${project.name}"?`)) return;
+
+  await storePilotUpsertProject({
+    ...project,
+    listings: {},
+    lastSyncedAt: storePilotFormatTimestamp()
+  });
+  await renderAll();
+  setStatus(`Cleared listings for ${project.name}.`);
 });
 
 elements.themeChoices.forEach(button => {
@@ -177,11 +282,18 @@ elements.themeChoices.forEach(button => {
 });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName !== "local" || !changes[SETTINGS_KEY]) return;
-  applyTheme(changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme);
+  if (areaName !== "local") return;
+
+  if (changes[SETTINGS_KEY]) {
+    applyTheme(changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme);
+  }
+
+  if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]) {
+    renderAll();
+  }
 });
 
 (async () => {
   applyTheme((await getSettings()).theme);
-  renderListings(await storePilotGetListings());
+  await renderAll();
 })();

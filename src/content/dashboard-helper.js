@@ -1,8 +1,11 @@
-const STORAGE_KEY = "storePilotListings";
+const LEGACY_STORAGE_KEY = "storePilotListings";
+const PROJECTS_STORAGE_KEY = "storePilotProjects";
+const ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
 const PANEL_ID = "storepilot-panel";
 
 let listings = {};
 let selectedLocale = "";
+let activeProjectName = "";
 
 function isVisible(element) {
   if (!element) return false;
@@ -83,8 +86,18 @@ function findLikelyListingField() {
 }
 
 async function loadListings() {
-  const stored = await chrome.storage.local.get(STORAGE_KEY);
-  listings = stored[STORAGE_KEY] || {};
+  const stored = await chrome.storage.local.get([
+    LEGACY_STORAGE_KEY,
+    PROJECTS_STORAGE_KEY,
+    ACTIVE_PROJECT_STORAGE_KEY
+  ]);
+  const projects = stored[PROJECTS_STORAGE_KEY] || [];
+  const activeProject = projects.find(project => project.id === stored[ACTIVE_PROJECT_STORAGE_KEY]) ||
+    projects[0] ||
+    null;
+
+  listings = activeProject ? activeProject.listings || {} : stored[LEGACY_STORAGE_KEY] || {};
+  activeProjectName = activeProject ? activeProject.name : "";
   const locales = Object.keys(listings).sort((a, b) => a.localeCompare(b));
 
   if (!selectedLocale || !listings[selectedLocale]) {
@@ -144,7 +157,7 @@ function renderPanel(locales) {
 
   title.textContent = "StorePilot";
   status.textContent = locales.length
-    ? `${locales.length} listings ready`
+    ? `${locales.length} listings ready${activeProjectName ? ` for ${activeProjectName}` : ""}`
     : "Import listings in StorePilot options";
 
   locales.forEach(locale => {
@@ -237,11 +250,13 @@ function injectStyles() {
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   (async () => {
     if (message.type === "storepilot-copy") {
+      renderPanel(await loadListings());
       sendResponse(await copySelectedText());
       return;
     }
 
     if (message.type === "storepilot-fill") {
+      renderPanel(await loadListings());
       sendResponse(fillSelectedText());
       return;
     }

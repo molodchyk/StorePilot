@@ -10,6 +10,10 @@
     <main>
       <h1>StorePilot</h1>
       <p id="summary">Loading listings...</p>
+      <label class="project-picker">
+        <span>Project</span>
+        <select id="projectSelect"></select>
+      </label>
       <div class="actions">
         <button id="importFolder" type="button">Import project/folder</button>
         <label class="file-button">
@@ -17,6 +21,7 @@
           <input id="listingFiles" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" multiple>
         </label>
         <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" webkitdirectory multiple>
+        <button id="syncProject" type="button">Sync project</button>
         <button id="fillField" type="button">Fill field</button>
         <button id="copyText" type="button">Copy text</button>
         <button id="openOptions" type="button">Options</button>

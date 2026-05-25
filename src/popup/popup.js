@@ -3,9 +3,11 @@ const SETTINGS_KEY = "storePilotSettings";
 const elements = {
   summary: document.getElementById("summary"),
   status: document.getElementById("status"),
+  projectSelect: document.getElementById("projectSelect"),
   importFolder: document.getElementById("importFolder"),
   listingFiles: document.getElementById("listingFiles"),
   listingFolderFallback: document.getElementById("listingFolderFallback"),
+  syncProject: document.getElementById("syncProject"),
   fillField: document.getElementById("fillField"),
   copyText: document.getElementById("copyText"),
   openOptions: document.getElementById("openOptions"),
@@ -49,6 +51,30 @@ function setStatus(message, isError = false) {
   elements.status.classList.toggle("error", isError);
 }
 
+function renderProjectSelect(projects, activeProjectId) {
+  elements.projectSelect.replaceChildren(...storePilotSortProjects(projects).map(project => {
+    const option = document.createElement("option");
+    option.value = project.id;
+    option.textContent = project.name;
+    option.selected = project.id === activeProjectId;
+    return option;
+  }));
+
+  elements.projectSelect.disabled = !projects.length;
+  elements.syncProject.disabled = !projects.length;
+}
+
+async function refreshSummary() {
+  const { projects, activeProjectId } = await storePilotGetProjectsState();
+  const activeProject = projects.find(project => project.id === activeProjectId) || projects[0] || null;
+  const count = activeProject ? storePilotGetProjectLocaleCount(activeProject) : 0;
+
+  renderProjectSelect(projects, activeProject && activeProject.id);
+  elements.summary.textContent = activeProject
+    ? `${count} listing locale${count === 1 ? "" : "s"} in ${activeProject.name}`
+    : "No projects yet";
+}
+
 async function importListings(files) {
   const result = await storePilotImportListingFiles(files);
 
@@ -81,7 +107,7 @@ async function importFolder() {
 
     await refreshSummary();
     setStatus(
-      `Imported ${result.imported} from ${result.sourcePath} (${result.confidence} confidence).`,
+      `Imported ${result.imported} into ${result.project.name} (${result.confidence} confidence).`,
       result.imported === 0
     );
   } catch (error) {
@@ -92,6 +118,17 @@ async function importFolder() {
 
     console.error(error);
     setStatus(`Import failed: ${error.message}`, true);
+  }
+}
+
+async function syncActiveProject(requestAccess = true) {
+  const { activeProjectId } = await storePilotGetProjectsState();
+  if (!activeProjectId) return;
+
+  const result = await storePilotSyncProject(activeProjectId, requestAccess);
+  await refreshSummary();
+  if (requestAccess || result.ok) {
+    setStatus(result.message, !result.ok && requestAccess);
   }
 }
 
@@ -116,14 +153,6 @@ async function sendToActiveTab(type) {
   }
 }
 
-async function refreshSummary() {
-  const listings = await storePilotGetListings();
-  const count = Object.keys(listings).length;
-  elements.summary.textContent = count
-    ? `${count} imported listing locales`
-    : "No listing files imported yet";
-}
-
 function handleFileSelection(event) {
   importListings(event.target.files).catch(error => {
     console.error(error);
@@ -135,6 +164,19 @@ function handleFileSelection(event) {
 elements.importFolder.addEventListener("click", importFolder);
 elements.listingFiles.addEventListener("change", handleFileSelection);
 elements.listingFolderFallback.addEventListener("change", handleFileSelection);
+
+elements.projectSelect.addEventListener("change", async event => {
+  await storePilotSetActiveProject(event.target.value);
+  await refreshSummary();
+  setStatus("Project selected.");
+});
+
+elements.syncProject.addEventListener("click", () => {
+  syncActiveProject(true).catch(error => {
+    console.error(error);
+    setStatus(`Sync failed: ${error.message}`, true);
+  });
+});
 
 elements.fillField.addEventListener("click", async () => {
   const result = await sendToActiveTab("storepilot-fill");
@@ -158,11 +200,19 @@ elements.themeChoices.forEach(button => {
 });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName !== "local" || !changes[SETTINGS_KEY]) return;
-  applyTheme(changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme);
+  if (areaName !== "local") return;
+
+  if (changes[SETTINGS_KEY]) {
+    applyTheme(changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme);
+  }
+
+  if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]) {
+    refreshSummary();
+  }
 });
 
 (async () => {
   applyTheme((await getSettings()).theme);
   await refreshSummary();
+  await syncActiveProject(false);
 })();

@@ -8,9 +8,14 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 
 - Chrome extension, Manifest V3.
 - No build step.
-- Import flat listing files from a selected folder.
-- File naming convention: `<locale>.txt`.
-- Store imported listings in `chrome.storage.local`.
+- Import flat listing files from a selected folder or detected project root.
+- File naming convention: `<locale>.<text-like-extension>`, including `.txt`, `.md`, and `.markdown`.
+- Store multiple extension projects separately.
+- Store imported listings in `chrome.storage.local` per project.
+- Request `unlimitedStorage` because localized listings can become large across multiple projects.
+- Store project folder handles in IndexedDB so sync can re-read granted folders.
+- Let the user sync the active project or all saved projects.
+- Silently sync the active project when the popup opens if Chrome already grants folder permission.
 - Inject a helper panel into Chrome Web Store Developer Dashboard pages.
 - Let the user copy or fill listing text for the selected locale.
 
@@ -21,6 +26,15 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - No unrestricted local filesystem access.
 - No remote sync.
 - No automatic publishing API integration yet.
+
+## Project Model
+
+- A project represents one browser extension being published.
+- Each project has its own listing map, source path, sync metadata, confidence score, and optional saved folder handle.
+- Importing a project folder creates or updates a project named after the selected root folder.
+- Importing direct files updates the currently active project, or creates a manual project if none exists.
+- The active project controls which listings are shown in the popup and used by dashboard fill/copy actions.
+- Sync uses the saved folder handle when permission is available. If permission is missing, the user must approve access again.
 
 ## Future Capabilities
 

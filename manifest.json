@@ -5,6 +5,7 @@
   "description": "Automate repetitive browser extension store publishing work.",
   "permissions": [
     "storage",
+    "unlimitedStorage",
     "activeTab"
   ],
   "host_permissions": [

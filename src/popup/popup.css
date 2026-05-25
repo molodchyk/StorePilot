@@ -47,6 +47,14 @@ p {
   gap: 8px;
 }
 
+.project-picker {
+  display: grid;
+  gap: 5px;
+  color: #5f6877;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .theme-control {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -54,7 +62,8 @@ p {
 }
 
 button,
-.file-button {
+.file-button,
+select {
   display: grid;
   place-items: center;
   min-height: 34px;
@@ -65,6 +74,13 @@ button,
   cursor: pointer;
   font: inherit;
   font-weight: 700;
+}
+
+select {
+  display: block;
+  width: 100%;
+  padding: 0 8px;
+  font-weight: 600;
 }
 
 .file-button input,
@@ -92,12 +108,14 @@ button,
   }
 }
 
-:root[data-theme="dark"] p {
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] .project-picker {
   color: #a8b0bf;
 }
 
 :root[data-theme="dark"] button,
-:root[data-theme="dark"] .file-button {
+:root[data-theme="dark"] .file-button,
+:root[data-theme="dark"] select {
   border-color: #343b4a;
   background: #202633;
   color: #f4f6fa;
@@ -113,12 +131,14 @@ button,
 }
 
 @media (prefers-color-scheme: dark) {
-  p {
+  p,
+  .project-picker {
     color: #a8b0bf;
   }
 
   button,
-  .file-button {
+  .file-button,
+  select {
     border-color: #343b4a;
     background: #202633;
     color: #f4f6fa;
@@ -134,12 +154,14 @@ button,
   }
 }
 
-:root[data-theme="light"] p {
+:root[data-theme="light"] p,
+:root[data-theme="light"] .project-picker {
   color: #5f6877;
 }
 
 :root[data-theme="light"] button,
-:root[data-theme="light"] .file-button {
+:root[data-theme="light"] .file-button,
+:root[data-theme="light"] select {
   border-color: #cbd2dc;
   background: #ffffff;
   color: #14171f;

@@ -19,9 +19,21 @@
             <button type="button" data-theme-choice="light">Light</button>
             <button type="button" data-theme-choice="dark">Dark</button>
           </div>
+          <button id="syncAllProjects" type="button">Sync all</button>
           <button id="clearListings" type="button">Clear</button>
         </div>
       </header>
+
+      <section class="project-panel">
+        <div>
+          <label for="projectSelect">Active project</label>
+          <select id="projectSelect"></select>
+        </div>
+        <div class="button-row">
+          <button id="syncProject" type="button">Sync active</button>
+          <button id="deleteProject" type="button">Delete project</button>
+        </div>
+      </section>
 
       <section class="import-panel">
         <div id="dropZone" class="drop-zone">
@@ -46,6 +58,14 @@
           <span id="summary">No listings imported</span>
         </div>
         <div id="listingTable" class="listing-table" aria-live="polite"></div>
+      </section>
+
+      <section>
+        <div class="section-heading">
+          <h2>Projects</h2>
+          <span id="projectSummary">No projects</span>
+        </div>
+        <div id="projectTable" class="project-table" aria-live="polite"></div>
       </section>
     </main>
 
