@@ -1,4 +1,5 @@
 const STORAGE_KEY = "storePilotListings";
+const SETTINGS_KEY = "storePilotSettings";
 
 const elements = {
   importFolder: document.getElementById("importFolder"),
@@ -8,8 +9,41 @@ const elements = {
   listingTable: document.getElementById("listingTable"),
   summary: document.getElementById("summary"),
   importStatus: document.getElementById("importStatus"),
-  dropZone: document.getElementById("dropZone")
+  dropZone: document.getElementById("dropZone"),
+  themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]"))
 };
+
+function applyTheme(theme) {
+  const normalized = ["system", "light", "dark"].includes(theme) ? theme : "system";
+
+  if (normalized === "system") {
+    document.documentElement.removeAttribute("data-theme");
+  } else {
+    document.documentElement.dataset.theme = normalized;
+  }
+
+  elements.themeChoices.forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.themeChoice === normalized));
+  });
+}
+
+async function getSettings() {
+  const stored = await chrome.storage.local.get(SETTINGS_KEY);
+  return {
+    theme: "system",
+    ...(stored[SETTINGS_KEY] || {})
+  };
+}
+
+async function updateSettings(patch) {
+  const settings = {
+    ...(await getSettings()),
+    ...patch
+  };
+
+  await chrome.storage.local.set({ [SETTINGS_KEY]: settings });
+  return settings;
+}
 
 function getLocaleFromFile(file) {
   const name = file.name.replace(/\.txt$/i, "");
@@ -203,4 +237,19 @@ elements.clearListings.addEventListener("click", async () => {
   renderListings({});
 });
 
-getListings().then(renderListings);
+elements.themeChoices.forEach(button => {
+  button.addEventListener("click", async () => {
+    const settings = await updateSettings({ theme: button.dataset.themeChoice });
+    applyTheme(settings.theme);
+  });
+});
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== "local" || !changes[SETTINGS_KEY]) return;
+  applyTheme(changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme);
+});
+
+(async () => {
+  applyTheme((await getSettings()).theme);
+  renderListings(await getListings());
+})();

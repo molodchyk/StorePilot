@@ -5,8 +5,21 @@
   color: #15171c;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  background: #111318;
+  color: #f4f6fa;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  background: #f6f7f9;
+  color: #15171c;
+}
+
 body {
   margin: 0;
+  background: inherit;
 }
 
 main {
@@ -21,6 +34,19 @@ header,
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.theme-control {
+  display: inline-grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 6px;
 }
 
 h1,
@@ -58,6 +84,11 @@ button,
 button:hover,
 .file-button:hover {
   border-color: #7f8da3;
+}
+
+.theme-control [aria-pressed="true"] {
+  border-color: #2563eb;
+  color: #1d4ed8;
 }
 
 .import-panel {
@@ -184,4 +215,83 @@ button:hover,
   .status.error {
     color: #ff9b92;
   }
+
+  .theme-control [aria-pressed="true"] {
+    border-color: #8ab4ff;
+    color: #8ab4ff;
+  }
+}
+
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] .hint,
+:root[data-theme="dark"] #summary,
+:root[data-theme="dark"] .preview,
+:root[data-theme="dark"] .count {
+  color: #a9b1c1;
+}
+
+:root[data-theme="dark"] button,
+:root[data-theme="dark"] .file-button,
+:root[data-theme="dark"] .import-panel,
+:root[data-theme="dark"] .listing-table {
+  background: #1b1f28;
+  border-color: #323846;
+  color: #f4f6fa;
+}
+
+:root[data-theme="dark"] .listing-row {
+  border-top-color: #292f3b;
+}
+
+:root[data-theme="dark"] .status {
+  color: #8ab4ff;
+}
+
+:root[data-theme="dark"] .status.error {
+  color: #ff9b92;
+}
+
+:root[data-theme="dark"] .theme-control [aria-pressed="true"] {
+  border-color: #8ab4ff;
+  color: #8ab4ff;
+}
+
+:root[data-theme="light"] p,
+:root[data-theme="light"] .hint,
+:root[data-theme="light"] #summary {
+  color: #5d6472;
+}
+
+:root[data-theme="light"] .preview {
+  color: #4b5565;
+}
+
+:root[data-theme="light"] .count {
+  color: #6d7584;
+}
+
+:root[data-theme="light"] button,
+:root[data-theme="light"] .file-button,
+:root[data-theme="light"] .import-panel,
+:root[data-theme="light"] .listing-table {
+  background: #ffffff;
+  border-color: #d9dee7;
+  color: #15171c;
+}
+
+:root[data-theme="light"] .listing-row {
+  border-top-color: #edf0f5;
+}
+
+:root[data-theme="light"] .status {
+  color: #2563eb;
+}
+
+:root[data-theme="light"] .status.error {
+  color: #b42318;
+}
+
+:root[data-theme="light"] .theme-control [aria-pressed="true"] {
+  border-color: #2563eb;
+  color: #1d4ed8;
 }
