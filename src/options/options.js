@@ -1,10 +1,13 @@
 const STORAGE_KEY = "storePilotListings";
 
 const elements = {
+  listingFolder: document.getElementById("listingFolder"),
   listingFiles: document.getElementById("listingFiles"),
   clearListings: document.getElementById("clearListings"),
   listingTable: document.getElementById("listingTable"),
-  summary: document.getElementById("summary")
+  summary: document.getElementById("summary"),
+  importStatus: document.getElementById("importStatus"),
+  dropZone: document.getElementById("dropZone")
 };
 
 function getLocaleFromFile(file) {
@@ -15,6 +18,11 @@ function getLocaleFromFile(file) {
   }
 
   return name;
+}
+
+function setStatus(message, isError = false) {
+  elements.importStatus.textContent = message;
+  elements.importStatus.classList.toggle("error", isError);
 }
 
 function readTextFile(file) {
@@ -70,23 +78,61 @@ function renderListings(listings) {
 async function importListings(files) {
   const nextListings = { ...(await getListings()) };
   const textFiles = Array.from(files).filter(file => file.name.toLowerCase().endsWith(".txt"));
+  const skipped = [];
+  let imported = 0;
+
+  if (!textFiles.length) {
+    setStatus("No .txt files were selected.", true);
+    return;
+  }
 
   for (const file of textFiles) {
     const locale = getLocaleFromFile(file);
-    if (!locale) continue;
+    if (!locale) {
+      skipped.push(file.name);
+      continue;
+    }
     nextListings[locale] = await readTextFile(file);
+    imported++;
   }
 
   await setListings(nextListings);
   renderListings(nextListings);
+  setStatus(
+    `Saw ${textFiles.length} text file${textFiles.length === 1 ? "" : "s"}; imported ${imported}; skipped ${skipped.length}.` +
+      (skipped.length ? ` Skipped: ${skipped.slice(0, 5).join(", ")}${skipped.length > 5 ? "..." : ""}` : ""),
+    imported === 0
+  );
 }
 
-elements.listingFiles.addEventListener("change", event => {
+function handleFileSelection(event) {
   importListings(event.target.files).catch(error => {
     console.error(error);
-    window.alert(`Import failed: ${error.message}`);
+    setStatus(`Import failed: ${error.message}`, true);
   });
   event.target.value = "";
+}
+
+elements.listingFolder.addEventListener("change", handleFileSelection);
+elements.listingFiles.addEventListener("change", handleFileSelection);
+
+elements.dropZone.addEventListener("dragover", event => {
+  event.preventDefault();
+  elements.dropZone.classList.add("dragging");
+});
+
+elements.dropZone.addEventListener("dragleave", () => {
+  elements.dropZone.classList.remove("dragging");
+});
+
+elements.dropZone.addEventListener("drop", event => {
+  event.preventDefault();
+  elements.dropZone.classList.remove("dragging");
+
+  importListings(event.dataTransfer.files).catch(error => {
+    console.error(error);
+    setStatus(`Import failed: ${error.message}`, true);
+  });
 });
 
 elements.clearListings.addEventListener("click", async () => {

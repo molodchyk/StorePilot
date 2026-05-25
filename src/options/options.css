@@ -68,6 +68,22 @@ button:hover,
   background: #ffffff;
 }
 
+.drop-zone {
+  display: grid;
+  gap: 10px;
+}
+
+.drop-zone.dragging {
+  outline: 2px solid #2563eb;
+  outline-offset: 8px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .file-button {
   display: inline-flex;
 }
@@ -78,6 +94,21 @@ button:hover,
 
 .hint {
   margin-top: 12px;
+}
+
+.drop-zone .hint {
+  margin-top: 0;
+}
+
+.status {
+  min-height: 18px;
+  margin-top: 14px;
+  color: #2563eb;
+  font-weight: 650;
+}
+
+.status.error {
+  color: #b42318;
 }
 
 .listing-table {
@@ -143,5 +174,13 @@ button:hover,
 
   .listing-row {
     border-top-color: #292f3b;
+  }
+
+  .status {
+    color: #8ab4ff;
+  }
+
+  .status.error {
+    color: #ff9b92;
   }
 }
