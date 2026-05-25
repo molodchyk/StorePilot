@@ -117,7 +117,7 @@ async function importFolder() {
 
     renderListings(result.listings);
     setStatus(
-      `Imported ${result.imported} from ${result.sourcePath}; skipped ${result.skipped.length}.` +
+      `Imported ${result.imported} from ${result.sourcePath} (${result.confidence} confidence); skipped ${result.skipped.length}.` +
         (result.candidateCount > 1 ? ` Found ${result.candidateCount} candidate folders.` : ""),
       result.imported === 0
     );

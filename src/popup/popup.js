@@ -80,7 +80,10 @@ async function importFolder() {
     }
 
     await refreshSummary();
-    setStatus(`Imported ${result.imported} from ${result.sourcePath}.`, result.imported === 0);
+    setStatus(
+      `Imported ${result.imported} from ${result.sourcePath} (${result.confidence} confidence).`,
+      result.imported === 0
+    );
   } catch (error) {
     if (error.name === "AbortError") {
       setStatus("Folder import canceled.");
