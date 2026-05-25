@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>StorePilot Options</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>StorePilot</h1>
+          <p>Import flat locale listing files and use them in extension store dashboards.</p>
+        </div>
+        <button id="clearListings" type="button">Clear</button>
+      </header>
+
+      <section class="import-panel">
+        <label class="file-button">
+          <span>Import listing folder</span>
+          <input id="listingFiles" type="file" accept=".txt" webkitdirectory multiple>
+        </label>
+        <p class="hint">Expected files: <code>en.txt</code>, <code>de.txt</code>, <code>pt_BR.txt</code>, and similar.</p>
+      </section>
+
+      <section>
+        <div class="section-heading">
+          <h2>Imported Listings</h2>
+          <span id="summary">No listings imported</span>
+        </div>
+        <div id="listingTable" class="listing-table" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>

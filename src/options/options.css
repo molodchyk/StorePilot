@@ -1,0 +1,147 @@
+:root {
+  color-scheme: light dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f6f7f9;
+  color: #15171c;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+header,
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+p,
+.hint,
+#summary {
+  color: #5d6472;
+}
+
+button,
+.file-button {
+  border: 1px solid #c8ced8;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #15171c;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  padding: 10px 14px;
+}
+
+button:hover,
+.file-button:hover {
+  border-color: #7f8da3;
+}
+
+.import-panel {
+  margin: 28px 0;
+  padding: 20px;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.file-button {
+  display: inline-flex;
+}
+
+.file-button input {
+  display: none;
+}
+
+.hint {
+  margin-top: 12px;
+}
+
+.listing-table {
+  margin-top: 14px;
+  overflow: hidden;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.listing-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 110px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-top: 1px solid #edf0f5;
+}
+
+.listing-row:first-child {
+  border-top: 0;
+}
+
+.locale {
+  font-weight: 700;
+}
+
+.preview {
+  min-width: 0;
+  overflow: hidden;
+  color: #4b5565;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  color: #6d7584;
+  text-align: right;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    background: #111318;
+    color: #f4f6fa;
+  }
+
+  p,
+  .hint,
+  #summary,
+  .preview,
+  .count {
+    color: #a9b1c1;
+  }
+
+  button,
+  .file-button,
+  .import-panel,
+  .listing-table {
+    background: #1b1f28;
+    border-color: #323846;
+    color: #f4f6fa;
+  }
+
+  .listing-row {
+    border-top-color: #292f3b;
+  }
+}
