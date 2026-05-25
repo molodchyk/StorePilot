@@ -18,6 +18,7 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - Silently sync the active project when the popup opens if Chrome already grants folder permission.
 - Let the user copy listing text for the selected project locale from the popup.
 - Detect and explain Chrome's extension-gallery scripting restriction when fill actions target Chrome Web Store pages.
+- Do not claim current Chrome Web Store dashboard locale detection; persist manual locale selection per project instead.
 
 ## Non-Goals for MVP
 

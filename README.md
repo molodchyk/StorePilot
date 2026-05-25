@@ -35,3 +35,5 @@ The first MVP focuses on Chrome Web Store listing updates:
 Chrome extensions cannot freely read arbitrary local project folders. StorePilot stores user-selected folder handles and can sync again while Chrome still grants permission. If permission expires, choose the project folder again or click sync and approve access.
 
 Chrome also blocks extension scripts on Chrome Web Store pages with `The extensions gallery cannot be scripted.` That means a normal Chrome extension cannot automate the Chrome Web Store dashboard UI directly. StorePilot can still manage projects, sync listing files, and copy localized text for manual paste. Deeper automation will need a different path, such as the Chrome Web Store API, a browser automation tool outside Chrome extension restrictions, or a native companion.
+
+Because of the same restriction, StorePilot cannot detect the currently selected Chrome Web Store dashboard locale. Select the locale in StorePilot manually; the popup remembers the selected locale per project.

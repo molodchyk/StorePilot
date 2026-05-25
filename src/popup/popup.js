@@ -1,4 +1,5 @@
 const SETTINGS_KEY = "storePilotSettings";
+const POPUP_STATE_KEY = "storePilotPopupState";
 
 const elements = {
   summary: document.getElementById("summary"),
@@ -52,6 +53,24 @@ async function updateSettings(patch) {
   return settings;
 }
 
+async function getPopupState() {
+  const stored = await chrome.storage.local.get(POPUP_STATE_KEY);
+  return {
+    selectedLocaleByProject: {},
+    ...(stored[POPUP_STATE_KEY] || {})
+  };
+}
+
+async function updatePopupState(patch) {
+  const state = {
+    ...(await getPopupState()),
+    ...patch
+  };
+
+  await chrome.storage.local.set({ [POPUP_STATE_KEY]: state });
+  return state;
+}
+
 function setStatus(message, isError = false) {
   elements.status.textContent = message;
   elements.status.classList.toggle("error", isError);
@@ -97,14 +116,20 @@ function renderProjectSelect(projects, activeProjectId) {
   elements.syncProject.disabled = !projects.length;
 }
 
-function renderLocaleSelect(project) {
+async function renderLocaleSelect(project) {
   const locales = Object.keys(project && project.listings ? project.listings : {})
     .sort((a, b) => a.localeCompare(b));
+  const popupState = await getPopupState();
+  const savedLocale = project && popupState.selectedLocaleByProject[project.id];
+  const selectedLocale = locales.includes(savedLocale)
+    ? savedLocale
+    : (locales.includes("en") ? "en" : locales[0] || "");
 
   elements.localeSelect.replaceChildren(...locales.map(locale => {
     const option = document.createElement("option");
     option.value = locale;
     option.textContent = locale;
+    option.selected = locale === selectedLocale;
     return option;
   }));
 
@@ -118,10 +143,23 @@ async function refreshSummary() {
   const count = activeProject ? storePilotGetProjectLocaleCount(activeProject) : 0;
 
   renderProjectSelect(projects, activeProject && activeProject.id);
-  renderLocaleSelect(activeProject);
+  await renderLocaleSelect(activeProject);
   elements.summary.textContent = activeProject
     ? `${count} listing locale${count === 1 ? "" : "s"} in ${activeProject.name}`
     : "No projects yet";
+}
+
+async function updateDashboardRestrictionNotice() {
+  const tab = await getActiveTab();
+
+  if (!tab || !isDeveloperDashboardUrl(tab.url || "")) {
+    return;
+  }
+
+  elements.fillField.disabled = true;
+  elements.fillCurrentLanguage.disabled = true;
+  elements.fillAllLanguages.disabled = true;
+  setStatus("Chrome blocks StorePilot from reading the Chrome Web Store page, so the current dashboard locale cannot be detected. Select the locale here and use Copy text.", false);
 }
 
 async function copySelectedLocaleFromPopup() {
@@ -286,6 +324,21 @@ elements.projectSelect.addEventListener("change", async event => {
   await storePilotSetActiveProject(event.target.value);
   await refreshSummary();
   setStatus("Project selected.");
+  await updateDashboardRestrictionNotice();
+});
+
+elements.localeSelect.addEventListener("change", async event => {
+  const project = await storePilotGetActiveProject();
+  if (!project) return;
+
+  const state = await getPopupState();
+  await updatePopupState({
+    selectedLocaleByProject: {
+      ...state.selectedLocaleByProject,
+      [project.id]: event.target.value
+    }
+  });
+  setStatus(`Locale selected: ${event.target.value}.`);
 });
 
 elements.syncProject.addEventListener("click", () => {
@@ -348,5 +401,6 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 (async () => {
   applyTheme((await getSettings()).theme);
   await refreshSummary();
+  await updateDashboardRestrictionNotice();
   await syncActiveProject(false);
 })();

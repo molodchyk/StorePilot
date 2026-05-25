@@ -77,6 +77,12 @@ select {
   font-weight: 700;
 }
 
+button:disabled,
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
 select {
   display: block;
   width: 100%;
