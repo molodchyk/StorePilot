@@ -19,15 +19,13 @@
       <section class="import-panel">
         <div id="dropZone" class="drop-zone">
           <div class="button-row">
-            <label class="file-button">
-              <span>Import folder</span>
-              <input id="listingFolder" type="file" accept=".txt" webkitdirectory multiple>
-            </label>
+            <button id="importFolder" type="button">Import folder</button>
             <label class="file-button">
               <span>Import files</span>
               <input id="listingFiles" type="file" accept=".txt" multiple>
             </label>
           </div>
+          <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt" webkitdirectory multiple>
           <p class="hint">Expected files: <code>en.txt</code>, <code>de.txt</code>, <code>pt_BR.txt</code>, and similar.</p>
           <p class="hint">You can also drag the listing text files onto this panel.</p>
         </div>

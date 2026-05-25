@@ -1,7 +1,8 @@
 const STORAGE_KEY = "storePilotListings";
 
 const elements = {
-  listingFolder: document.getElementById("listingFolder"),
+  importFolder: document.getElementById("importFolder"),
+  listingFolderFallback: document.getElementById("listingFolderFallback"),
   listingFiles: document.getElementById("listingFiles"),
   clearListings: document.getElementById("clearListings"),
   listingTable: document.getElementById("listingTable"),
@@ -20,12 +21,25 @@ function getLocaleFromFile(file) {
   return name;
 }
 
+function createFileLike(name, text) {
+  return {
+    name,
+    async text() {
+      return text;
+    }
+  };
+}
+
 function setStatus(message, isError = false) {
   elements.importStatus.textContent = message;
   elements.importStatus.classList.toggle("error", isError);
 }
 
 function readTextFile(file) {
+  if (typeof file.text === "function") {
+    return file.text();
+  }
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => resolve(String(reader.result || "")));
@@ -105,6 +119,53 @@ async function importListings(files) {
   );
 }
 
+async function collectTextFilesFromDirectory(directoryHandle) {
+  const files = [];
+
+  async function walk(handle) {
+    for await (const entry of handle.values()) {
+      if (entry.kind === "directory") {
+        await walk(entry);
+        continue;
+      }
+
+      if (!entry.name.toLowerCase().endsWith(".txt")) {
+        continue;
+      }
+
+      const file = await entry.getFile();
+      files.push(createFileLike(entry.name, await file.text()));
+    }
+  }
+
+  await walk(directoryHandle);
+  return files;
+}
+
+async function importFolder() {
+  if (!window.showDirectoryPicker) {
+    elements.listingFolderFallback.click();
+    return;
+  }
+
+  try {
+    const directoryHandle = await window.showDirectoryPicker({
+      id: "storepilot-listing-folder",
+      mode: "read"
+    });
+    const files = await collectTextFilesFromDirectory(directoryHandle);
+    await importListings(files);
+  } catch (error) {
+    if (error.name === "AbortError") {
+      setStatus("Folder import canceled.");
+      return;
+    }
+
+    console.error(error);
+    setStatus(`Folder import failed: ${error.message}`, true);
+  }
+}
+
 function handleFileSelection(event) {
   importListings(event.target.files).catch(error => {
     console.error(error);
@@ -113,7 +174,8 @@ function handleFileSelection(event) {
   event.target.value = "";
 }
 
-elements.listingFolder.addEventListener("change", handleFileSelection);
+elements.importFolder.addEventListener("click", importFolder);
+elements.listingFolderFallback.addEventListener("change", handleFileSelection);
 elements.listingFiles.addEventListener("change", handleFileSelection);
 
 elements.dropZone.addEventListener("dragover", event => {

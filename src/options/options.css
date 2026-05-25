@@ -88,7 +88,8 @@ button:hover,
   display: inline-flex;
 }
 
-.file-button input {
+.file-button input,
+.hidden-input {
   display: none;
 }
 
