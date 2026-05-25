@@ -8,10 +8,7 @@ The first MVP focuses on Chrome Web Store listing updates:
 - Keep separate projects for different extensions.
 - Store listing text locally in the browser per project.
 - Remember selected project folders and sync listings again when Chrome still has permission.
-- Show a small helper panel on Chrome Web Store Developer Dashboard pages.
-- Copy or fill the selected locale listing text into the active dashboard field.
-- Fill the Chrome Web Store description for the current dashboard language.
-- Iterate through Chrome Web Store language dropdown entries and fill all matching imported locales.
+- Copy selected locale listing text from the popup for pasting into store dashboards.
 
 ## Local Development
 
@@ -30,9 +27,11 @@ The first MVP focuses on Chrome Web Store listing updates:
 3. Switch the active project in the popup/options when working on another extension.
 4. Use **Sync project** or **Sync all** to refresh listings from saved folders.
 5. Open the Chrome Web Store Developer Dashboard.
-6. Use the StorePilot panel to select a locale.
-7. Copy the listing text, fill the currently focused field, fill the current dashboard language, or fill all matching dashboard languages.
+6. Select a locale in StorePilot.
+7. Copy the listing text and paste it into the dashboard field.
 
 ## Notes
 
 Chrome extensions cannot freely read arbitrary local project folders. StorePilot stores user-selected folder handles and can sync again while Chrome still grants permission. If permission expires, choose the project folder again or click sync and approve access.
+
+Chrome also blocks extension scripts on Chrome Web Store pages with `The extensions gallery cannot be scripted.` That means a normal Chrome extension cannot automate the Chrome Web Store dashboard UI directly. StorePilot can still manage projects, sync listing files, and copy localized text for manual paste. Deeper automation will need a different path, such as the Chrome Web Store API, a browser automation tool outside Chrome extension restrictions, or a native companion.

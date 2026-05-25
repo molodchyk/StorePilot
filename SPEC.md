@@ -16,11 +16,8 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - Store project folder handles in IndexedDB so sync can re-read granted folders.
 - Let the user sync the active project or all saved projects.
 - Silently sync the active project when the popup opens if Chrome already grants folder permission.
-- Inject a helper panel into Chrome Web Store Developer Dashboard pages.
-- Let the user copy or fill listing text for the selected locale.
-- Detect the Chrome Web Store current editing language dropdown.
-- Fill the Chrome Web Store description field for the current dashboard language.
-- Iterate the Chrome Web Store language menu and fill all matching imported locale listings.
+- Let the user copy listing text for the selected project locale from the popup.
+- Detect and explain Chrome's extension-gallery scripting restriction when fill actions target Chrome Web Store pages.
 
 ## Non-Goals for MVP
 
@@ -29,6 +26,7 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - No unrestricted local filesystem access.
 - No remote sync.
 - No automatic publishing API integration yet.
+- No Chrome Web Store dashboard DOM automation from the extension itself, because Chrome blocks extension scripts on Web Store pages.
 
 ## Project Model
 
@@ -47,6 +45,7 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - Validate missing listing/media assets.
 - Generate or update release checklist files.
 - Chrome Web Store API integration for package upload/publish where the API is safer than UI automation.
+- External browser automation or native companion for dashboard UI automation if the API cannot cover listing fields.
 - Firefox AMO and Edge Add-ons support.
 
 ## Safety Rules

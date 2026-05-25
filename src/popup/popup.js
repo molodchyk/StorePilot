@@ -4,6 +4,7 @@ const elements = {
   summary: document.getElementById("summary"),
   status: document.getElementById("status"),
   projectSelect: document.getElementById("projectSelect"),
+  localeSelect: document.getElementById("localeSelect"),
   importFolder: document.getElementById("importFolder"),
   listingFiles: document.getElementById("listingFiles"),
   listingFolderFallback: document.getElementById("listingFolderFallback"),
@@ -79,6 +80,10 @@ function isDeveloperDashboardUrl(url = "") {
   return /^https:\/\/(chrome\.google\.com\/webstore\/devconsole|chromewebstore\.google\.com\/devconsole)\//.test(url);
 }
 
+function isExtensionsGalleryBlockedError(errorText = "") {
+  return /extensions gallery cannot be scripted/i.test(errorText);
+}
+
 function renderProjectSelect(projects, activeProjectId) {
   elements.projectSelect.replaceChildren(...storePilotSortProjects(projects).map(project => {
     const option = document.createElement("option");
@@ -92,15 +97,50 @@ function renderProjectSelect(projects, activeProjectId) {
   elements.syncProject.disabled = !projects.length;
 }
 
+function renderLocaleSelect(project) {
+  const locales = Object.keys(project && project.listings ? project.listings : {})
+    .sort((a, b) => a.localeCompare(b));
+
+  elements.localeSelect.replaceChildren(...locales.map(locale => {
+    const option = document.createElement("option");
+    option.value = locale;
+    option.textContent = locale;
+    return option;
+  }));
+
+  elements.localeSelect.disabled = !locales.length;
+  elements.copyText.disabled = !locales.length;
+}
+
 async function refreshSummary() {
   const { projects, activeProjectId } = await storePilotGetProjectsState();
   const activeProject = projects.find(project => project.id === activeProjectId) || projects[0] || null;
   const count = activeProject ? storePilotGetProjectLocaleCount(activeProject) : 0;
 
   renderProjectSelect(projects, activeProject && activeProject.id);
+  renderLocaleSelect(activeProject);
   elements.summary.textContent = activeProject
     ? `${count} listing locale${count === 1 ? "" : "s"} in ${activeProject.name}`
     : "No projects yet";
+}
+
+async function copySelectedLocaleFromPopup() {
+  const project = await storePilotGetActiveProject();
+  const locale = elements.localeSelect.value;
+  const text = project && project.listings ? project.listings[locale] : "";
+
+  if (!text) {
+    return {
+      ok: false,
+      message: "No listing text selected to copy."
+    };
+  }
+
+  await navigator.clipboard.writeText(text);
+  return {
+    ok: true,
+    message: `Copied ${locale} from ${project.name}.`
+  };
 }
 
 async function importListings(files) {
@@ -206,10 +246,13 @@ async function sendToActiveTab(type) {
       return { ...response, diagnostics: { ...diagnostics, response } };
     } catch (injectionError) {
       diagnostics.injectionError = formatError(injectionError);
+      const isGalleryBlocked = isExtensionsGalleryBlockedError(diagnostics.injectionError);
 
       return {
         ok: false,
-        message: "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact Chrome error.",
+        message: isGalleryBlocked
+          ? "Chrome blocks extensions from scripting the Chrome Web Store dashboard. Fill actions cannot run here; use Copy text and paste manually."
+          : "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact Chrome error.",
         diagnostics
       };
     }
@@ -268,7 +311,7 @@ elements.fillAllLanguages.addEventListener("click", async () => {
 });
 
 elements.copyText.addEventListener("click", async () => {
-  const result = await sendToActiveTab("storepilot-copy");
+  const result = await copySelectedLocaleFromPopup();
   showActionResult(result);
 });
 
