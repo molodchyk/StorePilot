@@ -21,7 +21,7 @@ The first MVP focuses on Chrome Web Store listing updates:
 ## MVP Workflow
 
 1. Open StorePilot options.
-2. Import a folder containing locale text files, for example:
+2. Import either the extension project root or a folder containing locale text files. StorePilot can find common paths such as:
 
    `store-listing/chrome-web-store/listing/`
 

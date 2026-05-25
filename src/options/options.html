@@ -26,15 +26,16 @@
       <section class="import-panel">
         <div id="dropZone" class="drop-zone">
           <div class="button-row">
-            <button id="importFolder" type="button">Import folder</button>
+            <button id="importFolder" type="button">Import project/folder</button>
             <label class="file-button">
               <span>Import files</span>
               <input id="listingFiles" type="file" accept=".txt" multiple>
             </label>
           </div>
           <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt" webkitdirectory multiple>
-          <p class="hint">Expected files: <code>en.txt</code>, <code>de.txt</code>, <code>pt_BR.txt</code>, and similar.</p>
-          <p class="hint">You can also drag the listing text files onto this panel.</p>
+          <p class="hint">Select a project root, a store-listing folder, or a direct listing folder.</p>
+          <p class="hint">StorePilot looks for paths like <code>store-listing/chrome-web-store/listing</code>.</p>
+          <p class="hint">You can also drag direct listing text files onto this panel.</p>
         </div>
         <p id="importStatus" class="status" role="status"></p>
       </section>
@@ -48,6 +49,7 @@
       </section>
     </main>
 
+    <script src="../shared/listing-import.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

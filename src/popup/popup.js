@@ -1,4 +1,3 @@
-const STORAGE_KEY = "storePilotListings";
 const SETTINGS_KEY = "storePilotSettings";
 
 const elements = {
@@ -45,100 +44,21 @@ async function updateSettings(patch) {
   return settings;
 }
 
-function getLocaleFromFile(file) {
-  const name = file.name.replace(/\.txt$/i, "");
-
-  if (!/^[a-z]{2,3}(?:_[A-Z0-9]{2,4})?$/.test(name)) {
-    return null;
-  }
-
-  return name;
-}
-
-function createFileLike(name, text) {
-  return {
-    name,
-    async text() {
-      return text;
-    }
-  };
-}
-
 function setStatus(message, isError = false) {
   elements.status.textContent = message;
   elements.status.classList.toggle("error", isError);
 }
 
-async function getListings() {
-  const stored = await chrome.storage.local.get(STORAGE_KEY);
-  return stored[STORAGE_KEY] || {};
-}
-
-async function setListings(listings) {
-  await chrome.storage.local.set({ [STORAGE_KEY]: listings });
-}
-
-async function readTextFile(file) {
-  if (typeof file.text === "function") {
-    return file.text();
-  }
-
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => resolve(String(reader.result || "")));
-    reader.addEventListener("error", () => reject(reader.error));
-    reader.readAsText(file);
-  });
-}
-
 async function importListings(files) {
-  const nextListings = { ...(await getListings()) };
-  const textFiles = Array.from(files).filter(file => file.name.toLowerCase().endsWith(".txt"));
-  const skipped = [];
-  let imported = 0;
+  const result = await storePilotImportListingFiles(files);
 
-  if (!textFiles.length) {
+  if (!result.total) {
     setStatus("No .txt files selected.", true);
     return;
   }
 
-  for (const file of textFiles) {
-    const locale = getLocaleFromFile(file);
-    if (!locale) {
-      skipped.push(file.name);
-      continue;
-    }
-
-    nextListings[locale] = await readTextFile(file);
-    imported++;
-  }
-
-  await setListings(nextListings);
   await refreshSummary();
-  setStatus(`Imported ${imported}; skipped ${skipped.length}.`, imported === 0);
-}
-
-async function collectTextFilesFromDirectory(directoryHandle) {
-  const files = [];
-
-  async function walk(handle) {
-    for await (const entry of handle.values()) {
-      if (entry.kind === "directory") {
-        await walk(entry);
-        continue;
-      }
-
-      if (!entry.name.toLowerCase().endsWith(".txt")) {
-        continue;
-      }
-
-      const file = await entry.getFile();
-      files.push(createFileLike(entry.name, await file.text()));
-    }
-  }
-
-  await walk(directoryHandle);
-  return files;
+  setStatus(`Imported ${result.imported}; skipped ${result.skipped.length}.`, result.imported === 0);
 }
 
 async function importFolder() {
@@ -152,7 +72,15 @@ async function importFolder() {
       id: "storepilot-listing-folder",
       mode: "read"
     });
-    await importListings(await collectTextFilesFromDirectory(directoryHandle));
+    const result = await storePilotImportListingDirectory(directoryHandle);
+
+    if (!result.total) {
+      setStatus("No locale listing folder found.", true);
+      return;
+    }
+
+    await refreshSummary();
+    setStatus(`Imported ${result.imported} from ${result.sourcePath}.`, result.imported === 0);
   } catch (error) {
     if (error.name === "AbortError") {
       setStatus("Folder import canceled.");
@@ -186,7 +114,7 @@ async function sendToActiveTab(type) {
 }
 
 async function refreshSummary() {
-  const listings = await getListings();
+  const listings = await storePilotGetListings();
   const count = Object.keys(listings).length;
   elements.summary.textContent = count
     ? `${count} imported listing locales`
