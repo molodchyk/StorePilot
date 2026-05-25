@@ -1,13 +1,74 @@
 const STOREPILOT_LISTING_STORAGE_KEY = "storePilotListings";
+const STOREPILOT_TEXT_LISTING_EXTENSIONS = new Set([
+  ".txt",
+  ".md",
+  ".markdown",
+  ".text",
+  ".rtf",
+  ".html",
+  ".htm",
+  ".json",
+  ".yaml",
+  ".yml",
+  ".csv",
+  ".tsv",
+  ".xml",
+  ".properties"
+]);
+const STOREPILOT_BLOCKED_LISTING_EXTENSIONS = new Set([
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".webp",
+  ".gif",
+  ".svg",
+  ".avif",
+  ".ico",
+  ".zip",
+  ".crx",
+  ".xpi",
+  ".pdf",
+  ".exe",
+  ".dll",
+  ".bin"
+]);
+const STOREPILOT_SKIPPED_DIRECTORY_NAMES = new Set([
+  ".git",
+  ".hg",
+  ".svn",
+  ".cache",
+  ".next",
+  "node_modules"
+]);
 
 function storePilotGetLocaleFromFileName(fileName) {
-  const name = fileName.replace(/\.txt$/i, "");
+  const name = fileName.replace(/\.[^.]+$/i, "");
 
   if (!/^[a-z]{2,3}(?:_[A-Z0-9]{2,4})?$/.test(name)) {
     return null;
   }
 
   return name;
+}
+
+function storePilotGetFileExtension(fileName) {
+  const match = fileName.toLowerCase().match(/\.[^.]+$/);
+  return match ? match[0] : "";
+}
+
+function storePilotIsPotentialListingFile(file) {
+  const locale = storePilotGetLocaleFromFileName(file.name);
+  const extension = storePilotGetFileExtension(file.name);
+
+  if (!locale) return false;
+  if (STOREPILOT_TEXT_LISTING_EXTENSIONS.has(extension)) return true;
+  if (STOREPILOT_BLOCKED_LISTING_EXTENSIONS.has(extension)) return false;
+
+  return !file.size || file.size <= 512 * 1024;
+}
+
+function storePilotShouldSkipDirectory(directoryName) {
+  return STOREPILOT_SKIPPED_DIRECTORY_NAMES.has(directoryName.toLowerCase());
 }
 
 function storePilotNormalizePath(parts) {
@@ -73,9 +134,9 @@ function storePilotScoreDirectory(pathParts, files, childDirectoryNames = []) {
 
   score += listingLikeCount * 12;
 
-  if (files.some(file => file.name === "en.txt")) score += 35;
-  if (files.some(file => file.name === "de.txt")) score += 10;
-  if (files.some(file => file.name === "uk.txt")) score += 10;
+  if (files.some(file => storePilotGetLocaleFromFileName(file.name) === "en")) score += 35;
+  if (files.some(file => storePilotGetLocaleFromFileName(file.name) === "de")) score += 10;
+  if (files.some(file => storePilotGetLocaleFromFileName(file.name) === "uk")) score += 10;
 
   score += storePilotCountMatches(directoryNames, [
     /^listing$/,
@@ -127,16 +188,21 @@ async function storePilotCollectCandidateDirectories(directoryHandle) {
 
     for await (const entry of handle.values()) {
       if (entry.kind === "directory") {
+        if (storePilotShouldSkipDirectory(entry.name)) {
+          continue;
+        }
+
         childDirectoryNames.push(entry.name);
         await walk(entry, [...pathParts, entry.name]);
         continue;
       }
 
-      if (!entry.name.toLowerCase().endsWith(".txt")) {
+      const file = await entry.getFile();
+
+      if (!storePilotIsPotentialListingFile(file)) {
         continue;
       }
 
-      const file = await entry.getFile();
       const sample = await file.text();
       textFiles.push({
         name: entry.name,
@@ -189,7 +255,7 @@ async function storePilotReadTextFile(file) {
 
 async function storePilotImportListingFiles(files) {
   const nextListings = { ...(await storePilotGetListings()) };
-  const textFiles = Array.from(files).filter(file => file.name.toLowerCase().endsWith(".txt"));
+  const textFiles = Array.from(files).filter(storePilotIsPotentialListingFile);
   const skipped = [];
   let imported = 0;
 

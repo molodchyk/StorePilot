@@ -85,13 +85,13 @@ async function importListings(files) {
   const result = await storePilotImportListingFiles(files);
 
   if (!result.total) {
-    setStatus("No .txt files were selected.", true);
+    setStatus("No locale listing files were selected.", true);
     return;
   }
 
   renderListings(result.listings);
   setStatus(
-    `Saw ${result.total} text file${result.total === 1 ? "" : "s"}; imported ${result.imported}; skipped ${result.skipped.length}.` +
+    `Saw ${result.total} listing file${result.total === 1 ? "" : "s"}; imported ${result.imported}; skipped ${result.skipped.length}.` +
       (result.skipped.length ? ` Skipped: ${result.skipped.slice(0, 5).join(", ")}${result.skipped.length > 5 ? "..." : ""}` : ""),
     result.imported === 0
   );

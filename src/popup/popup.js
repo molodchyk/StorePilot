@@ -53,7 +53,7 @@ async function importListings(files) {
   const result = await storePilotImportListingFiles(files);
 
   if (!result.total) {
-    setStatus("No .txt files selected.", true);
+    setStatus("No locale listing files selected.", true);
     return;
   }
 
