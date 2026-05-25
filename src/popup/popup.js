@@ -197,6 +197,7 @@ async function importListings(files) {
 
   await refreshSummary();
   setStatus(`Imported ${result.imported}; skipped ${result.skipped.length}.`, result.imported === 0);
+  return result;
 }
 
 async function importFolder() {
@@ -315,7 +316,21 @@ function showActionResult(result) {
 }
 
 function handleFileSelection(event) {
-  importListings(event.target.files).catch(error => {
+  const importer = event.target === elements.listingFolderFallback
+    ? storePilotImportListingFileList
+    : importListings;
+
+  importer(event.target.files).then(async result => {
+    await refreshSummary();
+    if (!result.total) {
+      setStatus("No locale listing files were found.", true);
+      return;
+    }
+
+    setStatus(event.target === elements.listingFolderFallback && result.project
+      ? `Imported ${result.imported} into ${result.project.name}.`
+      : `Imported ${result.imported}; skipped ${result.skipped.length}.`, result.imported === 0);
+  }).catch(error => {
     console.error(error);
     setStatus(`Import failed: ${error.message}`, true);
   });

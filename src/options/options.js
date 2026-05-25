@@ -202,8 +202,28 @@ async function importFolder() {
   }
 }
 
+async function importFolderFileList(files) {
+  const result = await storePilotImportListingFileList(files);
+
+  if (!result.total) {
+    setStatus("No locale listing folder was found in the selected folder.", true);
+    return;
+  }
+
+  await renderAll();
+  setStatus(
+    `Imported ${result.imported} into ${result.project.name} from ${result.sourcePath || "selected files"} (${result.confidence || "manual"} confidence); skipped ${result.skipped.length}.` +
+      (result.candidateCount > 1 ? ` Found ${result.candidateCount} candidate folders.` : ""),
+    result.imported === 0
+  );
+}
+
 function handleFileSelection(event) {
-  importListings(event.target.files).catch(error => {
+  const importer = event.target === elements.listingFolderFallback
+    ? importFolderFileList
+    : importListings;
+
+  importer(event.target.files).catch(error => {
     console.error(error);
     setStatus(`Import failed: ${error.message}`, true);
   });

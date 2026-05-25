@@ -62,19 +62,30 @@ function storePilotGetFileExtension(fileName) {
   return match ? match[0] : "";
 }
 
-function storePilotIsPotentialListingFile(file) {
+function storePilotIsPotentialListingFile(file, options = {}) {
+  const allowUnknownText = options.allowUnknownText !== false;
   const locale = storePilotGetLocaleFromFileName(file.name);
   const extension = storePilotGetFileExtension(file.name);
 
   if (!locale) return false;
   if (STOREPILOT_TEXT_LISTING_EXTENSIONS.has(extension)) return true;
   if (STOREPILOT_BLOCKED_LISTING_EXTENSIONS.has(extension)) return false;
+  if (!allowUnknownText) return false;
 
   return !file.size || file.size <= 512 * 1024;
 }
 
 function storePilotShouldSkipDirectory(directoryName) {
   return STOREPILOT_SKIPPED_DIRECTORY_NAMES.has(directoryName.toLowerCase());
+}
+
+function storePilotGetRelativePathParts(file) {
+  const relativePath = file.webkitRelativePath || file.relativePath || file.name;
+  return relativePath.split(/[\\/]+/).filter(Boolean);
+}
+
+function storePilotHasSkippedPathPart(pathParts) {
+  return pathParts.some(part => storePilotShouldSkipDirectory(part));
 }
 
 function storePilotCreateProjectId() {
@@ -102,6 +113,22 @@ function storePilotCreateProject(name, patch = {}) {
     hasFolderHandle: false,
     ...patch
   };
+}
+
+function storePilotFormatProjectName(folderName) {
+  return String(folderName || "Imported project")
+    .replace(/[_-]+/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function storePilotFindProjectByAnyName(projects, names) {
+  const normalizedNames = names
+    .filter(Boolean)
+    .map(name => name.toLowerCase());
+
+  return projects.find(project => normalizedNames.includes(project.name.toLowerCase()));
 }
 
 function storePilotGetProjectLocaleCount(project) {
@@ -306,7 +333,7 @@ async function storePilotCollectCandidateDirectories(directoryHandle) {
 
       const file = await entry.getFile();
 
-      if (!storePilotIsPotentialListingFile(file)) {
+      if (!storePilotIsPotentialListingFile(file, { allowUnknownText: false })) {
         continue;
       }
 
@@ -481,6 +508,110 @@ async function storePilotImportListingFiles(files) {
   };
 }
 
+async function storePilotCollectCandidateDirectoriesFromFileList(files) {
+  const candidateMap = new Map();
+  const directoryChildren = new Map();
+  const fileList = Array.from(files);
+  const hasRelativePaths = fileList.some(file => storePilotGetRelativePathParts(file).length > 1);
+
+  if (!hasRelativePaths) {
+    return [];
+  }
+
+  for (const file of fileList) {
+    const pathParts = storePilotGetRelativePathParts(file);
+    const fileName = pathParts[pathParts.length - 1];
+    const directoryParts = pathParts.slice(0, -1);
+
+    if (!directoryParts.length || storePilotHasSkippedPathPart(directoryParts)) {
+      continue;
+    }
+
+    for (let index = 0; index < directoryParts.length - 1; index++) {
+      const parentPath = directoryParts.slice(0, index + 1).join("/");
+      const childName = directoryParts[index + 1];
+      const children = directoryChildren.get(parentPath) || new Set();
+      children.add(childName);
+      directoryChildren.set(parentPath, children);
+    }
+
+    if (!storePilotIsPotentialListingFile(file, { allowUnknownText: false })) {
+      continue;
+    }
+
+    const directoryPath = directoryParts.join("/");
+    const sample = await storePilotReadTextFile(file);
+    const candidate = candidateMap.get(directoryPath) || {
+      pathParts: directoryParts,
+      files: []
+    };
+
+    candidate.files.push({
+      name: fileName,
+      sample: sample.slice(0, 4000),
+      async text() {
+        return sample;
+      }
+    });
+    candidateMap.set(directoryPath, candidate);
+  }
+
+  const candidates = Array.from(candidateMap.values()).map(candidate => {
+    const directoryPath = candidate.pathParts.join("/");
+    const childDirectoryNames = Array.from(directoryChildren.get(directoryPath) || []);
+    const score = storePilotScoreDirectory(candidate.pathParts, candidate.files, childDirectoryNames);
+
+    return {
+      path: directoryPath,
+      score,
+      confidence: storePilotCalculateConfidence(score),
+      files: candidate.files
+    };
+  }).filter(candidate => candidate.score);
+
+  candidates.sort((a, b) => b.score - a.score || b.files.length - a.files.length);
+  return candidates;
+}
+
+async function storePilotImportListingFileList(files, projectId = "") {
+  const candidates = await storePilotCollectCandidateDirectoriesFromFileList(files);
+
+  if (!candidates.length) {
+    return storePilotImportListingFiles(files);
+  }
+
+  const best = candidates[0];
+  const rootName = best.path.split("/")[0] || "Imported project";
+  const projectName = storePilotFormatProjectName(rootName);
+  const state = await storePilotGetProjectsState();
+  const existingProject = state.projects.find(project => project.id === projectId) ||
+    storePilotFindProjectByAnyName(state.projects, [rootName, projectName]);
+  const project = existingProject || storePilotCreateProject(projectName);
+  const result = await storePilotReadListingFiles(best.files);
+  const nextProject = {
+    ...project,
+    name: project.name || rootName,
+    listings: result.listings,
+    sourcePath: best.path,
+    candidateCount: candidates.length,
+    confidence: best.confidence,
+    score: best.score,
+    lastSyncedAt: storePilotFormatTimestamp(),
+    hasFolderHandle: false
+  };
+
+  await storePilotUpsertProject(nextProject);
+
+  return {
+    ...result,
+    project: nextProject,
+    sourcePath: best.path,
+    candidateCount: candidates.length,
+    confidence: best.confidence,
+    score: best.score
+  };
+}
+
 async function storePilotImportListingDirectory(directoryHandle, projectId = "") {
   const candidates = await storePilotCollectCandidateDirectories(directoryHandle);
 
@@ -496,10 +627,11 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
   }
 
   const best = candidates[0];
+  const projectName = storePilotFormatProjectName(directoryHandle.name);
   const state = await storePilotGetProjectsState();
   const existingProject = state.projects.find(project => project.id === projectId) ||
-    state.projects.find(project => project.name === directoryHandle.name);
-  const project = existingProject || storePilotCreateProject(directoryHandle.name);
+    storePilotFindProjectByAnyName(state.projects, [directoryHandle.name, projectName]);
+  const project = existingProject || storePilotCreateProject(projectName);
   const result = await storePilotReadListingFiles(best.files);
   const nextProject = {
     ...project,
