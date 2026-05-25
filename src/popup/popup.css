@@ -33,7 +33,10 @@ p {
   gap: 8px;
 }
 
-button {
+button,
+.file-button {
+  display: grid;
+  place-items: center;
   min-height: 34px;
   border: 1px solid #cbd2dc;
   border-radius: 6px;
@@ -42,6 +45,19 @@ button {
   cursor: pointer;
   font: inherit;
   font-weight: 700;
+}
+
+.file-button input,
+.hidden-input {
+  display: none;
+}
+
+#status {
+  min-height: 18px;
+}
+
+#status.error {
+  color: #b42318;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -54,9 +70,14 @@ button {
     color: #a8b0bf;
   }
 
-  button {
+  button,
+  .file-button {
     border-color: #343b4a;
     background: #202633;
     color: #f4f6fa;
+  }
+
+  #status.error {
+    color: #ff9b92;
   }
 }

@@ -11,6 +11,12 @@
       <h1>StorePilot</h1>
       <p id="summary">Loading listings...</p>
       <div class="actions">
+        <button id="importFolder" type="button">Import folder</button>
+        <label class="file-button">
+          <span>Import files</span>
+          <input id="listingFiles" type="file" accept=".txt" multiple>
+        </label>
+        <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt" webkitdirectory multiple>
         <button id="fillField" type="button">Fill field</button>
         <button id="copyText" type="button">Copy text</button>
         <button id="openOptions" type="button">Options</button>
