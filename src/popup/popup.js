@@ -1,5 +1,7 @@
 const SETTINGS_KEY = "storePilotSettings";
 const POPUP_STATE_KEY = "storePilotPopupState";
+var STOREPILOT_API = globalThis.browser || globalThis.chrome;
+const STOREPILOT_IS_FIREFOX = typeof globalThis.browser !== "undefined";
 
 const elements = {
   summary: document.getElementById("summary"),
@@ -36,7 +38,7 @@ function applyTheme(theme) {
 }
 
 async function getSettings() {
-  const stored = await chrome.storage.local.get(SETTINGS_KEY);
+  const stored = await STOREPILOT_API.storage.local.get(SETTINGS_KEY);
   return {
     theme: "system",
     ...(stored[SETTINGS_KEY] || {})
@@ -49,12 +51,12 @@ async function updateSettings(patch) {
     ...patch
   };
 
-  await chrome.storage.local.set({ [SETTINGS_KEY]: settings });
+  await STOREPILOT_API.storage.local.set({ [SETTINGS_KEY]: settings });
   return settings;
 }
 
 async function getPopupState() {
-  const stored = await chrome.storage.local.get(POPUP_STATE_KEY);
+  const stored = await STOREPILOT_API.storage.local.get(POPUP_STATE_KEY);
   return {
     selectedLocaleByProject: {},
     ...(stored[POPUP_STATE_KEY] || {})
@@ -67,7 +69,7 @@ async function updatePopupState(patch) {
     ...patch
   };
 
-  await chrome.storage.local.set({ [POPUP_STATE_KEY]: state });
+  await STOREPILOT_API.storage.local.set({ [POPUP_STATE_KEY]: state });
   return state;
 }
 
@@ -150,6 +152,10 @@ async function refreshSummary() {
 }
 
 async function updateDashboardRestrictionNotice() {
+  if (STOREPILOT_IS_FIREFOX) {
+    return;
+  }
+
   const tab = await getActiveTab();
 
   if (!tab || !isDeveloperDashboardUrl(tab.url || "")) {
@@ -239,12 +245,12 @@ async function syncActiveProject(requestAccess = true) {
 }
 
 async function getActiveTab() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const [tab] = await STOREPILOT_API.tabs.query({ active: true, currentWindow: true });
   return tab;
 }
 
 async function injectContentScript(tabId) {
-  await chrome.scripting.executeScript({
+  await STOREPILOT_API.scripting.executeScript({
     target: { tabId },
     files: ["src/content/dashboard-helper.js"]
   });
@@ -272,7 +278,7 @@ async function sendToActiveTab(type) {
   }
 
   try {
-    const response = await chrome.tabs.sendMessage(tab.id, { type });
+    const response = await STOREPILOT_API.tabs.sendMessage(tab.id, { type });
     return { ...response, diagnostics: { ...diagnostics, contentScript: "already connected", response } };
   } catch (error) {
     diagnostics.initialMessageError = formatError(error);
@@ -280,7 +286,7 @@ async function sendToActiveTab(type) {
     try {
       await injectContentScript(tab.id);
       diagnostics.injection = "succeeded";
-      const response = await chrome.tabs.sendMessage(tab.id, { type });
+      const response = await STOREPILOT_API.tabs.sendMessage(tab.id, { type });
       return { ...response, diagnostics: { ...diagnostics, response } };
     } catch (injectionError) {
       diagnostics.injectionError = formatError(injectionError);
@@ -376,7 +382,7 @@ elements.diagnosePage.addEventListener("click", () => {
 });
 
 elements.openOptions.addEventListener("click", () => {
-  chrome.runtime.openOptionsPage();
+  STOREPILOT_API.runtime.openOptionsPage();
 });
 
 elements.themeChoices.forEach(button => {
@@ -386,7 +392,7 @@ elements.themeChoices.forEach(button => {
   });
 });
 
-chrome.storage.onChanged.addListener((changes, areaName) => {
+STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[SETTINGS_KEY]) {

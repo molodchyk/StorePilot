@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "StorePilot",
+  "version": "0.1.0",
+  "description": "Automate repetitive browser extension store publishing work.",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://chrome.google.com/webstore/devconsole/*",
+    "https://chromewebstore.google.com/devconsole/*"
+  ],
+  "action": {
+    "default_title": "StorePilot",
+    "default_popup": "src/popup/popup.html"
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chrome.google.com/webstore/devconsole/*",
+        "https://chromewebstore.google.com/devconsole/*"
+      ],
+      "js": [
+        "src/content/dashboard-helper.js"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "storepilot@molodchyk.dev",
+      "strict_min_version": "109.0"
+    }
+  }
+}

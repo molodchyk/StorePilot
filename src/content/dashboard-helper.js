@@ -1,4 +1,5 @@
 const LEGACY_STORAGE_KEY = "storePilotListings";
+var STOREPILOT_API = globalThis.browser || globalThis.chrome;
 const PROJECTS_STORAGE_KEY = "storePilotProjects";
 const ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
 const PANEL_ID = "storepilot-panel";
@@ -90,7 +91,7 @@ function findLikelyListingField() {
 }
 
 async function loadListings() {
-  const stored = await chrome.storage.local.get([
+  const stored = await STOREPILOT_API.storage.local.get([
     LEGACY_STORAGE_KEY,
     PROJECTS_STORAGE_KEY,
     ACTIVE_PROJECT_STORAGE_KEY
@@ -543,7 +544,7 @@ function injectStyles() {
   document.documentElement.append(style);
 }
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   (async () => {
     if (message.type === "storepilot-copy") {
       renderPanel(await loadListings());

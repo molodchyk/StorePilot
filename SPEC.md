@@ -7,7 +7,7 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 ## MVP Scope
 
 - Chrome extension, Manifest V3.
-- No build step.
+- Firefox distribution manifest and build script for testing Chrome Web Store dashboard automation from Firefox.
 - Import flat listing files from a selected folder or detected project root.
 - File naming convention: `<locale>.<text-like-extension>`, including `.txt`, `.md`, and `.markdown`.
 - Store multiple extension projects separately.
@@ -19,6 +19,7 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - Let the user copy listing text for the selected project locale from the popup.
 - Detect and explain Chrome's extension-gallery scripting restriction when fill actions target Chrome Web Store pages.
 - Do not claim current Chrome Web Store dashboard locale detection; persist manual locale selection per project instead.
+- In Firefox, keep dashboard fill actions enabled on Chrome Web Store pages because Chrome's extension-gallery restriction is not enforced by Firefox.
 
 ## Non-Goals for MVP
 
@@ -28,6 +29,7 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - No remote sync.
 - No automatic publishing API integration yet.
 - No Chrome Web Store dashboard DOM automation from the extension itself, because Chrome blocks extension scripts on Web Store pages.
+- No guarantee that Firefox can fully automate the Chrome Web Store dashboard until it is tested against Google's live UI and auth flows.
 
 ## Project Model
 

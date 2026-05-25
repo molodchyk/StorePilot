@@ -19,6 +19,26 @@ The first MVP focuses on Chrome Web Store listing updates:
 
    `C:\Users\molod\Documents\Personal\settings\StorePilot`
 
+## Firefox Distribution
+
+The Firefox build is intended to test whether Firefox can script the Chrome Web Store dashboard where Chrome blocks itself.
+
+Build the Firefox distribution:
+
+```powershell
+.\scripts\build-firefox.ps1
+```
+
+Then open Firefox, go to `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on**, and select:
+
+`C:\Users\molod\Documents\Personal\settings\StorePilot\dist-firefox\manifest.json`
+
+The build script also creates:
+
+`C:\Users\molod\Documents\Personal\settings\StorePilot\storepilot-firefox-0.1.0.zip`
+
+Firefox does not support the same folder-handle sync workflow as Chrome. For first tests, import listing files directly from the popup/options, then open the Chrome Web Store Developer Dashboard in Firefox and try **Fill current language** or **Fill all languages**.
+
 ## MVP Workflow
 
 1. Open StorePilot options or the StorePilot popup.
@@ -34,6 +54,6 @@ The first MVP focuses on Chrome Web Store listing updates:
 
 Chrome extensions cannot freely read arbitrary local project folders. StorePilot stores user-selected folder handles and can sync again while Chrome still grants permission. If permission expires, choose the project folder again or click sync and approve access.
 
-Chrome also blocks extension scripts on Chrome Web Store pages with `The extensions gallery cannot be scripted.` That means a normal Chrome extension cannot automate the Chrome Web Store dashboard UI directly. StorePilot can still manage projects, sync listing files, and copy localized text for manual paste. Deeper automation will need a different path, such as the Chrome Web Store API, a browser automation tool outside Chrome extension restrictions, or a native companion.
+Chrome also blocks extension scripts on Chrome Web Store pages with `The extensions gallery cannot be scripted.` That means a normal Chrome extension cannot automate the Chrome Web Store dashboard UI directly. StorePilot can still manage projects, sync listing files, and copy localized text for manual paste in Chrome. The Firefox distribution is an experiment to run the same dashboard automation from Firefox, where Chrome's own extension-gallery block does not apply.
 
 Because of the same restriction, StorePilot cannot detect the currently selected Chrome Web Store dashboard locale. Select the locale in StorePilot manually; the popup remembers the selected locale per project.

@@ -1,4 +1,5 @@
 const SETTINGS_KEY = "storePilotSettings";
+var STOREPILOT_API = globalThis.browser || globalThis.chrome;
 
 const elements = {
   importFolder: document.getElementById("importFolder"),
@@ -33,7 +34,7 @@ function applyTheme(theme) {
 }
 
 async function getSettings() {
-  const stored = await chrome.storage.local.get(SETTINGS_KEY);
+  const stored = await STOREPILOT_API.storage.local.get(SETTINGS_KEY);
   return {
     theme: "system",
     ...(stored[SETTINGS_KEY] || {})
@@ -46,7 +47,7 @@ async function updateSettings(patch) {
     ...patch
   };
 
-  await chrome.storage.local.set({ [SETTINGS_KEY]: settings });
+  await STOREPILOT_API.storage.local.set({ [SETTINGS_KEY]: settings });
   return settings;
 }
 
@@ -281,7 +282,7 @@ elements.themeChoices.forEach(button => {
   });
 });
 
-chrome.storage.onChanged.addListener((changes, areaName) => {
+STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[SETTINGS_KEY]) {

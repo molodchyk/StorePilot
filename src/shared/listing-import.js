@@ -1,4 +1,5 @@
 const STOREPILOT_LISTING_STORAGE_KEY = "storePilotListings";
+var STOREPILOT_API = globalThis.browser || globalThis.chrome;
 const STOREPILOT_PROJECTS_STORAGE_KEY = "storePilotProjects";
 const STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
 const STOREPILOT_HANDLE_DB_NAME = "storePilotHandles";
@@ -362,7 +363,7 @@ async function storePilotSetListings(listings) {
 }
 
 async function storePilotGetProjectsState() {
-  const stored = await chrome.storage.local.get([
+  const stored = await STOREPILOT_API.storage.local.get([
     STOREPILOT_PROJECTS_STORAGE_KEY,
     STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY,
     STOREPILOT_LISTING_STORAGE_KEY
@@ -382,14 +383,14 @@ async function storePilotGetProjectsState() {
 
   if (projects.length && !projects.some(project => project.id === activeProjectId)) {
     activeProjectId = projects[0].id;
-    await chrome.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: activeProjectId });
+    await STOREPILOT_API.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: activeProjectId });
   }
 
   return { projects, activeProjectId };
 }
 
 async function storePilotSetProjectsState({ projects, activeProjectId }) {
-  await chrome.storage.local.set({
+  await STOREPILOT_API.storage.local.set({
     [STOREPILOT_PROJECTS_STORAGE_KEY]: projects,
     [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: activeProjectId || ""
   });
@@ -403,7 +404,7 @@ async function storePilotGetActiveProject() {
 async function storePilotSetActiveProject(projectId) {
   const { projects } = await storePilotGetProjectsState();
   if (!projects.some(project => project.id === projectId)) return;
-  await chrome.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: projectId });
+  await STOREPILOT_API.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: projectId });
 }
 
 async function storePilotUpsertProject(nextProject, setActive = true) {
@@ -591,7 +592,7 @@ async function storePilotSyncAllProjects(requestAccess = false) {
     });
   }
 
-  await chrome.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: state.activeProjectId });
+  await STOREPILOT_API.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: state.activeProjectId });
 
   return results;
 }
