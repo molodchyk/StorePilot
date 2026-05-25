@@ -10,6 +10,11 @@
     <main>
       <h1>StorePilot</h1>
       <p id="summary">Loading listings...</p>
+      <p id="status" aria-live="polite"></p>
+      <details id="diagnostics" class="diagnostics" hidden>
+        <summary>Diagnostics</summary>
+        <pre id="diagnosticsText"></pre>
+      </details>
       <label class="project-picker">
         <span>Project</span>
         <select id="projectSelect"></select>
@@ -26,6 +31,7 @@
         <button id="fillCurrentLanguage" type="button">Fill current language</button>
         <button id="fillAllLanguages" type="button">Fill all languages</button>
         <button id="copyText" type="button">Copy text</button>
+        <button id="diagnosePage" type="button">Diagnose page</button>
         <button id="openOptions" type="button">Options</button>
       </div>
       <div class="theme-control" aria-label="Theme">
@@ -33,7 +39,6 @@
         <button type="button" data-theme-choice="light">Light</button>
         <button type="button" data-theme-choice="dark">Dark</button>
       </div>
-      <p id="status"></p>
     </main>
     <script src="../shared/listing-import.js"></script>
     <script src="popup.js"></script>

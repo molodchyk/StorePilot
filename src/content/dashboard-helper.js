@@ -375,6 +375,51 @@ async function fillAllDashboardLanguages() {
   };
 }
 
+async function diagnoseDashboardPage() {
+  await loadListings();
+
+  const dropdown = findLanguageDropdown();
+  const descriptionField = findDescriptionField();
+  let dropdownOptions = [];
+
+  if (dropdown) {
+    const opened = await openLanguageDropdown();
+    if (opened.ok) {
+      dropdownOptions = getOpenLanguageOptions().map(option => ({
+        locale: option.locale,
+        text: option.text
+      }));
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      await delay(100);
+    }
+  }
+
+  const diagnostics = {
+    url: location.href,
+    activeProjectName,
+    importedLocaleCount: Object.keys(listings).length,
+    selectedLocale,
+    languageDropdownFound: Boolean(dropdown),
+    languageDropdownText: dropdown ? getVisibleText(dropdown) : "",
+    currentDashboardLocale: getCurrentDashboardLocale(),
+    dashboardLanguageOptionCount: dropdownOptions.length,
+    firstDashboardLanguageOptions: dropdownOptions.slice(0, 8),
+    descriptionFieldFound: Boolean(descriptionField),
+    descriptionFieldLabel: descriptionField
+      ? getVisibleText(document.getElementById(descriptionField.getAttribute("aria-labelledby")))
+      : "",
+    descriptionFieldMaxLength: descriptionField ? descriptionField.getAttribute("maxlength") || "" : ""
+  };
+
+  return {
+    ok: diagnostics.languageDropdownFound && diagnostics.descriptionFieldFound,
+    message: diagnostics.languageDropdownFound && diagnostics.descriptionFieldFound
+      ? "Dashboard diagnostics passed."
+      : "Dashboard diagnostics found missing page elements.",
+    diagnostics
+  };
+}
+
 function createButton(label, onClick) {
   const button = document.createElement("button");
   button.type = "button";
@@ -527,6 +572,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message.type === "storepilot-reload") {
       renderPanel(await loadListings());
       sendResponse({ ok: true });
+      return;
+    }
+
+    if (message.type === "storepilot-diagnose") {
+      renderPanel(await loadListings());
+      sendResponse(await diagnoseDashboardPage());
     }
   })();
 

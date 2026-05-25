@@ -12,7 +12,10 @@ const elements = {
   fillCurrentLanguage: document.getElementById("fillCurrentLanguage"),
   fillAllLanguages: document.getElementById("fillAllLanguages"),
   copyText: document.getElementById("copyText"),
+  diagnosePage: document.getElementById("diagnosePage"),
   openOptions: document.getElementById("openOptions"),
+  diagnostics: document.getElementById("diagnostics"),
+  diagnosticsText: document.getElementById("diagnosticsText"),
   themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]"))
 };
 
@@ -51,6 +54,29 @@ async function updateSettings(patch) {
 function setStatus(message, isError = false) {
   elements.status.textContent = message;
   elements.status.classList.toggle("error", isError);
+}
+
+function setDiagnostics(details) {
+  if (!details) {
+    elements.diagnostics.hidden = true;
+    elements.diagnosticsText.textContent = "";
+    return;
+  }
+
+  elements.diagnostics.hidden = false;
+  elements.diagnostics.open = true;
+  elements.diagnosticsText.textContent = typeof details === "string"
+    ? details
+    : JSON.stringify(details, null, 2);
+}
+
+function formatError(error) {
+  if (!error) return "";
+  return error.message || String(error);
+}
+
+function isDeveloperDashboardUrl(url = "") {
+  return /^https:\/\/(chrome\.google\.com\/webstore\/devconsole|chromewebstore\.google\.com\/devconsole)\//.test(url);
 }
 
 function renderProjectSelect(projects, activeProjectId) {
@@ -139,30 +165,66 @@ async function getActiveTab() {
   return tab;
 }
 
+async function injectContentScript(tabId) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ["src/content/dashboard-helper.js"]
+  });
+}
+
 async function sendToActiveTab(type) {
   const tab = await getActiveTab();
   if (!tab || !tab.id) {
     return { ok: false, message: "No active tab." };
   }
 
+  const diagnostics = {
+    action: type,
+    tabId: tab.id,
+    url: tab.url || "",
+    expectedDashboardUrl: isDeveloperDashboardUrl(tab.url || "")
+  };
+
+  if (!diagnostics.expectedDashboardUrl) {
+    return {
+      ok: false,
+      message: "The active tab is not a Chrome Web Store Developer Dashboard page.",
+      diagnostics
+    };
+  }
+
   try {
-    return await chrome.tabs.sendMessage(tab.id, { type });
+    const response = await chrome.tabs.sendMessage(tab.id, { type });
+    return { ...response, diagnostics: { ...diagnostics, contentScript: "already connected", response } };
   } catch (error) {
+    diagnostics.initialMessageError = formatError(error);
+
     try {
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["src/content/dashboard-helper.js"]
-      });
-      return await chrome.tabs.sendMessage(tab.id, { type });
-    } catch (_injectionError) {
+      await injectContentScript(tab.id);
+      diagnostics.injection = "succeeded";
+      const response = await chrome.tabs.sendMessage(tab.id, { type });
+      return { ...response, diagnostics: { ...diagnostics, response } };
+    } catch (injectionError) {
+      diagnostics.injectionError = formatError(injectionError);
+
       return {
         ok: false,
-        message: error.message && error.message.includes("Receiving end")
-          ? "Reload the Chrome Web Store Developer Dashboard tab and try again."
-          : "Open a Chrome Web Store Developer Dashboard page first."
+        message: "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact Chrome error.",
+        diagnostics
       };
     }
   }
+}
+
+async function diagnoseActiveTab() {
+  const result = await sendToActiveTab("storepilot-diagnose");
+  setStatus(result.message || (result.ok ? "Diagnostics complete." : "Diagnostics failed."), !result.ok);
+  setDiagnostics(result.diagnostics || result);
+}
+
+function showActionResult(result) {
+  setStatus(result.message || (result.ok ? "Done." : "Failed."), !result.ok);
+  setDiagnostics(result.ok ? null : result.diagnostics || result);
 }
 
 function handleFileSelection(event) {
@@ -192,22 +254,29 @@ elements.syncProject.addEventListener("click", () => {
 
 elements.fillField.addEventListener("click", async () => {
   const result = await sendToActiveTab("storepilot-fill");
-  setStatus(result.message || (result.ok ? "Filled." : "Could not fill."), !result.ok);
+  showActionResult(result);
 });
 
 elements.fillCurrentLanguage.addEventListener("click", async () => {
   const result = await sendToActiveTab("storepilot-fill-current-language");
-  setStatus(result.message || (result.ok ? "Filled current language." : "Could not fill."), !result.ok);
+  showActionResult(result);
 });
 
 elements.fillAllLanguages.addEventListener("click", async () => {
   const result = await sendToActiveTab("storepilot-fill-all-languages");
-  setStatus(result.message || (result.ok ? "Filled all languages." : "Could not fill all."), !result.ok);
+  showActionResult(result);
 });
 
 elements.copyText.addEventListener("click", async () => {
   const result = await sendToActiveTab("storepilot-copy");
-  setStatus(result.message || (result.ok ? "Copied." : "Could not copy."), !result.ok);
+  showActionResult(result);
+});
+
+elements.diagnosePage.addEventListener("click", () => {
+  diagnoseActiveTab().catch(error => {
+    setStatus(`Diagnostics failed: ${formatError(error)}`, true);
+    setDiagnostics({ error: formatError(error) });
+  });
 });
 
 elements.openOptions.addEventListener("click", () => {
