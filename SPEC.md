@@ -18,6 +18,9 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 - Silently sync the active project when the popup opens if Chrome already grants folder permission.
 - Inject a helper panel into Chrome Web Store Developer Dashboard pages.
 - Let the user copy or fill listing text for the selected locale.
+- Detect the Chrome Web Store current editing language dropdown.
+- Fill the Chrome Web Store description field for the current dashboard language.
+- Iterate the Chrome Web Store language menu and fill all matching imported locale listings.
 
 ## Non-Goals for MVP
 
@@ -49,5 +52,6 @@ StorePilot should reduce manual browser extension publishing work, especially lo
 ## Safety Rules
 
 - Never click final submit/publish automatically without explicit user action.
+- Never click save/submit after filling localized listing fields.
 - Prefer filling fields and showing review state over irreversible actions.
 - Keep imported project text local unless the user explicitly exports or submits it.

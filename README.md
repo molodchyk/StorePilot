@@ -10,6 +10,8 @@ The first MVP focuses on Chrome Web Store listing updates:
 - Remember selected project folders and sync listings again when Chrome still has permission.
 - Show a small helper panel on Chrome Web Store Developer Dashboard pages.
 - Copy or fill the selected locale listing text into the active dashboard field.
+- Fill the Chrome Web Store description for the current dashboard language.
+- Iterate through Chrome Web Store language dropdown entries and fill all matching imported locales.
 
 ## Local Development
 
@@ -29,7 +31,7 @@ The first MVP focuses on Chrome Web Store listing updates:
 4. Use **Sync project** or **Sync all** to refresh listings from saved folders.
 5. Open the Chrome Web Store Developer Dashboard.
 6. Use the StorePilot panel to select a locale.
-7. Copy the listing text or fill the currently focused field.
+7. Copy the listing text, fill the currently focused field, fill the current dashboard language, or fill all matching dashboard languages.
 
 ## Notes
 

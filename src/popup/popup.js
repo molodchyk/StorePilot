@@ -9,6 +9,8 @@ const elements = {
   listingFolderFallback: document.getElementById("listingFolderFallback"),
   syncProject: document.getElementById("syncProject"),
   fillField: document.getElementById("fillField"),
+  fillCurrentLanguage: document.getElementById("fillCurrentLanguage"),
+  fillAllLanguages: document.getElementById("fillAllLanguages"),
   copyText: document.getElementById("copyText"),
   openOptions: document.getElementById("openOptions"),
   themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]"))
@@ -145,11 +147,21 @@ async function sendToActiveTab(type) {
 
   try {
     return await chrome.tabs.sendMessage(tab.id, { type });
-  } catch (_error) {
-    return {
-      ok: false,
-      message: "Open a Chrome Web Store Developer Dashboard page first."
-    };
+  } catch (error) {
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["src/content/dashboard-helper.js"]
+      });
+      return await chrome.tabs.sendMessage(tab.id, { type });
+    } catch (_injectionError) {
+      return {
+        ok: false,
+        message: error.message && error.message.includes("Receiving end")
+          ? "Reload the Chrome Web Store Developer Dashboard tab and try again."
+          : "Open a Chrome Web Store Developer Dashboard page first."
+      };
+    }
   }
 }
 
@@ -181,6 +193,16 @@ elements.syncProject.addEventListener("click", () => {
 elements.fillField.addEventListener("click", async () => {
   const result = await sendToActiveTab("storepilot-fill");
   setStatus(result.message || (result.ok ? "Filled." : "Could not fill."), !result.ok);
+});
+
+elements.fillCurrentLanguage.addEventListener("click", async () => {
+  const result = await sendToActiveTab("storepilot-fill-current-language");
+  setStatus(result.message || (result.ok ? "Filled current language." : "Could not fill."), !result.ok);
+});
+
+elements.fillAllLanguages.addEventListener("click", async () => {
+  const result = await sendToActiveTab("storepilot-fill-all-languages");
+  setStatus(result.message || (result.ok ? "Filled all languages." : "Could not fill all."), !result.ok);
 });
 
 elements.copyText.addEventListener("click", async () => {

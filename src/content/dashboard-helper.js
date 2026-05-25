@@ -7,6 +7,10 @@ let listings = {};
 let selectedLocale = "";
 let activeProjectName = "";
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function isVisible(element) {
   if (!element) return false;
   const rect = element.getBoundingClientRect();
@@ -132,6 +136,245 @@ function fillSelectedText() {
   return { ok: true, message: `Filled ${selectedLocale}.` };
 }
 
+function normalizeLocale(locale) {
+  return String(locale || "").replace("-", "_").toLowerCase();
+}
+
+function getListingLocaleKey(locale) {
+  const normalized = normalizeLocale(locale);
+  return Object.keys(listings).find(key => normalizeLocale(key) === normalized) || "";
+}
+
+function getLocaleFromText(text, localeKeys = Object.keys(listings)) {
+  const normalizedText = normalizeLocale(text);
+  const sortedLocaleKeys = [...localeKeys].sort((a, b) => b.length - a.length);
+
+  for (const locale of sortedLocaleKeys) {
+    const normalizedLocale = normalizeLocale(locale);
+    const escaped = normalizedLocale.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i");
+
+    if (pattern.test(normalizedText)) {
+      return locale;
+    }
+  }
+
+  return "";
+}
+
+function getVisibleText(element) {
+  return (element && element.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function isLikelyLanguageText(text) {
+  return /^(language|sprache|langue|idioma|lingua|言語|语言)$/i.test(text.trim());
+}
+
+function findClickableAncestor(element) {
+  let current = element;
+
+  for (let depth = 0; current && depth < 10; depth++) {
+    const role = current.getAttribute && current.getAttribute("role");
+    const jsaction = current.getAttribute && current.getAttribute("jsaction");
+
+    if (
+      role === "combobox" ||
+      role === "button" ||
+      current.tabIndex >= 0 ||
+      current.classList && current.classList.contains("VfPpkd-TkwUic") ||
+      jsaction && /click|mousedown|keydown/.test(jsaction)
+    ) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+
+  return element;
+}
+
+function findLanguageDropdown() {
+  const comboboxes = Array.from(document.querySelectorAll("[role='combobox'], .VfPpkd-TkwUic")).filter(isVisible);
+  const labeledCombobox = comboboxes.find(element => /language|sprache|langue|idioma/i.test(getVisibleText(element)));
+  if (labeledCombobox) return labeledCombobox;
+
+  const labels = Array.from(document.querySelectorAll("span, label, div"))
+    .filter(isVisible)
+    .filter(element => isLikelyLanguageText(getVisibleText(element)));
+
+  for (const label of labels) {
+    const dropdown = label.closest(".VfPpkd-TkwUic") ||
+      label.closest("[role='combobox']") ||
+      findClickableAncestor(label);
+
+    if (dropdown && isVisible(dropdown)) {
+      return dropdown;
+    }
+  }
+
+  return null;
+}
+
+function getCurrentDashboardLocale() {
+  const dropdown = findLanguageDropdown();
+  const dropdownLocale = dropdown ? getLocaleFromText(getVisibleText(dropdown)) : "";
+  if (dropdownLocale) return dropdownLocale;
+
+  const localeKeys = Object.keys(listings);
+  const visibleLocaleText = Array.from(document.querySelectorAll("span, div, button"))
+    .filter(isVisible)
+    .map(getVisibleText)
+    .filter(text => text.length > 0 && text.length < 140)
+    .find(text => getLocaleFromText(text, localeKeys));
+
+  return visibleLocaleText ? getLocaleFromText(visibleLocaleText, localeKeys) : "";
+}
+
+function findDescriptionField() {
+  const textareas = Array.from(document.querySelectorAll("textarea")).filter(isVisible);
+  const labeledDescription = textareas.find(textarea => {
+    const labelId = textarea.getAttribute("aria-labelledby");
+    const label = labelId && document.getElementById(labelId);
+    return label && /description|beschreibung|description|descrizione|descripción/i.test(getVisibleText(label));
+  });
+
+  if (labeledDescription) return labeledDescription;
+
+  const requiredLongTextareas = textareas.filter(textarea => Number(textarea.getAttribute("maxlength") || 0) >= 1000);
+  if (requiredLongTextareas.length) {
+    return requiredLongTextareas.sort((a, b) => {
+      const areaA = a.getBoundingClientRect().width * a.getBoundingClientRect().height;
+      const areaB = b.getBoundingClientRect().width * b.getBoundingClientRect().height;
+      return areaB - areaA;
+    })[0];
+  }
+
+  return findLikelyListingField();
+}
+
+function getOpenLanguageOptions() {
+  return Array.from(document.querySelectorAll("[role='option'], [role='menuitem'], .VfPpkd-StrnGf-rymPhb-ibnC6b"))
+    .filter(isVisible)
+    .map(element => ({
+      element,
+      text: getVisibleText(element),
+      locale: getLocaleFromText(getVisibleText(element))
+    }))
+    .filter(option => option.locale);
+}
+
+async function openLanguageDropdown() {
+  const dropdown = findLanguageDropdown();
+  if (!dropdown) {
+    return { ok: false, message: "Could not find the Chrome Web Store language dropdown." };
+  }
+
+  dropdown.scrollIntoView({ block: "center", inline: "nearest" });
+  dropdown.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
+  dropdown.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true, view: window }));
+  dropdown.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
+  dropdown.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true, view: window }));
+  dropdown.click();
+  await delay(250);
+
+  return { ok: true, dropdown };
+}
+
+async function selectDashboardLanguage(locale) {
+  const normalizedTarget = normalizeLocale(locale);
+  const opened = await openLanguageDropdown();
+  if (!opened.ok) return opened;
+
+  let options = getOpenLanguageOptions();
+  let option = options.find(candidate => normalizeLocale(candidate.locale) === normalizedTarget);
+
+  if (!option) {
+    const currentLocale = getCurrentDashboardLocale();
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    return {
+      ok: normalizeLocale(currentLocale) === normalizedTarget,
+      message: `Could not find ${locale} in the dashboard language menu.`
+    };
+  }
+
+  option.element.scrollIntoView({ block: "center", inline: "nearest" });
+  option.element.click();
+  await delay(650);
+
+  return { ok: true, message: `Selected ${locale}.` };
+}
+
+async function fillDashboardLocale(locale) {
+  const localeKey = getListingLocaleKey(locale);
+  if (!localeKey) {
+    return { ok: false, message: `No listing text for ${locale}.` };
+  }
+
+  const field = findDescriptionField();
+  if (!field) {
+    return { ok: false, message: "Could not find the Chrome Web Store description field." };
+  }
+
+  fillElement(field, listings[localeKey]);
+  selectedLocale = localeKey;
+  return { ok: true, message: `Filled ${localeKey}.` };
+}
+
+async function fillCurrentDashboardLanguage() {
+  await loadListings();
+
+  const locale = getCurrentDashboardLocale();
+  if (!locale) {
+    return { ok: false, message: "Could not detect the current dashboard language." };
+  }
+
+  return fillDashboardLocale(locale);
+}
+
+async function fillAllDashboardLanguages() {
+  await loadListings();
+
+  const localeKeys = Object.keys(listings).sort((a, b) => a.localeCompare(b));
+  if (!localeKeys.length) {
+    return { ok: false, message: "No project listings imported." };
+  }
+
+  const firstOpen = await openLanguageDropdown();
+  if (!firstOpen.ok) return firstOpen;
+
+  const availableLocales = getOpenLanguageOptions().map(option => option.locale);
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await delay(150);
+
+  const matchingLocales = availableLocales.filter(locale => getListingLocaleKey(locale));
+  if (!matchingLocales.length) {
+    return { ok: false, message: "No imported locales match the dashboard language menu." };
+  }
+
+  let filled = 0;
+  const failed = [];
+
+  for (const locale of matchingLocales) {
+    const selection = await selectDashboardLanguage(locale);
+    if (!selection.ok) {
+      failed.push(locale);
+      continue;
+    }
+
+    const result = await fillDashboardLocale(locale);
+    if (result.ok) {
+      filled++;
+    } else {
+      failed.push(locale);
+    }
+  }
+
+  return {
+    ok: filled > 0 && failed.length === 0,
+    message: `Filled ${filled} dashboard language${filled === 1 ? "" : "s"}${failed.length ? `; failed ${failed.length}.` : "."}`
+  };
+}
+
 function createButton(label, onClick) {
   const button = document.createElement("button");
   button.type = "button";
@@ -182,6 +425,14 @@ function renderPanel(locales) {
       const result = fillSelectedText();
       status.textContent = result.message;
     }),
+    createButton("Fill current", async () => {
+      const result = await fillCurrentDashboardLanguage();
+      status.textContent = result.message;
+    }),
+    createButton("Fill all", async () => {
+      const result = await fillAllDashboardLanguages();
+      status.textContent = result.message;
+    }),
     createButton("Reload", async () => {
       renderPanel(await loadListings());
     })
@@ -204,7 +455,7 @@ function injectStyles() {
       z-index: 2147483647;
       display: grid;
       gap: 8px;
-      width: 240px;
+      width: 280px;
       padding: 12px;
       border: 1px solid rgba(15, 23, 42, 0.16);
       border-radius: 8px;
@@ -230,7 +481,7 @@ function injectStyles() {
 
     #${PANEL_ID} .storepilot-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 6px;
     }
 
@@ -258,6 +509,18 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message.type === "storepilot-fill") {
       renderPanel(await loadListings());
       sendResponse(fillSelectedText());
+      return;
+    }
+
+    if (message.type === "storepilot-fill-current-language") {
+      renderPanel(await loadListings());
+      sendResponse(await fillCurrentDashboardLanguage());
+      return;
+    }
+
+    if (message.type === "storepilot-fill-all-languages") {
+      renderPanel(await loadListings());
+      sendResponse(await fillAllDashboardLanguages());
       return;
     }
 
