@@ -106,6 +106,7 @@ function isExtensionsGalleryBlockedError(errorText = "") {
 }
 
 function renderProjectSelect(projects, activeProjectId) {
+  const activeProject = projects.find(project => project.id === activeProjectId) || null;
   elements.projectSelect.replaceChildren(...storePilotSortProjects(projects).map(project => {
     const option = document.createElement("option");
     option.value = project.id;
@@ -115,7 +116,10 @@ function renderProjectSelect(projects, activeProjectId) {
   }));
 
   elements.projectSelect.disabled = !projects.length;
-  elements.syncProject.disabled = !projects.length;
+  elements.syncProject.disabled = !activeProject || !activeProject.hasFolderHandle;
+  elements.syncProject.title = activeProject && !activeProject.hasFolderHandle
+    ? "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    : "";
 }
 
 async function renderLocaleSelect(project) {
@@ -363,6 +367,11 @@ elements.localeSelect.addEventListener("change", async event => {
 });
 
 elements.syncProject.addEventListener("click", () => {
+  if (elements.syncProject.disabled) {
+    setStatus("This project cannot auto-sync in this browser. Re-import the project folder to refresh listings.");
+    return;
+  }
+
   syncActiveProject(true).catch(error => {
     console.error(error);
     setStatus(`Sync failed: ${error.message}`, true);

@@ -62,6 +62,7 @@ function formatSyncTime(value) {
 }
 
 function renderProjectSelect(projects, activeProjectId) {
+  const activeProject = projects.find(project => project.id === activeProjectId) || null;
   elements.projectSelect.replaceChildren(...storePilotSortProjects(projects).map(project => {
     const option = document.createElement("option");
     option.value = project.id;
@@ -71,7 +72,10 @@ function renderProjectSelect(projects, activeProjectId) {
   }));
 
   elements.projectSelect.disabled = !projects.length;
-  elements.syncProject.disabled = !projects.length;
+  elements.syncProject.disabled = !activeProject || !activeProject.hasFolderHandle;
+  elements.syncProject.title = activeProject && !activeProject.hasFolderHandle
+    ? "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    : "";
   elements.deleteProject.disabled = !projects.length;
 }
 
@@ -133,6 +137,7 @@ function renderProjectTable(projects, activeProjectId) {
     details.textContent = [
       project.sourcePath || "No source folder",
       project.confidence ? `${project.confidence} confidence` : "",
+      project.hasFolderHandle ? "sync enabled" : "re-import folder to refresh",
       formatSyncTime(project.lastSyncedAt)
     ].filter(Boolean).join(" - ");
     count.textContent = `${storePilotGetProjectLocaleCount(project)} locales`;
@@ -240,17 +245,30 @@ elements.projectSelect.addEventListener("change", async event => {
 });
 
 elements.syncProject.addEventListener("click", async () => {
-  const { activeProjectId } = await storePilotGetProjectsState();
-  const result = await storePilotSyncProject(activeProjectId, true);
+  const project = await storePilotGetActiveProject();
+  if (!project || !project.hasFolderHandle) {
+    setStatus("This project cannot auto-sync in this browser. Re-import the project folder to refresh listings.", false);
+    return;
+  }
+
+  const result = await storePilotSyncProject(project.id, true);
   await renderAll();
   setStatus(result.message, !result.ok);
 });
 
 elements.syncAllProjects.addEventListener("click", async () => {
+  const { projects } = await storePilotGetProjectsState();
+  const syncableProjects = projects.filter(project => project.hasFolderHandle);
+
+  if (!syncableProjects.length) {
+    setStatus("No projects have saved folder permission. Re-import a project folder to refresh it.", false);
+    return;
+  }
+
   const results = await storePilotSyncAllProjects(true);
   await renderAll();
   const synced = results.filter(result => result.ok).length;
-  const failed = results.length - synced;
+  const failed = results.filter(result => result.project && result.project.hasFolderHandle && !result.ok).length;
   setStatus(`Synced ${synced} project${synced === 1 ? "" : "s"}; ${failed} need attention.`, failed > 0);
 });
 
