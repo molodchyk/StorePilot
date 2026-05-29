@@ -170,6 +170,11 @@ select {
   font-weight: 650;
 }
 
+.compact-status {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
 .status.error {
   color: #b42318;
 }
@@ -190,6 +195,24 @@ select {
   align-items: center;
   padding: 12px 14px;
   border-top: 1px solid #edf0f5;
+}
+
+.project-row {
+  width: 100%;
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  border-radius: 0;
+  text-align: left;
+  font-weight: 400;
+}
+
+.project-row:hover {
+  background: #f7f9fc;
+}
+
+.project-row[aria-pressed="true"] {
+  background: #eef5ff;
 }
 
 .project-table {
@@ -216,10 +239,11 @@ select {
 
 .preview {
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   color: #4b5565;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
 }
 
 .count {
@@ -257,6 +281,14 @@ select {
   .listing-row,
   .project-row {
     border-top-color: #292f3b;
+  }
+
+  .project-row:hover {
+    background: #202633;
+  }
+
+  .project-row[aria-pressed="true"] {
+    background: #18243a;
   }
 
   .status {
@@ -297,6 +329,14 @@ select {
 :root[data-theme="dark"] .listing-row,
 :root[data-theme="dark"] .project-row {
   border-top-color: #292f3b;
+}
+
+:root[data-theme="dark"] .project-row:hover {
+  background: #202633;
+}
+
+:root[data-theme="dark"] .project-row[aria-pressed="true"] {
+  background: #18243a;
 }
 
 :root[data-theme="dark"] .status {
@@ -342,6 +382,14 @@ select {
 :root[data-theme="light"] .listing-row,
 :root[data-theme="light"] .project-row {
   border-top-color: #edf0f5;
+}
+
+:root[data-theme="light"] .project-row:hover {
+  background: #f7f9fc;
+}
+
+:root[data-theme="light"] .project-row[aria-pressed="true"] {
+  background: #eef5ff;
 }
 
 @media (max-width: 700px) {

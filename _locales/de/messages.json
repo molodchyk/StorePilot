@@ -1,0 +1,449 @@
+{
+  "extensionName": {
+    "message": "StorePilot"
+  },
+  "extensionDescription": {
+    "message": "Automatisiert wiederkehrende Veröffentlichungsarbeit für Browsererweiterungen."
+  },
+  "optionsSubtitle": {
+    "message": "Importiere flache Locale-Listing-Dateien und nutze sie in Erweiterungs-Store-Dashboards."
+  },
+  "theme": {
+    "message": "Design"
+  },
+  "themeSystem": {
+    "message": "System"
+  },
+  "themeLight": {
+    "message": "Hell"
+  },
+  "themeDark": {
+    "message": "Dunkel"
+  },
+  "syncAll": {
+    "message": "Alle synchronisieren"
+  },
+  "clear": {
+    "message": "Leeren"
+  },
+  "activeProject": {
+    "message": "Aktives Projekt"
+  },
+  "syncActive": {
+    "message": "Aktives synchronisieren"
+  },
+  "deleteProject": {
+    "message": "Projekt löschen"
+  },
+  "importProjectFolder": {
+    "message": "Projekt/Ordner importieren"
+  },
+  "importFiles": {
+    "message": "Dateien importieren"
+  },
+  "importHintFlexible": {
+    "message": "Wähle einen Projektordner, einen store-listing-Ordner oder einen direkten Listing-Ordner."
+  },
+  "importHintLocaleFiles": {
+    "message": "StorePilot sucht nach Listing-Dateien mit Locale-Namen wie"
+  },
+  "or": {
+    "message": "oder"
+  },
+  "importHintDrag": {
+    "message": "Du kannst direkte Locale-Listing-Dateien auch auf dieses Feld ziehen."
+  },
+  "projects": {
+    "message": "Projekte"
+  },
+  "importedListings": {
+    "message": "Importierte Listings"
+  },
+  "diagnostics": {
+    "message": "Diagnose"
+  },
+  "project": {
+    "message": "Projekt"
+  },
+  "locale": {
+    "message": "Locale"
+  },
+  "syncProject": {
+    "message": "Projekt synchronisieren"
+  },
+  "fillField": {
+    "message": "Feld ausfüllen"
+  },
+  "fillCurrentLanguage": {
+    "message": "Aktuelle Sprache ausfüllen"
+  },
+  "fillAllLanguages": {
+    "message": "Alle Sprachen ausfüllen"
+  },
+  "abortFillAll": {
+    "message": "Alles ausfüllen abbrechen"
+  },
+  "copyText": {
+    "message": "Text kopieren"
+  },
+  "diagnosePage": {
+    "message": "Seite diagnostizieren"
+  },
+  "options": {
+    "message": "Optionen"
+  },
+  "localeName": {
+    "message": "Deutsch"
+  },
+  "fillCurrent": {
+    "message": "Aktuelle Sprache ausfüllen"
+  },
+  "fillAll": {
+    "message": "Alle Sprachen ausfüllen"
+  },
+  "abort": {
+    "message": "Alles ausfüllen abbrechen"
+  },
+  "importListingsInOptions": {
+    "message": "Listings in den StorePilot-Optionen importieren"
+  },
+  "never": {
+    "message": "Nie"
+  },
+  "neverSynced": {
+    "message": "Nie synchronisiert"
+  },
+  "reimportFolderToRefresh": {
+    "message": "Dieses Projekt wurde über den Datei-/Ordnerauswahldialog importiert. Importiere den Projektordner erneut, um es zu aktualisieren."
+  },
+  "lastUpdatedOn": {
+    "message": "Zuletzt aktualisiert am $1."
+  },
+  "projectLocalesImported": {
+    "message": "$1: $2 Locale(s) importiert"
+  },
+  "noActiveProject": {
+    "message": "Kein aktives Projekt"
+  },
+  "emptyValue": {
+    "message": "(leer)"
+  },
+  "charCount": {
+    "message": "$1 Zeichen"
+  },
+  "projectCount": {
+    "message": "$1 Projekt(e)"
+  },
+  "noProjects": {
+    "message": "Keine Projekte"
+  },
+  "selectedProject": {
+    "message": "Ausgewähltes Projekt"
+  },
+  "sourceLabel": {
+    "message": "Quelle: $1"
+  },
+  "noSourceFolder": {
+    "message": "Kein Quellordner"
+  },
+  "detectionConfidence": {
+    "message": "Erkennung: $1 Sicherheit"
+  },
+  "refreshSyncEnabled": {
+    "message": "Aktualisierung: Synchronisierung aktiviert"
+  },
+  "refreshReimportFolder": {
+    "message": "Aktualisierung: Ordner erneut importieren"
+  },
+  "updatedLabel": {
+    "message": "Aktualisiert: $1"
+  },
+  "localesCount": {
+    "message": "$1 Locales"
+  },
+  "noLocaleListingFilesSelected": {
+    "message": "Es wurden keine Locale-Listing-Dateien ausgewählt."
+  },
+  "importedSkipped": {
+    "message": "$1 importiert; $2 übersprungen."
+  },
+  "skippedList": {
+    "message": "Übersprungen: $1"
+  },
+  "noLocaleListingFolderFound": {
+    "message": "Im ausgewählten Ordner wurde kein Locale-Listing-Ordner gefunden."
+  },
+  "importedIntoFrom": {
+    "message": "$1 in $2 aus $3 importiert ($4 Sicherheit); $5 übersprungen."
+  },
+  "foundCandidateFolders": {
+    "message": "$1 mögliche Ordner gefunden."
+  },
+  "folderImportCanceled": {
+    "message": "Ordnerimport abgebrochen."
+  },
+  "folderImportFailed": {
+    "message": "Ordnerimport fehlgeschlagen: $1"
+  },
+  "selectedFiles": {
+    "message": "ausgewählte Dateien"
+  },
+  "manual": {
+    "message": "manuell"
+  },
+  "importFailed": {
+    "message": "Import fehlgeschlagen: $1"
+  },
+  "cannotAutoSync": {
+    "message": "Dieses Projekt kann in diesem Browser nicht automatisch synchronisiert werden. Importiere den Projektordner erneut, um die Listings zu aktualisieren."
+  },
+  "noSavedFolderPermission": {
+    "message": "Keine Projekte haben gespeicherte Ordnerberechtigung. Importiere einen Projektordner erneut, um ihn zu aktualisieren."
+  },
+  "syncedProjectsNeedAttention": {
+    "message": "$1 Projekt(e) synchronisiert; $2 benötigen Aufmerksamkeit."
+  },
+  "deleteProjectConfirm": {
+    "message": "StorePilot-Projekt \"$1\" löschen?"
+  },
+  "deletedProject": {
+    "message": "$1 gelöscht."
+  },
+  "clearListingsConfirm": {
+    "message": "Listings für \"$1\" leeren?"
+  },
+  "clearedListingsFor": {
+    "message": "Listings für $1 geleert."
+  },
+  "popupSummary": {
+    "message": "$1 Listing-Locale(s) in $2. Zuletzt aktualisiert am $3."
+  },
+  "noProjectsYet": {
+    "message": "Noch keine Projekte"
+  },
+  "chromeBlocksDashboard": {
+    "message": "Chrome blocks StorePilot from reading the Chrome Web Store page, so the current dashboard locale cannot be detected. Select the locale here and use Copy text."
+  },
+  "noListingTextSelected": {
+    "message": "Kein Listing-Text zum Kopieren ausgewählt."
+  },
+  "copiedLocaleFromProject": {
+    "message": "$1 aus $2 kopiert."
+  },
+  "importedIntoConfidence": {
+    "message": "$1 in $2 importiert ($3 Sicherheit)."
+  },
+  "noActiveTab": {
+    "message": "Kein aktiver Tab."
+  },
+  "notDashboardPage": {
+    "message": "Der aktive Tab ist keine Chrome Web Store Developer Dashboard-Seite."
+  },
+  "chromeBlocksFillActions": {
+    "message": "Chrome blocks extensions from scripting the Chrome Web Store dashboard. Fill actions cannot run here; use Copy text and paste manually."
+  },
+  "couldNotConnectDashboard": {
+    "message": "StorePilot konnte keine Verbindung zu diesem Dashboard-Tab herstellen. Öffne die Diagnose für den genauen Chrome-Fehler."
+  },
+  "diagnosticsComplete": {
+    "message": "Diagnose abgeschlossen."
+  },
+  "diagnosticsFailed": {
+    "message": "Diagnose fehlgeschlagen."
+  },
+  "done": {
+    "message": "Fertig."
+  },
+  "failed": {
+    "message": "Fehlgeschlagen."
+  },
+  "noLocaleListingFilesFound": {
+    "message": "Keine Locale-Listing-Dateien gefunden."
+  },
+  "importedInto": {
+    "message": "$1 in $2 importiert."
+  },
+  "projectSelected": {
+    "message": "Projekt ausgewählt."
+  },
+  "localeSelected": {
+    "message": "Locale ausgewählt: $1."
+  },
+  "syncFailed": {
+    "message": "Synchronisierung fehlgeschlagen: $1"
+  },
+  "fillingAllLanguages": {
+    "message": "Alle Sprachen werden ausgefüllt..."
+  },
+  "stopRequested": {
+    "message": "Stopp angefordert."
+  },
+  "fillAllNotRunning": {
+    "message": "Alle Sprachen ausfüllen läuft nicht."
+  },
+  "couldNotStopFillAll": {
+    "message": "Alle Sprachen ausfüllen konnte nicht gestoppt werden."
+  },
+  "diagnosticsFailedWithError": {
+    "message": "Diagnose fehlgeschlagen: $1"
+  },
+  "projectNotFound": {
+    "message": "Projekt nicht gefunden."
+  },
+  "chooseProjectFolderAgain": {
+    "message": "Wähle den Projektordner erneut aus, um die Synchronisierung zu aktivieren."
+  },
+  "folderPermissionNeeded": {
+    "message": "Vor der Synchronisierung ist eine Ordnerberechtigung erforderlich."
+  },
+  "syncedLocalesFrom": {
+    "message": "$1 Locale(s) aus $2 synchronisiert."
+  },
+  "noFolderHandleSaved": {
+    "message": "Keine Ordnerberechtigung gespeichert."
+  },
+  "noListingSelected": {
+    "message": "Kein Listing ausgewählt."
+  },
+  "copiedLocale": {
+    "message": "$1 kopiert."
+  },
+  "noVisibleEditableField": {
+    "message": "Kein sichtbares bearbeitbares Feld gefunden."
+  },
+  "filledLocale": {
+    "message": "$1 ausgefüllt."
+  },
+  "languageDropdownNotFound": {
+    "message": "Das Sprachauswahlmenü im Chrome Web Store wurde nicht gefunden."
+  },
+  "localeNotInDashboardMenu": {
+    "message": "$1 wurde im Dashboard-Sprachmenü nicht gefunden."
+  },
+  "clickedButDashboardShows": {
+    "message": "$1 angeklickt, aber das Dashboard zeigt weiterhin $2."
+  },
+  "unknownLocale": {
+    "message": "eine unbekannte Locale"
+  },
+  "noListingTextFor": {
+    "message": "Kein Listing-Text für $1."
+  },
+  "descriptionFieldNotFound": {
+    "message": "Das Beschreibungsfeld im Chrome Web Store wurde nicht gefunden."
+  },
+  "currentDashboardLanguageNotDetected": {
+    "message": "Die aktuelle Dashboard-Sprache konnte nicht erkannt werden."
+  },
+  "stoppedFilledLanguages": {
+    "message": "Gestoppt. $1 Dashboard-Sprache(n) ausgefüllt."
+  },
+  "noProjectListingsImported": {
+    "message": "Keine Projekt-Listings importiert."
+  },
+  "noImportedLocalesMatchMenu": {
+    "message": "Keine importierten Locales passen zum Dashboard-Sprachmenü."
+  },
+  "stoppedFilledLanguagesPending": {
+    "message": "Gestoppt. $1 Dashboard-Sprache(n) ausgefüllt; noch offen: $2."
+  },
+  "recoveredAfterRetry": {
+    "message": "$1 nach erneutem Versuch wiederhergestellt."
+  },
+  "retriedNoneRecovered": {
+    "message": "$1 erneut versucht; keine wiederhergestellt."
+  },
+  "filledLanguagesFailed": {
+    "message": "$1 Dashboard-Sprache(n) ausgefüllt; $2 fehlgeschlagen: $3."
+  },
+  "filledLanguages": {
+    "message": "$1 Dashboard-Sprache(n) ausgefüllt."
+  },
+  "abortRequestedStopAfterStep": {
+    "message": "Abbruch angefordert. StorePilot stoppt nach dem aktuellen Dashboard-Schritt."
+  },
+  "dashboardDiagnosticsPassed": {
+    "message": "Dashboard-Diagnose bestanden."
+  },
+  "dashboardDiagnosticsMissingElements": {
+    "message": "Dashboard-Diagnose hat fehlende Seitenelemente gefunden."
+  },
+  "fillAllAlreadyRunning": {
+    "message": "Alle Sprachen ausfüllen läuft bereits."
+  },
+  "fillAllStopped": {
+    "message": "Alle Sprachen ausfüllen gestoppt."
+  },
+  "filling": {
+    "message": "Fülle aus"
+  },
+  "retrying": {
+    "message": "Versuche erneut"
+  },
+  "firefoxImportPrompt": {
+    "message": "Firefox fragt nach Bestätigung, bevor StorePilot den ausgewählten Projektordner lesen darf. Diese Abfrage ist erwartet."
+  },
+  "openProjectImport": {
+    "message": "Projektimport in Optionen öffnen"
+  },
+  "firefoxImportHandledInOptions": {
+    "message": "Der Firefox-Ordnerimport wird im Optionen-Tab ausgeführt, damit die Ordnerbestätigung zuverlässig abgeschlossen werden kann."
+  },
+  "openingProjectImport": {
+    "message": "Projektimport wird geöffnet..."
+  },
+  "unknown": {
+    "message": "Unbekannt"
+  },
+  "untitledProject": {
+    "message": "Unbenanntes Projekt"
+  },
+  "importedProject": {
+    "message": "Importiertes Projekt"
+  },
+  "manualImport": {
+    "message": "Manueller Import"
+  },
+  "importedListingsProject": {
+    "message": "Importierte Listings"
+  },
+  "manualFileImport": {
+    "message": "Manueller Dateiimport"
+  },
+  "firefoxImportHintFlexible": {
+    "message": "Wähle einen Projektordner, einen store-listing-Ordner oder einen direkten Listing-Ordner. Firefox fragt nach Bestätigung für den Ordnerzugriff."
+  },
+  "selectedDashboardLanguage": {
+    "message": "$1 ausgewählt."
+  },
+  "miniPanelLocalesInProject": {
+    "message": "$1 Locales in $2"
+  },
+  "contentScriptAlreadyConnected": {
+    "message": "bereits verbunden"
+  },
+  "injectionSucceeded": {
+    "message": "erfolgreich"
+  },
+  "confidenceHigh": {
+    "message": "hoch"
+  },
+  "confidenceMedium": {
+    "message": "mittel"
+  },
+  "confidenceLow": {
+    "message": "niedrig"
+  },
+  "optionsTitle": {
+    "message": "StorePilot-Optionen"
+  },
+  "lastUpdatedInitial": {
+    "message": "Zuletzt aktualisiert am nie."
+  },
+  "noListingsImported": {
+    "message": "Keine Listings importiert"
+  },
+  "loadingListings": {
+    "message": "Listings werden geladen..."
+  }
+}

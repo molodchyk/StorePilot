@@ -3,48 +3,57 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>StorePilot</title>
+    <title data-i18n="extensionName">StorePilot</title>
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
     <main>
-      <h1>StorePilot</h1>
-      <p id="summary">Loading listings...</p>
+      <h1 data-i18n="extensionName">StorePilot</h1>
+      <p id="summary" data-i18n="loadingListings">Loading listings...</p>
       <p id="status" aria-live="polite"></p>
       <details id="diagnostics" class="diagnostics" hidden>
-        <summary>Diagnostics</summary>
+        <summary data-i18n="diagnostics">Diagnostics</summary>
         <pre id="diagnosticsText"></pre>
       </details>
       <label class="project-picker">
-        <span>Project</span>
+        <span data-i18n="project">Project</span>
         <select id="projectSelect"></select>
       </label>
       <label class="project-picker">
-        <span>Locale</span>
+        <span data-i18n="locale">Locale</span>
         <select id="localeSelect"></select>
       </label>
       <div class="actions">
-        <button id="importFolder" type="button">Import project/folder</button>
+        <button id="importFolder" type="button" data-i18n="importProjectFolder">Import project/folder</button>
         <label class="file-button">
-          <span>Import files</span>
+          <span data-i18n="importFiles">Import files</span>
           <input id="listingFiles" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" multiple>
         </label>
         <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" webkitdirectory multiple>
-        <button id="syncProject" type="button">Sync project</button>
-        <button id="fillField" type="button">Fill field</button>
-        <button id="fillCurrentLanguage" type="button">Fill current language</button>
-        <button id="fillAllLanguages" type="button">Fill all languages</button>
-        <button id="copyText" type="button">Copy text</button>
-        <button id="diagnosePage" type="button">Diagnose page</button>
-        <button id="openOptions" type="button">Options</button>
+        <button id="syncProject" type="button" data-i18n="syncProject">Sync project</button>
+        <button id="fillField" type="button" data-i18n="fillField">Fill field</button>
+        <button id="fillCurrentLanguage" type="button" data-i18n="fillCurrentLanguage">Fill current language</button>
+        <button id="fillAllLanguages" type="button" data-i18n="fillAllLanguages">Fill all languages</button>
+        <button id="abortFillAll" class="danger-action" type="button" hidden data-i18n="abortFillAll">Abort fill all</button>
+        <button id="copyText" type="button" data-i18n="copyText">Copy text</button>
+        <button id="diagnosePage" type="button" data-i18n="diagnosePage">Diagnose page</button>
+        <button id="openOptions" type="button" data-i18n="options">Options</button>
       </div>
-      <div class="theme-control" aria-label="Theme">
-        <button type="button" data-theme-choice="system">System</button>
-        <button type="button" data-theme-choice="light">Light</button>
-        <button type="button" data-theme-choice="dark">Dark</button>
+      <div class="theme-control" aria-label="Theme" data-i18n-aria-label="theme">
+        <button type="button" data-theme-choice="system" data-i18n="themeSystem">System</button>
+        <button type="button" data-theme-choice="light" data-i18n="themeLight">Light</button>
+        <button type="button" data-theme-choice="dark" data-i18n="themeDark">Dark</button>
       </div>
     </main>
-    <script src="../shared/listing-import.js"></script>
+    <script src="../shared/constants.js"></script>
+    <script src="../shared/i18n.js"></script>
+    <script src="../shared/files.js"></script>
+    <script src="../shared/projects.js"></script>
+    <script src="../shared/handles.js"></script>
+    <script src="../shared/directory-detection.js"></script>
+    <script src="../shared/storage.js"></script>
+    <script src="../shared/importers.js"></script>
+    <script src="../shared/sync.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

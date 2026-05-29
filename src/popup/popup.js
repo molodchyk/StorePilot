@@ -1,7 +1,22 @@
 const SETTINGS_KEY = "storePilotSettings";
 const POPUP_STATE_KEY = "storePilotPopupState";
+const FILL_ALL_STATUS_STORAGE_KEY = "storePilotFillAllStatus";
 var STOREPILOT_API = globalThis.browser || globalThis.chrome;
 const STOREPILOT_IS_FIREFOX = typeof globalThis.browser !== "undefined";
+
+function t(key, fallback, substitutions) {
+  return storePilotText(key, fallback, substitutions);
+}
+
+if (STOREPILOT_IS_FIREFOX && STOREPILOT_API.tabs && STOREPILOT_API.runtime) {
+  STOREPILOT_API.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+    const ownOrigin = new URL(STOREPILOT_API.runtime.getURL("")).origin;
+    const url = tab && tab.url ? tab.url : "";
+    if (!isDeveloperDashboardUrl(url) || url.startsWith(ownOrigin)) {
+      window.close();
+    }
+  }).catch(() => {});
+}
 
 const elements = {
   summary: document.getElementById("summary"),
@@ -15,6 +30,7 @@ const elements = {
   fillField: document.getElementById("fillField"),
   fillCurrentLanguage: document.getElementById("fillCurrentLanguage"),
   fillAllLanguages: document.getElementById("fillAllLanguages"),
+  abortFillAll: document.getElementById("abortFillAll"),
   copyText: document.getElementById("copyText"),
   diagnosePage: document.getElementById("diagnosePage"),
   openOptions: document.getElementById("openOptions"),
@@ -22,6 +38,9 @@ const elements = {
   diagnosticsText: document.getElementById("diagnosticsText"),
   themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]"))
 };
+
+let isPopupFillAllRunning = false;
+let fillAllStatusPollId = 0;
 
 function applyTheme(theme) {
   const normalized = ["system", "light", "dark"].includes(theme) ? theme : "system";
@@ -118,8 +137,15 @@ function renderProjectSelect(projects, activeProjectId) {
   elements.projectSelect.disabled = !projects.length;
   elements.syncProject.disabled = !activeProject || !activeProject.hasFolderHandle;
   elements.syncProject.title = activeProject && !activeProject.hasFolderHandle
-    ? "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    ? t("reimportFolderToRefresh", "This project was imported from a browser file picker. Re-import the project folder to refresh it.")
     : "";
+}
+
+function formatConfidence(value) {
+  if (value === "high") return t("confidenceHigh", "high");
+  if (value === "medium") return t("confidenceMedium", "medium");
+  if (value === "low") return t("confidenceLow", "low");
+  return value || "";
 }
 
 async function renderLocaleSelect(project) {
@@ -147,12 +173,13 @@ async function refreshSummary() {
   const { projects, activeProjectId } = await storePilotGetProjectsState();
   const activeProject = projects.find(project => project.id === activeProjectId) || projects[0] || null;
   const count = activeProject ? storePilotGetProjectLocaleCount(activeProject) : 0;
+  const updatedAt = activeProject ? storePilotFormatDisplayTimestamp(activeProject.lastSyncedAt) : t("never", "Never");
 
   renderProjectSelect(projects, activeProject && activeProject.id);
   await renderLocaleSelect(activeProject);
   elements.summary.textContent = activeProject
-    ? `${count} listing locale${count === 1 ? "" : "s"} in ${activeProject.name}`
-    : "No projects yet";
+    ? t("popupSummary", "$1 listing locale(s) in $2. Last updated on $3.", [String(count), activeProject.name, updatedAt])
+    : t("noProjectsYet", "No projects yet");
 }
 
 async function updateDashboardRestrictionNotice() {
@@ -169,7 +196,7 @@ async function updateDashboardRestrictionNotice() {
   elements.fillField.disabled = true;
   elements.fillCurrentLanguage.disabled = true;
   elements.fillAllLanguages.disabled = true;
-  setStatus("Chrome blocks StorePilot from reading the Chrome Web Store page, so the current dashboard locale cannot be detected. Select the locale here and use Copy text.", false);
+  setStatus(t("chromeBlocksDashboard", "Chrome blocks StorePilot from reading the Chrome Web Store page, so the current dashboard locale cannot be detected. Select the locale here and use Copy text."), false);
 }
 
 async function copySelectedLocaleFromPopup() {
@@ -180,14 +207,14 @@ async function copySelectedLocaleFromPopup() {
   if (!text) {
     return {
       ok: false,
-      message: "No listing text selected to copy."
+      message: t("noListingTextSelected", "No listing text selected to copy.")
     };
   }
 
   await navigator.clipboard.writeText(text);
   return {
     ok: true,
-    message: `Copied ${locale} from ${project.name}.`
+    message: t("copiedLocaleFromProject", "Copied $1 from $2.", [locale, project.name])
   };
 }
 
@@ -195,12 +222,12 @@ async function importListings(files) {
   const result = await storePilotImportListingFiles(files);
 
   if (!result.total) {
-    setStatus("No locale listing files selected.", true);
+    setStatus(t("noLocaleListingFilesSelected", "No locale listing files selected."), true);
     return;
   }
 
   await refreshSummary();
-  setStatus(`Imported ${result.imported}; skipped ${result.skipped.length}.`, result.imported === 0);
+  setStatus(t("importedSkipped", "Imported $1; skipped $2.", [String(result.imported), String(result.skipped.length)]), result.imported === 0);
   return result;
 }
 
@@ -218,23 +245,23 @@ async function importFolder() {
     const result = await storePilotImportListingDirectory(directoryHandle);
 
     if (!result.total) {
-      setStatus("No locale listing folder found.", true);
+      setStatus(t("noLocaleListingFolderFound", "No locale listing folder found."), true);
       return;
     }
 
     await refreshSummary();
     setStatus(
-      `Imported ${result.imported} into ${result.project.name} (${result.confidence} confidence).`,
+      t("importedIntoConfidence", "Imported $1 into $2 ($3 confidence).", [String(result.imported), result.project.name, formatConfidence(result.confidence)]),
       result.imported === 0
     );
   } catch (error) {
     if (error.name === "AbortError") {
-      setStatus("Folder import canceled.");
+      setStatus(t("folderImportCanceled", "Folder import canceled."));
       return;
     }
 
     console.error(error);
-    setStatus(`Import failed: ${error.message}`, true);
+    setStatus(t("importFailed", "Import failed: $1", [error.message]), true);
   }
 }
 
@@ -264,7 +291,7 @@ async function injectContentScript(tabId) {
 async function sendToActiveTab(type) {
   const tab = await getActiveTab();
   if (!tab || !tab.id) {
-    return { ok: false, message: "No active tab." };
+    return { ok: false, message: t("noActiveTab", "No active tab.") };
   }
 
   const diagnostics = {
@@ -277,20 +304,20 @@ async function sendToActiveTab(type) {
   if (!diagnostics.expectedDashboardUrl) {
     return {
       ok: false,
-      message: "The active tab is not a Chrome Web Store Developer Dashboard page.",
+      message: t("notDashboardPage", "The active tab is not a Chrome Web Store Developer Dashboard page."),
       diagnostics
     };
   }
 
   try {
     const response = await STOREPILOT_API.tabs.sendMessage(tab.id, { type });
-    return { ...response, diagnostics: { ...diagnostics, contentScript: "already connected", response } };
+    return { ...response, diagnostics: { ...diagnostics, contentScript: t("contentScriptAlreadyConnected", "already connected"), response } };
   } catch (error) {
     diagnostics.initialMessageError = formatError(error);
 
     try {
       await injectContentScript(tab.id);
-      diagnostics.injection = "succeeded";
+      diagnostics.injection = t("injectionSucceeded", "succeeded");
       const response = await STOREPILOT_API.tabs.sendMessage(tab.id, { type });
       return { ...response, diagnostics: { ...diagnostics, response } };
     } catch (injectionError) {
@@ -300,23 +327,80 @@ async function sendToActiveTab(type) {
       return {
         ok: false,
         message: isGalleryBlocked
-          ? "Chrome blocks extensions from scripting the Chrome Web Store dashboard. Fill actions cannot run here; use Copy text and paste manually."
-          : "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact Chrome error.",
+          ? t("chromeBlocksFillActions", "Chrome blocks extensions from scripting the Chrome Web Store dashboard. Fill actions cannot run here; use Copy text and paste manually.")
+          : t("couldNotConnectDashboard", "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact Chrome error."),
         diagnostics
       };
     }
   }
 }
 
+function setPopupFillAllRunning(isRunning) {
+  isPopupFillAllRunning = isRunning;
+  elements.fillAllLanguages.disabled = isRunning;
+  elements.abortFillAll.hidden = !isRunning;
+  elements.abortFillAll.disabled = false;
+
+  if (isRunning) {
+    startFillAllStatusPolling();
+  } else {
+    stopFillAllStatusPolling();
+  }
+}
+
+function applyFillAllStatus(status) {
+  if (!status) return;
+
+  setPopupFillAllRunning(Boolean(status.running));
+  if (status.message) {
+    setStatus(status.message, false);
+  }
+}
+
+function startFillAllStatusPolling() {
+  if (fillAllStatusPollId) return;
+
+  fillAllStatusPollId = setInterval(() => {
+    refreshFillAllStatus().catch(() => {});
+  }, 500);
+}
+
+function stopFillAllStatusPolling() {
+  if (!fillAllStatusPollId) return;
+
+  clearInterval(fillAllStatusPollId);
+  fillAllStatusPollId = 0;
+}
+
+async function getStoredFillAllStatus() {
+  const stored = await STOREPILOT_API.storage.local.get(FILL_ALL_STATUS_STORAGE_KEY);
+  return stored[FILL_ALL_STATUS_STORAGE_KEY] || null;
+}
+
+async function refreshFillAllStatus() {
+  const result = await sendToActiveTab("storepilot-get-fill-all-status");
+
+  if (result.ok && result.status) {
+    applyFillAllStatus(result.status);
+    return;
+  }
+
+  const storedStatus = await getStoredFillAllStatus();
+  if (storedStatus) {
+    applyFillAllStatus(storedStatus);
+  }
+}
+
 async function diagnoseActiveTab() {
   const result = await sendToActiveTab("storepilot-diagnose");
-  setStatus(result.message || (result.ok ? "Diagnostics complete." : "Diagnostics failed."), !result.ok);
+  setStatus(result.message || (result.ok ? t("diagnosticsComplete", "Diagnostics complete.") : t("diagnosticsFailed", "Diagnostics failed.")), !result.ok);
   setDiagnostics(result.diagnostics || result);
 }
 
 function showActionResult(result) {
-  setStatus(result.message || (result.ok ? "Done." : "Failed."), !result.ok);
-  setDiagnostics(result.ok ? null : result.diagnostics || result);
+  const isExpectedStop = Boolean(result && result.aborted);
+  setStatus(result.message || (result.ok || isExpectedStop ? t("done", "Done.") : t("failed", "Failed.")), !result.ok && !isExpectedStop);
+  setDiagnostics(result.ok || isExpectedStop ? null : result.diagnostics || result);
 }
 
 function handleFileSelection(event) {
@@ -327,16 +411,16 @@ function handleFileSelection(event) {
   importer(event.target.files).then(async result => {
     await refreshSummary();
     if (!result.total) {
-      setStatus("No locale listing files were found.", true);
+      setStatus(t("noLocaleListingFilesFound", "No locale listing files were found."), true);
       return;
     }
 
     setStatus(event.target === elements.listingFolderFallback && result.project
-      ? `Imported ${result.imported} into ${result.project.name}.`
-      : `Imported ${result.imported}; skipped ${result.skipped.length}.`, result.imported === 0);
+      ? t("importedInto", "Imported $1 into $2.", [String(result.imported), result.project.name])
+      : t("importedSkipped", "Imported $1; skipped $2.", [String(result.imported), String(result.skipped.length)]), result.imported === 0);
   }).catch(error => {
     console.error(error);
-    setStatus(`Import failed: ${error.message}`, true);
+    setStatus(t("importFailed", "Import failed: $1", [error.message]), true);
   });
   event.target.value = "";
 }
@@ -348,7 +432,7 @@ elements.listingFolderFallback.addEventListener("change", handleFileSelection);
 elements.projectSelect.addEventListener("change", async event => {
   await storePilotSetActiveProject(event.target.value);
   await refreshSummary();
-  setStatus("Project selected.");
+  setStatus(t("projectSelected", "Project selected."));
   await updateDashboardRestrictionNotice();
 });
 
@@ -363,18 +447,18 @@ elements.localeSelect.addEventListener("change", async event => {
       [project.id]: event.target.value
     }
   });
-  setStatus(`Locale selected: ${event.target.value}.`);
+  setStatus(t("localeSelected", "Locale selected: $1.", [event.target.value]));
 });
 
 elements.syncProject.addEventListener("click", () => {
   if (elements.syncProject.disabled) {
-    setStatus("This project cannot auto-sync in this browser. Re-import the project folder to refresh listings.");
+    setStatus(t("cannotAutoSync", "This project cannot auto-sync in this browser. Re-import the project folder to refresh listings."));
     return;
   }
 
   syncActiveProject(true).catch(error => {
     console.error(error);
-    setStatus(`Sync failed: ${error.message}`, true);
+    setStatus(t("syncFailed", "Sync failed: $1", [error.message]), true);
   });
 });
 
@@ -389,8 +473,33 @@ elements.fillCurrentLanguage.addEventListener("click", async () => {
 });
 
 elements.fillAllLanguages.addEventListener("click", async () => {
-  const result = await sendToActiveTab("storepilot-fill-all-languages");
-  showActionResult(result);
+  if (isPopupFillAllRunning) return;
+
+  setPopupFillAllRunning(true);
+  setStatus(t("fillingAllLanguages", "Filling all languages..."));
+
+  try {
+    const result = await sendToActiveTab("storepilot-fill-all-languages");
+    showActionResult(result);
+  } finally {
+    setPopupFillAllRunning(false);
+  }
+});
+
+elements.abortFillAll.addEventListener("click", async () => {
+  elements.abortFillAll.disabled = true;
+  const result = await sendToActiveTab("storepilot-abort-fill-all");
+  if (result.ok) {
+    setStatus(result.message || t("stopRequested", "Stop requested."));
+  } else {
+    await refreshFillAllStatus();
+    if (!isPopupFillAllRunning) {
+      setStatus(t("fillAllNotRunning", "Fill all is not running."));
+      return;
+    }
+    elements.abortFillAll.disabled = false;
+    setStatus(result.message || t("couldNotStopFillAll", "Could not stop fill all."), true);
+  }
 });
 
 elements.copyText.addEventListener("click", async () => {
@@ -400,7 +509,7 @@ elements.copyText.addEventListener("click", async () => {
 
 elements.diagnosePage.addEventListener("click", () => {
   diagnoseActiveTab().catch(error => {
-    setStatus(`Diagnostics failed: ${formatError(error)}`, true);
+    setStatus(t("diagnosticsFailedWithError", "Diagnostics failed: $1", [formatError(error)]), true);
     setDiagnostics({ error: formatError(error) });
   });
 });
@@ -426,11 +535,30 @@ STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
   if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]) {
     refreshSummary();
   }
+
+  if (changes[FILL_ALL_STATUS_STORAGE_KEY]) {
+    applyFillAllStatus(changes[FILL_ALL_STATUS_STORAGE_KEY].newValue);
+  }
 });
 
+if (STOREPILOT_API.runtime && STOREPILOT_API.runtime.onMessage) {
+  STOREPILOT_API.runtime.onMessage.addListener(message => {
+    if (!message || message.type !== "storepilot-fill-all-progress") {
+      return;
+    }
+
+    applyFillAllStatus(message.status || {
+      running: isPopupFillAllRunning,
+      message: message.message || t("fillingAllLanguages", "Filling all languages...")
+    });
+  });
+}
+
 (async () => {
+  storePilotApplyI18n();
   applyTheme((await getSettings()).theme);
   await refreshSummary();
   await updateDashboardRestrictionNotice();
+  await refreshFillAllStatus();
   await syncActiveProject(false);
 })();

@@ -3,73 +3,82 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>StorePilot Options</title>
+    <title data-i18n="optionsTitle">StorePilot Options</title>
     <link rel="stylesheet" href="options.css">
   </head>
   <body>
     <main>
       <header>
         <div>
-          <h1>StorePilot</h1>
-          <p>Import flat locale listing files and use them in extension store dashboards.</p>
+          <h1 data-i18n="extensionName">StorePilot</h1>
+          <p data-i18n="optionsSubtitle">Import flat locale listing files and use them in extension store dashboards.</p>
+          <p id="lastUpdatedStatus" class="status compact-status" data-i18n="lastUpdatedInitial">Last updated on Never.</p>
         </div>
         <div class="header-actions">
-          <div class="theme-control" aria-label="Theme">
-            <button type="button" data-theme-choice="system">System</button>
-            <button type="button" data-theme-choice="light">Light</button>
-            <button type="button" data-theme-choice="dark">Dark</button>
+          <div class="theme-control" aria-label="Theme" data-i18n-aria-label="theme">
+            <button type="button" data-theme-choice="system" data-i18n="themeSystem">System</button>
+            <button type="button" data-theme-choice="light" data-i18n="themeLight">Light</button>
+            <button type="button" data-theme-choice="dark" data-i18n="themeDark">Dark</button>
           </div>
-          <button id="syncAllProjects" type="button">Sync all</button>
-          <button id="clearListings" type="button">Clear</button>
+          <button id="syncAllProjects" type="button" data-i18n="syncAll">Sync all</button>
+          <button id="clearListings" type="button" data-i18n="clear">Clear</button>
         </div>
       </header>
 
       <section class="project-panel">
         <div>
-          <label for="projectSelect">Active project</label>
+          <label for="projectSelect" data-i18n="activeProject">Active project</label>
           <select id="projectSelect"></select>
         </div>
         <div class="button-row">
-          <button id="syncProject" type="button">Sync active</button>
-          <button id="deleteProject" type="button">Delete project</button>
+          <button id="syncProject" type="button" data-i18n="syncActive">Sync active</button>
+          <button id="deleteProject" type="button" data-i18n="deleteProject">Delete project</button>
         </div>
       </section>
 
       <section class="import-panel">
         <div id="dropZone" class="drop-zone">
           <div class="button-row">
-            <button id="importFolder" type="button">Import project/folder</button>
+            <button id="importFolder" type="button" data-i18n="importProjectFolder">Import project/folder</button>
             <label class="file-button">
-              <span>Import files</span>
+              <span data-i18n="importFiles">Import files</span>
               <input id="listingFiles" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" multiple>
             </label>
           </div>
           <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" webkitdirectory multiple>
-          <p class="hint">Select a project root, a store-listing folder, or a direct listing folder.</p>
-          <p class="hint">StorePilot looks for locale-named listing files such as <code>en.txt</code>, <code>de.md</code>, or <code>pt_BR.markdown</code>.</p>
-          <p class="hint">You can also drag direct locale listing files onto this panel.</p>
+          <p class="hint" data-i18n="importHintFlexible">Select a project root, a store-listing folder, or a direct listing folder.</p>
+          <p class="hint"><span data-i18n="importHintLocaleFiles">StorePilot looks for locale-named listing files such as</span> <code>en.txt</code>, <code>de.md</code>, <span data-i18n="or">or</span> <code>pt_BR.markdown</code>.</p>
+          <p class="hint" data-i18n="importHintDrag">You can also drag direct locale listing files onto this panel.</p>
         </div>
         <p id="importStatus" class="status" role="status"></p>
       </section>
 
       <section>
         <div class="section-heading">
-          <h2>Imported Listings</h2>
-          <span id="summary">No listings imported</span>
+          <h2 data-i18n="projects">Projects</h2>
+          <span id="projectSummary" data-i18n="noProjects">No projects</span>
         </div>
-        <div id="listingTable" class="listing-table" aria-live="polite"></div>
+        <div id="projectTable" class="project-table" aria-live="polite"></div>
       </section>
 
       <section>
         <div class="section-heading">
-          <h2>Projects</h2>
-          <span id="projectSummary">No projects</span>
+          <h2 data-i18n="importedListings">Imported Listings</h2>
+          <span id="summary" data-i18n="noListingsImported">No listings imported</span>
         </div>
-        <div id="projectTable" class="project-table" aria-live="polite"></div>
+        <div id="listingTable" class="listing-table" aria-live="polite"></div>
       </section>
     </main>
 
-    <script src="../shared/listing-import.js"></script>
+    <script src="../shared/constants.js"></script>
+    <script src="../shared/i18n.js"></script>
+    <script src="../shared/files.js"></script>
+    <script src="../shared/projects.js"></script>
+    <script src="../shared/handles.js"></script>
+    <script src="../shared/directory-detection.js"></script>
+    <script src="../shared/storage.js"></script>
+    <script src="../shared/importers.js"></script>
+    <script src="../shared/sync.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

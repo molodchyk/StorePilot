@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "StorePilot",
+  "name": "__MSG_extensionName__",
   "version": "0.1.0",
-  "description": "Automate repetitive browser extension store publishing work.",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -14,7 +15,7 @@
     "https://chromewebstore.google.com/devconsole/*"
   ],
   "action": {
-    "default_title": "StorePilot",
+    "default_title": "__MSG_extensionName__",
     "default_popup": "src/popup/popup.html"
   },
   "options_page": "src/options/options.html",
