@@ -4,7 +4,7 @@
 
 - `manifest.json`: Chrome development manifest.
 - `manifest.firefox.json`: Firefox manifest source.
-- `scripts/build-firefox.ps1`: builds `dist-firefox` and `storepilot-firefox-0.1.0.zip`.
+- `scripts/build-firefox.ps1`: builds `dist-firefox` and `storepilot-firefox-1.0.0.zip`.
 - `src/options/*`: options page UI, import controls, project list, listing preview.
 - `src/popup/*`: popup UI, project/locale picker, dashboard commands.
 - `src/content/dashboard-helper.js`: content script for dashboard detection/fill automation and mini panel.
@@ -32,7 +32,7 @@ The script:
 2. Copies `src` into `dist-firefox-next/src`.
 3. Copies `manifest.firefox.json` to `dist-firefox-next/manifest.json`.
 4. Runs `src-firefox/apply-firefox-overrides.ps1`.
-5. Creates `storepilot-firefox-0.1.0.zip`.
+5. Creates `storepilot-firefox-1.0.0.zip`.
 6. Replaces `dist-firefox` if Firefox is not locking the folder.
 
 Important: `apply-firefox-overrides.ps1` rewrites parts of `src/content/dashboard-helper.js`, especially mini panel rendering/styling. If Firefox behavior differs from source behavior, inspect both:

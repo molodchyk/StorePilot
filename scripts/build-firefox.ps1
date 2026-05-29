@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $dist = Join-Path $root "dist-firefox"
 $stagedDist = Join-Path $root "dist-firefox-next"
-$zip = Join-Path $root "storepilot-firefox-0.1.0.zip"
+$zip = Join-Path $root "storepilot-firefox-1.0.0.zip"
 
 if (Test-Path -LiteralPath $stagedDist) {
   Remove-Item -LiteralPath $stagedDist -Recurse -Force

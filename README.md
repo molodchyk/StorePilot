@@ -51,7 +51,7 @@ Then open Firefox:
 The build also creates:
 
 ```text
-storepilot-firefox-0.1.0.zip
+storepilot-firefox-1.0.0.zip
 ```
 
 ## Firefox Build Notes
