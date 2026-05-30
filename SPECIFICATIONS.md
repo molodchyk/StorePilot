@@ -5,6 +5,7 @@
 - `manifest.json`: Chrome development manifest.
 - `manifest.firefox.json`: Firefox manifest source.
 - `scripts/build-firefox.ps1`: builds `dist-firefox` and `artifacts/firefox/storepilot-firefox-1.0.0.zip`.
+- `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-1.0.0.zip` for AMO source-code upload.
 - `src/options/*`: options page UI, import controls, project list, listing preview.
 - `src/popup/*`: popup UI, project/locale picker, dashboard commands.
 - `src/content/dashboard-helper.js`: content script for dashboard detection/fill automation and mini panel.
@@ -38,6 +39,18 @@ The script:
 The packaging step intentionally uses `System.IO.Compression.ZipArchive` instead of PowerShell `Compress-Archive`, because AMO rejects Windows-style backslashes in zip entry names. It also computes staged-relative paths with a substring rather than `System.IO.Path.GetRelativePath` so the build works on older Windows PowerShell/.NET hosts.
 
 AMO submission field notes, reviewer notes, privacy text, and validation lessons are tracked in `AMO_SUBMISSION.md`.
+
+## AMO Source Package
+
+Run:
+
+```powershell
+.\scripts\build-amo-source.ps1
+```
+
+The script uses `git ls-files` and writes `artifacts/source/storepilot-source-1.0.0.zip`. This source zip is intended for AMO's source-code upload step when the submission form asks whether any tool copies/processes/generates files included in the extension.
+
+The source package intentionally excludes ignored/generated output such as `dist-firefox/`, `artifacts/`, `.git/`, and local dependencies.
 
 Important: `apply-firefox-overrides.ps1` rewrites parts of `src/content/dashboard-helper.js`, especially mini panel rendering/styling. If Firefox behavior differs from source behavior, inspect both:
 

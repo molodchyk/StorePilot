@@ -54,6 +54,18 @@ The build also creates:
 artifacts/firefox/storepilot-firefox-1.0.0.zip
 ```
 
+AMO source-code upload package:
+
+```powershell
+.\scripts\build-amo-source.ps1
+```
+
+This creates:
+
+```text
+artifacts/source/storepilot-source-1.0.0.zip
+```
+
 ## Firefox Build Notes
 
 Firefox is built from shared `src` files, then patched by `src-firefox/apply-firefox-overrides.ps1`.

@@ -139,6 +139,33 @@ Expected output:
 artifacts/firefox/storepilot-firefox-1.0.0.zip
 ```
 
+## Source Code Upload
+
+Upload this source package when AMO asks for source code:
+
+```text
+artifacts/source/storepilot-source-1.0.0.zip
+```
+
+Create it with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
+```
+
+The source package is generated from `git ls-files`, so it includes repository source files and excludes ignored generated output such as `dist-firefox/`, `artifacts/`, and `.git/`.
+
+Build environment requirements for the reviewer:
+
+```text
+Operating system: Windows 10/11 or any Windows environment with Windows PowerShell 5.1+ or PowerShell 7+.
+Required programs: PowerShell and Git.
+Node.js/npm: not required to build the submitted extension package.
+External dependencies: none.
+Build command: powershell -ExecutionPolicy Bypass -File scripts\build-firefox.ps1
+Expected output: artifacts/firefox/storepilot-firefox-1.0.0.zip
+```
+
 ## Validation Requirements Learned
 
 - Submit `artifacts/firefox/storepilot-firefox-1.0.0.zip`, not a root-level zip.
@@ -175,7 +202,13 @@ artifacts/firefox/storepilot-firefox-1.0.0.zip
 .\scripts\build-firefox.ps1
 ```
 
-2. Verify the artifact:
+2. Create the source upload package:
+
+```powershell
+.\scripts\build-amo-source.ps1
+```
+
+3. Verify the extension artifact:
 
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
@@ -186,8 +219,14 @@ if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash 
 $zip.Dispose()
 ```
 
-3. Upload:
+4. Upload extension package:
 
 ```text
 artifacts/firefox/storepilot-firefox-1.0.0.zip
+```
+
+5. Upload source package if AMO asks for source code:
+
+```text
+artifacts/source/storepilot-source-1.0.0.zip
 ```
