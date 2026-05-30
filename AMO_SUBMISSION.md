@@ -95,6 +95,34 @@ StorePilot only uses its requested permissions to:
 StorePilot does not sell, share, or transfer user data to third parties.
 ```
 
+## Screenshots
+
+Upload screenshots in this order:
+
+1. `artifacts/screenshots/01-storepilot-options-projects.png`
+
+Caption:
+
+```text
+Import project folders, manage localized listing projects, and preview imported locale text.
+```
+
+2. `artifacts/screenshots/02-storepilot-dashboard-mini-panel.png`
+
+Caption:
+
+```text
+Use the StorePilot mini panel on the Chrome Web Store dashboard to fill the current language or all matching languages.
+```
+
+3. `artifacts/screenshots/03-storepilot-dashboard-popup.png`
+
+Caption:
+
+```text
+Select a project from the popup and run dashboard fill actions without leaving the listing page.
+```
+
 ## Notes To Reviewer
 
 ```text
