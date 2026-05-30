@@ -37,6 +37,8 @@ The script:
 
 The packaging step intentionally uses `System.IO.Compression.ZipArchive` instead of PowerShell `Compress-Archive`, because AMO rejects Windows-style backslashes in zip entry names. It also computes staged-relative paths with a substring rather than `System.IO.Path.GetRelativePath` so the build works on older Windows PowerShell/.NET hosts.
 
+AMO submission field notes, reviewer notes, privacy text, and validation lessons are tracked in `AMO_SUBMISSION.md`.
+
 Important: `apply-firefox-overrides.ps1` rewrites parts of `src/content/dashboard-helper.js`, especially mini panel rendering/styling. If Firefox behavior differs from source behavior, inspect both:
 
 - `src/content/dashboard-helper.js`

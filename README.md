@@ -84,6 +84,7 @@ If a behavior looks fixed in `src` but not in Firefox, check whether `apply-fire
 
 - [PROJECT_SCOPE_AND_PHILOSOPHY.md](PROJECT_SCOPE_AND_PHILOSOPHY.md): product boundaries, design intent, and safety principles.
 - [SPECIFICATIONS.md](SPECIFICATIONS.md): implementation details, data model, build flow, browser constraints, and future-Codex context.
+- [AMO_SUBMISSION.md](AMO_SUBMISSION.md): Firefox Add-ons submission fields, reviewer notes, and validation gotchas.
 
 ## Privacy
 
