@@ -32,8 +32,10 @@ The script:
 2. Copies `src` into `dist-firefox-next/src`.
 3. Copies `manifest.firefox.json` to `dist-firefox-next/manifest.json`.
 4. Runs `src-firefox/apply-firefox-overrides.ps1`.
-5. Creates `artifacts/firefox/storepilot-firefox-1.0.0.zip`.
+5. Creates `artifacts/firefox/storepilot-firefox-1.0.0.zip` with forward-slash archive entry names for AMO validation.
 6. Replaces `dist-firefox` if Firefox is not locking the folder.
+
+The packaging step intentionally uses `System.IO.Compression.ZipArchive` instead of PowerShell `Compress-Archive`, because AMO rejects Windows-style backslashes in zip entry names. It also computes staged-relative paths with a substring rather than `System.IO.Path.GetRelativePath` so the build works on older Windows PowerShell/.NET hosts.
 
 Important: `apply-firefox-overrides.ps1` rewrites parts of `src/content/dashboard-helper.js`, especially mini panel rendering/styling. If Firefox behavior differs from source behavior, inspect both:
 

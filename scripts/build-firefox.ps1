@@ -27,6 +27,8 @@ Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zipArchive = [System.IO.Compression.ZipFile]::Open($zip, [System.IO.Compression.ZipArchiveMode]::Create)
 try {
+  # AMO rejects Windows-style backslashes in archive entries. Use a substring
+  # instead of [System.IO.Path]::GetRelativePath for older PowerShell/.NET hosts.
   $stagedPrefix = (Resolve-Path -LiteralPath $stagedDist).Path.TrimEnd("\") + "\"
   Get-ChildItem -LiteralPath $stagedDist -Recurse -File | ForEach-Object {
     $relativePath = $_.FullName.Substring($stagedPrefix.Length).Replace("\", "/")
