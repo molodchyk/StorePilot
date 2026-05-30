@@ -62,7 +62,7 @@ My add-on doesn't fit into any of the categories
 Support email:
 
 ```text
-
+molodchykr@gmail.com
 ```
 
 Support website:
@@ -169,4 +169,3 @@ $zip.Dispose()
 ```text
 artifacts/firefox/storepilot-firefox-1.0.0.zip
 ```
-
