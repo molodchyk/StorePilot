@@ -3,7 +3,8 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $dist = Join-Path $root "dist-firefox"
 $stagedDist = Join-Path $root "dist-firefox-next"
-$zip = Join-Path $root "storepilot-firefox-1.0.0.zip"
+$artifacts = Join-Path $root "artifacts\firefox"
+$zip = Join-Path $artifacts "storepilot-firefox-1.0.0.zip"
 
 if (Test-Path -LiteralPath $stagedDist) {
   Remove-Item -LiteralPath $stagedDist -Recurse -Force
@@ -14,6 +15,7 @@ if (Test-Path -LiteralPath $zip) {
 }
 
 New-Item -ItemType Directory -Path $stagedDist | Out-Null
+New-Item -ItemType Directory -Path $artifacts -Force | Out-Null
 Copy-Item -Path (Join-Path $root "src") -Destination (Join-Path $stagedDist "src") -Recurse
 if (Test-Path -LiteralPath (Join-Path $root "_locales")) {
   Copy-Item -Path (Join-Path $root "_locales") -Destination (Join-Path $stagedDist "_locales") -Recurse
