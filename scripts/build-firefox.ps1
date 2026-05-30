@@ -23,7 +23,18 @@ if (Test-Path -LiteralPath (Join-Path $root "_locales")) {
 Copy-Item -Path (Join-Path $root "manifest.firefox.json") -Destination (Join-Path $stagedDist "manifest.json")
 & (Join-Path $root "src-firefox\apply-firefox-overrides.ps1") -Dist $stagedDist
 
-Compress-Archive -Path (Join-Path $stagedDist "*") -DestinationPath $zip
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$zipArchive = [System.IO.Compression.ZipFile]::Open($zip, [System.IO.Compression.ZipArchiveMode]::Create)
+try {
+  $stagedPrefix = (Resolve-Path -LiteralPath $stagedDist).Path.TrimEnd("\") + "\"
+  Get-ChildItem -LiteralPath $stagedDist -Recurse -File | ForEach-Object {
+    $relativePath = $_.FullName.Substring($stagedPrefix.Length).Replace("\", "/")
+    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipArchive, $_.FullName, $relativePath) | Out-Null
+  }
+} finally {
+  $zipArchive.Dispose()
+}
 
 try {
   if (Test-Path -LiteralPath $dist) {
