@@ -123,6 +123,64 @@ Caption:
 Select a project from the popup and run dashboard fill actions without leaving the listing page.
 ```
 
+## Additional Details
+
+Tags:
+
+```text
+translate
+user scripts
+google
+```
+
+Do not use unrelated tags such as ad blocker, privacy, security, vpn, shopping, or video downloader. StorePilot is a publishing/localization workflow tool, and AMO only allows up to 10 tags.
+
+Contributions URL:
+
+```text
+https://buymeacoffee.com/molodchyk
+```
+
+Alternative supported contribution URL:
+
+```text
+https://www.patreon.com/OMolodchyk
+```
+
+Default Locale:
+
+```text
+English (US)
+```
+
+Homepage:
+
+```text
+https://github.com/molodchyk/StorePilot
+```
+
+Developer Comments:
+
+```text
+StorePilot is built for browser extension publishers who maintain localized Chrome Web Store listings.
+
+The extension stores imported listing text locally and uses Chrome Web Store Developer Dashboard host permissions only so the user can fill listing fields while the dashboard is open in Firefox.
+
+StorePilot has no analytics, tracking, telemetry, remote server, or off-device data transmission.
+```
+
+UUID:
+
+```text
+storepilot@molodchyk.dev
+```
+
+Whiteboard:
+
+```text
+
+```
+
 ## Notes To Reviewer
 
 ```text
