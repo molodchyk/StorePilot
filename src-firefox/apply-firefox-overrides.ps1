@@ -128,6 +128,8 @@ if (Test-Path -LiteralPath $helperPath) {
 
   panel.append(title, meta, updated, actions, status);
   document.documentElement.append(panel);
+  applyStoredPanelPosition(panel);
+  enablePanelDrag(panel, title);
   updatePanelFillAllUi();
 }
 
@@ -167,7 +169,14 @@ if (Test-Path -LiteralPath $helperPath) {
     }
 
     #${PANEL_ID} .storepilot-title {
+      cursor: grab;
       font-weight: 700;
+      user-select: none;
+      touch-action: none;
+    }
+
+    #${PANEL_ID}[data-dragging="true"] .storepilot-title {
+      cursor: grabbing;
     }
 
     #${PANEL_ID} .storepilot-meta,

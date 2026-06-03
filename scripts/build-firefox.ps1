@@ -4,7 +4,7 @@ $root = Split-Path -Parent $PSScriptRoot
 $dist = Join-Path $root "dist-firefox"
 $stagedDist = Join-Path $root "dist-firefox-next"
 $artifacts = Join-Path $root "artifacts\firefox"
-$zip = Join-Path $artifacts "storepilot-firefox-1.0.0.zip"
+$zip = Join-Path $artifacts "storepilot-firefox-1.0.1.zip"
 
 if (Test-Path -LiteralPath $stagedDist) {
   Remove-Item -LiteralPath $stagedDist -Recurse -Force

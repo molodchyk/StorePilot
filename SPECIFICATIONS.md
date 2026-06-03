@@ -4,8 +4,8 @@
 
 - `manifest.json`: Chrome development manifest.
 - `manifest.firefox.json`: Firefox manifest source.
-- `scripts/build-firefox.ps1`: builds `dist-firefox` and `artifacts/firefox/storepilot-firefox-1.0.0.zip`.
-- `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-1.0.0.zip` for AMO source-code upload.
+- `scripts/build-firefox.ps1`: builds `dist-firefox` and `artifacts/firefox/storepilot-firefox-1.0.1.zip`.
+- `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-1.0.1.zip` for AMO source-code upload.
 - `src/options/*`: options page UI, import controls, project list, listing preview.
 - `src/popup/*`: popup UI, project/locale picker, dashboard commands.
 - `src/content/dashboard-helper.js`: content script for dashboard detection/fill automation and mini panel.
@@ -33,7 +33,7 @@ The script:
 2. Copies `src` into `dist-firefox-next/src`.
 3. Copies `manifest.firefox.json` to `dist-firefox-next/manifest.json`.
 4. Runs `src-firefox/apply-firefox-overrides.ps1`.
-5. Creates `artifacts/firefox/storepilot-firefox-1.0.0.zip` with forward-slash archive entry names for AMO validation.
+5. Creates `artifacts/firefox/storepilot-firefox-1.0.1.zip` with forward-slash archive entry names for AMO validation.
 6. Replaces `dist-firefox` if Firefox is not locking the folder.
 
 The packaging step intentionally uses `System.IO.Compression.ZipArchive` instead of PowerShell `Compress-Archive`, because AMO rejects Windows-style backslashes in zip entry names. It also computes staged-relative paths with a substring rather than `System.IO.Path.GetRelativePath` so the build works on older Windows PowerShell/.NET hosts.
@@ -48,7 +48,7 @@ Run:
 .\scripts\build-amo-source.ps1
 ```
 
-The script uses `git ls-files` and writes `artifacts/source/storepilot-source-1.0.0.zip`. This source zip is intended for AMO's source-code upload step when the submission form asks whether any tool copies/processes/generates files included in the extension.
+The script uses `git ls-files` and writes `artifacts/source/storepilot-source-1.0.1.zip`. This source zip is intended for AMO's source-code upload step when the submission form asks whether any tool copies/processes/generates files included in the extension.
 
 The source package intentionally excludes ignored/generated output such as `dist-firefox/`, `artifacts/`, `.git/`, and local dependencies.
 
@@ -284,3 +284,9 @@ After Firefox-relevant changes, rebuild:
 - Release checklist generation.
 - Better dashboard DOM diagnostics when Google changes the UI.
 - Tests around project identity merging and fill-all state transitions.
+
+## Recent Fix Notes
+
+- Firefox project root detection now carries project-root evidence from ancestor directories into listing-folder candidates. Evidence includes common root markers such as `.git`, `README`, extension manifests, package/build config files, `src`, `_locales`, `store-listing`, privacy/license/release notes, and assets folders. This keeps imports flexible while avoiding hardcoded project structures.
+- The `C:\Users\molod\Documents\Personal\settings\Discord_Search_Blocker` folder shape was used as a regression case: StorePilot should choose `Discord_Search_Blocker` as the project root and `Discord_Search_Blocker/store-listing` as the listing path when the selected root contains the 50 locale listing files under `store-listing`.
+- Firefox fill-all results now distinguish filled dashboard languages from imported listing locales. Final status includes imported count, matched dashboard language count, and unmatched imported locale codes, so a result like `Filled 47 dashboard language(s)` is no longer ambiguous when 50 listing locales were imported.

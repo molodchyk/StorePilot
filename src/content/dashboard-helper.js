@@ -4,7 +4,15 @@ const PROJECTS_STORAGE_KEY = "storePilotProjects";
 const ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
 const SETTINGS_KEY = "storePilotSettings";
 const FILL_ALL_STATUS_STORAGE_KEY = "storePilotFillAllStatus";
+const PANEL_POSITION_STORAGE_KEY = "storePilotPanelPosition";
 const PANEL_ID = "storepilot-panel";
+const CHROME_WEB_STORE_SUPPORTED_LOCALES = new Set([
+  "ar", "am", "bg", "bn", "ca", "cs", "da", "de", "el", "en", "en_au", "en_gb", "en_us",
+  "es", "es_419", "et", "fa", "fi", "fil", "fr", "gu", "he", "hi", "hr", "hu", "id",
+  "it", "ja", "kn", "ko", "lt", "lv", "ml", "mr", "ms", "nl", "no", "pl", "pt_br",
+  "pt_pt", "ro", "ru", "sk", "sl", "sr", "sv", "sw", "ta", "te", "th", "tr", "uk",
+  "ur", "vi", "zh_cn", "zh_tw"
+]);
 
 let listings = {};
 let selectedLocale = "";
@@ -83,6 +91,89 @@ function formatDisplayTimestamp(value) {
 
   const pad = number => String(number).padStart(2, "0");
   return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())} ${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()}`;
+}
+
+function getStoredPanelPosition() {
+  try {
+    return JSON.parse(window.localStorage.getItem(PANEL_POSITION_STORAGE_KEY) || "null");
+  } catch (_error) {
+    return null;
+  }
+}
+
+function savePanelPosition(position) {
+  try {
+    window.localStorage.setItem(PANEL_POSITION_STORAGE_KEY, JSON.stringify(position));
+  } catch (_error) {
+    // The panel can still be dragged for this session if page storage is unavailable.
+  }
+}
+
+function clampPanelPosition(panel, left, top) {
+  const margin = 8;
+  const rect = panel.getBoundingClientRect();
+  const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+  const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
+
+  return {
+    left: Math.min(Math.max(margin, left), maxLeft),
+    top: Math.min(Math.max(margin, top), maxTop)
+  };
+}
+
+function setPanelPosition(panel, position) {
+  if (!position || !Number.isFinite(position.left) || !Number.isFinite(position.top)) return;
+
+  const nextPosition = clampPanelPosition(panel, position.left, position.top);
+  panel.style.left = `${nextPosition.left}px`;
+  panel.style.top = `${nextPosition.top}px`;
+  panel.style.right = "auto";
+  panel.style.bottom = "auto";
+}
+
+function applyStoredPanelPosition(panel) {
+  setPanelPosition(panel, getStoredPanelPosition());
+}
+
+function enablePanelDrag(panel, dragHandle) {
+  if (!panel || !dragHandle) return;
+
+  dragHandle.addEventListener("pointerdown", event => {
+    if (event.button !== 0 || event.target.closest("button, select, input, textarea, a")) {
+      return;
+    }
+
+    const rect = panel.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+    panel.dataset.dragging = "true";
+    panel.setPointerCapture(event.pointerId);
+    event.preventDefault();
+
+    function movePanel(moveEvent) {
+      const nextPosition = clampPanelPosition(
+        panel,
+        moveEvent.clientX - offsetX,
+        moveEvent.clientY - offsetY
+      );
+      setPanelPosition(panel, nextPosition);
+    }
+
+    function stopDragging() {
+      delete panel.dataset.dragging;
+      savePanelPosition({
+        left: panel.getBoundingClientRect().left,
+        top: panel.getBoundingClientRect().top
+      });
+      panel.removeEventListener("pointermove", movePanel);
+      panel.removeEventListener("pointerup", stopDragging);
+      panel.removeEventListener("pointercancel", stopDragging);
+    }
+
+    panel.addEventListener("pointermove", movePanel);
+    panel.addEventListener("pointerup", stopDragging);
+    panel.addEventListener("pointercancel", stopDragging);
+  });
 }
 
 async function loadSettings() {
@@ -175,6 +266,32 @@ function normalizeLocale(locale) {
   return String(locale || "").replace("-", "_").toLowerCase();
 }
 
+function isChromeWebStoreSupportedLocale(locale) {
+  return CHROME_WEB_STORE_SUPPORTED_LOCALES.has(normalizeLocale(locale));
+}
+
+function getEquivalentLocales(locale) {
+  const normalizedLocale = normalizeLocale(locale);
+  const aliases = {
+    he: ["iw"],
+    iw: ["he"],
+    id: ["in"],
+    in: ["id"],
+    no: ["nb"],
+    nb: ["no"]
+  };
+
+  return Array.from(new Set([
+    normalizedLocale,
+    ...(aliases[normalizedLocale] || [])
+  ].filter(Boolean)));
+}
+
+function localesMatch(left, right) {
+  const rightLocales = new Set(getEquivalentLocales(right));
+  return getEquivalentLocales(left).some(locale => rightLocales.has(locale));
+}
+
 function normalizeLanguageText(text) {
   return String(text || "")
     .normalize("NFD")
@@ -214,7 +331,10 @@ function getLocaleDisplayLabels(locale) {
 
 function getListingLocaleKey(locale) {
   const normalized = normalizeLocale(locale);
-  return Object.keys(listings).find(key => normalizeLocale(key) === normalized) || "";
+  return Object.keys(listings).find(key => (
+    normalizeLocale(key) === normalized ||
+    localesMatch(key, normalized)
+  )) || "";
 }
 
 function getLocaleFromText(text, localeKeys = Object.keys(listings)) {
@@ -222,12 +342,15 @@ function getLocaleFromText(text, localeKeys = Object.keys(listings)) {
   const sortedLocaleKeys = [...localeKeys].sort((a, b) => b.length - a.length);
 
   for (const locale of sortedLocaleKeys) {
-    const normalizedLocale = normalizeLocale(locale);
-    const escaped = normalizedLocale.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const pattern = new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i");
+    const localeMatches = getEquivalentLocales(locale).sort((a, b) => b.length - a.length);
 
-    if (pattern.test(normalizedText)) {
-      return locale;
+    for (const normalizedLocale of localeMatches) {
+      const escaped = normalizedLocale.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const pattern = new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i");
+
+      if (pattern.test(normalizedText)) {
+        return locale;
+      }
     }
   }
 
@@ -359,6 +482,21 @@ function formatLanguageOption(optionOrLocale) {
 
 function formatFillAllProgress(action, index, total, option) {
   return `${action} ${index}/${total}: ${formatLanguageOption(option)}...`;
+}
+
+function formatFillAllSummary(importedCount, matchedCount, unsupportedUnmatchedLocaleKeys, unmatchedLocaleKeys) {
+  return [
+    localize("fillAllDashboardSummary", "Imported $1; matched $2 dashboard language(s).", [
+      String(importedCount),
+      String(matchedCount)
+    ]),
+    unsupportedUnmatchedLocaleKeys.length
+      ? localize("unsupportedChromeWebStoreLocales", "Chrome Web Store did not offer unsupported locale(s): $1.", [unsupportedUnmatchedLocaleKeys.join(", ")])
+      : "",
+    unmatchedLocaleKeys.length
+      ? localize("unmatchedImportedLocales", "Dashboard did not offer supported imported locale(s): $1.", [unmatchedLocaleKeys.join(", ")])
+      : ""
+  ].filter(Boolean).join(" ");
 }
 
 async function publishFillAllStatus(status) {
@@ -528,9 +666,32 @@ async function fillAllDashboardLanguages(onProgress = null) {
   document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
   await delay(150);
 
-  const matchingOptions = availableOptions.filter(option => getListingLocaleKey(option.locale));
+  const matchedLocaleKeys = new Set();
+  const matchingOptions = availableOptions.reduce((options, option) => {
+    const listingLocale = getListingLocaleKey(option.locale);
+    if (!listingLocale || matchedLocaleKeys.has(listingLocale)) return options;
+
+    matchedLocaleKeys.add(listingLocale);
+    options.push({
+      ...option,
+      listingLocale
+    });
+    return options;
+  }, []);
+  const unsupportedUnmatchedLocaleKeys = localeKeys.filter(locale => (
+    !isChromeWebStoreSupportedLocale(locale) &&
+    !matchedLocaleKeys.has(locale)
+  ));
+  const unmatchedLocaleKeys = localeKeys.filter(locale => (
+    isChromeWebStoreSupportedLocale(locale) &&
+    !matchedLocaleKeys.has(locale)
+  ));
   if (!matchingOptions.length) {
-    return { ok: false, message: localize("noImportedLocalesMatchMenu", "No imported locales match the dashboard language menu.") };
+    return {
+      ok: false,
+      message: localize("noImportedLocalesMatchMenu", "No imported locales match the dashboard language menu.") +
+        ` ${formatFillAllSummary(localeKeys.length, 0, unsupportedUnmatchedLocaleKeys, unmatchedLocaleKeys)}`
+    };
   }
 
   let filled = 0;
@@ -607,12 +768,18 @@ async function fillAllDashboardLanguages(onProgress = null) {
   const retryNote = retryRecoveredCount > 0
     ? ` ${localize("recoveredAfterRetry", "Recovered $1 after retry.", [String(retryRecoveredCount)])}`
     : (firstPass.failed.length ? ` ${localize("retriedNoneRecovered", "Retried $1; none recovered.", [String(firstPass.failed.length)])}` : "");
+  const summaryNote = ` ${formatFillAllSummary(
+    localeKeys.length,
+    matchingOptions.length,
+    unsupportedUnmatchedLocaleKeys,
+    unmatchedLocaleKeys
+  )}`;
 
   return {
     ok: filled > 0 && remainingFailed.length === 0,
     message: (remainingFailed.length
       ? localize("filledLanguagesFailed", "Filled $1 dashboard language(s); failed $2: $3.", [String(filled), String(remainingFailed.length), failedNames])
-      : localize("filledLanguages", "Filled $1 dashboard language(s).", [String(filled)])) + retryNote
+      : localize("filledLanguages", "Filled $1 dashboard language(s).", [String(filled)])) + retryNote + summaryNote
   };
 }
 
@@ -775,6 +942,8 @@ function renderPanel(locales) {
 
   panel.append(title, meta, actions, status);
   document.documentElement.append(panel);
+  applyStoredPanelPosition(panel);
+  enablePanelDrag(panel, title);
   updatePanelFillAllUi();
 }
 
@@ -809,7 +978,14 @@ function injectStyles() {
     }
 
     #${PANEL_ID} .storepilot-title {
+      cursor: grab;
       font-weight: 700;
+      user-select: none;
+      touch-action: none;
+    }
+
+    #${PANEL_ID}[data-dragging="true"] .storepilot-title {
+      cursor: grabbing;
     }
 
     #${PANEL_ID} .storepilot-meta {

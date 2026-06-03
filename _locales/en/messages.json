@@ -359,6 +359,18 @@
   "filledLanguages": {
     "message": "Filled $1 dashboard language(s)."
   },
+  "fillAllDashboardSummary": {
+    "message": "Imported $1; matched $2 dashboard language(s)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Imported $1; matched $2 dashboard language(s); unmatched imported locale(s): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store did not offer unsupported locale(s): $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Dashboard did not offer supported imported locale(s): $1."
+  },
   "abortRequestedStopAfterStep": {
     "message": "Abort requested. StorePilot will stop after the current dashboard step."
   },

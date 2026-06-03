@@ -54,8 +54,9 @@
       .join("|");
   }
 
-  function getProjectRootInfo(sourcePath, fallbackName) {
-    const pathParts = normalizePathParts(sourcePath);
+  function getProjectRootInfo(source, fallbackName) {
+    const candidate = source && typeof source === "object" ? source : { path: source };
+    const pathParts = normalizePathParts(candidate.path);
     const lowerParts = pathParts.map(part => part.toLowerCase());
     const storeListingIndex = lowerParts.findIndex(part => part === "store-listing" || part === "store-listings");
     const knownStoreIndex = lowerParts.findIndex(part => (
@@ -66,8 +67,11 @@
     ));
 
     let rootParts = [];
+    const evidenceRootParts = normalizePathParts(candidate.projectRootPath);
 
-    if (storeListingIndex > 0) {
+    if (evidenceRootParts.length && evidenceRootParts.length < pathParts.length) {
+      rootParts = evidenceRootParts;
+    } else if (storeListingIndex > 0) {
       rootParts = pathParts.slice(0, storeListingIndex);
     } else if (knownStoreIndex > 0) {
       rootParts = pathParts.slice(0, knownStoreIndex);
@@ -83,7 +87,9 @@
     return {
       rootPath,
       rootName,
-      listingPath: pathParts.join("/")
+      listingPath: pathParts.join("/"),
+      rootScore: candidate.projectRootScore || 0,
+      rootSignals: candidate.projectRootSignals || []
     };
   }
 
@@ -220,7 +226,7 @@
 
   async function upsertFirefoxImport({ best, candidates, directoryName, projectId, hasFolderHandle }) {
     const result = await storePilotReadListingFiles(best.files);
-    const rootInfo = getProjectRootInfo(best.path, directoryName);
+    const rootInfo = getProjectRootInfo(best, directoryName);
     const listingSignature = createListingSignature(result.listings);
     const state = await storePilotGetProjectsState();
     const nameCandidates = getProjectNameCandidates(best.path, directoryName, rootInfo);
@@ -250,6 +256,8 @@
       projectRootPath,
       listingPath: best.path,
       listingSignature,
+      projectRootScore: rootInfo.rootScore,
+      projectRootSignals: rootInfo.rootSignals,
       candidateCount: candidates.length,
       confidence: best.confidence,
       score: best.score,

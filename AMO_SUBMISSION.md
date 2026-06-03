@@ -199,7 +199,7 @@ Build:
 - Source is not bundled, minified, transpiled, or obfuscated.
 - The submitted zip is built from this repository with:
   powershell -ExecutionPolicy Bypass -File scripts\build-firefox.ps1
-- The build copies shared source into dist-firefox, applies Firefox-only overrides from src-firefox, copies _locales, and writes artifacts/firefox/storepilot-firefox-1.0.0.zip.
+- The build copies shared source into dist-firefox, applies Firefox-only overrides from src-firefox, copies _locales, and writes artifacts/firefox/storepilot-firefox-1.0.1.zip.
 - The build script uses System.IO.Compression.ZipArchive instead of PowerShell Compress-Archive so zip entries use forward slashes, which AMO validation requires.
 ```
 
@@ -222,7 +222,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build-firefox.ps1
 Expected output:
 
 ```text
-artifacts/firefox/storepilot-firefox-1.0.0.zip
+artifacts/firefox/storepilot-firefox-1.0.1.zip
 ```
 
 ## Source Code Upload
@@ -230,7 +230,7 @@ artifacts/firefox/storepilot-firefox-1.0.0.zip
 Upload this source package when AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.0.0.zip
+artifacts/source/storepilot-source-1.0.1.zip
 ```
 
 Create it with:
@@ -249,12 +249,12 @@ Required programs: PowerShell and Git.
 Node.js/npm: not required to build the submitted extension package.
 External dependencies: none.
 Build command: powershell -ExecutionPolicy Bypass -File scripts\build-firefox.ps1
-Expected output: artifacts/firefox/storepilot-firefox-1.0.0.zip
+Expected output: artifacts/firefox/storepilot-firefox-1.0.1.zip
 ```
 
 ## Validation Requirements Learned
 
-- Submit `artifacts/firefox/storepilot-firefox-1.0.0.zip`, not a root-level zip.
+- Submit `artifacts/firefox/storepilot-firefox-1.0.1.zip`, not a root-level zip.
 - AMO rejects zip entries with Windows backslashes, for example `src\firefox-background.js`. The build script must preserve forward-slash archive names such as `src/firefox-background.js`.
 - Firefox requires `browser_specific_settings.gecko.data_collection_permissions` for new extensions.
 - StorePilot should declare:
@@ -299,7 +299,7 @@ Expected output: artifacts/firefox/storepilot-firefox-1.0.0.zip
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\firefox\storepilot-firefox-1.0.0.zip))
+$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\firefox\storepilot-firefox-1.0.1.zip))
 $entries = $zip.Entries | Select-Object -ExpandProperty FullName
 if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash paths' }
 $zip.Dispose()
@@ -308,11 +308,11 @@ $zip.Dispose()
 4. Upload extension package:
 
 ```text
-artifacts/firefox/storepilot-firefox-1.0.0.zip
+artifacts/firefox/storepilot-firefox-1.0.1.zip
 ```
 
 5. Upload source package if AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.0.0.zip
+artifacts/source/storepilot-source-1.0.1.zip
 ```

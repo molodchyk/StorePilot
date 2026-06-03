@@ -42,6 +42,7 @@ async function storePilotImportListingFiles(files) {
     skipped,
     total: textFiles.length,
     listings: nextListings,
+    unsupportedChromeWebStoreLocales: storePilotGetUnsupportedChromeWebStoreLocales(nextListings),
     project
   };
 }
@@ -49,6 +50,7 @@ async function storePilotImportListingFiles(files) {
 async function storePilotCollectCandidateDirectoriesFromFileList(files) {
   const candidateMap = new Map();
   const directoryChildren = new Map();
+  const directoryFiles = new Map();
   const fileList = Array.from(files);
   const hasRelativePaths = fileList.some(file => storePilotGetRelativePathParts(file).length > 1);
 
@@ -61,7 +63,7 @@ async function storePilotCollectCandidateDirectoriesFromFileList(files) {
     const fileName = pathParts[pathParts.length - 1];
     const directoryParts = pathParts.slice(0, -1);
 
-    if (!directoryParts.length || storePilotHasSkippedPathPart(directoryParts)) {
+    if (!directoryParts.length) {
       continue;
     }
 
@@ -73,11 +75,19 @@ async function storePilotCollectCandidateDirectoriesFromFileList(files) {
       directoryChildren.set(parentPath, children);
     }
 
-    if (!storePilotIsPotentialListingFile(file, { allowUnknownText: false })) {
+    if (storePilotHasSkippedPathPart(directoryParts)) {
       continue;
     }
 
     const directoryPath = directoryParts.join("/");
+    const filesInDirectory = directoryFiles.get(directoryPath) || new Set();
+    filesInDirectory.add(fileName);
+    directoryFiles.set(directoryPath, filesInDirectory);
+
+    if (!storePilotIsPotentialListingFile(file, { allowUnknownText: false })) {
+      continue;
+    }
+
     const sample = await storePilotReadTextFile(file);
     const candidate = candidateMap.get(directoryPath) || {
       pathParts: directoryParts,
@@ -94,6 +104,19 @@ async function storePilotCollectCandidateDirectoriesFromFileList(files) {
     candidateMap.set(directoryPath, candidate);
   }
 
+  const directoryMetadata = new Map();
+  for (const directoryPath of new Set([
+    ...Array.from(directoryChildren.keys()),
+    ...Array.from(directoryFiles.keys())
+  ])) {
+    const pathParts = directoryPath.split("/").filter(Boolean);
+    directoryMetadata.set(storePilotNormalizePath(pathParts), {
+      pathParts,
+      fileNames: Array.from(directoryFiles.get(directoryPath) || []),
+      childDirectoryNames: Array.from(directoryChildren.get(directoryPath) || [])
+    });
+  }
+
   const candidates = Array.from(candidateMap.values()).map(candidate => {
     const directoryPath = candidate.pathParts.join("/");
     const childDirectoryNames = Array.from(directoryChildren.get(directoryPath) || []);
@@ -101,14 +124,16 @@ async function storePilotCollectCandidateDirectoriesFromFileList(files) {
 
     return {
       path: directoryPath,
+      pathParts: candidate.pathParts,
       score,
       confidence: storePilotCalculateConfidence(score),
       files: candidate.files
     };
   }).filter(candidate => candidate.score);
 
-  candidates.sort((a, b) => b.score - a.score || b.files.length - a.files.length);
-  return candidates;
+  const candidatesWithRootEvidence = storePilotAttachProjectRootEvidence(candidates, directoryMetadata);
+  candidatesWithRootEvidence.sort((a, b) => b.score - a.score || b.files.length - a.files.length);
+  return candidatesWithRootEvidence;
 }
 
 async function storePilotImportListingFileList(files, projectId = "") {
@@ -233,6 +258,7 @@ async function storePilotReadListingFiles(files) {
     imported,
     skipped,
     total: textFiles.length,
-    listings
+    listings,
+    unsupportedChromeWebStoreLocales: storePilotGetUnsupportedChromeWebStoreLocales(listings)
   };
 }

@@ -44,6 +44,65 @@ function storePilotCalculateConfidence(score) {
   return "low";
 }
 
+function storePilotGetProjectRootEvidence(fileNames = [], childDirectoryNames = []) {
+  const files = fileNames.map(name => String(name || "").toLowerCase());
+  const children = childDirectoryNames.map(name => String(name || "").toLowerCase());
+  const signals = [];
+  let score = 0;
+
+  function add(condition, points, label) {
+    if (!condition) return;
+    score += points;
+    signals.push(label);
+  }
+
+  add(children.includes(".git"), 70, ".git");
+  add(files.some(name => /^readme(?:\.[a-z0-9]+)?$/.test(name)), 45, "readme");
+  add(files.includes("manifest.json") || files.includes("manifest.firefox.json"), 55, "extension manifest");
+  add(files.includes("package.json"), 35, "package.json");
+  add(files.includes("vite.config.js") || files.includes("webpack.config.js") || files.includes("rollup.config.js"), 20, "build config");
+  add(files.some(name => /^license(?:\.[a-z0-9]+)?$/.test(name)), 15, "license");
+  add(files.includes("privacy.md") || files.includes("privacy.txt"), 15, "privacy");
+  add(files.includes("changelog.md") || files.includes("release_notes.md"), 10, "release notes");
+  add(children.includes("src"), 25, "src");
+  add(children.includes("_locales"), 25, "_locales");
+  add(children.includes("store-listing") || children.includes("store-listings"), 20, "store-listing");
+  add(children.includes("assets"), 8, "assets");
+
+  return { score, signals };
+}
+
+function storePilotAttachProjectRootEvidence(candidates, directoryMetadata) {
+  return candidates.map(candidate => {
+    const pathParts = candidate.pathParts || candidate.path.split("/").filter(Boolean);
+    const rootCandidates = pathParts.map((_, index) => {
+      const rootParts = pathParts.slice(0, index + 1);
+      const metadata = directoryMetadata.get(storePilotNormalizePath(rootParts)) || {};
+      const evidence = storePilotGetProjectRootEvidence(metadata.fileNames, metadata.childDirectoryNames);
+      return {
+        path: rootParts.join("/"),
+        name: rootParts[rootParts.length - 1] || "",
+        depth: rootParts.length,
+        ...evidence
+      };
+    }).filter(root => root.score > 0);
+    const bestRoot = rootCandidates.sort((a, b) => (
+      b.score - a.score ||
+      a.depth - b.depth
+    ))[0] || null;
+
+    if (!bestRoot) return candidate;
+
+    return {
+      ...candidate,
+      projectRootPath: bestRoot.path,
+      projectRootName: bestRoot.name,
+      projectRootScore: bestRoot.score,
+      projectRootSignals: bestRoot.signals
+    };
+  });
+}
+
 function storePilotScoreDirectory(pathParts, files, childDirectoryNames = []) {
   const path = storePilotNormalizePath(pathParts);
   const directoryNames = pathParts.map(part => part.toLowerCase());
@@ -108,22 +167,26 @@ function storePilotScoreDirectory(pathParts, files, childDirectoryNames = []) {
 
 async function storePilotCollectCandidateDirectories(directoryHandle) {
   const candidates = [];
+  const directoryMetadata = new Map();
 
   async function walk(handle, pathParts) {
     const textFiles = [];
     const childDirectoryNames = [];
+    const fileNames = [];
 
     for await (const entry of handle.values()) {
       if (entry.kind === "directory") {
+        childDirectoryNames.push(entry.name);
+
         if (storePilotShouldSkipDirectory(entry.name)) {
           continue;
         }
 
-        childDirectoryNames.push(entry.name);
         await walk(entry, [...pathParts, entry.name]);
         continue;
       }
 
+      fileNames.push(entry.name);
       const file = await entry.getFile();
 
       if (!storePilotIsPotentialListingFile(file, { allowUnknownText: false })) {
@@ -140,11 +203,18 @@ async function storePilotCollectCandidateDirectories(directoryHandle) {
       });
     }
 
+    directoryMetadata.set(storePilotNormalizePath(pathParts), {
+      pathParts,
+      fileNames,
+      childDirectoryNames
+    });
+
     if (textFiles.length) {
       const score = storePilotScoreDirectory(pathParts, textFiles, childDirectoryNames);
       if (score) {
         candidates.push({
           path: pathParts.join("/") || handle.name,
+          pathParts,
           score,
           confidence: storePilotCalculateConfidence(score),
           files: textFiles
@@ -154,6 +224,7 @@ async function storePilotCollectCandidateDirectories(directoryHandle) {
   }
 
   await walk(directoryHandle, [directoryHandle.name]);
-  candidates.sort((a, b) => b.score - a.score || b.files.length - a.files.length);
-  return candidates;
+  const candidatesWithRootEvidence = storePilotAttachProjectRootEvidence(candidates, directoryMetadata);
+  candidatesWithRootEvidence.sort((a, b) => b.score - a.score || b.files.length - a.files.length);
+  return candidatesWithRootEvidence;
 }

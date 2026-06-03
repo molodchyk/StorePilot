@@ -51,7 +51,7 @@ Then open Firefox:
 The build also creates:
 
 ```text
-artifacts/firefox/storepilot-firefox-1.0.0.zip
+artifacts/firefox/storepilot-firefox-1.0.1.zip
 ```
 
 AMO source-code upload package:
@@ -63,7 +63,7 @@ AMO source-code upload package:
 This creates:
 
 ```text
-artifacts/source/storepilot-source-1.0.0.zip
+artifacts/source/storepilot-source-1.0.1.zip
 ```
 
 ## Firefox Build Notes
