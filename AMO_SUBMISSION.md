@@ -2,6 +2,54 @@
 
 Use this file when submitting StorePilot to Firefox Add-ons.
 
+## Version 1.0.1 Fields
+
+Release Notes:
+
+```text
+StorePilot 1.0.1 improves Firefox dashboard automation and project import reliability.
+
+What's changed:
+- Improved project root detection when importing nested store-listing folders from a selected project root.
+- Added support for hyphenated regional listing filenames such as pt-BR.txt, pt-PT.txt, zh-CN.txt, and zh-TW.txt.
+- Improved fill-all language reporting so imported locale counts, matched dashboard languages, unsupported dashboard locales, and dashboard-missing supported locales are clearer.
+- Added old/new locale alias handling for dashboard matching, including he/iw, id/in, and no/nb.
+- Made the Chrome Web Store dashboard mini panel draggable and remembered its position per dashboard page.
+```
+
+Notes to Reviewer:
+
+```text
+StorePilot is a Firefox-first extension for browser extension publishers. It imports localized listing text from user-selected local files/folders and can fill Chrome Web Store Developer Dashboard language fields when that dashboard is opened in Firefox.
+
+Version 1.0.1 changes:
+- The import scanner now detects likely project roots more accurately by looking at common local project markers such as README files, manifests, .git, src, _locales, and store-listing folders. This only affects local user-selected folders.
+- Locale filename parsing now accepts both underscore and hyphen regional forms, for example pt_BR.txt and pt-BR.txt.
+- Fill-all dashboard reporting now makes a clearer distinction between imported listing locales, dashboard languages found, locales filled, unsupported locales not offered by the dashboard, and supported imported locales not offered by the dashboard.
+- The dashboard mini panel can now be dragged by its title. The position is stored in page localStorage only.
+
+Privacy/data:
+- StorePilot has no analytics, tracking, telemetry, remote server, or off-device data transmission.
+- Imported listing text, project metadata, preferences, and folder permissions are stored only in local browser extension storage / browser-managed local handles.
+- The Firefox manifest declares browser_specific_settings.gecko.data_collection_permissions.required = ["none"].
+
+Why Chrome Web Store host permissions are requested:
+- StorePilot runs on https://chrome.google.com/webstore/devconsole/* and https://chromewebstore.google.com/devconsole/* so it can fill listing fields at the user's request.
+- Chrome itself blocks Chrome extensions from scripting Chrome Web Store pages, so the automated dashboard workflow is intentionally implemented for Firefox.
+
+Build:
+- Source is not bundled, minified, transpiled, or obfuscated.
+- The submitted zip is built from this repository with:
+  powershell -ExecutionPolicy Bypass -File scripts\build-firefox.ps1
+- The build copies shared source into dist-firefox, applies Firefox-only overrides from src-firefox, copies _locales, and writes artifacts/firefox/storepilot-firefox-1.0.1.zip.
+- The build script uses System.IO.Compression.ZipArchive instead of PowerShell Compress-Archive so zip entries use forward slashes, which AMO validation requires.
+
+Source package:
+- If source code is requested, upload artifacts/source/storepilot-source-1.0.1.zip.
+- It was generated with:
+  powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
+```
+
 ## Add-on Page Fields
 
 Name:
