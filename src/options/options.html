@@ -20,40 +20,78 @@
             <button type="button" data-theme-choice="light" data-i18n="themeLight">Light</button>
             <button type="button" data-theme-choice="dark" data-i18n="themeDark">Dark</button>
           </div>
-          <button id="syncAllProjects" type="button" data-i18n="syncAll">Sync all</button>
-          <button id="clearListings" type="button" data-i18n="clear">Clear</button>
         </div>
       </header>
 
-      <section class="project-panel">
-        <div>
+      <section class="project-panel" aria-label="Project">
+        <div class="project-select-block">
           <label for="projectSelect" data-i18n="activeProject">Active project</label>
           <select id="projectSelect"></select>
         </div>
-        <div class="button-row">
-          <button id="syncProject" type="button" data-i18n="syncActive">Sync active</button>
-          <button id="deleteProject" type="button" data-i18n="deleteProject">Delete project</button>
-        </div>
-      </section>
-
-      <section class="import-panel">
-        <div id="dropZone" class="drop-zone">
-          <div class="button-row">
-            <button id="importFolder" type="button" data-i18n="importProjectFolder">Import project/folder</button>
-            <label class="file-button">
-              <span data-i18n="importFiles">Import files</span>
-              <input id="listingFiles" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" multiple>
-            </label>
-          </div>
+        <div id="dropZone" class="project-actions">
+          <button id="importFolder" type="button" data-i18n="importProjectFolder">Import project/folder</button>
+          <button id="deleteProject" class="danger-button" type="button" data-i18n="deleteProject">Delete project</button>
           <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" webkitdirectory multiple>
-          <p class="hint" data-i18n="importHintFlexible">Select a project root, a store-listing folder, or a direct listing folder.</p>
-          <p class="hint"><span data-i18n="importHintLocaleFiles">StorePilot looks for locale-named listing files such as</span> <code>en.txt</code>, <code>de.md</code>, <span data-i18n="or">or</span> <code>pt_BR.markdown</code>.</p>
-          <p class="hint" data-i18n="importHintDrag">You can also drag direct locale listing files onto this panel.</p>
         </div>
-        <p id="importStatus" class="status" role="status"></p>
+        <p id="importStatus" class="status project-status" role="status"></p>
       </section>
 
-      <section>
+      <section class="status-cards" aria-label="Project status">
+        <button id="listingsCard" class="status-card" type="button" data-detail-tab-target="locales">
+          <span class="card-label" data-i18n="importedListings">Imported Listings</span>
+          <strong id="listingsCardValue">0</strong>
+          <span id="listingsCardMeta">No listings imported</span>
+        </button>
+        <button id="mediaCard" class="status-card" type="button" data-detail-tab-target="media">
+          <span class="card-label" data-i18n="storeMediaAssets">Store Media Assets</span>
+          <strong id="mediaCardValue">Not scanned</strong>
+          <span id="mediaCardMeta">Re-import the project folder to scan media assets.</span>
+        </button>
+        <button id="privacyCard" class="status-card" type="button" data-detail-tab-target="privacy">
+          <span class="card-label" data-i18n="privacyDocument">Privacy Document</span>
+          <strong id="privacyCardValue">Not scanned</strong>
+          <span id="privacyCardMeta">Re-import the project folder to scan the privacy document.</span>
+        </button>
+        <button id="sourceCard" class="status-card" type="button" data-detail-tab-target="projects">
+          <span class="card-label">Project Source</span>
+          <strong id="sourceCardValue">No active project</strong>
+          <span id="sourceCardMeta">Import a project folder to begin.</span>
+        </button>
+      </section>
+
+      <nav class="detail-tabs" aria-label="Details">
+        <button type="button" data-detail-tab="locales" aria-selected="true" data-i18n="importedListings">Imported Listings</button>
+        <button type="button" data-detail-tab="media" data-i18n="storeMediaAssets">Store Media Assets</button>
+        <button type="button" data-detail-tab="privacy" data-i18n="privacyDocument">Privacy Document</button>
+        <button type="button" data-detail-tab="projects" data-i18n="projects">Projects</button>
+        <button type="button" data-detail-tab="reference">Reference</button>
+      </nav>
+
+      <section id="localesPanel" class="detail-panel" data-detail-panel="locales">
+        <div class="section-heading">
+          <h2 data-i18n="importedListings">Imported Listings</h2>
+          <span id="summary" data-i18n="noListingsImported">No listings imported</span>
+        </div>
+        <div id="listingTable" class="listing-table" aria-live="polite"></div>
+      </section>
+
+      <section id="mediaPanel" class="detail-panel" data-detail-panel="media" hidden>
+        <div class="section-heading">
+          <h2 data-i18n="storeMediaAssets">Store Media Assets</h2>
+          <span id="mediaSummary" data-i18n="mediaAssetsNotScanned">Not scanned</span>
+        </div>
+        <div id="mediaTable" class="media-table" aria-live="polite"></div>
+      </section>
+
+      <section id="privacyPanel" class="detail-panel" data-detail-panel="privacy" hidden>
+        <div class="section-heading">
+          <h2 data-i18n="privacyDocument">Privacy Document</h2>
+          <span id="privacySummary" data-i18n="privacyDocNotScanned">Not scanned</span>
+        </div>
+        <div id="privacyTable" class="privacy-table" aria-live="polite"></div>
+      </section>
+
+      <section id="projectsPanel" class="detail-panel" data-detail-panel="projects" hidden>
         <div class="section-heading">
           <h2 data-i18n="projects">Projects</h2>
           <span id="projectSummary" data-i18n="noProjects">No projects</span>
@@ -61,12 +99,72 @@
         <div id="projectTable" class="project-table" aria-live="polite"></div>
       </section>
 
-      <section>
+      <section id="referencePanel" class="detail-panel reference-panel" data-detail-panel="reference" hidden>
         <div class="section-heading">
-          <h2 data-i18n="importedListings">Imported Listings</h2>
-          <span id="summary" data-i18n="noListingsImported">No listings imported</span>
+          <h2>Reference</h2>
+          <span data-i18n="privacyDocReferenceTitle">Privacy automation document reference</span>
         </div>
-        <div id="listingTable" class="listing-table" aria-live="polite"></div>
+        <div class="reference-content">
+          <section>
+            <h3 data-i18n="privacyDocReferenceTitle">Privacy automation document reference</h3>
+            <p data-i18n="privacyDocReferenceIntro">StorePilot can scan one project document for Chrome Web Store privacy fields. Use these canonical keys so the scanner can route text without guessing.</p>
+            <pre><code>[privacy]
+single_purpose:
+...
+
+permission.storage:
+...
+
+permission.alarms:
+...
+
+host_permission:
+...
+
+remote_code:
+...
+
+privacy_policy_url:
+https://example.com/privacy</code></pre>
+            <p data-i18n="privacyDocPermissionRule">For permission justifications, use permission.&lt;manifest permission code&gt;. The suffix should match the code in your manifest permissions, optional_permissions, host_permissions, or content_scripts.matches.</p>
+            <p data-i18n="privacyDocNamingGuideline">Recommended filename: docs/chrome-web-store-privacy-form.md. StorePilot also accepts other .md or .txt files when the content contains a [privacy] block and canonical keys, but that filename gives the scanner the strongest signal.</p>
+          </section>
+          <section class="reference-grid" aria-label="Common privacy document keys">
+            <div>
+              <h3 data-i18n="privacyDocCoreKeys">Core keys</h3>
+              <ul>
+                <li><code>single_purpose</code></li>
+                <li><code>remote_code</code></li>
+                <li><code>privacy_policy_url</code></li>
+                <li><code>host_permission</code></li>
+              </ul>
+            </div>
+            <div>
+              <h3 data-i18n="privacyDocCommonPermissions">Common permission keys</h3>
+              <ul>
+                <li><code>permission.storage</code></li>
+                <li><code>permission.alarms</code></li>
+                <li><code>permission.downloads</code></li>
+                <li><code>permission.activeTab</code></li>
+                <li><code>permission.scripting</code></li>
+                <li><code>permission.tabs</code></li>
+                <li><code>permission.notifications</code></li>
+                <li><code>permission.contextMenus</code></li>
+                <li><code>permission.declarativeNetRequest</code></li>
+                <li><code>permission.declarativeNetRequestWithHostAccess</code></li>
+                <li><code>permission.sidePanel</code></li>
+                <li><code>permission.cookies</code></li>
+                <li><code>permission.webRequest</code></li>
+                <li><code>permission.webNavigation</code></li>
+                <li><code>permission.identity</code></li>
+                <li><code>permission.offscreen</code></li>
+                <li><code>permission.nativeMessaging</code></li>
+                <li><code>permission.debugger</code></li>
+              </ul>
+            </div>
+          </section>
+          <p class="hint" data-i18n="privacyDocFutureProof">If a permission is not listed here, use the same pattern anyway, for example permission.bookmarks or permission.system.display. StorePilot should treat the manifest code itself as the source of truth.</p>
+        </div>
       </section>
     </main>
 
@@ -76,9 +174,12 @@
     <script src="../shared/projects.js"></script>
     <script src="../shared/handles.js"></script>
     <script src="../shared/directory-detection.js"></script>
+    <script src="../shared/media-assets.js"></script>
+    <script src="../shared/privacy-doc.js"></script>
     <script src="../shared/storage.js"></script>
     <script src="../shared/importers.js"></script>
-    <script src="../shared/sync.js"></script>
+    <script src="../project-overrides.js"></script>
+    <script src="../import-ui.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

@@ -20,26 +20,17 @@
   "themeDark": {
     "message": "Σκούρο"
   },
-  "syncAll": {
-    "message": "Συγχρονισμός όλων"
-  },
   "clear": {
     "message": "Εκκαθάριση"
   },
   "activeProject": {
     "message": "Ενεργό έργο"
   },
-  "syncActive": {
-    "message": "Συγχρονισμός ενεργού"
-  },
   "deleteProject": {
     "message": "Διαγραφή έργου"
   },
   "importProjectFolder": {
     "message": "Εισαγωγή έργου/φακέλου"
-  },
-  "importFiles": {
-    "message": "Εισαγωγή αρχείων"
   },
   "importHintFlexible": {
     "message": "Select a project root, a store-listing folder, or a direct listing folder."
@@ -68,12 +59,6 @@
   "locale": {
     "message": "Τοπική ρύθμιση"
   },
-  "syncProject": {
-    "message": "Συγχρονισμός έργου"
-  },
-  "fillField": {
-    "message": "Συμπλήρωση πεδίου"
-  },
   "fillCurrentLanguage": {
     "message": "Συμπλήρωση τρέχουσας γλώσσας"
   },
@@ -82,9 +67,6 @@
   },
   "abortFillAll": {
     "message": "Διακοπή συμπλήρωσης όλων"
-  },
-  "copyText": {
-    "message": "Αντιγραφή κειμένου"
   },
   "diagnosePage": {
     "message": "Διάγνωση σελίδας"
@@ -109,9 +91,6 @@
   },
   "never": {
     "message": "Never"
-  },
-  "neverSynced": {
-    "message": "Never synced"
   },
   "reimportFolderToRefresh": {
     "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
@@ -148,9 +127,6 @@
   },
   "detectionConfidence": {
     "message": "Detection: $1 confidence"
-  },
-  "refreshSyncEnabled": {
-    "message": "Refresh: sync enabled"
   },
   "refreshReimportFolder": {
     "message": "Refresh: re-import folder"
@@ -194,15 +170,6 @@
   "importFailed": {
     "message": "Import failed: $1"
   },
-  "cannotAutoSync": {
-    "message": "This project cannot auto-sync in this browser. Re-import the project folder to refresh listings."
-  },
-  "noSavedFolderPermission": {
-    "message": "No projects have saved folder permission. Re-import a project folder to refresh it."
-  },
-  "syncedProjectsNeedAttention": {
-    "message": "Synced $1 project(s); $2 need attention."
-  },
   "deleteProjectConfirm": {
     "message": "Delete StorePilot project \"$1\"?"
   },
@@ -221,9 +188,6 @@
   "noProjectsYet": {
     "message": "No projects yet"
   },
-  "chromeBlocksDashboard": {
-    "message": "Chrome blocks StorePilot from reading the Chrome Web Store page, so the current dashboard locale cannot be detected. Select the locale here and use Copy text."
-  },
   "noListingTextSelected": {
     "message": "No listing text selected to copy."
   },
@@ -239,11 +203,8 @@
   "notDashboardPage": {
     "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
   },
-  "chromeBlocksFillActions": {
-    "message": "Chrome blocks extensions from scripting the Chrome Web Store dashboard. Fill actions cannot run here; use Copy text and paste manually."
-  },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact Chrome error."
+    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
   },
   "diagnosticsComplete": {
     "message": "Diagnostics complete."
@@ -266,12 +227,6 @@
   "projectSelected": {
     "message": "Project selected."
   },
-  "localeSelected": {
-    "message": "Locale selected: $1."
-  },
-  "syncFailed": {
-    "message": "Sync failed: $1"
-  },
   "fillingAllLanguages": {
     "message": "Filling all languages..."
   },
@@ -290,14 +245,8 @@
   "projectNotFound": {
     "message": "Project not found."
   },
-  "chooseProjectFolderAgain": {
-    "message": "Choose the project folder again to enable sync."
-  },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before sync."
-  },
-  "syncedLocalesFrom": {
-    "message": "Synced $1 locale(s) from $2."
+    "message": "Folder permission is needed before reading media files."
   },
   "noFolderHandleSaved": {
     "message": "No folder handle saved."
@@ -380,14 +329,8 @@
   "retrying": {
     "message": "Retrying"
   },
-  "firefoxImportPrompt": {
-    "message": "Firefox will ask for confirmation before letting StorePilot read the selected project folder. That prompt is expected."
-  },
   "openProjectImport": {
     "message": "Open project import"
-  },
-  "firefoxImportHandledInOptions": {
-    "message": "Firefox folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
   },
   "openingProjectImport": {
     "message": "Opening project import..."
@@ -409,9 +352,6 @@
   },
   "manualFileImport": {
     "message": "Manual file import"
-  },
-  "firefoxImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. Firefox will ask you to confirm folder access."
   },
   "selectedDashboardLanguage": {
     "message": "Selected $1."
@@ -445,5 +385,23 @@
   },
   "loadingListings": {
     "message": "Loading listings..."
+  },
+  "folderAccessPrompt": {
+    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+  },
+  "folderImportHandledInOptions": {
+    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+  },
+  "folderImportHintFlexible": {
+    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+  },
+  "privacySkippedField": {
+    "message": "Skipped privacy field: $1."
+  },
+  "privacySkippedFields": {
+    "message": "Skipped $1 privacy field(s): $2."
+  },
+  "privacyFieldDidNotAcceptValue": {
+    "message": "Privacy field did not accept value: $1."
   }
 }

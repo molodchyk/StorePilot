@@ -20,26 +20,17 @@
   "themeDark": {
     "message": "Dunkel"
   },
-  "syncAll": {
-    "message": "Alle synchronisieren"
-  },
   "clear": {
     "message": "Leeren"
   },
   "activeProject": {
     "message": "Aktives Projekt"
   },
-  "syncActive": {
-    "message": "Aktives synchronisieren"
-  },
   "deleteProject": {
     "message": "Projekt löschen"
   },
   "importProjectFolder": {
     "message": "Projekt/Ordner importieren"
-  },
-  "importFiles": {
-    "message": "Dateien importieren"
   },
   "importHintFlexible": {
     "message": "Wähle einen Projektordner, einen store-listing-Ordner oder einen direkten Listing-Ordner."
@@ -68,12 +59,6 @@
   "locale": {
     "message": "Locale"
   },
-  "syncProject": {
-    "message": "Projekt synchronisieren"
-  },
-  "fillField": {
-    "message": "Feld ausfüllen"
-  },
   "fillCurrentLanguage": {
     "message": "Aktuelle Sprache ausfüllen"
   },
@@ -82,9 +67,6 @@
   },
   "abortFillAll": {
     "message": "Alles ausfüllen abbrechen"
-  },
-  "copyText": {
-    "message": "Text kopieren"
   },
   "diagnosePage": {
     "message": "Seite diagnostizieren"
@@ -109,9 +91,6 @@
   },
   "never": {
     "message": "Nie"
-  },
-  "neverSynced": {
-    "message": "Nie synchronisiert"
   },
   "reimportFolderToRefresh": {
     "message": "Dieses Projekt wurde über den Datei-/Ordnerauswahldialog importiert. Importiere den Projektordner erneut, um es zu aktualisieren."
@@ -148,9 +127,6 @@
   },
   "detectionConfidence": {
     "message": "Erkennung: $1 Sicherheit"
-  },
-  "refreshSyncEnabled": {
-    "message": "Aktualisierung: Synchronisierung aktiviert"
   },
   "refreshReimportFolder": {
     "message": "Aktualisierung: Ordner erneut importieren"
@@ -194,15 +170,6 @@
   "importFailed": {
     "message": "Import fehlgeschlagen: $1"
   },
-  "cannotAutoSync": {
-    "message": "Dieses Projekt kann in diesem Browser nicht automatisch synchronisiert werden. Importiere den Projektordner erneut, um die Listings zu aktualisieren."
-  },
-  "noSavedFolderPermission": {
-    "message": "Keine Projekte haben gespeicherte Ordnerberechtigung. Importiere einen Projektordner erneut, um ihn zu aktualisieren."
-  },
-  "syncedProjectsNeedAttention": {
-    "message": "$1 Projekt(e) synchronisiert; $2 benötigen Aufmerksamkeit."
-  },
   "deleteProjectConfirm": {
     "message": "StorePilot-Projekt \"$1\" löschen?"
   },
@@ -221,9 +188,6 @@
   "noProjectsYet": {
     "message": "Noch keine Projekte"
   },
-  "chromeBlocksDashboard": {
-    "message": "Chrome blocks StorePilot from reading the Chrome Web Store page, so the current dashboard locale cannot be detected. Select the locale here and use Copy text."
-  },
   "noListingTextSelected": {
     "message": "Kein Listing-Text zum Kopieren ausgewählt."
   },
@@ -239,11 +203,8 @@
   "notDashboardPage": {
     "message": "Der aktive Tab ist keine Chrome Web Store Developer Dashboard-Seite."
   },
-  "chromeBlocksFillActions": {
-    "message": "Chrome blocks extensions from scripting the Chrome Web Store dashboard. Fill actions cannot run here; use Copy text and paste manually."
-  },
   "couldNotConnectDashboard": {
-    "message": "StorePilot konnte keine Verbindung zu diesem Dashboard-Tab herstellen. Öffne die Diagnose für den genauen Chrome-Fehler."
+    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
   },
   "diagnosticsComplete": {
     "message": "Diagnose abgeschlossen."
@@ -266,12 +227,6 @@
   "projectSelected": {
     "message": "Projekt ausgewählt."
   },
-  "localeSelected": {
-    "message": "Locale ausgewählt: $1."
-  },
-  "syncFailed": {
-    "message": "Synchronisierung fehlgeschlagen: $1"
-  },
   "fillingAllLanguages": {
     "message": "Alle Sprachen werden ausgefüllt..."
   },
@@ -290,14 +245,8 @@
   "projectNotFound": {
     "message": "Projekt nicht gefunden."
   },
-  "chooseProjectFolderAgain": {
-    "message": "Wähle den Projektordner erneut aus, um die Synchronisierung zu aktivieren."
-  },
   "folderPermissionNeeded": {
-    "message": "Vor der Synchronisierung ist eine Ordnerberechtigung erforderlich."
-  },
-  "syncedLocalesFrom": {
-    "message": "$1 Locale(s) aus $2 synchronisiert."
+    "message": "Folder permission is needed before reading media files."
   },
   "noFolderHandleSaved": {
     "message": "Keine Ordnerberechtigung gespeichert."
@@ -380,14 +329,8 @@
   "retrying": {
     "message": "Versuche erneut"
   },
-  "firefoxImportPrompt": {
-    "message": "Firefox fragt nach Bestätigung, bevor StorePilot den ausgewählten Projektordner lesen darf. Diese Abfrage ist erwartet."
-  },
   "openProjectImport": {
     "message": "Projektimport in Optionen öffnen"
-  },
-  "firefoxImportHandledInOptions": {
-    "message": "Der Firefox-Ordnerimport wird im Optionen-Tab ausgeführt, damit die Ordnerbestätigung zuverlässig abgeschlossen werden kann."
   },
   "openingProjectImport": {
     "message": "Projektimport wird geöffnet..."
@@ -409,9 +352,6 @@
   },
   "manualFileImport": {
     "message": "Manueller Dateiimport"
-  },
-  "firefoxImportHintFlexible": {
-    "message": "Wähle einen Projektordner, einen store-listing-Ordner oder einen direkten Listing-Ordner. Firefox fragt nach Bestätigung für den Ordnerzugriff."
   },
   "selectedDashboardLanguage": {
     "message": "$1 ausgewählt."
@@ -445,5 +385,23 @@
   },
   "loadingListings": {
     "message": "Listings werden geladen..."
+  },
+  "folderAccessPrompt": {
+    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+  },
+  "folderImportHandledInOptions": {
+    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+  },
+  "folderImportHintFlexible": {
+    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+  },
+  "privacySkippedField": {
+    "message": "Skipped privacy field: $1."
+  },
+  "privacySkippedFields": {
+    "message": "Skipped $1 privacy field(s): $2."
+  },
+  "privacyFieldDidNotAcceptValue": {
+    "message": "Privacy field did not accept value: $1."
   }
 }

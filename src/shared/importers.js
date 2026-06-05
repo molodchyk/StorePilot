@@ -16,6 +16,12 @@ async function storePilotImportListingFiles(files) {
   const project = activeProject || storePilotCreateProject(storePilotText("manualImport", "Manual import"));
   const nextListings = { ...(project.listings || {}) };
   const textFiles = Array.from(files).filter(storePilotIsPotentialListingFile);
+  const scannedPrivacyDoc = typeof storePilotDiscoverPrivacyDocFromFileList === "function"
+    ? await storePilotDiscoverPrivacyDocFromFileList(files)
+    : project.privacyDoc || null;
+  const privacyDoc = scannedPrivacyDoc && scannedPrivacyDoc.file
+    ? scannedPrivacyDoc
+    : project.privacyDoc || scannedPrivacyDoc || null;
   const skipped = [];
   let imported = 0;
 
@@ -34,6 +40,7 @@ async function storePilotImportListingFiles(files) {
     ...project,
     listings: nextListings,
     sourcePath: project.sourcePath || storePilotText("manualFileImport", "Manual file import"),
+    privacyDoc,
     lastSyncedAt: storePilotFormatTimestamp()
   });
 
@@ -42,6 +49,7 @@ async function storePilotImportListingFiles(files) {
     skipped,
     total: textFiles.length,
     listings: nextListings,
+    privacyDoc,
     unsupportedChromeWebStoreLocales: storePilotGetUnsupportedChromeWebStoreLocales(nextListings),
     project
   };
@@ -159,11 +167,19 @@ async function storePilotImportListingFileList(files, projectId = "") {
   });
   const project = existingProject || storePilotCreateProject(projectName);
   const result = await storePilotReadListingFiles(best.files);
+  const mediaAssets = typeof storePilotDiscoverMediaAssetsFromFileList === "function"
+    ? await storePilotDiscoverMediaAssetsFromFileList(files)
+    : project.mediaAssets || null;
+  const privacyDoc = typeof storePilotDiscoverPrivacyDocFromFileList === "function"
+    ? await storePilotDiscoverPrivacyDocFromFileList(files)
+    : project.privacyDoc || null;
   const nextProject = {
     ...project,
     name: project.name || rootName,
     listings: result.listings,
     sourcePath: best.path,
+    mediaAssets,
+    privacyDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score,
@@ -172,11 +188,16 @@ async function storePilotImportListingFileList(files, projectId = "") {
   };
 
   await storePilotUpsertProject(nextProject);
+  if (typeof storePilotSaveProjectMediaFilesFromFileList === "function") {
+    await storePilotSaveProjectMediaFilesFromFileList(nextProject.id, mediaAssets, files);
+  }
 
   return {
     ...result,
     project: nextProject,
     sourcePath: best.path,
+    mediaAssets,
+    privacyDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score
@@ -212,11 +233,19 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
   });
   const project = existingProject || storePilotCreateProject(projectName);
   const result = await storePilotReadListingFiles(best.files);
+  const mediaAssets = typeof storePilotDiscoverMediaAssetsFromDirectory === "function"
+    ? await storePilotDiscoverMediaAssetsFromDirectory(directoryHandle)
+    : project.mediaAssets || null;
+  const privacyDoc = typeof storePilotDiscoverPrivacyDocFromDirectory === "function"
+    ? await storePilotDiscoverPrivacyDocFromDirectory(directoryHandle)
+    : project.privacyDoc || null;
   const nextProject = {
     ...project,
     name: project.name || directoryHandle.name,
     listings: result.listings,
     sourcePath: best.path,
+    mediaAssets,
+    privacyDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score,
@@ -225,12 +254,17 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
   };
 
   await storePilotSaveProjectHandle(nextProject.id, directoryHandle);
+  if (typeof storePilotSaveProjectMediaFilesFromDirectory === "function") {
+    await storePilotSaveProjectMediaFilesFromDirectory(nextProject.id, mediaAssets, directoryHandle);
+  }
   await storePilotUpsertProject(nextProject);
 
   return {
     ...result,
     project: nextProject,
     sourcePath: best.path,
+    mediaAssets,
+    privacyDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score

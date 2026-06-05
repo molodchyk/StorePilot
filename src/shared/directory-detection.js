@@ -58,7 +58,7 @@ function storePilotGetProjectRootEvidence(fileNames = [], childDirectoryNames = 
 
   add(children.includes(".git"), 70, ".git");
   add(files.some(name => /^readme(?:\.[a-z0-9]+)?$/.test(name)), 45, "readme");
-  add(files.includes("manifest.json") || files.includes("manifest.firefox.json"), 55, "extension manifest");
+  add(files.includes("manifest.json"), 55, "extension manifest");
   add(files.includes("package.json"), 35, "package.json");
   add(files.includes("vite.config.js") || files.includes("webpack.config.js") || files.includes("rollup.config.js"), 20, "build config");
   add(files.some(name => /^license(?:\.[a-z0-9]+)?$/.test(name)), 15, "license");
@@ -146,13 +146,11 @@ function storePilotScoreDirectory(pathParts, files, childDirectoryNames = []) {
 
   if (path.endsWith("store-listing/chrome-web-store/listing")) score += 35;
   if (path.endsWith("chrome-web-store/listing")) score += 25;
-  if (path.endsWith("store-listing/firefox-add-ons/listing")) score += 20;
 
   score -= storePilotCountMatches(directoryNames, [
     /^node_modules$/,
     /^\.git$/,
     /^dist$/,
-    /^dist-firefox$/,
     /^src$/,
     /^scripts$/,
     /^release$/,

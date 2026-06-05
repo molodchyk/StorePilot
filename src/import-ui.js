@@ -1,13 +1,13 @@
 (function () {
-  const STOREPILOT_FIREFOX_IMPORT_MESSAGE =
-    getMessage("firefoxImportPrompt", "Firefox will ask for confirmation before letting StorePilot read the selected project folder. That prompt is expected.");
+  const STOREPILOT_FOLDER_ACCESS_MESSAGE =
+    getMessage("folderAccessPrompt", "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected.");
 
   function getApi() {
-    return globalThis.browser || globalThis.chrome;
+    return globalThis.browser;
   }
 
   function getMessage(key, fallback) {
-    const api = globalThis.browser || globalThis.chrome;
+    const api = globalThis.browser;
     return api && api.i18n && api.i18n.getMessage
       ? api.i18n.getMessage(key) || fallback
       : fallback;
@@ -17,14 +17,6 @@
     const clone = button.cloneNode(true);
     button.replaceWith(clone);
     return clone;
-  }
-
-  function removeElement(element) {
-    if (element) element.remove();
-  }
-
-  function hideElement(element) {
-    if (element) element.hidden = true;
   }
 
   function setStatus(message, isError = false) {
@@ -48,44 +40,29 @@
   }
 
   function patchOptionsPage() {
-    removeElement(document.getElementById("syncAllProjects"));
-    removeElement(document.getElementById("syncProject"));
-    removeElement(document.getElementById("clearListings"));
-    removeElement(document.getElementById("listingFiles") && document.getElementById("listingFiles").closest(".file-button"));
-
     const importFolder = document.getElementById("importFolder");
     if (importFolder) {
-      importFolder.title = STOREPILOT_FIREFOX_IMPORT_MESSAGE;
-      importFolder.addEventListener("click", () => setStatus(STOREPILOT_FIREFOX_IMPORT_MESSAGE));
+      importFolder.title = STOREPILOT_FOLDER_ACCESS_MESSAGE;
+      importFolder.addEventListener("click", () => setStatus(STOREPILOT_FOLDER_ACCESS_MESSAGE));
     }
 
     document.querySelectorAll(".hint").forEach(hint => {
       if (hint.dataset.i18n === "importHintFlexible") {
         hint.textContent = getMessage(
-          "firefoxImportHintFlexible",
-          "Select a project root, a store-listing folder, or a direct listing folder. Firefox will ask you to confirm folder access."
+          "folderImportHintFlexible",
+          "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
         );
       }
     });
   }
 
   function patchPopup() {
-    removeElement(document.getElementById("listingFiles") && document.getElementById("listingFiles").closest(".file-button"));
-    removeElement(document.getElementById("syncProject"));
-    removeElement(document.getElementById("fillField"));
-    removeElement(document.getElementById("copyText"));
-    removeElement(document.getElementById("diagnosePage"));
-    removeElement(document.getElementById("openOptions"));
-
-    const localeSelect = document.getElementById("localeSelect");
-    removeElement(localeSelect && localeSelect.closest(".project-picker"));
-
     const importFolder = document.getElementById("importFolder");
     const button = importFolder && cloneButtonWithoutListeners(importFolder);
     if (!button) return;
 
     button.textContent = getMessage("openProjectImport", "Open project import");
-    button.title = getMessage("firefoxImportHandledInOptions", "Firefox folder import is handled in the options tab, where the folder confirmation prompt can complete reliably.");
+    button.title = getMessage("folderImportHandledInOptions", "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably.");
     button.addEventListener("click", () => {
       setStatus(getMessage("openingProjectImport", "Opening project import..."));
       openOptionsPage();

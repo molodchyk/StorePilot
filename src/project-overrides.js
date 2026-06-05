@@ -6,8 +6,6 @@
   const GENERIC_PROJECT_FOLDER_NAMES = new Set([
     "chrome",
     "chrome-web-store",
-    "firefox",
-    "firefox-add-ons",
     "listing",
     "listings",
     "metadata",
@@ -61,7 +59,6 @@
     const storeListingIndex = lowerParts.findIndex(part => part === "store-listing" || part === "store-listings");
     const knownStoreIndex = lowerParts.findIndex(part => (
       part === "chrome-web-store" ||
-      part === "firefox-add-ons" ||
       part === "edge-add-ons" ||
       part === "opera-add-ons"
     ));
@@ -113,7 +110,7 @@
     return createListingSignature(project.listings) === listingSignature;
   }
 
-  function findExistingFirefoxProject(state, options) {
+  function findExistingProjectByImportIdentity(state, options) {
     const {
       projectId = "",
       names = [],
@@ -159,7 +156,7 @@
     return state.projects.find(project => normalizedNames.includes(normalizeIdentity(project.name)));
   }
 
-  function isSameFirefoxProject(project, nextProject) {
+  function isSameImportedProject(project, nextProject) {
     if (!project || !nextProject || project.id === nextProject.id) return false;
 
     const projectRootPath = storePilotNormalizeSourcePath(project.projectRootPath);
@@ -185,9 +182,9 @@
     return sameRootPath || sameSourcePath || sameListingPath || sameSignature || compatibleGenericName;
   }
 
-  async function upsertAndMergeFirefoxProject(nextProject) {
+  async function upsertAndMergeImportedProject(nextProject) {
     const state = await storePilotGetProjectsState();
-    const duplicates = state.projects.filter(project => isSameFirefoxProject(project, nextProject));
+    const duplicates = state.projects.filter(project => isSameImportedProject(project, nextProject));
     const duplicateIds = new Set(duplicates.map(project => project.id));
     const mergedProject = duplicates.reduce((merged, duplicate) => ({
       ...duplicate,
@@ -198,6 +195,8 @@
       projectRootPath: merged.projectRootPath || duplicate.projectRootPath,
       listingPath: merged.listingPath || duplicate.listingPath,
       listingSignature: merged.listingSignature || duplicate.listingSignature,
+      mediaAssets: merged.mediaAssets || duplicate.mediaAssets || null,
+      privacyDoc: merged.privacyDoc || duplicate.privacyDoc || null,
       hasFolderHandle: Boolean(merged.hasFolderHandle || duplicate.hasFolderHandle)
     }), nextProject);
     const projects = state.projects
@@ -219,18 +218,21 @@
       if (duplicateId !== mergedProject.id && typeof storePilotDeleteProjectHandle === "function") {
         await storePilotDeleteProjectHandle(duplicateId);
       }
+      if (duplicateId !== mergedProject.id && typeof storePilotDeleteProjectMediaFiles === "function") {
+        await storePilotDeleteProjectMediaFiles(duplicateId);
+      }
     }
 
     return mergedProject;
   }
 
-  async function upsertFirefoxImport({ best, candidates, directoryName, projectId, hasFolderHandle }) {
+  async function upsertProjectImport({ best, candidates, directoryName, projectId, hasFolderHandle, mediaAssets = null, privacyDoc = null }) {
     const result = await storePilotReadListingFiles(best.files);
     const rootInfo = getProjectRootInfo(best, directoryName);
     const listingSignature = createListingSignature(result.listings);
     const state = await storePilotGetProjectsState();
     const nameCandidates = getProjectNameCandidates(best.path, directoryName, rootInfo);
-    const existingProject = findExistingFirefoxProject(state, {
+    const existingProject = findExistingProjectByImportIdentity(state, {
       projectId,
       names: nameCandidates,
       sourcePath: rootInfo.rootPath || best.path,
@@ -256,6 +258,8 @@
       projectRootPath,
       listingPath: best.path,
       listingSignature,
+      mediaAssets: mediaAssets || project.mediaAssets || null,
+      privacyDoc: privacyDoc || project.privacyDoc || null,
       projectRootScore: rootInfo.rootScore,
       projectRootSignals: rootInfo.rootSignals,
       candidateCount: candidates.length,
@@ -265,13 +269,15 @@
       hasFolderHandle
     };
 
-    const mergedProject = await upsertAndMergeFirefoxProject(nextProject);
+    const mergedProject = await upsertAndMergeImportedProject(nextProject);
 
     return {
       ...result,
       project: mergedProject,
       sourcePath: mergedProject.sourcePath,
       listingPath: mergedProject.listingPath,
+      mediaAssets: mergedProject.mediaAssets,
+      privacyDoc: mergedProject.privacyDoc,
       candidateCount: candidates.length,
       confidence: best.confidence,
       score: best.score
@@ -286,15 +292,29 @@
     }
 
     const best = candidates[0];
+    const mediaAssets = typeof storePilotDiscoverMediaAssetsFromFileList === "function"
+      ? await storePilotDiscoverMediaAssetsFromFileList(files)
+      : null;
+    const privacyDoc = typeof storePilotDiscoverPrivacyDocFromFileList === "function"
+      ? await storePilotDiscoverPrivacyDocFromFileList(files)
+      : null;
     const directoryName = normalizePathParts(best.path)[0] || text("importedProject", "Imported project");
 
-    return upsertFirefoxImport({
+    const result = await upsertProjectImport({
       best,
       candidates,
       directoryName,
       projectId,
-      hasFolderHandle: false
+      hasFolderHandle: false,
+      mediaAssets,
+      privacyDoc
     });
+
+    if (typeof storePilotSaveProjectMediaFilesFromFileList === "function") {
+      await storePilotSaveProjectMediaFilesFromFileList(result.project.id, result.mediaAssets, files);
+    }
+
+    return result;
   };
 
   globalThis.storePilotImportListingDirectory = async function storePilotImportListingDirectory(directoryHandle, projectId = "") {
@@ -313,15 +333,26 @@
     }
 
     const best = candidates[0];
-    const result = await upsertFirefoxImport({
+    const mediaAssets = typeof storePilotDiscoverMediaAssetsFromDirectory === "function"
+      ? await storePilotDiscoverMediaAssetsFromDirectory(directoryHandle)
+      : null;
+    const privacyDoc = typeof storePilotDiscoverPrivacyDocFromDirectory === "function"
+      ? await storePilotDiscoverPrivacyDocFromDirectory(directoryHandle)
+      : null;
+    const result = await upsertProjectImport({
       best,
       candidates,
       directoryName: directoryHandle.name,
       projectId,
-      hasFolderHandle: true
+      hasFolderHandle: true,
+      mediaAssets,
+      privacyDoc
     });
 
     await storePilotSaveProjectHandle(result.project.id, directoryHandle);
+    if (typeof storePilotSaveProjectMediaFilesFromDirectory === "function") {
+      await storePilotSaveProjectMediaFilesFromDirectory(result.project.id, result.mediaAssets, directoryHandle);
+    }
     return result;
   };
 })();

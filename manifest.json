@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "permissions": [
@@ -16,9 +16,35 @@
   ],
   "action": {
     "default_title": "__MSG_extensionName__",
-    "default_popup": "src/popup/popup.html"
+    "default_icon": {
+      "16": "src/icons/icon16.png",
+      "32": "src/icons/icon32.png",
+      "48": "src/icons/icon48.png",
+      "96": "src/icons/icon96.png"
+    }
   },
-  "options_page": "src/options/options.html",
+  "icons": {
+    "16": "src/icons/icon16.png",
+    "32": "src/icons/icon32.png",
+    "48": "src/icons/icon48.png",
+    "96": "src/icons/icon96.png",
+    "128": "src/icons/icon128.png"
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "scripts": [
+      "src/shared/constants.js",
+      "src/shared/i18n.js",
+      "src/shared/files.js",
+      "src/shared/projects.js",
+      "src/shared/handles.js",
+      "src/shared/storage.js",
+      "src/background.js"
+    ]
+  },
   "content_scripts": [
     {
       "matches": [
@@ -29,5 +55,30 @@
         "src/content/dashboard-helper.js"
       ]
     }
-  ]
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/content/media-upload-main-world.js"
+      ],
+      "matches": [
+        "https://chrome.google.com/webstore/devconsole/*",
+        "https://chromewebstore.google.com/devconsole/*"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "storepilot@molodchyk.dev",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
+    }
+  }
 }

@@ -28,13 +28,20 @@ body {
 main {
   display: grid;
   gap: 10px;
-  width: 340px;
+  width: 370px;
   padding: 12px;
 }
 
 h1,
 p {
   margin: 0;
+}
+
+.popup-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
 }
 
 h1 {
@@ -47,8 +54,29 @@ p {
 
 .actions {
   display: grid;
+  gap: 8px;
+}
+
+.action-group {
+  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px;
+  padding-top: 8px;
+  border-top: 1px solid #d7dce5;
+}
+
+.action-group:first-child,
+.action-group[hidden] + .action-group:not([hidden]) {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.action-group[hidden] {
+  display: none;
+}
+
+.action-group-single {
+  grid-template-columns: 1fr;
 }
 
 .project-picker {
@@ -88,6 +116,16 @@ select:disabled {
 
 button[hidden] {
   display: none;
+}
+
+.header-shortcut {
+  width: 32px;
+  min-width: 32px;
+  min-height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  font-size: 12px;
+  letter-spacing: 0;
 }
 
 .danger-action {
@@ -190,6 +228,10 @@ select {
   color: #cbd5e1;
 }
 
+:root[data-theme="dark"] .action-group {
+  border-top-color: #343b4a;
+}
+
 :root[data-theme="dark"] #status.error {
   border-color: #7f1d1d;
   background: #2b1719;
@@ -228,6 +270,10 @@ select {
     color: #cbd5e1;
   }
 
+  .action-group {
+    border-top-color: #343b4a;
+  }
+
   #status.error {
     border-color: #7f1d1d;
     background: #2b1719;
@@ -264,6 +310,10 @@ select {
   border-color: #d7dce5;
   background: #f7f9fc;
   color: #31405a;
+}
+
+:root[data-theme="light"] .action-group {
+  border-top-color: #d7dce5;
 }
 
 :root[data-theme="light"] #status.error {

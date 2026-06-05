@@ -29,6 +29,8 @@ function storePilotCreateProject(name, patch = {}) {
     confidence: "",
     score: 0,
     candidateCount: 0,
+    mediaAssets: null,
+    privacyDoc: null,
     lastSyncedAt: "",
     hasFolderHandle: false,
     ...patch

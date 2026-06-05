@@ -1,10 +1,10 @@
 $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
-$dist = Join-Path $root "dist-firefox"
-$stagedDist = Join-Path $root "dist-firefox-next"
-$artifacts = Join-Path $root "artifacts\firefox"
-$zip = Join-Path $artifacts "storepilot-firefox-1.0.1.zip"
+$dist = Join-Path $root "dist"
+$stagedDist = Join-Path $root "dist-next"
+$artifacts = Join-Path $root "artifacts"
+$zip = Join-Path $artifacts "storepilot-1.1.0.zip"
 
 if (Test-Path -LiteralPath $stagedDist) {
   Remove-Item -LiteralPath $stagedDist -Recurse -Force
@@ -20,8 +20,7 @@ Copy-Item -Path (Join-Path $root "src") -Destination (Join-Path $stagedDist "src
 if (Test-Path -LiteralPath (Join-Path $root "_locales")) {
   Copy-Item -Path (Join-Path $root "_locales") -Destination (Join-Path $stagedDist "_locales") -Recurse
 }
-Copy-Item -Path (Join-Path $root "manifest.firefox.json") -Destination (Join-Path $stagedDist "manifest.json")
-& (Join-Path $root "src-firefox\apply-firefox-overrides.ps1") -Dist $stagedDist
+Copy-Item -Path (Join-Path $root "manifest.json") -Destination (Join-Path $stagedDist "manifest.json")
 
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -44,9 +43,9 @@ try {
   }
   Move-Item -LiteralPath $stagedDist -Destination $dist
 } catch {
-  Write-Warning "Could not replace dist-firefox, probably because Firefox is using it. Built staged copy at: $stagedDist"
+  Write-Warning "Could not replace dist, probably because the extension runtime is using it. Built staged copy at: $stagedDist"
   Write-Warning $_.Exception.Message
 }
 
-Write-Host "Built Firefox distribution: $dist"
-Write-Host "Packaged Firefox zip: $zip"
+Write-Host "Built distribution: $dist"
+Write-Host "Packaged zip: $zip"

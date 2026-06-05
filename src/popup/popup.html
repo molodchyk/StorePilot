@@ -8,7 +8,10 @@
   </head>
   <body>
     <main>
-      <h1 data-i18n="extensionName">StorePilot</h1>
+      <header class="popup-header">
+        <h1 data-i18n="extensionName">StorePilot</h1>
+        <button id="openOptionsShortcut" class="header-shortcut" type="button" title="Open StorePilot options" aria-label="Open StorePilot options" data-i18n-title="openStorePilotOptions" data-i18n-aria-label="openStorePilotOptions">SP</button>
+      </header>
       <p id="summary" data-i18n="loadingListings">Loading listings...</p>
       <p id="status" aria-live="polite"></p>
       <details id="diagnostics" class="diagnostics" hidden>
@@ -19,25 +22,35 @@
         <span data-i18n="project">Project</span>
         <select id="projectSelect"></select>
       </label>
-      <label class="project-picker">
-        <span data-i18n="locale">Locale</span>
-        <select id="localeSelect"></select>
-      </label>
       <div class="actions">
-        <button id="importFolder" type="button" data-i18n="importProjectFolder">Import project/folder</button>
-        <label class="file-button">
-          <span data-i18n="importFiles">Import files</span>
-          <input id="listingFiles" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" multiple>
-        </label>
-        <input id="listingFolderFallback" class="hidden-input" type="file" accept=".txt,.md,.markdown,.text,.rtf,.html,.htm,.json,.yaml,.yml,.csv,.tsv,.xml,.properties" webkitdirectory multiple>
-        <button id="syncProject" type="button" data-i18n="syncProject">Sync project</button>
-        <button id="fillField" type="button" data-i18n="fillField">Fill field</button>
-        <button id="fillCurrentLanguage" type="button" data-i18n="fillCurrentLanguage">Fill current language</button>
-        <button id="fillAllLanguages" type="button" data-i18n="fillAllLanguages">Fill all languages</button>
-        <button id="abortFillAll" class="danger-action" type="button" hidden data-i18n="abortFillAll">Abort fill all</button>
-        <button id="copyText" type="button" data-i18n="copyText">Copy text</button>
-        <button id="diagnosePage" type="button" data-i18n="diagnosePage">Diagnose page</button>
-        <button id="openOptions" type="button" data-i18n="options">Options</button>
+        <div class="action-group action-group-single">
+          <button id="importFolder" type="button" data-i18n="importProjectFolder">Import project/folder</button>
+        </div>
+        <div class="action-group" data-popup-section="listing">
+          <button id="fillCurrentLanguage" type="button" data-i18n="fillCurrentLanguage">Fill current language</button>
+          <button id="fillAllLanguages" type="button" data-i18n="fillAllLanguages">Fill all languages</button>
+        </div>
+        <div class="action-group" data-popup-section="listing">
+          <button id="uploadStoreIcon" type="button" data-i18n="uploadStoreIcon">Upload store icon</button>
+          <button id="uploadScreenshots" type="button" data-i18n="uploadScreenshots">Upload screenshots</button>
+          <button id="uploadSmallPromo" type="button" data-i18n="uploadSmallPromo">Upload small promo</button>
+          <button id="uploadMarqueePromo" type="button" data-i18n="uploadMarqueePromo">Upload marquee promo</button>
+        </div>
+        <div class="action-group" data-popup-section="listing">
+          <button id="clearStoreIcon" class="danger-action" type="button" data-i18n="clearStoreIcon">Clear store icon</button>
+          <button id="clearScreenshots" class="danger-action" type="button" data-i18n="clearScreenshots">Clear screenshots</button>
+          <button id="clearSmallPromo" class="danger-action" type="button" data-i18n="clearSmallPromo">Clear small promo</button>
+          <button id="clearMarqueePromo" class="danger-action" type="button" data-i18n="clearMarqueePromo">Clear marquee promo</button>
+        </div>
+        <div class="action-group" data-popup-section="privacy">
+          <button id="fillSinglePurpose" type="button" data-i18n="fillSinglePurpose">Fill single purpose</button>
+          <button id="fillPrivacy" type="button" data-i18n="fillPrivacy">Fill privacy</button>
+          <button id="diagnosePrivacyPage" type="button" data-i18n="diagnosePage">Diagnose page</button>
+        </div>
+        <div id="utilityActions" class="action-group">
+          <button id="abortFillAll" class="danger-action" type="button" hidden data-i18n="abortOperation">Abort operation</button>
+          <button id="openPanel" type="button" hidden data-i18n="openPanel">Open panel</button>
+        </div>
       </div>
       <div class="theme-control" aria-label="Theme" data-i18n-aria-label="theme">
         <button type="button" data-theme-choice="system" data-i18n="themeSystem">System</button>
@@ -51,9 +64,12 @@
     <script src="../shared/projects.js"></script>
     <script src="../shared/handles.js"></script>
     <script src="../shared/directory-detection.js"></script>
+    <script src="../shared/media-assets.js"></script>
+    <script src="../shared/privacy-doc.js"></script>
     <script src="../shared/storage.js"></script>
     <script src="../shared/importers.js"></script>
-    <script src="../shared/sync.js"></script>
+    <script src="../project-overrides.js"></script>
+    <script src="../import-ui.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

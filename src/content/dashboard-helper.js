@@ -1,11 +1,14 @@
 const LEGACY_STORAGE_KEY = "storePilotListings";
-var STOREPILOT_API = globalThis.browser || globalThis.chrome;
+var STOREPILOT_API = globalThis.browser;
 const PROJECTS_STORAGE_KEY = "storePilotProjects";
 const ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
 const SETTINGS_KEY = "storePilotSettings";
 const FILL_ALL_STATUS_STORAGE_KEY = "storePilotFillAllStatus";
 const PANEL_POSITION_STORAGE_KEY = "storePilotPanelPosition";
+const PANEL_MODE_STORAGE_KEY = "storePilotPanelMode";
 const PANEL_ID = "storepilot-panel";
+const MEDIA_UPLOAD_BRIDGE_SCRIPT = "src/content/media-upload-main-world.js";
+const MAX_DASHBOARD_SCREENSHOTS = 5;
 const CHROME_WEB_STORE_SUPPORTED_LOCALES = new Set([
   "ar", "am", "bg", "bn", "ca", "cs", "da", "de", "el", "en", "en_au", "en_gb", "en_us",
   "es", "es_419", "et", "fa", "fi", "fil", "fr", "gu", "he", "hi", "hr", "hu", "id",
@@ -18,12 +21,22 @@ let listings = {};
 let selectedLocale = "";
 let activeProjectName = "";
 let activeProjectUpdatedAt = "";
+let activePrivacyDoc = null;
 let currentTheme = "system";
 let isFillingAllLanguages = false;
 let fillAllAbortRequested = false;
 let fillAllStatus = {
   running: false,
   message: ""
+};
+let mediaUploadBridgePromise = null;
+let panelViewportClampController = null;
+let panelMediaStateObserver = null;
+let dashboardSectionWatcherId = 0;
+let mediaOperationState = {
+  running: false,
+  label: "",
+  abortRequested: false
 };
 
 function delay(ms) {
@@ -34,7 +47,43 @@ function localize(key, fallback, substitutions) {
   const message = STOREPILOT_API.i18n && STOREPILOT_API.i18n.getMessage
     ? STOREPILOT_API.i18n.getMessage(key, substitutions)
     : "";
-  return message || fallback;
+  const values = substitutions ? (Array.isArray(substitutions) ? substitutions : [substitutions]) : [];
+  return String(message || fallback || "").replace(/\$(\d+)/g, (_match, index) => {
+    const value = values[Number(index) - 1];
+    return value === undefined || value === null ? "" : String(value);
+  });
+}
+
+function getDashboardSectionFromUrl(url = window.location.href) {
+  try {
+    const { pathname } = new URL(url);
+    if (/\/edit\/privacy\/?$/.test(pathname)) return "privacy";
+    if (/\/edit(?:\/listing)?\/?$/.test(pathname)) return "listing";
+  } catch (_error) {
+    // Fall through to unknown; URL parsing is only used to gate UI actions.
+  }
+
+  return "other";
+}
+
+function isListingDashboardSection() {
+  return getDashboardSectionFromUrl() === "listing";
+}
+
+function isPrivacyDashboardSection() {
+  return getDashboardSectionFromUrl() === "privacy";
+}
+
+function isPanelDashboardSection() {
+  const section = getDashboardSectionFromUrl();
+  return section === "listing" || section === "privacy";
+}
+
+function createWrongDashboardSectionResult() {
+  return {
+    ok: false,
+    message: localize("listingActionsOnlyOnListingPage", "Listing and media actions are only available on the Store listing page.")
+  };
 }
 
 function isVisible(element) {
@@ -109,6 +158,81 @@ function savePanelPosition(position) {
   }
 }
 
+function normalizePanelMode(mode) {
+  return ["expanded", "minimized", "hidden"].includes(mode) ? mode : "expanded";
+}
+
+function getStoredPanelMode() {
+  try {
+    return normalizePanelMode(window.localStorage.getItem(PANEL_MODE_STORAGE_KEY));
+  } catch (_error) {
+    return "expanded";
+  }
+}
+
+function savePanelMode(mode) {
+  try {
+    window.localStorage.setItem(PANEL_MODE_STORAGE_KEY, normalizePanelMode(mode));
+  } catch (_error) {
+    // Panel mode is convenience state; the panel can still be controlled this session.
+  }
+}
+
+function removePanel() {
+  if (panelMediaStateObserver) {
+    panelMediaStateObserver.disconnect();
+    panelMediaStateObserver = null;
+  }
+
+  if (panelViewportClampController) {
+    panelViewportClampController.abort();
+    panelViewportClampController = null;
+  }
+
+  const panel = document.getElementById(PANEL_ID);
+  if (panel) panel.remove();
+}
+
+function applyPanelMode(panel, mode) {
+  if (!panel) return;
+
+  const normalizedMode = normalizePanelMode(mode);
+  panel.dataset.panelMode = normalizedMode;
+
+  const toggleButton = panel.querySelector("[data-storepilot-action='toggle-panel-mode']");
+  if (toggleButton) {
+    const isMinimized = normalizedMode === "minimized";
+    toggleButton.textContent = isMinimized ? "+" : "-";
+    toggleButton.title = isMinimized
+      ? localize("maximizePanel", "Maximize panel")
+      : localize("minimizePanel", "Minimize panel");
+    toggleButton.setAttribute("aria-label", toggleButton.title);
+  }
+}
+
+function setPanelMode(panel, mode) {
+  const normalizedMode = normalizePanelMode(mode);
+  savePanelMode(normalizedMode);
+
+  if (normalizedMode === "hidden") {
+    removePanel();
+    return;
+  }
+
+  applyPanelMode(panel, normalizedMode);
+  clampPanelToViewport(panel, false);
+}
+
+function getPanelState() {
+  const panel = document.getElementById(PANEL_ID);
+  const mode = getStoredPanelMode();
+  return {
+    mode,
+    visible: Boolean(panel) && mode !== "hidden",
+    minimized: Boolean(panel) && panel.dataset.panelMode === "minimized"
+  };
+}
+
 function clampPanelPosition(panel, left, top) {
   const margin = 8;
   const rect = panel.getBoundingClientRect();
@@ -133,6 +257,217 @@ function setPanelPosition(panel, position) {
 
 function applyStoredPanelPosition(panel) {
   setPanelPosition(panel, getStoredPanelPosition());
+}
+
+function clampPanelToViewport(panel, savePosition = true) {
+  if (!panel || !panel.isConnected) return;
+
+  const rect = panel.getBoundingClientRect();
+  const nextPosition = clampPanelPosition(panel, rect.left, rect.top);
+  setPanelPosition(panel, nextPosition);
+  if (savePosition) {
+    savePanelPosition(nextPosition);
+  }
+}
+
+function bindPanelViewportClamp(panel) {
+  if (panelViewportClampController) {
+    panelViewportClampController.abort();
+  }
+
+  panelViewportClampController = new AbortController();
+  let frameId = 0;
+
+  function scheduleClamp() {
+    if (frameId) return;
+    frameId = window.requestAnimationFrame(() => {
+      frameId = 0;
+      clampPanelToViewport(panel);
+    });
+  }
+
+  window.addEventListener("resize", scheduleClamp, { signal: panelViewportClampController.signal });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", scheduleClamp, { signal: panelViewportClampController.signal });
+    window.visualViewport.addEventListener("scroll", scheduleClamp, { signal: panelViewportClampController.signal });
+  }
+}
+
+function bindDashboardSectionWatcher() {
+  if (dashboardSectionWatcherId) return;
+
+  let previousUrl = window.location.href;
+  dashboardSectionWatcherId = window.setInterval(() => {
+    if (window.location.href === previousUrl) return;
+    previousUrl = window.location.href;
+
+    if (!isPanelDashboardSection()) {
+      removePanel();
+      return;
+    }
+
+    loadSettings()
+      .then(() => loadListings())
+      .then(renderPanel)
+      .catch(() => {});
+  }, 600);
+}
+
+function getDashboardMediaState() {
+  const screenshotCount = getVisibleMediaImageCount("screenshots");
+  const storeIconPresent = hasExistingOrProcessingMedia("storeIcon");
+  const smallPromoPresent = hasExistingOrProcessingMedia("smallPromo");
+  const marqueePromoPresent = hasExistingOrProcessingMedia("marqueePromo");
+
+  return {
+    screenshots: screenshotCount,
+    storeIcon: getVisibleMediaImageCount("storeIcon"),
+    smallPromo: getVisibleMediaImageCount("smallPromo"),
+    marqueePromo: getVisibleMediaImageCount("marqueePromo"),
+    clearableScreenshots: hasClearableMedia("screenshots"),
+    clearableStoreIcon: hasClearableMedia("storeIcon"),
+    clearableSmallPromo: hasClearableMedia("smallPromo"),
+    clearableMarqueePromo: hasClearableMedia("marqueePromo"),
+    screenshotsLimitReached: screenshotCount >= MAX_DASHBOARD_SCREENSHOTS,
+    maxScreenshots: MAX_DASHBOARD_SCREENSHOTS,
+    storeIconPresent,
+    smallPromoPresent,
+    marqueePromoPresent,
+    running: mediaOperationState.running,
+    runningLabel: mediaOperationState.label
+  };
+}
+
+function getPanelMediaButtons(panel = document.getElementById(PANEL_ID)) {
+  if (!panel) return [];
+  return Array.from(panel.querySelectorAll([
+    "[data-storepilot-action='upload-storeIcon']",
+    "[data-storepilot-action='upload-screenshots']",
+    "[data-storepilot-action='upload-smallPromo']",
+    "[data-storepilot-action='upload-marqueePromo']",
+    "[data-storepilot-action='clear-screenshots']",
+    "[data-storepilot-action='clear-storeIcon']",
+    "[data-storepilot-action='clear-smallPromo']",
+    "[data-storepilot-action='clear-marqueePromo']"
+  ].join(",")));
+}
+
+function setPanelMediaButtonsDisabled(disabled, title = "") {
+  for (const button of getPanelMediaButtons()) {
+    button.disabled = disabled;
+    button.title = title;
+  }
+}
+
+function updatePanelMediaUi() {
+  const panel = document.getElementById(PANEL_ID);
+  if (!panel) return;
+
+  const fillAllRunning = Boolean(isFillingAllLanguages || fillAllStatus.running);
+  if (mediaOperationState.running) {
+    setPanelMediaButtonsDisabled(true, mediaOperationState.label);
+    updatePanelFillAllUi();
+    return;
+  }
+
+  if (fillAllRunning) {
+    setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling all languages..."));
+    return;
+  }
+
+  for (const button of getPanelMediaButtons(panel)) {
+    button.disabled = false;
+    button.title = "";
+  }
+
+  for (const kind of ["screenshots", "storeIcon", "smallPromo", "marqueePromo"]) {
+    const button = panel.querySelector(`[data-storepilot-action='clear-${kind}']`);
+    if (!button) continue;
+
+    const hasMedia = hasClearableMedia(kind);
+    button.disabled = !hasMedia;
+    button.title = hasMedia
+      ? ""
+      : localize("mediaAlreadyClearKind", "$1 already clear.", [getMediaUploadKindLabel(kind)]);
+  }
+
+  for (const kind of ["storeIcon", "smallPromo", "marqueePromo"]) {
+    const button = panel.querySelector(`[data-storepilot-action='upload-${kind}']`);
+    if (!button) continue;
+
+    const alreadyPresent = hasExistingOrProcessingMedia(kind);
+    button.disabled = alreadyPresent;
+    button.title = alreadyPresent
+      ? localize("mediaAlreadyPresentOrProcessing", "$1 already present or processing.", [getMediaUploadKindLabel(kind)])
+      : "";
+  }
+
+  const uploadScreenshotsButton = panel.querySelector("[data-storepilot-action='upload-screenshots']");
+  if (uploadScreenshotsButton) {
+    const screenshotCount = getVisibleMediaImageCount("screenshots");
+    const limitReached = screenshotCount >= MAX_DASHBOARD_SCREENSHOTS;
+    uploadScreenshotsButton.disabled = limitReached;
+    uploadScreenshotsButton.title = limitReached
+      ? localize("screenshotsLimitReached", "screenshots: CWS limit of $1 already reached", [String(MAX_DASHBOARD_SCREENSHOTS)])
+      : "";
+  }
+}
+
+async function runExclusiveMediaOperation(label, operation) {
+  if (mediaOperationState.running) {
+    return {
+      ok: true,
+      ignored: true,
+      message: localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label])
+    };
+  }
+
+  mediaOperationState = {
+    running: true,
+    label,
+    abortRequested: false
+  };
+  updatePanelMediaUi();
+  updatePanelFillAllUi();
+
+  try {
+    return await operation();
+  } finally {
+    mediaOperationState = {
+      running: false,
+      label: "",
+      abortRequested: false
+    };
+    updatePanelMediaUi();
+    updatePanelFillAllUi();
+  }
+}
+
+function bindPanelMediaState(panel) {
+  if (panelMediaStateObserver) {
+    panelMediaStateObserver.disconnect();
+  }
+
+  let frameId = 0;
+  function scheduleUpdate() {
+    if (frameId) return;
+    frameId = window.requestAnimationFrame(() => {
+      frameId = 0;
+      updatePanelMediaUi();
+    });
+  }
+
+  panelMediaStateObserver = new MutationObserver(scheduleUpdate);
+  panelMediaStateObserver.observe(document.body || document.documentElement, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ["src", "style", "aria-label", "data-image-key"]
+  });
+
+  updatePanelMediaUi();
+  window.setTimeout(updatePanelMediaUi, 300);
+  window.setTimeout(updatePanelMediaUi, 1200);
 }
 
 function enablePanelDrag(panel, dragHandle) {
@@ -228,6 +563,7 @@ async function loadListings() {
   listings = activeProject ? activeProject.listings || {} : stored[LEGACY_STORAGE_KEY] || {};
   activeProjectName = activeProject ? activeProject.name : "";
   activeProjectUpdatedAt = activeProject ? activeProject.lastSyncedAt || "" : "";
+  activePrivacyDoc = activeProject ? activeProject.privacyDoc || null : null;
   const locales = Object.keys(listings).sort((a, b) => a.localeCompare(b));
 
   if (!selectedLocale || !listings[selectedLocale]) {
@@ -260,6 +596,357 @@ function fillSelectedText() {
 
   fillElement(target, text);
   return { ok: true, message: localize("filledLocale", "Filled $1.", [selectedLocale]) };
+}
+
+function normalizePrivacyMatchText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&nbsp;|\u00a0/g, " ")
+    .replace(/[^a-z0-9_. -]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getElementLabelText(element) {
+  const parts = [];
+  const ariaLabel = element.getAttribute("aria-label");
+  const ariaLabelledBy = element.getAttribute("aria-labelledby");
+  const id = element.id;
+
+  if (ariaLabel) parts.push(ariaLabel);
+
+  if (ariaLabelledBy) {
+    ariaLabelledBy.split(/\s+/).forEach(labelId => {
+      const label = document.getElementById(labelId);
+      if (label) parts.push(getVisibleText(label));
+    });
+  }
+
+  if (id) {
+    document.querySelectorAll(`label[for='${CSS.escape(id)}']`).forEach(label => {
+      parts.push(getVisibleText(label));
+    });
+  }
+
+  const closestLabel = element.closest("label");
+  if (closestLabel) {
+    const clone = closestLabel.cloneNode(true);
+    clone.querySelectorAll("textarea,input,[role='textbox']").forEach(control => {
+      control.remove();
+    });
+    parts.push(getVisibleText(clone));
+  }
+
+  return parts.filter(Boolean).join(" ");
+}
+
+function getPrivacyFieldContextText(element) {
+  const parts = [getElementLabelText(element)];
+  const containers = [
+    element.closest("label"),
+    element.closest(".TVM7Wc"),
+    element.closest(".n5L2Mb")
+  ].filter(Boolean);
+
+  containers.forEach(container => {
+    const clone = container.cloneNode(true);
+    clone.querySelectorAll("textarea,input,[role='textbox']").forEach(control => {
+      control.remove();
+    });
+    parts.push(getVisibleText(clone));
+  });
+
+  return normalizePrivacyMatchText(parts.join(" "));
+}
+
+function getPrivacyFieldCandidates() {
+  return Array.from(document.querySelectorAll([
+    "textarea",
+    "input[type='text']",
+    "input[type='url']",
+    "input:not([type])",
+    "[role='textbox']"
+  ].join(",")))
+    .filter(isVisible)
+    .map((element, index) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        element,
+        index,
+        context: getPrivacyFieldContextText(element),
+        payload: element.getAttribute("data-payload") || "",
+        maxLength: Number(element.getAttribute("maxlength") || 0),
+        required: element.hasAttribute("required"),
+        tagName: element.tagName.toLowerCase(),
+        area: rect.width * rect.height
+      };
+    });
+}
+
+function normalizePrivacyPayload(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function getExpectedPrivacyPayloads(key) {
+  if (key === "single_purpose") return ["singlepurpose", "singlepurposejustification"];
+  if (key === "privacy_policy_url") return ["privacypolicyurl", "privacypolicy"];
+  if (key === "host_permission") return ["hostpermission", "hostpermissions", "hostpermissionjustification"];
+  if (key === "remote_code") return ["remotecode", "remotecodejustification"];
+
+  const permissionMatch = key.match(/^permission\.(.+)$/);
+  return permissionMatch ? [normalizePrivacyPayload(permissionMatch[1])] : [];
+}
+
+function isNumericPrivacyPayload(payload) {
+  return /^\d+$/.test(String(payload || "").trim());
+}
+
+function scorePrivacyFieldCandidate(candidate, key) {
+  const context = candidate.context;
+  const permissionMatch = key.match(/^permission\.(.+)$/);
+  const payload = normalizePrivacyPayload(candidate.payload);
+  const expectedPayloads = getExpectedPrivacyPayloads(key);
+  let score = 0;
+
+  if (payload) {
+    if (expectedPayloads.includes(payload)) {
+      score += 300;
+    } else if (isNumericPrivacyPayload(candidate.payload)) {
+      score += 20;
+    } else {
+      return 0;
+    }
+  }
+
+  if (key === "single_purpose") {
+    if (/\bsingle purpose\b/.test(context)) score += 120;
+    if (/alleinigen zweck|alleiniger zweck|alleinige zweck|zweck des artikels/.test(context)) score += 120;
+    if (/beschreibung/.test(context) && /zweck/.test(context)) score += 70;
+    if (/\bpurpose\b/.test(context) && /\bdescription\b/.test(context)) score += 70;
+    if (candidate.tagName === "textarea") score += 25;
+    if (candidate.required) score += 15;
+    if (candidate.maxLength >= 900 && candidate.maxLength <= 1200) score += 35;
+    if (candidate.area > 30000) score += 15;
+  } else if (key === "privacy_policy_url") {
+    if (/privacy policy|datenschutzerklarung|datenschutzrichtlinie/.test(context)) score += 100;
+    if (/\burl\b|link/.test(context)) score += 35;
+    if (candidate.tagName === "input") score += 25;
+  } else if (key === "host_permission") {
+    if (/host permission|hostberechtigung|host berechtigung|host permissions/.test(context)) score += 120;
+    if (/begrundung|justification|berechtigung/.test(context)) score += 35;
+    if (candidate.tagName === "textarea") score += 20;
+  } else if (key === "remote_code") {
+    if (/remote code|remotecode|remote.*code|extern.*code|ausgelagert.*code/.test(context)) score += 120;
+    if (/begrundung|justification|erklarung/.test(context)) score += 25;
+  } else if (permissionMatch) {
+    const permission = normalizePrivacyMatchText(permissionMatch[1]);
+    if (new RegExp(`\\b${permission.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(context)) score += 110;
+    if (/permission|berechtigung|berechtigungen/.test(context)) score += 40;
+    if (/begrundung|justification|warum|why/.test(context)) score += 25;
+    if (candidate.tagName === "textarea") score += 15;
+  }
+
+  return score;
+}
+
+function findPrivacyField(key) {
+  const candidates = getPrivacyFieldCandidates()
+    .map(candidate => ({
+      ...candidate,
+      score: scorePrivacyFieldCandidate(candidate, key)
+    }))
+    .filter(candidate => candidate.score > 0)
+    .sort((a, b) => b.score - a.score || b.area - a.area || a.index - b.index);
+
+  return candidates[0] && candidates[0].score >= 80 ? candidates[0] : null;
+}
+
+function isDisabledEditableElement(element) {
+  return Boolean(
+    !element ||
+    element.disabled ||
+    element.readOnly ||
+    element.getAttribute("aria-disabled") === "true" ||
+    element.closest("[aria-disabled='true']")
+  );
+}
+
+function getContextAroundElement(element) {
+  if (!element) return "";
+  const containers = [
+    element.closest("label"),
+    element.closest(".TVM7Wc"),
+    element.closest(".n5L2Mb"),
+    element.closest("section")
+  ].filter(Boolean);
+
+  return normalizePrivacyMatchText(containers.map(getVisibleText).join(" "));
+}
+
+function isRemoteCodeNoSelected() {
+  return Array.from(document.querySelectorAll([
+    "input[type='radio']:checked",
+    "[role='radio'][aria-checked='true']"
+  ].join(","))).some(control => {
+    const context = getContextAroundElement(control);
+    return /remote ?code|remotecode/.test(context) &&
+      (/\bno\b/.test(context) || /nein/.test(context)) &&
+      (/\bnot\b/.test(context) || /nicht/.test(context)) &&
+      !(/\byes\b/.test(context) || /\bja\b/.test(context));
+  });
+}
+
+function getActivePrivacyFields() {
+  return activePrivacyDoc && activePrivacyDoc.file && activePrivacyDoc.file.fields
+    ? activePrivacyDoc.file.fields
+    : {};
+}
+
+function getEditableElementValue(element) {
+  if (!element) return "";
+  if (element.isContentEditable) return element.textContent || "";
+  if ("value" in element) return element.value || "";
+  return "";
+}
+
+function normalizeFilledPrivacyValue(value) {
+  return String(value || "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .trim();
+}
+
+function fillPrivacyField(key) {
+  const fields = getActivePrivacyFields();
+  const value = fields[key];
+
+  if (!value) {
+    return { ok: false, message: localize("privacyNoValueForField", "No privacy document value for $1.", [key]) };
+  }
+
+  const target = findPrivacyField(key);
+  if (key === "remote_code" && (!target || isRemoteCodeNoSelected())) {
+    return {
+      ok: true,
+      skipped: true,
+      message: localize("privacySkippedField", "Skipped privacy field: $1.", [key]),
+      key,
+      reason: "remote_code_not_used"
+    };
+  }
+
+  if (!target) {
+    return { ok: false, message: localize("privacyFieldNotFound", "Could not find privacy field: $1.", [key]) };
+  }
+
+  if (key === "remote_code" && isDisabledEditableElement(target.element)) {
+    return {
+      ok: true,
+      skipped: true,
+      message: localize("privacySkippedField", "Skipped privacy field: $1.", [key]),
+      key,
+      score: target.score,
+      reason: "remote_code_justification_disabled"
+    };
+  }
+
+  if (!fillElement(target.element, value)) {
+    return { ok: false, message: localize("privacyFieldDidNotAcceptValue", "Privacy field did not accept value: $1.", [key]) };
+  }
+
+  const expected = normalizeFilledPrivacyValue(value);
+  const actual = normalizeFilledPrivacyValue(getEditableElementValue(target.element));
+  if (actual !== expected) {
+    return {
+      ok: false,
+      message: localize("privacyFieldDidNotAcceptValue", "Privacy field did not accept value: $1.", [key]),
+      key,
+      score: target.score,
+      actualLength: actual.length,
+      expectedLength: expected.length
+    };
+  }
+
+  return {
+    ok: true,
+    message: localize("privacyFilledField", "Filled privacy field: $1.", [key]),
+    key,
+    score: target.score
+  };
+}
+
+function fillPrivacyFields(keys) {
+  const fields = getActivePrivacyFields();
+  if (!Object.keys(fields).length) {
+    return { ok: false, message: localize("privacyDocNotImported", "No privacy document imported for the active project.") };
+  }
+
+  const filled = [];
+  const missing = [];
+  const skipped = [];
+
+  keys.forEach(key => {
+    if (!fields[key]) return;
+
+    const result = fillPrivacyField(key);
+    if (result.skipped) {
+      skipped.push(key);
+    } else if (result.ok) {
+      filled.push(key);
+    } else {
+      missing.push(key);
+    }
+  });
+
+  return {
+    ok: filled.length > 0 || skipped.length > 0,
+    message: [
+      filled.length ? localize("privacyFilledFields", "Filled $1 privacy field(s): $2.", [String(filled.length), filled.join(", ")]) : "",
+      skipped.length ? localize("privacySkippedFields", "Skipped $1 privacy field(s): $2.", [String(skipped.length), skipped.join(", ")]) : "",
+      missing.length ? localize("privacyFieldsNotFound", "Could not find: $1.", [missing.join(", ")]) : ""
+    ].filter(Boolean).join(" ") || localize("privacyNoSupportedFields", "No supported privacy fields were available to fill."),
+    filled,
+    missing,
+    skipped
+  };
+}
+
+function fillDetectedPrivacyFields() {
+  return fillPrivacyFields([
+    "single_purpose",
+    "privacy_policy_url",
+    "host_permission",
+    "remote_code",
+    ...Object.keys(getActivePrivacyFields()).filter(key => key.startsWith("permission."))
+  ]);
+}
+
+function getPrivacyDiagnostics() {
+  const fields = getActivePrivacyFields();
+  return {
+    hasPrivacyDoc: Boolean(activePrivacyDoc && activePrivacyDoc.file),
+    privacyDocPath: activePrivacyDoc && activePrivacyDoc.file ? activePrivacyDoc.file.path : "",
+    privacyDocKeys: Object.keys(fields),
+    fieldCandidates: getPrivacyFieldCandidates().map(candidate => ({
+      index: candidate.index,
+      tagName: candidate.tagName,
+      payload: candidate.payload,
+      maxLength: candidate.maxLength,
+      required: candidate.required,
+      contextSample: candidate.context.slice(0, 220),
+      scores: Object.keys(fields).reduce((scores, key) => ({
+        ...scores,
+        [key]: scorePrivacyFieldCandidate(candidate, key)
+      }), {})
+    }))
+  };
 }
 
 function normalizeLocale(locale) {
@@ -544,14 +1231,21 @@ function updatePanelFillAllUi() {
   if (!panel) return;
 
   const running = Boolean(isFillingAllLanguages || fillAllStatus.running);
+  const mediaRunning = Boolean(mediaOperationState.running);
   const fillCurrentButton = panel.querySelector("[data-storepilot-action='fill-current']");
   const fillAllButton = panel.querySelector("[data-storepilot-action='fill-all']");
-  const abortButtons = Array.from(panel.querySelectorAll("[data-storepilot-action='abort-fill-all'], .storepilot-danger"));
+  const abortButtons = Array.from(panel.querySelectorAll("[data-storepilot-action='abort-operation'], [data-storepilot-action='abort-fill-all']"));
 
-  if (fillCurrentButton) fillCurrentButton.disabled = running;
-  if (fillAllButton) fillAllButton.disabled = running;
+  if (fillCurrentButton) {
+    fillCurrentButton.disabled = running || mediaRunning;
+    fillCurrentButton.title = mediaRunning ? mediaOperationState.label : "";
+  }
+  if (fillAllButton) {
+    fillAllButton.disabled = running || mediaRunning;
+    fillAllButton.title = mediaRunning ? mediaOperationState.label : "";
+  }
   abortButtons.forEach(button => {
-    button.hidden = !running;
+    button.hidden = !running && !mediaRunning;
     button.disabled = false;
   });
 }
@@ -637,6 +1331,14 @@ async function fillDashboardLocale(locale, option = null) {
 }
 
 async function fillCurrentDashboardLanguage() {
+  if (mediaOperationState.running) {
+    return {
+      ok: true,
+      ignored: true,
+      message: localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label])
+    };
+  }
+
   await loadListings();
 
   const locale = getCurrentDashboardLocale();
@@ -648,6 +1350,14 @@ async function fillCurrentDashboardLanguage() {
 }
 
 async function fillAllDashboardLanguages(onProgress = null) {
+  if (mediaOperationState.running) {
+    return {
+      ok: true,
+      ignored: true,
+      message: localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label])
+    };
+  }
+
   await loadListings();
 
   if (fillAllAbortRequested) {
@@ -783,6 +1493,30 @@ async function fillAllDashboardLanguages(onProgress = null) {
   };
 }
 
+function abortCurrentOperation() {
+  const message = localize("abortRequestedStopAfterStep", "Abort requested. StorePilot will stop after the current dashboard step.");
+
+  if (isFillingAllLanguages) {
+    fillAllAbortRequested = true;
+    publishFillAllStatus({
+      running: true,
+      message
+    });
+    return { ok: true, message };
+  }
+
+  if (mediaOperationState.running) {
+    mediaOperationState.abortRequested = true;
+    const panelStatus = document.querySelector(`#${PANEL_ID} .storepilot-status`);
+    if (panelStatus) {
+      panelStatus.textContent = message;
+    }
+    return { ok: true, message };
+  }
+
+  return { ok: false, message: localize("noOperationRunning", "No operation is running.") };
+}
+
 function abortFillAllLanguages() {
   if (!isFillingAllLanguages) {
     return { ok: false, message: localize("fillAllNotRunning", "Fill all is not running.") };
@@ -797,11 +1531,591 @@ function abortFillAllLanguages() {
   return { ok: true, message };
 }
 
+function getMediaUploadTypeName(widget) {
+  const uploadType = widget && widget.dataset ? widget.dataset.imageUploadType : "";
+
+  if (uploadType === "4") {
+    return "screenshots";
+  }
+
+  if (uploadType === "5") {
+    return "storeIcon";
+  }
+
+  if (uploadType === "1") {
+    return "smallPromo";
+  }
+
+  if (uploadType === "3") {
+    return "marqueePromo";
+  }
+
+  const widgetText = normalizeLanguageText(getVisibleText(widget || ""));
+
+  if (/screenshots?/.test(widgetText) || /screenshot/.test(widgetText)) return "screenshots";
+  if (/store icon|merchant icon|handler symbol|haendler symbol|handlersymbol|handlersymbol|symbol hier ablegen/.test(widgetText)) return "storeIcon";
+  if (/small promo|small tile|kleine werbekachel/.test(widgetText)) return "smallPromo";
+  if (/marquee|large promo|lauf(schrift)? werbekachel|laufschrift werbekachel/.test(widgetText)) return "marqueePromo";
+
+  return uploadType ? `unknownType${uploadType}` : "unknown";
+}
+
+function getMediaUploadDiagnostics() {
+  const widgets = Array.from(document.querySelectorAll("[data-image-upload-type]"));
+  const targets = widgets.map((widget, index) => {
+    const input = widget.querySelector("input[type='file']");
+    const visibleImages = Array.from(widget.querySelectorAll("img"))
+      .filter(image => isVisible(image) && image.getAttribute("src"));
+    const removeButtons = Array.from(widget.querySelectorAll("[aria-label]"))
+      .map(element => element.getAttribute("aria-label") || "")
+      .filter(label => /remove|entfernen|löschen|delete/i.test(label));
+
+    return {
+      index,
+      kind: getMediaUploadTypeName(widget),
+      uploadType: widget.dataset.imageUploadType || "",
+      isGlobal: widget.dataset.isGlobal || "",
+      jsname: widget.getAttribute("jsname") || "",
+      hasFileInput: Boolean(input),
+      accept: input ? input.getAttribute("accept") || "" : "",
+      multiple: input ? Boolean(input.multiple) : false,
+      hasVisibleExistingImage: visibleImages.length > 0,
+      existingImageCount: visibleImages.length,
+      removeButtonLabels: removeButtons,
+      dropText: getVisibleText(widget.querySelector(".ubUOie") || widget.querySelector("[role='button']")),
+      elementTextSample: getVisibleText(widget).slice(0, 160)
+    };
+  });
+
+  return {
+    total: targets.length,
+    byKind: targets.reduce((counts, target) => ({
+      ...counts,
+      [target.kind]: (counts[target.kind] || 0) + 1
+    }), {}),
+    targets
+  };
+}
+
+function getMediaUploadWidgets(kind) {
+  const widgets = Array.from(document.querySelectorAll("[data-image-upload-type]"))
+    .filter(widget => getMediaUploadTypeName(widget) === kind);
+  const globalWidgets = widgets.filter(widget => widget.dataset.isGlobal === "true");
+
+  return globalWidgets.length ? globalWidgets : widgets;
+}
+
+function getVisibleMediaImageCount(kind) {
+  return getMediaUploadWidgets(kind)
+    .flatMap(widget => Array.from(widget.querySelectorAll("img")))
+    .filter(image => isVisible(image) && image.getAttribute("src"))
+    .length;
+}
+
+function hasMediaUploadInProgress(kind) {
+  return getMediaUploadWidgets(kind).some(widget => {
+    const hasVisibleProgress = Array.from(widget.querySelectorAll("[role='progressbar']"))
+      .some(isVisible);
+    if (hasVisibleProgress) return true;
+
+    const visibleText = Array.from(widget.querySelectorAll("*"))
+      .filter(isVisible)
+      .map(element => element.textContent || "")
+      .join(" ");
+    return /in bearbeitung|processing|uploading|hochlad|in progress/i.test(visibleText);
+  });
+}
+
+function hasExistingOrProcessingMedia(kind) {
+  return getVisibleMediaImageCount(kind) > 0 || hasMediaUploadInProgress(kind);
+}
+
+async function waitForMediaUploadUiChange(kind, beforeCount) {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    await delay(500);
+    const nextCount = getVisibleMediaImageCount(kind);
+    if (nextCount > beforeCount) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getAvailableMediaUploadInput(kind) {
+  return getMediaUploadWidgets(kind)
+    .map(widget => ({
+      widget,
+      input: widget.querySelector("input[type='file']")
+    }))
+    .find(target => target.input && !target.input.disabled);
+}
+
+function dispatchDataTransferEvent(target, type, dataTransfer) {
+  let event;
+  try {
+    event = new DragEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      dataTransfer
+    });
+  } catch (_error) {
+    event = new Event(type, {
+      bubbles: true,
+      cancelable: true,
+      composed: true
+    });
+    Object.defineProperty(event, "dataTransfer", {
+      configurable: true,
+      value: dataTransfer
+    });
+  }
+
+  target.dispatchEvent(event);
+}
+
+function ensureMediaUploadBridge() {
+  if (mediaUploadBridgePromise) return mediaUploadBridgePromise;
+
+  mediaUploadBridgePromise = new Promise(resolve => {
+    const existing = document.querySelector("script[data-storepilot-media-upload-bridge]");
+    if (existing) {
+      resolve(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    let settled = false;
+
+    function finish(ok) {
+      if (settled) return;
+      settled = true;
+      resolve(ok);
+    }
+
+    script.dataset.storepilotMediaUploadBridge = "true";
+    script.src = STOREPILOT_API.runtime.getURL(MEDIA_UPLOAD_BRIDGE_SCRIPT);
+    script.addEventListener("load", () => finish(true), { once: true });
+    script.addEventListener("error", () => finish(false), { once: true });
+    (document.head || document.documentElement).append(script);
+    window.setTimeout(() => finish(false), 1500);
+  });
+
+  return mediaUploadBridgePromise;
+}
+
+async function serializeMediaFiles(files) {
+  const payloads = [];
+  const transfers = [];
+
+  for (const file of files.filter(Boolean)) {
+    const buffer = await file.arrayBuffer();
+    payloads.push({
+      name: file.name,
+      type: file.type || "",
+      lastModified: file.lastModified || Date.now(),
+      buffer
+    });
+    transfers.push(buffer);
+  }
+
+  return { payloads, transfers };
+}
+
+async function uploadFilesInMainWorld(kind, files) {
+  if (!(await ensureMediaUploadBridge())) {
+    return { ok: false, message: "page bridge unavailable" };
+  }
+
+  const requestId = `storepilot-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const { payloads, transfers } = await serializeMediaFiles(files);
+
+  return new Promise(resolve => {
+    const timeoutId = window.setTimeout(() => {
+      window.removeEventListener("message", handleMessage);
+      resolve({ ok: false, message: "page bridge timed out" });
+    }, 4000);
+
+    function handleMessage(event) {
+      const message = event.data;
+      if (!message ||
+        message.source !== "storepilot-media-upload-bridge" ||
+        message.type !== "storepilot-upload-media-main-world-result" ||
+        message.requestId !== requestId) {
+        return;
+      }
+
+      window.clearTimeout(timeoutId);
+      window.removeEventListener("message", handleMessage);
+      resolve(message.result || { ok: false, message: "empty page bridge response" });
+    }
+
+    window.addEventListener("message", handleMessage);
+
+    const message = {
+      source: "storepilot-content-script",
+      type: "storepilot-upload-media-main-world",
+      requestId,
+      kind,
+      files: payloads
+    };
+
+    try {
+      window.postMessage(message, "*", transfers);
+    } catch (_error) {
+      window.postMessage(message, "*");
+    }
+  });
+}
+
+async function uploadFilesInContentWorld(input, files) {
+  const widget = input.closest("[data-image-upload-type]");
+  const button = widget && widget.querySelector("[role='button'][jsname='DagSrd']");
+  const dropTarget = button || widget || input;
+  const dataTransfer = new DataTransfer();
+
+  dropTarget.scrollIntoView({ block: "center", inline: "center" });
+  if (typeof dropTarget.focus === "function") {
+    dropTarget.focus({ preventScroll: true });
+  }
+
+  files.filter(Boolean).forEach(file => dataTransfer.items.add(file));
+
+  for (const target of [widget, button, input].filter(Boolean)) {
+    dispatchDataTransferEvent(target, "dragenter", dataTransfer);
+    dispatchDataTransferEvent(target, "dragover", dataTransfer);
+  }
+  dispatchDataTransferEvent(dropTarget, "drop", dataTransfer);
+
+  input.files = dataTransfer.files;
+  input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+  input.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+  await delay(2500);
+}
+
+async function setUploadInputFile(input, files) {
+  const widget = input.closest("[data-image-upload-type]");
+  const kind = getMediaUploadTypeName(widget);
+  const beforeCount = getVisibleMediaImageCount(kind);
+  let method = "page bridge";
+  let bridgeResult = await uploadFilesInMainWorld(kind, files);
+
+  if (bridgeResult.ok) {
+    const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount);
+    return {
+      ok: uiChanged,
+      method,
+      bridgeResult,
+      beforeCount,
+      afterCount: getVisibleMediaImageCount(kind)
+    };
+  }
+
+  method = "content script";
+  await uploadFilesInContentWorld(input, files);
+  const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount);
+
+  return {
+    ok: uiChanged,
+    method,
+    bridgeResult,
+    beforeCount,
+    afterCount: getVisibleMediaImageCount(kind)
+  };
+}
+
+function getMediaUploadKindLabel(kind) {
+  if (kind === "screenshots") return localize("screenshots", "Screenshots");
+  if (kind === "storeIcon") return localize("storeIcon", "Store icon");
+  if (kind === "smallPromo") return localize("smallPromoTile", "Small promo tile");
+  if (kind === "marqueePromo") return localize("marqueePromoTile", "Marquee promo tile");
+  return localize("media", "Media");
+}
+
+function activateDashboardButton(button) {
+  button.scrollIntoView({ block: "center", inline: "center" });
+  if (typeof button.focus === "function") {
+    button.focus({ preventScroll: true });
+  }
+
+  for (const type of ["pointerover", "mouseover", "mouseenter", "pointerdown", "mousedown", "pointerup", "mouseup", "click"]) {
+    button.dispatchEvent(new MouseEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      button: 0,
+      buttons: type.endsWith("down") ? 1 : 0,
+      view: window
+    }));
+  }
+}
+
+async function revealMediaRemoveControls(kind) {
+  const targets = getMediaUploadWidgets(kind)
+    .flatMap(widget => Array.from(widget.querySelectorAll("img")))
+    .filter(image => isVisible(image) && image.getAttribute("src"))
+    .map(image => image.closest("div") || image);
+
+  for (const target of targets) {
+    target.scrollIntoView({ block: "center", inline: "center" });
+    for (const type of ["pointerover", "mouseover", "mouseenter"]) {
+      target.dispatchEvent(new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+        view: window
+      }));
+    }
+  }
+
+  if (targets.length) {
+    await delay(80);
+  }
+}
+
+function getVisibleDialogConfirmButton() {
+  const buttons = Array.from(document.querySelectorAll([
+    "[role='dialog'] button",
+    ".VfPpkd-Sx9Kwc button",
+    "button[data-mdc-dialog-action='ok']"
+  ].join(","))).filter(isVisible);
+
+  return buttons.find(button => button.getAttribute("data-mdc-dialog-action") === "ok") ||
+    buttons.find(button => {
+      const text = normalizeLanguageText(getVisibleText(button));
+      return /^(remove|delete|entfernen|loschen)$/.test(text);
+    }) ||
+    null;
+}
+
+async function confirmVisibleDialog() {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const button = getVisibleDialogConfirmButton();
+    if (button) {
+      activateDashboardButton(button);
+      return true;
+    }
+    await delay(150);
+  }
+
+  return false;
+}
+
+function getMediaRemoveButtons(kind) {
+  return getMediaUploadWidgets(kind)
+    .flatMap(widget => Array.from(widget.querySelectorAll("[role='button'][aria-label], [jsname='LCoeQd']")))
+    .filter(button => {
+      if (button.getAttribute("aria-disabled") === "true") return false;
+      if (!isVisible(button)) return false;
+      const label = normalizeLanguageText(button.getAttribute("aria-label") || "");
+      return button.getAttribute("jsname") === "LCoeQd" ||
+        /remove|delete|entfernen|loschen/.test(label);
+    });
+}
+
+function hasClearableMedia(kind) {
+  return getVisibleMediaImageCount(kind) > 0 || getMediaRemoveButtons(kind).length > 0;
+}
+
+async function waitForMediaRemovalUiChange(kind, beforeCount) {
+  for (let attempt = 0; attempt < 16; attempt++) {
+    await delay(300);
+    if (getVisibleMediaImageCount(kind) < beforeCount) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+async function performClearDashboardMediaAssets(kind) {
+  const removed = [];
+  const failed = [];
+  let aborted = false;
+  const label = getMediaUploadKindLabel(kind);
+
+  for (let attempt = 0; attempt < 30; attempt++) {
+    if (mediaOperationState.abortRequested) {
+      aborted = true;
+      break;
+    }
+
+    const beforeCount = getVisibleMediaImageCount(kind);
+    if (!beforeCount) break;
+
+    await revealMediaRemoveControls(kind);
+    const buttons = getMediaRemoveButtons(kind);
+    if (!buttons.length) {
+      failed.push(`${label}: remove button not found`);
+      break;
+    }
+
+    const button = buttons[buttons.length - 1];
+    const buttonLabel = button.getAttribute("aria-label") || label;
+    activateDashboardButton(button);
+    await confirmVisibleDialog();
+
+    const changed = await waitForMediaRemovalUiChange(kind, beforeCount);
+    const afterCount = getVisibleMediaImageCount(kind);
+    if (!changed) {
+      failed.push(`${buttonLabel}: CWS did not remove the image`);
+      break;
+    }
+
+    const removedCount = Math.max(1, beforeCount - afterCount);
+    for (let index = 0; index < removedCount; index++) {
+      removed.push(buttonLabel);
+    }
+  }
+
+  const messageParts = [
+    removed.length
+      ? localize("mediaClearedKind", "Cleared $1: $2.", [label, String(removed.length)])
+      : localize("mediaAlreadyClearKind", "$1 already clear.", [label]),
+    aborted ? localize("operationStopped", "Stopped.") : "",
+    failed.length ? localize("mediaUploadFailures", "Failed: $1.", [failed.join(", ")]) : ""
+  ].filter(Boolean);
+
+  return {
+    ok: failed.length === 0,
+    aborted,
+    message: messageParts.join(" "),
+    removed,
+    failed,
+    diagnostics: {
+      mediaUploadTargets: getMediaUploadDiagnostics()
+    }
+  };
+}
+
+async function clearDashboardMediaAssets(kind) {
+  return runExclusiveMediaOperation(
+    localize("clearingMedia", "Clearing media..."),
+    () => performClearDashboardMediaAssets(kind)
+  );
+}
+
+async function performUploadDashboardMediaAssets(files, kind = "") {
+  const uploaded = [];
+  const failed = [];
+  const skipped = [];
+  let aborted = false;
+  const uploadStoreIcon = !kind || kind === "storeIcon";
+  const uploadScreenshots = !kind || kind === "screenshots";
+  const uploadSmallPromo = !kind || kind === "smallPromo";
+  const uploadMarqueePromo = !kind || kind === "marqueePromo";
+  const screenshots = uploadScreenshots ? Array.from(files && files.screenshots || []) : [];
+
+  if (uploadScreenshots && screenshots.length) {
+    for (let index = 0; index < screenshots.length; index++) {
+      if (mediaOperationState.abortRequested) {
+        aborted = true;
+        break;
+      }
+
+      const visibleScreenshotCount = getVisibleMediaImageCount("screenshots");
+      if (visibleScreenshotCount >= MAX_DASHBOARD_SCREENSHOTS) {
+        skipped.push(localize(
+          "screenshotsLimitReached",
+          "screenshots: CWS limit of $1 already reached",
+          [String(MAX_DASHBOARD_SCREENSHOTS)]
+        ));
+        break;
+      }
+
+      const target = getAvailableMediaUploadInput("screenshots");
+      if (!target) {
+        failed.push(`screenshot ${index + 1}: upload target not found`);
+        break;
+      }
+
+      try {
+        const result = await setUploadInputFile(target.input, [screenshots[index]]);
+        if (result.ok) {
+          uploaded.push(`screenshot ${index + 1}: ${screenshots[index].name}`);
+        } else {
+          failed.push(`screenshot ${index + 1}: CWS did not show the uploaded image (${result.method})`);
+        }
+      } catch (error) {
+        failed.push(`screenshot ${index + 1}: ${error.message || String(error)}`);
+      }
+    }
+  } else if (uploadScreenshots) {
+    skipped.push("screenshots: no discovered files");
+  }
+
+  for (const item of [
+    { kind: "storeIcon", file: files && files.storeIcon, label: "store icon", enabled: uploadStoreIcon },
+    { kind: "smallPromo", file: files && files.smallPromo, label: "small promo", enabled: uploadSmallPromo },
+    { kind: "marqueePromo", file: files && files.marqueePromo, label: "marquee promo", enabled: uploadMarqueePromo }
+  ].filter(item => item.enabled)) {
+    if (mediaOperationState.abortRequested) {
+      aborted = true;
+      break;
+    }
+
+    if (!item.file) {
+      skipped.push(`${item.label}: no discovered file`);
+      continue;
+    }
+
+    if (hasExistingOrProcessingMedia(item.kind)) {
+      skipped.push(`${item.label}: already present or processing`);
+      continue;
+    }
+
+    const target = getAvailableMediaUploadInput(item.kind);
+    if (!target) {
+      failed.push(`${item.label}: upload target not found`);
+      continue;
+    }
+
+    try {
+      const result = await setUploadInputFile(target.input, [item.file]);
+      if (result.ok) {
+        uploaded.push(`${item.label}: ${item.file.name}`);
+      } else {
+        failed.push(`${item.label}: CWS did not show the uploaded image (${result.method})`);
+      }
+    } catch (error) {
+      failed.push(`${item.label}: ${error.message || String(error)}`);
+    }
+  }
+
+  const messageParts = [
+    localize("mediaUploadedKind", "Uploaded $1: $2.", [getMediaUploadKindLabel(kind), String(uploaded.length)]),
+    aborted ? localize("operationStopped", "Stopped.") : "",
+    skipped.length ? localize("mediaSkipped", "Skipped: $1.", [skipped.join(", ")]) : "",
+    failed.length ? localize("mediaUploadFailures", "Failed: $1.", [failed.join(", ")]) : ""
+  ].filter(Boolean);
+
+  return {
+    ok: failed.length === 0 && (uploaded.length > 0 || skipped.length > 0),
+    aborted,
+    message: messageParts.join(" "),
+    uploaded,
+    skipped,
+    failed,
+    diagnostics: {
+      mediaUploadTargets: getMediaUploadDiagnostics()
+    }
+  };
+}
+
+async function uploadDashboardMediaAssets(files, kind = "") {
+  return runExclusiveMediaOperation(
+    localize("uploadingMedia", "Uploading media..."),
+    () => performUploadDashboardMediaAssets(files, kind)
+  );
+}
+
 async function diagnoseDashboardPage() {
   await loadListings();
 
   const dropdown = findLanguageDropdown();
   const descriptionField = findDescriptionField();
+  const mediaUploadTargets = getMediaUploadDiagnostics();
   let dropdownOptions = [];
 
   if (dropdown) {
@@ -826,6 +2140,7 @@ async function diagnoseDashboardPage() {
     currentDashboardLocale: getCurrentDashboardLocale(),
     dashboardLanguageOptionCount: dropdownOptions.length,
     firstDashboardLanguageOptions: dropdownOptions.slice(0, 8),
+    mediaUploadTargets,
     descriptionFieldFound: Boolean(descriptionField),
     descriptionFieldLabel: descriptionField
       ? getVisibleText(document.getElementById(descriptionField.getAttribute("aria-labelledby")))
@@ -851,24 +2166,41 @@ function createButton(label, onClick) {
 }
 
 function openOptionsPage() {
-  if (STOREPILOT_API.runtime && typeof STOREPILOT_API.runtime.openOptionsPage === "function") {
-    const result = STOREPILOT_API.runtime.openOptionsPage();
-    if (result && typeof result.catch === "function") {
-      result.catch(() => {
-        window.open(STOREPILOT_API.runtime.getURL("src/options/options.html"), "_blank", "noopener");
-      });
-    }
+  if (STOREPILOT_API.runtime && typeof STOREPILOT_API.runtime.sendMessage === "function") {
+    STOREPILOT_API.runtime.sendMessage({ action: "openOptionsPage" }).catch(() => {
+      window.open(STOREPILOT_API.runtime.getURL("src/options/options.html"), "_blank", "noopener");
+    });
     return;
   }
 
   window.open(STOREPILOT_API.runtime.getURL("src/options/options.html"), "_blank", "noopener");
 }
 
-function renderPanel(locales) {
-  const existing = document.getElementById(PANEL_ID);
-  if (existing) existing.remove();
+function createPanelControls(panel) {
+  const panelControls = document.createElement("div");
+  const toggleModeButton = createButton("", () => {
+    const nextMode = panel.dataset.panelMode === "minimized" ? "expanded" : "minimized";
+    setPanelMode(panel, nextMode);
+  });
+  const closeButton = createButton("x", () => {
+    setPanelMode(panel, "hidden");
+  });
 
+  panelControls.className = "storepilot-panel-controls";
+  toggleModeButton.dataset.storepilotAction = "toggle-panel-mode";
+  toggleModeButton.className = "storepilot-icon-button";
+  closeButton.dataset.storepilotAction = "close-panel";
+  closeButton.className = "storepilot-icon-button";
+  closeButton.title = localize("closePanel", "Close panel");
+  closeButton.setAttribute("aria-label", closeButton.title);
+  panelControls.append(toggleModeButton, closeButton);
+
+  return panelControls;
+}
+
+function createPanelBase() {
   const panel = document.createElement("section");
+  const header = document.createElement("div");
   const title = document.createElement("div");
   const meta = document.createElement("div");
   const status = document.createElement("div");
@@ -878,7 +2210,109 @@ function renderPanel(locales) {
   if (currentTheme !== "system") {
     panel.dataset.theme = currentTheme;
   }
+  header.className = "storepilot-header";
   title.className = "storepilot-title";
+  meta.className = "storepilot-meta";
+  status.className = "storepilot-status";
+  actions.className = "storepilot-actions";
+  title.textContent = localize("extensionName", "StorePilot");
+  header.append(title, createPanelControls(panel));
+
+  return { panel, header, title, meta, status, actions };
+}
+
+function createPanelActionGroup(...controls) {
+  const group = document.createElement("div");
+  group.className = "storepilot-action-group";
+  group.append(...controls.filter(Boolean));
+  return group;
+}
+
+function attachPanel(panel, title) {
+  document.documentElement.append(panel);
+  applyPanelMode(panel, getStoredPanelMode());
+  applyStoredPanelPosition(panel);
+  clampPanelToViewport(panel, false);
+  bindPanelViewportClamp(panel);
+  enablePanelDrag(panel, title);
+}
+
+function renderPrivacyPanel() {
+  const panelMode = getStoredPanelMode();
+  if (panelMode === "hidden") return;
+
+  const { panel, header, title, meta, status, actions } = createPanelBase();
+  const fields = getActivePrivacyFields();
+  const fieldKeys = Object.keys(fields);
+
+  meta.textContent = activePrivacyDoc && activePrivacyDoc.file
+    ? localize("privacyPanelSummary", "$1 privacy field(s) in $2", [String(fieldKeys.length), activeProjectName || localize("activeProject", "Active project")])
+    : localize("privacyDocNotImported", "No privacy document imported for the active project.");
+  status.textContent = activePrivacyDoc && activePrivacyDoc.file
+    ? localize("privacyDocFileFound", "Privacy document: $1", [activePrivacyDoc.file.path])
+    : localize("importPrivacyDocInOptions", "Import or re-import the project in StorePilot options to load a privacy document.");
+
+  const fillSinglePurposeButton = createButton(localize("fillSinglePurpose", "Fill single purpose"), () => {
+    const result = fillPrivacyField("single_purpose");
+    status.textContent = result.message;
+  });
+  fillSinglePurposeButton.dataset.storepilotAction = "fill-single-purpose";
+  fillSinglePurposeButton.disabled = !fields.single_purpose;
+  fillSinglePurposeButton.title = fields.single_purpose
+    ? ""
+    : localize("privacyNoValueForField", "No privacy document value for $1.", ["single_purpose"]);
+
+  const fillPrivacyButton = createButton(localize("fillPrivacy", "Fill privacy"), () => {
+    const result = fillDetectedPrivacyFields();
+    status.textContent = result.message;
+  });
+  fillPrivacyButton.dataset.storepilotAction = "fill-privacy";
+  fillPrivacyButton.disabled = !fieldKeys.length;
+
+  const diagnoseButton = createButton(localize("diagnosePage", "Diagnose page"), () => {
+    const diagnostics = getPrivacyDiagnostics();
+    status.textContent = localize("privacyDiagnosticsSummary", "Found $1 editable privacy candidate(s).", [String(diagnostics.fieldCandidates.length)]);
+    console.info("StorePilot privacy diagnostics", diagnostics);
+  });
+  diagnoseButton.dataset.storepilotAction = "diagnose-privacy";
+
+  const optionsButton = createButton(localize("options", "Options"), openOptionsPage);
+  actions.append(
+    createPanelActionGroup(fillSinglePurposeButton, fillPrivacyButton),
+    createPanelActionGroup(diagnoseButton, optionsButton)
+  );
+  panel.append(header, meta, actions, status);
+  attachPanel(panel, title);
+}
+
+function renderPanel(locales) {
+  removePanel();
+
+  if (isPrivacyDashboardSection()) {
+    renderPrivacyPanel();
+    return;
+  }
+
+  if (!isListingDashboardSection()) return;
+
+  const panelMode = getStoredPanelMode();
+  if (panelMode === "hidden") return;
+
+  const panel = document.createElement("section");
+  const header = document.createElement("div");
+  const title = document.createElement("div");
+  const panelControls = document.createElement("div");
+  const meta = document.createElement("div");
+  const status = document.createElement("div");
+  const actions = document.createElement("div");
+
+  panel.id = PANEL_ID;
+  if (currentTheme !== "system") {
+    panel.dataset.theme = currentTheme;
+  }
+  header.className = "storepilot-header";
+  title.className = "storepilot-title";
+  panelControls.className = "storepilot-panel-controls";
   meta.className = "storepilot-meta";
   status.className = "storepilot-status";
   actions.className = "storepilot-actions";
@@ -894,11 +2328,20 @@ function renderPanel(locales) {
     : localize("lastUpdatedOn", "Last updated on $1.", [formatDisplayTimestamp(activeProjectUpdatedAt)]);
 
   const fillCurrentButton = createButton(localize("fillCurrent", "Fill current"), async () => {
+      if (mediaOperationState.running) {
+        status.textContent = localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label]);
+        return;
+      }
       const result = await fillCurrentDashboardLanguage();
       status.textContent = result.message;
   });
   fillCurrentButton.dataset.storepilotAction = "fill-current";
   const fillAllButton = createButton(localize("fillAll", "Fill all"), async () => {
+    if (mediaOperationState.running) {
+      status.textContent = localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label]);
+      return;
+    }
+
     if (isFillingAllLanguages) {
       status.textContent = localize("fillAllAlreadyRunning", "Fill all is already running.");
       return;
@@ -912,6 +2355,7 @@ function renderPanel(locales) {
     });
     fillAllButton.disabled = true;
     fillCurrentButton.disabled = true;
+    setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling all languages..."));
     abortButton.hidden = false;
     status.textContent = localize("fillingAllLanguages", "Filling all languages...");
 
@@ -926,23 +2370,110 @@ function renderPanel(locales) {
         running: false,
         message: status.textContent
       });
+      updatePanelMediaUi();
     }
   });
   fillAllButton.dataset.storepilotAction = "fill-all";
-  const abortButton = createButton(localize("abort", "Abort"), () => {
-    const result = abortFillAllLanguages();
+  const abortButton = createButton(localize("abortOperation", "Abort operation"), () => {
+    const result = abortCurrentOperation();
     status.textContent = result.message;
   });
-  abortButton.dataset.storepilotAction = "abort-fill-all";
+  abortButton.dataset.storepilotAction = "abort-operation";
   abortButton.className = "storepilot-danger";
-  abortButton.hidden = !isFillingAllLanguages;
+  abortButton.hidden = !isFillingAllLanguages && !mediaOperationState.running;
+
+  const toggleModeButton = createButton("", () => {
+    const nextMode = panel.dataset.panelMode === "minimized" ? "expanded" : "minimized";
+    setPanelMode(panel, nextMode);
+  });
+  toggleModeButton.dataset.storepilotAction = "toggle-panel-mode";
+  toggleModeButton.className = "storepilot-icon-button";
+
+  const closeButton = createButton("x", () => {
+    setPanelMode(panel, "hidden");
+  });
+  closeButton.dataset.storepilotAction = "close-panel";
+  closeButton.className = "storepilot-icon-button";
+  closeButton.title = localize("closePanel", "Close panel");
+  closeButton.setAttribute("aria-label", closeButton.title);
+
+  function createMediaUploadButton(kind, labelKey, fallback) {
+    const button = createButton(localize(labelKey, fallback), async () => {
+      setPanelMediaButtonsDisabled(true, localize("uploadingMedia", "Uploading media..."));
+      status.textContent = localize("uploadingMedia", "Uploading media...");
+      try {
+        const response = await STOREPILOT_API.runtime.sendMessage({
+          type: "storepilot-upload-media-assets-from-project",
+          requestAccess: false,
+          kind
+        });
+        status.textContent = response && response.message || localize("mediaUploadFailed", "Media upload failed: $1", [localize("unknown", "Unknown")]);
+      } finally {
+        updatePanelMediaUi();
+      }
+    });
+    button.dataset.storepilotAction = `upload-${kind}`;
+    return button;
+  }
+
+  function createMediaClearButton(kind, labelKey, fallback) {
+    const button = createButton(localize(labelKey, fallback), async () => {
+      if (!hasClearableMedia(kind)) {
+        status.textContent = localize("mediaAlreadyClearKind", "$1 already clear.", [getMediaUploadKindLabel(kind)]);
+        updatePanelMediaUi();
+        return;
+      }
+
+      setPanelMediaButtonsDisabled(true, localize("clearingMedia", "Clearing media..."));
+      status.textContent = localize("clearingMedia", "Clearing media...");
+      try {
+        const result = await clearDashboardMediaAssets(kind);
+        status.textContent = result.message;
+      } finally {
+        updatePanelMediaUi();
+      }
+    });
+    button.dataset.storepilotAction = `clear-${kind}`;
+    button.className = "storepilot-danger";
+    return button;
+  }
+
+  const uploadStoreIconButton = createMediaUploadButton("storeIcon", "uploadStoreIcon", "Upload store icon");
+  const uploadScreenshotsButton = createMediaUploadButton("screenshots", "uploadScreenshots", "Upload screenshots");
+  const uploadSmallPromoButton = createMediaUploadButton("smallPromo", "uploadSmallPromo", "Upload small promo");
+  const uploadMarqueePromoButton = createMediaUploadButton("marqueePromo", "uploadMarqueePromo", "Upload marquee promo");
+  const clearScreenshotsButton = createMediaClearButton("screenshots", "clearScreenshots", "Clear screenshots");
+  const clearStoreIconButton = createMediaClearButton("storeIcon", "clearStoreIcon", "Clear store icon");
+  const clearSmallPromoButton = createMediaClearButton("smallPromo", "clearSmallPromo", "Clear small promo");
+  const clearMarqueePromoButton = createMediaClearButton("marqueePromo", "clearMarqueePromo", "Clear marquee promo");
   const optionsButton = createButton(localize("options", "Options"), openOptionsPage);
 
-  actions.append(fillCurrentButton, fillAllButton, abortButton, optionsButton);
+  actions.append(
+    createPanelActionGroup(fillCurrentButton, fillAllButton),
+    createPanelActionGroup(
+      uploadStoreIconButton,
+      uploadScreenshotsButton,
+      uploadSmallPromoButton,
+      uploadMarqueePromoButton
+    ),
+    createPanelActionGroup(
+      clearStoreIconButton,
+      clearScreenshotsButton,
+      clearSmallPromoButton,
+      clearMarqueePromoButton
+    ),
+    createPanelActionGroup(abortButton, optionsButton)
+  );
 
-  panel.append(title, meta, actions, status);
+  panelControls.append(toggleModeButton, closeButton);
+  header.append(title, panelControls);
+  panel.append(header, meta, actions, status);
   document.documentElement.append(panel);
+  applyPanelMode(panel, panelMode);
   applyStoredPanelPosition(panel);
+  clampPanelToViewport(panel, false);
+  bindPanelViewportClamp(panel);
+  bindPanelMediaState(panel);
   enablePanelDrag(panel, title);
   updatePanelFillAllUi();
 }
@@ -960,7 +2491,7 @@ function injectStyles() {
       z-index: 2147483647;
       display: grid;
       gap: 8px;
-      width: 280px;
+      width: 320px;
       padding: 12px;
       border: 1px solid rgba(15, 23, 42, 0.16);
       border-radius: 8px;
@@ -977,15 +2508,43 @@ function injectStyles() {
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
     }
 
+    #${PANEL_ID}[data-panel-mode="minimized"] {
+      width: 220px;
+      padding: 10px 12px;
+    }
+
+    #${PANEL_ID} .storepilot-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+
     #${PANEL_ID} .storepilot-title {
       cursor: grab;
       font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       user-select: none;
       touch-action: none;
     }
 
     #${PANEL_ID}[data-dragging="true"] .storepilot-title {
       cursor: grabbing;
+    }
+
+    #${PANEL_ID} .storepilot-panel-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    #${PANEL_ID} .storepilot-icon-button {
+      width: 26px;
+      min-width: 26px;
+      min-height: 26px;
+      padding: 0;
+      line-height: 1;
     }
 
     #${PANEL_ID} .storepilot-meta {
@@ -1009,13 +2568,30 @@ function injectStyles() {
 
     #${PANEL_ID} .storepilot-actions {
       display: grid;
+      gap: 8px;
+    }
+
+    #${PANEL_ID} .storepilot-action-group {
+      display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    #${PANEL_ID} .storepilot-action-group:first-child {
+      padding-top: 0;
+      border-top: 0;
     }
 
     #${PANEL_ID} button {
       cursor: pointer;
       font-weight: 700;
+    }
+
+    #${PANEL_ID} button:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
     }
 
     #${PANEL_ID} button[hidden] {
@@ -1041,9 +2617,19 @@ function injectStyles() {
       color: #ff9b92;
     }
 
+    #${PANEL_ID}[data-theme="dark"] .storepilot-action-group {
+      border-top-color: #343b4a;
+    }
+
     #${PANEL_ID} .storepilot-status {
       color: #475569;
       font-size: 12px;
+    }
+
+    #${PANEL_ID}[data-panel-mode="minimized"] .storepilot-meta,
+    #${PANEL_ID}[data-panel-mode="minimized"] .storepilot-actions,
+    #${PANEL_ID}[data-panel-mode="minimized"] .storepilot-status {
+      display: none;
     }
 
     #${PANEL_ID}[data-theme="dark"] .storepilot-status {
@@ -1075,6 +2661,10 @@ function injectStyles() {
         color: #ff9b92;
       }
 
+      #${PANEL_ID}:not([data-theme="light"]) .storepilot-action-group {
+        border-top-color: #343b4a;
+      }
+
       #${PANEL_ID}:not([data-theme="light"]) .storepilot-status {
         color: #cbd5e1;
       }
@@ -1086,6 +2676,10 @@ function injectStyles() {
 STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   (async () => {
     if (message.type === "storepilot-copy") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
       await loadSettings();
       renderPanel(await loadListings());
       sendResponse(await copySelectedText());
@@ -1093,6 +2687,10 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
     }
 
     if (message.type === "storepilot-fill") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
       await loadSettings();
       renderPanel(await loadListings());
       sendResponse(fillSelectedText());
@@ -1100,6 +2698,10 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
     }
 
     if (message.type === "storepilot-fill-current-language") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
       await loadSettings();
       renderPanel(await loadListings());
       sendResponse(await fillCurrentDashboardLanguage());
@@ -1107,6 +2709,10 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
     }
 
     if (message.type === "storepilot-fill-all-languages") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
       await loadSettings();
       renderPanel(await loadListings());
       if (isFillingAllLanguages) {
@@ -1148,8 +2754,90 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
       return;
     }
 
-    if (message.type === "storepilot-abort-fill-all") {
-      sendResponse(abortFillAllLanguages());
+    if (message.type === "storepilot-abort-operation" || message.type === "storepilot-abort-fill-all") {
+      sendResponse(abortCurrentOperation());
+      return;
+    }
+
+    if (message.type === "storepilot-upload-media-assets") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
+      sendResponse(await uploadDashboardMediaAssets(message.files || {}, message.kind || ""));
+      return;
+    }
+
+    if (message.type === "storepilot-clear-media-assets") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
+      sendResponse(await clearDashboardMediaAssets(message.kind || "screenshots"));
+      return;
+    }
+
+    if (message.type === "storepilot-get-media-state") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
+      sendResponse({
+        ok: true,
+        media: getDashboardMediaState()
+      });
+      return;
+    }
+
+    if (message.type === "storepilot-get-panel-state") {
+      sendResponse({
+        ok: true,
+        panel: getPanelState()
+      });
+      return;
+    }
+
+    if (message.type === "storepilot-show-panel") {
+      if (!isPanelDashboardSection()) {
+        removePanel();
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
+      savePanelMode("expanded");
+      injectStyles();
+      await loadSettings();
+      renderPanel(await loadListings());
+      sendResponse({ ok: true, message: localize("panelOpened", "Panel opened.") });
+      return;
+    }
+
+    if (message.type === "storepilot-fill-privacy") {
+      if (!isPrivacyDashboardSection()) {
+        sendResponse({
+          ok: false,
+          message: localize("privacyActionsOnlyOnPrivacyPage", "Privacy actions are only available on the Privacy page.")
+        });
+        return;
+      }
+      await loadSettings();
+      await loadListings();
+      renderPanel(Object.keys(listings).sort((a, b) => a.localeCompare(b)));
+      sendResponse(fillDetectedPrivacyFields());
+      return;
+    }
+
+    if (message.type === "storepilot-fill-privacy-field") {
+      if (!isPrivacyDashboardSection()) {
+        sendResponse({
+          ok: false,
+          message: localize("privacyActionsOnlyOnPrivacyPage", "Privacy actions are only available on the Privacy page.")
+        });
+        return;
+      }
+      await loadSettings();
+      await loadListings();
+      renderPanel(Object.keys(listings).sort((a, b) => a.localeCompare(b)));
+      sendResponse(fillPrivacyField(String(message.key || "")));
       return;
     }
 
@@ -1163,6 +2851,15 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
     if (message.type === "storepilot-diagnose") {
       await loadSettings();
       renderPanel(await loadListings());
+      if (isPrivacyDashboardSection()) {
+        const diagnostics = getPrivacyDiagnostics();
+        sendResponse({
+          ok: Boolean(diagnostics.fieldCandidates.length),
+          message: localize("privacyDiagnosticsSummary", "Found $1 editable privacy candidate(s).", [String(diagnostics.fieldCandidates.length)]),
+          diagnostics
+        });
+        return;
+      }
       sendResponse(await diagnoseDashboardPage());
     }
   })();
@@ -1172,6 +2869,7 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
 
 (async () => {
   injectStyles();
+  bindDashboardSectionWatcher();
   await loadSettings();
   renderPanel(await loadListings());
 })();
@@ -1182,5 +2880,11 @@ STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
   if (changes[SETTINGS_KEY]) {
     currentTheme = (changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme) || "system";
     renderPanel(Object.keys(listings).sort((a, b) => a.localeCompare(b)));
+  }
+
+  if (changes[PROJECTS_STORAGE_KEY] || changes[ACTIVE_PROJECT_STORAGE_KEY]) {
+    loadListings()
+      .then(renderPanel)
+      .catch(() => {});
   }
 });

@@ -1,14 +1,12 @@
 const SETTINGS_KEY = "storePilotSettings";
-const POPUP_STATE_KEY = "storePilotPopupState";
 const FILL_ALL_STATUS_STORAGE_KEY = "storePilotFillAllStatus";
-var STOREPILOT_API = globalThis.browser || globalThis.chrome;
-const STOREPILOT_IS_FIREFOX = typeof globalThis.browser !== "undefined";
+var STOREPILOT_API = globalThis.browser;
 
 function t(key, fallback, substitutions) {
   return storePilotText(key, fallback, substitutions);
 }
 
-if (STOREPILOT_IS_FIREFOX && STOREPILOT_API.tabs && STOREPILOT_API.runtime) {
+if (STOREPILOT_API.tabs && STOREPILOT_API.runtime) {
   STOREPILOT_API.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
     const ownOrigin = new URL(STOREPILOT_API.runtime.getURL("")).origin;
     const url = tab && tab.url ? tab.url : "";
@@ -22,25 +20,34 @@ const elements = {
   summary: document.getElementById("summary"),
   status: document.getElementById("status"),
   projectSelect: document.getElementById("projectSelect"),
-  localeSelect: document.getElementById("localeSelect"),
   importFolder: document.getElementById("importFolder"),
-  listingFiles: document.getElementById("listingFiles"),
-  listingFolderFallback: document.getElementById("listingFolderFallback"),
-  syncProject: document.getElementById("syncProject"),
-  fillField: document.getElementById("fillField"),
   fillCurrentLanguage: document.getElementById("fillCurrentLanguage"),
   fillAllLanguages: document.getElementById("fillAllLanguages"),
+  uploadStoreIcon: document.getElementById("uploadStoreIcon"),
+  uploadScreenshots: document.getElementById("uploadScreenshots"),
+  uploadSmallPromo: document.getElementById("uploadSmallPromo"),
+  uploadMarqueePromo: document.getElementById("uploadMarqueePromo"),
+  clearStoreIcon: document.getElementById("clearStoreIcon"),
+  clearScreenshots: document.getElementById("clearScreenshots"),
+  clearSmallPromo: document.getElementById("clearSmallPromo"),
+  clearMarqueePromo: document.getElementById("clearMarqueePromo"),
+  fillSinglePurpose: document.getElementById("fillSinglePurpose"),
+  fillPrivacy: document.getElementById("fillPrivacy"),
+  diagnosePrivacyPage: document.getElementById("diagnosePrivacyPage"),
   abortFillAll: document.getElementById("abortFillAll"),
-  copyText: document.getElementById("copyText"),
-  diagnosePage: document.getElementById("diagnosePage"),
-  openOptions: document.getElementById("openOptions"),
+  openPanel: document.getElementById("openPanel"),
+  utilityActions: document.getElementById("utilityActions"),
+  openOptionsShortcut: document.getElementById("openOptionsShortcut"),
   diagnostics: document.getElementById("diagnostics"),
   diagnosticsText: document.getElementById("diagnosticsText"),
+  listingGroups: Array.from(document.querySelectorAll("[data-popup-section='listing']")),
+  privacyGroups: Array.from(document.querySelectorAll("[data-popup-section='privacy']")),
   themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]"))
 };
 
 let isPopupFillAllRunning = false;
 let fillAllStatusPollId = 0;
+let isPopupMediaRunning = false;
 
 function applyTheme(theme) {
   const normalized = ["system", "light", "dark"].includes(theme) ? theme : "system";
@@ -74,24 +81,6 @@ async function updateSettings(patch) {
   return settings;
 }
 
-async function getPopupState() {
-  const stored = await STOREPILOT_API.storage.local.get(POPUP_STATE_KEY);
-  return {
-    selectedLocaleByProject: {},
-    ...(stored[POPUP_STATE_KEY] || {})
-  };
-}
-
-async function updatePopupState(patch) {
-  const state = {
-    ...(await getPopupState()),
-    ...patch
-  };
-
-  await STOREPILOT_API.storage.local.set({ [POPUP_STATE_KEY]: state });
-  return state;
-}
-
 function setStatus(message, isError = false) {
   elements.status.textContent = message;
   elements.status.classList.toggle("error", isError);
@@ -116,12 +105,97 @@ function formatError(error) {
   return error.message || String(error);
 }
 
+function getPopupMediaButtons() {
+  return [
+    elements.uploadStoreIcon,
+    elements.uploadScreenshots,
+    elements.uploadSmallPromo,
+    elements.uploadMarqueePromo,
+    elements.clearStoreIcon,
+    elements.clearScreenshots,
+    elements.clearSmallPromo,
+    elements.clearMarqueePromo
+  ].filter(Boolean);
+}
+
+function getPopupListingActionControls() {
+  return [
+    elements.fillCurrentLanguage,
+    elements.fillAllLanguages,
+    elements.uploadStoreIcon,
+    elements.uploadScreenshots,
+    elements.uploadSmallPromo,
+    elements.uploadMarqueePromo,
+    elements.clearStoreIcon,
+    elements.clearScreenshots,
+    elements.clearSmallPromo,
+    elements.clearMarqueePromo
+  ].filter(Boolean);
+}
+
+function setPopupListingActionsVisible(isVisible) {
+  elements.listingGroups.forEach(group => {
+    group.hidden = !isVisible;
+  });
+}
+
+function getPopupPrivacyActionControls() {
+  return [
+    elements.fillSinglePurpose,
+    elements.fillPrivacy,
+    elements.diagnosePrivacyPage
+  ].filter(Boolean);
+}
+
+function setPopupPrivacyActionsVisible(isVisible) {
+  elements.privacyGroups.forEach(group => {
+    group.hidden = !isVisible;
+  });
+}
+
+function syncUtilityActionsVisibility() {
+  elements.utilityActions.hidden = Boolean(elements.abortFillAll.hidden && elements.openPanel.hidden);
+}
+
+function setPopupMediaRunning(isRunning, title = "") {
+  isPopupMediaRunning = isRunning;
+  getPopupMediaButtons().forEach(button => {
+    button.disabled = isRunning || isPopupFillAllRunning;
+    button.title = isRunning ? title : (isPopupFillAllRunning ? t("fillingAllLanguages", "Filling all languages...") : "");
+  });
+  elements.fillCurrentLanguage.disabled = isRunning;
+  elements.fillAllLanguages.disabled = isRunning || isPopupFillAllRunning;
+  elements.fillCurrentLanguage.title = title;
+  elements.fillAllLanguages.title = title;
+  elements.abortFillAll.hidden = !(isPopupFillAllRunning || isPopupMediaRunning);
+  elements.abortFillAll.disabled = false;
+  syncUtilityActionsVisibility();
+}
+
 function isDeveloperDashboardUrl(url = "") {
   return /^https:\/\/(chrome\.google\.com\/webstore\/devconsole|chromewebstore\.google\.com\/devconsole)\//.test(url);
 }
 
-function isExtensionsGalleryBlockedError(errorText = "") {
-  return /extensions gallery cannot be scripted/i.test(errorText);
+function getDashboardSectionFromUrl(url = "") {
+  try {
+    const { pathname } = new URL(url);
+    if (/\/edit\/privacy\/?$/.test(pathname)) return "privacy";
+    if (/\/edit(?:\/listing)?\/?$/.test(pathname)) return "listing";
+  } catch (_error) {
+    // Unknown URLs are handled as non-listing pages.
+  }
+
+  return "other";
+}
+
+function isListingDashboardUrl(url = "") {
+  return isDeveloperDashboardUrl(url) && getDashboardSectionFromUrl(url) === "listing";
+}
+
+function isPanelDashboardUrl(url = "") {
+  if (!isDeveloperDashboardUrl(url)) return false;
+  const section = getDashboardSectionFromUrl(url);
+  return section === "listing" || section === "privacy";
 }
 
 function renderProjectSelect(projects, activeProjectId) {
@@ -135,38 +209,22 @@ function renderProjectSelect(projects, activeProjectId) {
   }));
 
   elements.projectSelect.disabled = !projects.length;
-  elements.syncProject.disabled = !activeProject || !activeProject.hasFolderHandle;
-  elements.syncProject.title = activeProject && !activeProject.hasFolderHandle
-    ? t("reimportFolderToRefresh", "This project was imported from a browser file picker. Re-import the project folder to refresh it.")
+}
+
+function formatMediaSummary(projectOrResult) {
+  return typeof storePilotFormatMediaSummary === "function"
+    ? storePilotFormatMediaSummary(projectOrResult && projectOrResult.mediaAssets)
     : "";
 }
 
-function formatConfidence(value) {
-  if (value === "high") return t("confidenceHigh", "high");
-  if (value === "medium") return t("confidenceMedium", "medium");
-  if (value === "low") return t("confidenceLow", "low");
-  return value || "";
+function formatPrivacyDocSummary(projectOrResult) {
+  return typeof storePilotFormatPrivacyDocSummary === "function"
+    ? storePilotFormatPrivacyDocSummary(projectOrResult && projectOrResult.privacyDoc)
+    : "";
 }
 
-async function renderLocaleSelect(project) {
-  const locales = Object.keys(project && project.listings ? project.listings : {})
-    .sort((a, b) => a.localeCompare(b));
-  const popupState = await getPopupState();
-  const savedLocale = project && popupState.selectedLocaleByProject[project.id];
-  const selectedLocale = locales.includes(savedLocale)
-    ? savedLocale
-    : (locales.includes("en") ? "en" : locales[0] || "");
-
-  elements.localeSelect.replaceChildren(...locales.map(locale => {
-    const option = document.createElement("option");
-    option.value = locale;
-    option.textContent = locale;
-    option.selected = locale === selectedLocale;
-    return option;
-  }));
-
-  elements.localeSelect.disabled = !locales.length;
-  elements.copyText.disabled = !locales.length;
+function hasPrivacyDocFile(projectOrResult) {
+  return Boolean(projectOrResult && projectOrResult.privacyDoc && projectOrResult.privacyDoc.file);
 }
 
 async function refreshSummary() {
@@ -176,104 +234,35 @@ async function refreshSummary() {
   const updatedAt = activeProject ? storePilotFormatDisplayTimestamp(activeProject.lastSyncedAt) : t("never", "Never");
 
   renderProjectSelect(projects, activeProject && activeProject.id);
-  await renderLocaleSelect(activeProject);
   elements.summary.textContent = activeProject
     ? t("popupSummary", "$1 listing locale(s) in $2. Last updated on $3.", [String(count), activeProject.name, updatedAt])
     : t("noProjectsYet", "No projects yet");
+  updateMediaActionState().catch(() => {});
+  updateOpenPanelButtonState().catch(() => {
+    elements.openPanel.hidden = true;
+    syncUtilityActionsVisibility();
+  });
 }
 
-async function updateDashboardRestrictionNotice() {
-  if (STOREPILOT_IS_FIREFOX) {
-    return;
-  }
-
+async function updateDashboardSectionUi() {
   const tab = await getActiveTab();
+  const section = tab && isDeveloperDashboardUrl(tab.url || "")
+    ? getDashboardSectionFromUrl(tab.url || "")
+    : "other";
+  const isListing = section === "listing";
+  const isPrivacy = section === "privacy";
 
-  if (!tab || !isDeveloperDashboardUrl(tab.url || "")) {
-    return;
-  }
+  setPopupListingActionsVisible(isListing);
+  setPopupPrivacyActionsVisible(isPrivacy);
 
-  elements.fillField.disabled = true;
-  elements.fillCurrentLanguage.disabled = true;
-  elements.fillAllLanguages.disabled = true;
-  setStatus(t("chromeBlocksDashboard", "Chrome blocks StorePilot from reading the Chrome Web Store page, so the current dashboard locale cannot be detected. Select the locale here and use Copy text."), false);
-}
-
-async function copySelectedLocaleFromPopup() {
-  const project = await storePilotGetActiveProject();
-  const locale = elements.localeSelect.value;
-  const text = project && project.listings ? project.listings[locale] : "";
-
-  if (!text) {
-    return {
-      ok: false,
-      message: t("noListingTextSelected", "No listing text selected to copy.")
-    };
-  }
-
-  await navigator.clipboard.writeText(text);
-  return {
-    ok: true,
-    message: t("copiedLocaleFromProject", "Copied $1 from $2.", [locale, project.name])
-  };
-}
-
-async function importListings(files) {
-  const result = await storePilotImportListingFiles(files);
-
-  if (!result.total) {
-    setStatus(t("noLocaleListingFilesSelected", "No locale listing files selected."), true);
-    return;
-  }
-
-  await refreshSummary();
-  setStatus(t("importedSkipped", "Imported $1; skipped $2.", [String(result.imported), String(result.skipped.length)]), result.imported === 0);
-  return result;
-}
-
-async function importFolder() {
-  if (!window.showDirectoryPicker) {
-    elements.listingFolderFallback.click();
-    return;
-  }
-
-  try {
-    const directoryHandle = await window.showDirectoryPicker({
-      id: "storepilot-listing-folder",
-      mode: "read"
+  if (!isPanelDashboardUrl(tab && tab.url || "")) {
+    elements.openPanel.hidden = true;
+    getPopupMediaButtons().forEach(button => {
+      button.disabled = true;
+      button.title = "";
     });
-    const result = await storePilotImportListingDirectory(directoryHandle);
-
-    if (!result.total) {
-      setStatus(t("noLocaleListingFolderFound", "No locale listing folder found."), true);
-      return;
-    }
-
-    await refreshSummary();
-    setStatus(
-      t("importedIntoConfidence", "Imported $1 into $2 ($3 confidence).", [String(result.imported), result.project.name, formatConfidence(result.confidence)]),
-      result.imported === 0
-    );
-  } catch (error) {
-    if (error.name === "AbortError") {
-      setStatus(t("folderImportCanceled", "Folder import canceled."));
-      return;
-    }
-
-    console.error(error);
-    setStatus(t("importFailed", "Import failed: $1", [error.message]), true);
   }
-}
-
-async function syncActiveProject(requestAccess = true) {
-  const { activeProjectId } = await storePilotGetProjectsState();
-  if (!activeProjectId) return;
-
-  const result = await storePilotSyncProject(activeProjectId, requestAccess);
-  await refreshSummary();
-  if (requestAccess || result.ok) {
-    setStatus(result.message, !result.ok && requestAccess);
-  }
+  syncUtilityActionsVisibility();
 }
 
 async function getActiveTab() {
@@ -288,8 +277,10 @@ async function injectContentScript(tabId) {
   });
 }
 
-async function sendToActiveTab(type) {
+async function sendToActiveTab(typeOrMessage) {
   const tab = await getActiveTab();
+  const message = typeof typeOrMessage === "string" ? { type: typeOrMessage } : typeOrMessage;
+  const type = message && message.type;
   if (!tab || !tab.id) {
     return { ok: false, message: t("noActiveTab", "No active tab.") };
   }
@@ -310,7 +301,7 @@ async function sendToActiveTab(type) {
   }
 
   try {
-    const response = await STOREPILOT_API.tabs.sendMessage(tab.id, { type });
+    const response = await STOREPILOT_API.tabs.sendMessage(tab.id, message);
     return { ...response, diagnostics: { ...diagnostics, contentScript: t("contentScriptAlreadyConnected", "already connected"), response } };
   } catch (error) {
     diagnostics.initialMessageError = formatError(error);
@@ -318,17 +309,13 @@ async function sendToActiveTab(type) {
     try {
       await injectContentScript(tab.id);
       diagnostics.injection = t("injectionSucceeded", "succeeded");
-      const response = await STOREPILOT_API.tabs.sendMessage(tab.id, { type });
+      const response = await STOREPILOT_API.tabs.sendMessage(tab.id, message);
       return { ...response, diagnostics: { ...diagnostics, response } };
     } catch (injectionError) {
       diagnostics.injectionError = formatError(injectionError);
-      const isGalleryBlocked = isExtensionsGalleryBlockedError(diagnostics.injectionError);
-
       return {
         ok: false,
-        message: isGalleryBlocked
-          ? t("chromeBlocksFillActions", "Chrome blocks extensions from scripting the Chrome Web Store dashboard. Fill actions cannot run here; use Copy text and paste manually.")
-          : t("couldNotConnectDashboard", "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact Chrome error."),
+        message: t("couldNotConnectDashboard", "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."),
         diagnostics
       };
     }
@@ -338,8 +325,19 @@ async function sendToActiveTab(type) {
 function setPopupFillAllRunning(isRunning) {
   isPopupFillAllRunning = isRunning;
   elements.fillAllLanguages.disabled = isRunning;
-  elements.abortFillAll.hidden = !isRunning;
+  elements.abortFillAll.hidden = !(isRunning || isPopupMediaRunning);
   elements.abortFillAll.disabled = false;
+  syncUtilityActionsVisibility();
+  getPopupMediaButtons().forEach(button => {
+    button.disabled = isRunning;
+    button.title = isRunning ? t("fillingAllLanguages", "Filling all languages...") : "";
+  });
+  if (!isRunning && !isPopupMediaRunning) {
+    elements.fillCurrentLanguage.disabled = false;
+    elements.fillAllLanguages.disabled = false;
+    elements.fillCurrentLanguage.title = "";
+    elements.fillAllLanguages.title = "";
+  }
 
   if (isRunning) {
     startFillAllStatusPolling();
@@ -397,83 +395,128 @@ async function diagnoseActiveTab() {
   setDiagnostics(result.diagnostics || result);
 }
 
+async function uploadMediaFromPopup(kind) {
+  const injection = await sendToActiveTab("storepilot-reload");
+  if (!injection.ok) return injection;
+
+  return STOREPILOT_API.runtime.sendMessage({
+    type: "storepilot-upload-media-assets-from-project",
+    requestAccess: true,
+    kind
+  });
+}
+
+async function updateMediaActionState() {
+  const tab = await getActiveTab();
+  if (!tab || !isListingDashboardUrl(tab.url || "")) {
+    getPopupMediaButtons().forEach(button => {
+      button.disabled = true;
+      button.title = t("listingActionsOnlyOnListingPage", "Listing and media actions are only available on the Store listing page.");
+    });
+    return;
+  }
+
+  const result = await sendToActiveTab("storepilot-get-media-state");
+  if (!result.ok || !result.media) return;
+
+  if (result.media.running) {
+    setPopupMediaRunning(true, result.media.runningLabel || t("mediaOperationInProgress", "Media operation in progress."));
+    return;
+  }
+
+  setPopupMediaRunning(false);
+  const clearableScreenshots = Boolean(result.media.clearableScreenshots || Number(result.media.screenshots || 0) > 0);
+  const clearableStoreIcon = Boolean(result.media.clearableStoreIcon || Number(result.media.storeIcon || 0) > 0);
+  const clearableSmallPromo = Boolean(result.media.clearableSmallPromo || Number(result.media.smallPromo || 0) > 0);
+  const clearableMarqueePromo = Boolean(result.media.clearableMarqueePromo || Number(result.media.marqueePromo || 0) > 0);
+  const screenshotsLimitReached = Boolean(result.media.screenshotsLimitReached);
+  const maxScreenshots = String(result.media.maxScreenshots || 5);
+  const storeIconPresent = Boolean(result.media.storeIconPresent || Number(result.media.storeIcon || 0) > 0);
+  const smallPromoPresent = Boolean(result.media.smallPromoPresent || Number(result.media.smallPromo || 0) > 0);
+  const marqueePromoPresent = Boolean(result.media.marqueePromoPresent || Number(result.media.marqueePromo || 0) > 0);
+
+  elements.uploadScreenshots.disabled = screenshotsLimitReached;
+  elements.uploadScreenshots.title = screenshotsLimitReached
+    ? t("screenshotsLimitReached", "screenshots: CWS limit of $1 already reached", [maxScreenshots])
+    : "";
+  elements.uploadStoreIcon.disabled = storeIconPresent;
+  elements.uploadStoreIcon.title = storeIconPresent
+    ? t("mediaAlreadyPresentOrProcessing", "$1 already present or processing.", [t("storeIcon", "Store icon")])
+    : "";
+  elements.clearScreenshots.disabled = !clearableScreenshots;
+  elements.clearScreenshots.title = clearableScreenshots
+    ? ""
+    : t("mediaAlreadyClearKind", "$1 already clear.", [t("screenshots", "Screenshots")]);
+  elements.clearStoreIcon.disabled = !clearableStoreIcon;
+  elements.clearStoreIcon.title = clearableStoreIcon
+    ? ""
+    : t("mediaAlreadyClearKind", "$1 already clear.", [t("storeIcon", "Store icon")]);
+  elements.clearSmallPromo.disabled = !clearableSmallPromo;
+  elements.clearSmallPromo.title = clearableSmallPromo
+    ? ""
+    : t("mediaAlreadyClearKind", "$1 already clear.", [t("smallPromoTile", "Small promo tile")]);
+  elements.clearMarqueePromo.disabled = !clearableMarqueePromo;
+  elements.clearMarqueePromo.title = clearableMarqueePromo
+    ? ""
+    : t("mediaAlreadyClearKind", "$1 already clear.", [t("marqueePromoTile", "Marquee promo tile")]);
+
+  elements.uploadSmallPromo.disabled = smallPromoPresent;
+  elements.uploadSmallPromo.title = smallPromoPresent
+    ? t("mediaAlreadyPresentOrProcessing", "$1 already present or processing.", [t("smallPromoTile", "Small promo tile")])
+    : "";
+  elements.uploadMarqueePromo.disabled = marqueePromoPresent;
+  elements.uploadMarqueePromo.title = marqueePromoPresent
+    ? t("mediaAlreadyPresentOrProcessing", "$1 already present or processing.", [t("marqueePromoTile", "Marquee promo tile")])
+    : "";
+}
+
+async function updateOpenPanelButtonState() {
+  const tab = await getActiveTab();
+  if (!tab || !isPanelDashboardUrl(tab.url || "")) {
+    elements.openPanel.hidden = true;
+    syncUtilityActionsVisibility();
+    return;
+  }
+
+  const result = await sendToActiveTab("storepilot-get-panel-state");
+  const isVisible = Boolean(result && result.ok && result.panel && result.panel.visible);
+  elements.openPanel.hidden = isVisible;
+  elements.openPanel.disabled = false;
+  elements.openPanel.title = "";
+  syncUtilityActionsVisibility();
+}
+
+async function clearMediaFromPopup(kind) {
+  const injection = await sendToActiveTab("storepilot-reload");
+  if (!injection.ok) return injection;
+
+  return sendToActiveTab({
+    type: "storepilot-clear-media-assets",
+    kind
+  });
+}
+
 function showActionResult(result) {
   const isExpectedStop = Boolean(result && result.aborted);
   setStatus(result.message || (result.ok || isExpectedStop ? t("done", "Done.") : t("failed", "Failed.")), !result.ok && !isExpectedStop);
   setDiagnostics(result.ok || isExpectedStop ? null : result.diagnostics || result);
 }
 
-function handleFileSelection(event) {
-  const importer = event.target === elements.listingFolderFallback
-    ? storePilotImportListingFileList
-    : importListings;
-
-  importer(event.target.files).then(async result => {
-    await refreshSummary();
-    if (!result.total) {
-      setStatus(t("noLocaleListingFilesFound", "No locale listing files were found."), true);
-      return;
-    }
-
-    setStatus(event.target === elements.listingFolderFallback && result.project
-      ? t("importedInto", "Imported $1 into $2.", [String(result.imported), result.project.name])
-      : t("importedSkipped", "Imported $1; skipped $2.", [String(result.imported), String(result.skipped.length)]), result.imported === 0);
-  }).catch(error => {
-    console.error(error);
-    setStatus(t("importFailed", "Import failed: $1", [error.message]), true);
-  });
-  event.target.value = "";
-}
-
-elements.importFolder.addEventListener("click", importFolder);
-elements.listingFiles.addEventListener("change", handleFileSelection);
-elements.listingFolderFallback.addEventListener("change", handleFileSelection);
-
 elements.projectSelect.addEventListener("change", async event => {
   await storePilotSetActiveProject(event.target.value);
   await refreshSummary();
   setStatus(t("projectSelected", "Project selected."));
-  await updateDashboardRestrictionNotice();
-});
-
-elements.localeSelect.addEventListener("change", async event => {
-  const project = await storePilotGetActiveProject();
-  if (!project) return;
-
-  const state = await getPopupState();
-  await updatePopupState({
-    selectedLocaleByProject: {
-      ...state.selectedLocaleByProject,
-      [project.id]: event.target.value
-    }
-  });
-  setStatus(t("localeSelected", "Locale selected: $1.", [event.target.value]));
-});
-
-elements.syncProject.addEventListener("click", () => {
-  if (elements.syncProject.disabled) {
-    setStatus(t("cannotAutoSync", "This project cannot auto-sync in this browser. Re-import the project folder to refresh listings."));
-    return;
-  }
-
-  syncActiveProject(true).catch(error => {
-    console.error(error);
-    setStatus(t("syncFailed", "Sync failed: $1", [error.message]), true);
-  });
-});
-
-elements.fillField.addEventListener("click", async () => {
-  const result = await sendToActiveTab("storepilot-fill");
-  showActionResult(result);
 });
 
 elements.fillCurrentLanguage.addEventListener("click", async () => {
+  if (isPopupMediaRunning) return;
+
   const result = await sendToActiveTab("storepilot-fill-current-language");
   showActionResult(result);
 });
 
 elements.fillAllLanguages.addEventListener("click", async () => {
-  if (isPopupFillAllRunning) return;
+  if (isPopupFillAllRunning || isPopupMediaRunning) return;
 
   setPopupFillAllRunning(true);
   setStatus(t("fillingAllLanguages", "Filling all languages..."));
@@ -486,15 +529,78 @@ elements.fillAllLanguages.addEventListener("click", async () => {
   }
 });
 
+elements.fillSinglePurpose.addEventListener("click", async () => {
+  const result = await sendToActiveTab({
+    type: "storepilot-fill-privacy-field",
+    key: "single_purpose"
+  });
+  showActionResult(result);
+});
+
+elements.fillPrivacy.addEventListener("click", async () => {
+  const result = await sendToActiveTab("storepilot-fill-privacy");
+  showActionResult(result);
+});
+
+elements.diagnosePrivacyPage.addEventListener("click", diagnoseActiveTab);
+
+function bindMediaUploadButton(button, kind) {
+  button.addEventListener("click", async () => {
+    if (isPopupMediaRunning || isPopupFillAllRunning || button.disabled) return;
+
+    setPopupMediaRunning(true, t("uploadingMedia", "Uploading media..."));
+    setStatus(t("uploadingMedia", "Uploading media..."));
+
+    try {
+      showActionResult(await uploadMediaFromPopup(kind));
+    } catch (error) {
+      setStatus(t("mediaUploadFailed", "Media upload failed: $1", [formatError(error)]), true);
+    } finally {
+      await updateMediaActionState().catch(() => {
+        setPopupMediaRunning(false);
+      });
+    }
+  });
+}
+
+bindMediaUploadButton(elements.uploadStoreIcon, "storeIcon");
+bindMediaUploadButton(elements.uploadScreenshots, "screenshots");
+bindMediaUploadButton(elements.uploadSmallPromo, "smallPromo");
+bindMediaUploadButton(elements.uploadMarqueePromo, "marqueePromo");
+
+function bindMediaClearButton(button, kind) {
+  button.addEventListener("click", async () => {
+    if (isPopupMediaRunning || isPopupFillAllRunning || button.disabled) return;
+
+    setPopupMediaRunning(true, t("clearingMedia", "Clearing media..."));
+    setStatus(t("clearingMedia", "Clearing media..."));
+
+    try {
+      showActionResult(await clearMediaFromPopup(kind));
+    } catch (error) {
+      setStatus(t("mediaClearFailed", "Media clear failed: $1", [formatError(error)]), true);
+    } finally {
+      await updateMediaActionState().catch(() => {
+        setPopupMediaRunning(false);
+      });
+    }
+  });
+}
+
+bindMediaClearButton(elements.clearScreenshots, "screenshots");
+bindMediaClearButton(elements.clearStoreIcon, "storeIcon");
+bindMediaClearButton(elements.clearSmallPromo, "smallPromo");
+bindMediaClearButton(elements.clearMarqueePromo, "marqueePromo");
+
 elements.abortFillAll.addEventListener("click", async () => {
   elements.abortFillAll.disabled = true;
-  const result = await sendToActiveTab("storepilot-abort-fill-all");
+  const result = await sendToActiveTab("storepilot-abort-operation");
   if (result.ok) {
     setStatus(result.message || t("stopRequested", "Stop requested."));
   } else {
     await refreshFillAllStatus();
-    if (!isPopupFillAllRunning) {
-      setStatus(t("fillAllNotRunning", "Fill all is not running."));
+    if (!isPopupFillAllRunning && !isPopupMediaRunning) {
+      setStatus(result.message || t("noOperationRunning", "No operation is running."));
       return;
     }
     elements.abortFillAll.disabled = false;
@@ -502,21 +608,19 @@ elements.abortFillAll.addEventListener("click", async () => {
   }
 });
 
-elements.copyText.addEventListener("click", async () => {
-  const result = await copySelectedLocaleFromPopup();
+elements.openPanel.addEventListener("click", async () => {
+  const result = await sendToActiveTab("storepilot-show-panel");
   showActionResult(result);
+  if (result.ok) {
+    elements.openPanel.hidden = true;
+  }
 });
 
-elements.diagnosePage.addEventListener("click", () => {
-  diagnoseActiveTab().catch(error => {
-    setStatus(t("diagnosticsFailedWithError", "Diagnostics failed: $1", [formatError(error)]), true);
-    setDiagnostics({ error: formatError(error) });
-  });
-});
-
-elements.openOptions.addEventListener("click", () => {
+function openOptionsPageFromPopup() {
   STOREPILOT_API.runtime.openOptionsPage();
-});
+}
+
+elements.openOptionsShortcut.addEventListener("click", openOptionsPageFromPopup);
 
 elements.themeChoices.forEach(button => {
   button.addEventListener("click", async () => {
@@ -557,8 +661,9 @@ if (STOREPILOT_API.runtime && STOREPILOT_API.runtime.onMessage) {
 (async () => {
   storePilotApplyI18n();
   applyTheme((await getSettings()).theme);
+  await updateDashboardSectionUi();
   await refreshSummary();
-  await updateDashboardRestrictionNotice();
+  await updateDashboardSectionUi();
+  await updateOpenPanelButtonState();
   await refreshFillAllStatus();
-  await syncActiveProject(false);
 })();
