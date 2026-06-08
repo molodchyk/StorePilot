@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: автозаполнение CWS"
   },
   "extensionDescription": {
-    "message": "Автоматизирует повторяющуюся работу по публикации расширений браузера."
+    "message": "Автозаполнение полей Chrome Web Store, локализованных описаний, скриншотов и форм конфиденциальности из локальных файлов."
   },
   "optionsSubtitle": {
     "message": "Импортируйте плоские файлы локализованных описаний и используйте их в панелях магазинов расширений."
@@ -44,11 +44,110 @@
   "importHintDrag": {
     "message": "Также можно перетащить файлы описаний прямо на эту панель."
   },
+  "privacyDocReferenceTitle": {
+    "message": "Справочник документов по автоматизации конфиденциальности"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot может сканировать один проектный документ на наличие полей конфиденциальности Chrome Web Store. Используйте эти канонические ключи, чтобы сканер мог маршрутизировать текст, не угадывая его."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Для обоснования разрешений используйте permission.<manifest permission code>. Суффикс должен соответствовать коду в разрешениях вашего манифеста: optional_permissions, host_permissions или content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Рекомендуемые имена файлов: docs/chrome-web-store-privacy-form.md или STORE_JUSTIFICATIONS.md. StorePilot также принимает другие файлы.md или.txt, если содержимое содержит блок [privacy], канонические ключи или узнаваемые заголовки выравнивания хранилища."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Основные ключи"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Общие ключи разрешения"
+  },
+  "privacyDocFutureProof": {
+    "message": "Если разрешение здесь не указано, все равно используйте тот же шаблон, например permission.bookmarks или permission.system.display. StorePilot должен рассматривать сам код манифеста как источник истины."
+  },
   "projects": {
     "message": "Проекты"
   },
   "importedListings": {
     "message": "Импортированные описания"
+  },
+  "storeMediaAssets": {
+    "message": "Хранить медиа-активы"
+  },
+  "privacyDocument": {
+    "message": "Документ о конфиденциальности"
+  },
+  "privacyDocNotScanned": {
+    "message": "Не сканируется"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Не найден пригодный для использования документ о конфиденциальности (кандидаты $1 отсканированы)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Не найден пригодный для использования документ о конфиденциальности."
+  },
+  "privacyDocSummary": {
+    "message": "Поля $1 в $2"
+  },
+  "privacyDocFile": {
+    "message": "Файл"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 поля конфиденциальности в $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Документ о конфиденциальности: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Для активного проекта не импортирован документ о конфиденциальности."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Импортируйте или повторно импортируйте проект с помощью параметров StorePilot, чтобы загрузить документ конфиденциальности."
+  },
+  "fillSinglePurpose": {
+    "message": "Заполните одну цель"
+  },
+  "fillPrivacy": {
+    "message": "Заполните конфиденциальность"
+  },
+  "privacyNoValueForField": {
+    "message": "Нет значения документа о конфиденциальности для $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Не удалось найти поле конфиденциальности: $1."
+  },
+  "privacyFilledField": {
+    "message": "Заполненное поле конфиденциальности: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Заполнены поля конфиденциальности $1: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Не удалось найти: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Не удалось заполнить поддерживаемые поля конфиденциальности."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Действия по обеспечению конфиденциальности доступны только на странице «Конфиденциальность»."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Найдено $1 редактируемых кандидатов на конфиденциальность."
+  },
+  "status": {
+    "message": "Статус"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Кандидаты"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Отсканировано: $1; соответствует: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Повторно импортируйте папку проекта, чтобы отсканировать документ конфиденциальности."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Не сканируется"
   },
   "diagnostics": {
     "message": "Диагностика"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Заполнить все языки"
   },
+  "uploadStoreIcon": {
+    "message": "Загрузить значок магазина"
+  },
+  "uploadMedia": {
+    "message": "Загрузить медиа"
+  },
+  "uploadScreenshots": {
+    "message": "Загрузить скриншоты"
+  },
+  "uploadSmallPromo": {
+    "message": "Загрузите небольшое промо"
+  },
+  "uploadMarqueePromo": {
+    "message": "Загрузите рекламное объявление"
+  },
+  "clearScreenshots": {
+    "message": "Очистить скриншоты"
+  },
+  "clearStoreIcon": {
+    "message": "Очистить значок магазина"
+  },
+  "clearSmallPromo": {
+    "message": "Прозрачное небольшое промо"
+  },
+  "clearMarqueePromo": {
+    "message": "Очистить рекламный шатер"
+  },
   "abortFillAll": {
     "message": "Прервать заполнение"
   },
+  "abortOperation": {
+    "message": "Прервать операцию"
+  },
   "diagnosePage": {
     "message": "Диагностика страницы"
+  },
+  "openPanel": {
+    "message": "Открыть панель"
   },
   "options": {
     "message": "Параметры"
@@ -90,318 +222,441 @@
     "message": "Импортируйте описания в параметрах StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Никогда"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Этот проект был импортирован из средства выбора файлов браузера. Повторно импортируйте папку проекта, чтобы обновить ее."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Последнее обновление $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: импортированы локали $2."
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Нет активного проекта"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(пусто)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 символов"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 проектов"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Нет проектов"
+  },
+  "yes": {
+    "message": "да"
+  },
+  "no": {
+    "message": "нет"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Выбранный проект"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Источник: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Нет исходной папки"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Обнаружение: $1 достоверность"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Обновить: повторно импортировать папку"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Обновлено: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 локали"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Файлы со списком локалей не выбраны."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Импортирован $1; пропустил $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Пропущено: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "В выбранной папке не найдена папка со списком языковых стандартов."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Импортирован $1 в $2 из $3 (достоверность $4); пропустил $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Обнаружены папки-кандидаты $1."
+  },
+  "mediaAssetsSummary": {
+    "message": "Скриншоты $1, значок: $2, небольшой промо-ролик: $3, рекламный баннер: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Медиа-ресурсы в магазине не найдены."
+  },
+  "mediaUploadedKind": {
+    "message": "Загружено $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Очищен $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 уже ясно."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 уже присутствует или обрабатывается."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Нет скриншотов для очистки."
+  },
+  "screenshotsLimitReached": {
+    "message": "скриншоты: предел CWS $1 уже достигнут"
+  },
+  "storeIcon": {
+    "message": "Значок магазина"
+  },
+  "minimizePanel": {
+    "message": "Свернуть панель"
+  },
+  "maximizePanel": {
+    "message": "Развернуть панель"
+  },
+  "closePanel": {
+    "message": "Закрыть панель"
+  },
+  "panelOpened": {
+    "message": "Панель открылась."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Действия с листингом и мультимедиа доступны только на странице со списком товаров в магазине."
+  },
+  "clearingMedia": {
+    "message": "Очистка носителя..."
+  },
+  "mediaClearFailed": {
+    "message": "Не удалось очистить носитель: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Операция с носителем уже запущена: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Работа со СМИ продолжается."
+  },
+  "noOperationRunning": {
+    "message": "Ни одна операция не выполняется."
+  },
+  "operationStopped": {
+    "message": "Остановился."
+  },
+  "missing": {
+    "message": "Отсутствует"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Повторно импортируйте папку проекта для сканирования медиаресурсов."
+  },
+  "screenshotNumber": {
+    "message": "Скриншот $1"
+  },
+  "smallPromoTile": {
+    "message": "Маленькая промо-плитка"
+  },
+  "marqueePromoTile": {
+    "message": "Рекламная плитка с рамкой"
+  },
+  "mediaCandidateCounts": {
+    "message": "Кандидаты"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Значок: $1; скриншоты: $2; небольшое промо: $3; Рекламное объявление: $4."
+  },
+  "uploadingMedia": {
+    "message": "Загрузка медиа..."
+  },
+  "mediaUploaded": {
+    "message": "Загруженный носитель: $1."
+  },
+  "mediaSkipped": {
+    "message": "Пропущено: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Ошибка: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Не удалось загрузить медиафайл: $1."
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Импорт папки отменен."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Не удалось импортировать папку: $1."
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "выбранные файлы"
   },
   "manual": {
-    "message": "manual"
+    "message": "руководство"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Не удалось импортировать: $1."
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Удалить проект StorePilot «$1»?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Удален $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Очистить списки для \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Удалены списки для $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 перечисляет локали в $2. Последнее обновление $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Пока нет проектов"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Текст объявления не выбран для копирования."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Скопировано $1 из $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Импортирован $1 в $2 (достоверность $3)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Нет активной вкладки."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Активная вкладка не является страницей Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot не удалось подключиться к этой вкладке информационной панели. Откройте диагностику, чтобы найти точную ошибку."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Диагностика завершена."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Диагностика не удалась."
   },
   "done": {
-    "message": "Done."
+    "message": "Готово."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Неуспешный."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Файлы со списком локалей не найдены."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Импортирован $1 в $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Проект выбран."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Заполнение всех языков..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Стоп просили."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Заливаю все, не работает."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Не мог перестать заполнять все."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Диагностика не удалась: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Проект не найден."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Повторно импортируйте папку проекта, чтобы StorePilot мог хранить медиафайлы для загрузки."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Перед чтением медиафайлов необходимо разрешение папки."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Дескриптор папки не сохранен."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Объявление не выбрано."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Скопировано $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Видимое редактируемое поле не найдено."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Заполнен $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Не удалось найти раскрывающийся список языков Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Не удалось найти $1 в языковом меню панели управления."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Нажал $1, но на панели управления по-прежнему отображается $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "неизвестная локаль"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Нет текста листинга для $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Не удалось найти поле описания Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Не удалось определить текущий язык панели управления."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Остановился. Заполнены языки информационной панели $1."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Списки проектов не импортированы."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Ни одна импортированная локаль не соответствует языковому меню информационной панели."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Остановился. Заполнены языки информационной панели $1; все еще ожидает рассмотрения: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Восстановлен $1 после повторной попытки."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Повторная попытка $1; никто не выздоровел."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Заполнены языки информационной панели $1; не удалось $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Заполнены языки информационной панели $1."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Импортирован $1; соответствующие языки панели управления $2."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Импортирован $1; соответствующие языки информационной панели $2; несоответствующие импортированные локали: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store не предлагал неподдерживаемые локали: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Dashboard не предлагал поддерживаемые импортированные локали: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Запрос на прерывание. StorePilot остановится после текущего шага панели мониторинга."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Диагностика приборной панели пройдена."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Диагностика информационной панели обнаружила отсутствующие элементы страницы."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Заливаем все уже работает."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Заливать все перестало."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Наполнение"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Повторная попытка"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Открыть параметры StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Открытие импорта проекта..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Неизвестно"
+  },
+  "alphaChannel": {
+    "message": "альфа"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Безымянный проект"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Импортированный проект"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Ручной импорт"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Импортированные объявления"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Ручной импорт файлов"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Выбран $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "Локали $1 в $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "уже подключен"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "удалось"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "высокий"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "средний"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "низкий"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Опции"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Последнее обновление: Никогда."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Нет импортированных объявлений"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Загрузка объявлений..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot запросит подтверждение перед чтением выбранной папки проекта. Эта подсказка ожидаема."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Импорт папки осуществляется на вкладке параметров, где запрос на подтверждение папки может быть надежно завершен."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Выберите корень проекта, папку со списком магазинов или папку с прямым списком. StorePilot попросит вас подтвердить доступ к папке."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Пропущенное поле конфиденциальности: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Пропущены поля конфиденциальности $1: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Поле конфиденциальности не приняло значение: $1."
   }
 }

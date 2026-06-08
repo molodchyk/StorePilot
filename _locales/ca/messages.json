@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: autocompletat CWS"
   },
   "extensionDescription": {
-    "message": "Automatitza tasques repetitives de publicació de botigues d’extensions del navegador."
+    "message": "Autocompleta camps de Chrome Web Store, descripcions, captures i formularis de privadesa des de fitxers locals."
   },
   "optionsSubtitle": {
     "message": "Importa fitxers plans de llistats locals i usa’ls als taulers de botigues d’extensions."
@@ -33,22 +33,121 @@
     "message": "Importa projecte/carpeta"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Seleccioneu una arrel del projecte, una carpeta de llista de botiga o una carpeta de llista directa."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot cerca fitxers de llista amb nom local com ara"
   },
   "or": {
     "message": "o"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "També podeu arrossegar fitxers de llista de configuració regional directa a aquest tauler."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Referència del document d'automatització de la privadesa"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot pot escanejar un document del projecte per a Chrome Web Store camps de privadesa. Utilitzeu aquestes tecles canòniques perquè l'escàner pugui encaminar el text sense endevinar."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Per a justificacions de permís, utilitzeu permission.<manifest permission code>. El sufix ha de coincidir amb el codi dels vostres permisos de manifest, optional_permissions, host_permissions o content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Noms de fitxer recomanats: docs/chrome-web-store-privacy-form.md o STORE_JUSTIFICATIONS.md. StorePilot també accepta altres fitxers.md o.txt quan el contingut conté un bloc [privacy], claus canòniques o encapçalaments de justificació de botiga reconeixibles."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Claus bàsiques"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Claus de permís comuns"
+  },
+  "privacyDocFutureProof": {
+    "message": "Si no apareix cap permís aquí, utilitzeu el mateix patró de totes maneres, per exemple permission.bookmarks o permission.system.display. StorePilot haurien de tractar el codi del manifest com la font de la veritat."
   },
   "projects": {
     "message": "Projectes"
   },
   "importedListings": {
     "message": "Llistats importats"
+  },
+  "storeMediaAssets": {
+    "message": "Emmagatzema actius multimèdia"
+  },
+  "privacyDocument": {
+    "message": "Document de privadesa"
+  },
+  "privacyDocNotScanned": {
+    "message": "No escanejat"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "No s'ha trobat cap document de privadesa utilitzable ($1 candidat(s) escanejat(s)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "No s'ha trobat cap document de privadesa utilitzable."
+  },
+  "privacyDocSummary": {
+    "message": "$1 camp(s) a $2"
+  },
+  "privacyDocFile": {
+    "message": "Fitxer"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 camps de privadesa a $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Document de privadesa: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "No s'ha importat cap document de privadesa per al projecte actiu."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importa o torna a importar el projecte a les opcions StorePilot per carregar un document de privadesa."
+  },
+  "fillSinglePurpose": {
+    "message": "Omplir un sol propòsit"
+  },
+  "fillPrivacy": {
+    "message": "Ompliu privadesa"
+  },
+  "privacyNoValueForField": {
+    "message": "No hi ha valor de document de privadesa per a $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "No s'ha pogut trobar el camp de privadesa: $1."
+  },
+  "privacyFilledField": {
+    "message": "Camp de privadesa emplenat: $1."
+  },
+  "privacyFilledFields": {
+    "message": "$1 camps de privadesa emplenats: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "No s'ha pogut trobar: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "No hi havia camps de privadesa compatibles disponibles per omplir."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Les accions de privadesa només estan disponibles a la pàgina Privadesa."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "S'han trobat $1 candidats de privadesa editables."
+  },
+  "status": {
+    "message": "Estat"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Candidats"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Escanejat: $1; coincideixen: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Torneu a importar la carpeta del projecte per escanejar el document de privadesa."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "No escanejat"
   },
   "diagnostics": {
     "message": "Diagnòstics"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Omple tots els idiomes"
   },
+  "uploadStoreIcon": {
+    "message": "Icona de càrrega de la botiga"
+  },
+  "uploadMedia": {
+    "message": "Carrega multimèdia"
+  },
+  "uploadScreenshots": {
+    "message": "Carregueu captures de pantalla"
+  },
+  "uploadSmallPromo": {
+    "message": "Puja una petita promoció"
+  },
+  "uploadMarqueePromo": {
+    "message": "Carregueu la promoció de la carpa"
+  },
+  "clearScreenshots": {
+    "message": "Captures de pantalla clares"
+  },
+  "clearStoreIcon": {
+    "message": "Esborra la icona de la botiga"
+  },
+  "clearSmallPromo": {
+    "message": "Petita promoció clara"
+  },
+  "clearMarqueePromo": {
+    "message": "Promoció clara de la carpa"
+  },
   "abortFillAll": {
     "message": "Atura omplir-ho tot"
   },
+  "abortOperation": {
+    "message": "Avorta l'operació"
+  },
   "diagnosePage": {
     "message": "Diagnostica la pàgina"
+  },
+  "openPanel": {
+    "message": "Obre el panell"
   },
   "options": {
     "message": "Opcions"
@@ -90,318 +222,441 @@
     "message": "Importa llistats a les opcions de StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Mai"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Aquest projecte s'ha importat des d'un selector de fitxers del navegador. Torneu a importar la carpeta del projecte per actualitzar-la."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Última actualització el $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 locals importats"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Cap projecte actiu"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(buit)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 caràcters"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projecte(s)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Sense projectes"
+  },
+  "yes": {
+    "message": "sí"
+  },
+  "no": {
+    "message": "no"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Projecte seleccionat"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Font: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "No hi ha carpeta d'origen"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Detecció: $1 confiança"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Actualitzar: torna a importar la carpeta"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Actualitzat: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 localitzacions"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "No s'ha seleccionat cap fitxer de llista de configuració regional."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "$1 importat; s'ha omès $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "S'ha omès: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "No s'ha trobat cap carpeta de llista de configuració regional a la carpeta seleccionada."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "S'ha importat $1 a $2 des de $3 ($4 confiança); s'ha omès $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "S'han trobat $1 carpetes candidates."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 captures de pantalla, icona: $2, petita promoció: $3, carpa promocional: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "No s'han trobat recursos multimèdia de la botiga."
+  },
+  "mediaUploadedKind": {
+    "message": "Penjat $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Esborrat $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 ja esborra."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 ja present o en procés."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "No hi ha captures de pantalla per esborrar."
+  },
+  "screenshotsLimitReached": {
+    "message": "captures de pantalla: ja s'ha arribat al límit de CWS de $1"
+  },
+  "storeIcon": {
+    "message": "Icona de la botiga"
+  },
+  "minimizePanel": {
+    "message": "Minimitzar el panell"
+  },
+  "maximizePanel": {
+    "message": "Maximitza el panell"
+  },
+  "closePanel": {
+    "message": "Tanca el panell"
+  },
+  "panelOpened": {
+    "message": "S'ha obert el tauler."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Les accions de fitxes i multimèdia només estan disponibles a la pàgina de fitxa de la botiga."
+  },
+  "clearingMedia": {
+    "message": "S'esborren els mitjans..."
+  },
+  "mediaClearFailed": {
+    "message": "No s'ha pogut esborrar el suport: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "L'operació multimèdia ja s'està executant: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Operació de mitjans en curs."
+  },
+  "noOperationRunning": {
+    "message": "No s'està executant cap operació."
+  },
+  "operationStopped": {
+    "message": "Parat."
+  },
+  "missing": {
+    "message": "Falta"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Torneu a importar la carpeta del projecte per escanejar recursos multimèdia."
+  },
+  "screenshotNumber": {
+    "message": "Captura de pantalla $1"
+  },
+  "smallPromoTile": {
+    "message": "Petita rajola promocional"
+  },
+  "marqueePromoTile": {
+    "message": "Rajola de promoció de carpa"
+  },
+  "mediaCandidateCounts": {
+    "message": "Candidats"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Icona: $1; captures de pantalla: $2; petita promoció: $3; promoció de la carpa: $4."
+  },
+  "uploadingMedia": {
+    "message": "S'estan penjant contingut multimèdia..."
+  },
+  "mediaUploaded": {
+    "message": "Multimèdia penjat: $1."
+  },
+  "mediaSkipped": {
+    "message": "S'ha omès: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Error: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "No s'ha pogut carregar el contingut multimèdia: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "S'ha cancel·lat la importació de carpetes."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "La importació de la carpeta ha fallat: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "fitxers seleccionats"
   },
   "manual": {
     "message": "manual"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "La importació ha fallat: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Vols suprimir el projecte StorePilot \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "S'ha suprimit $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Esborrar les llistes de \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Llistes esborrades per a $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 llistat d'ubicacions locals a $2. Última actualització el $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Encara no hi ha projectes"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "No s'ha seleccionat cap text de llista per copiar."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "S'ha copiat $1 de $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "S'ha importat $1 a $2 ($3 confiança)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Cap pestanya activa."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "La pestanya activa no és una pàgina Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot no s'ha pogut connectar a aquesta pestanya del tauler. Obriu el diagnòstic per obtenir l'error exacte."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnòstic completat."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "El diagnòstic ha fallat."
   },
   "done": {
-    "message": "Done."
+    "message": "Fet."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Ha fallat."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "No s'han trobat fitxers de llista de configuració regional."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "S'ha importat $1 a $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projecte seleccionat."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Omplint tots els idiomes..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Atura sol·licitada."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Omplir tot no s'està executant."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "No s'ha pogut deixar d'omplir-ho tot."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "El diagnòstic ha fallat: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projecte no trobat."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Torneu a importar la carpeta del projecte perquè StorePilot pugui emmagatzemar els fitxers multimèdia per carregar-los."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Cal permís de carpeta abans de llegir els fitxers multimèdia."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "No s'ha desat cap identificador de carpeta."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "No s'ha seleccionat cap llista."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "S'ha copiat $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "No s'ha trobat cap camp editable visible."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Omplert $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "No s'ha pogut trobar el menú desplegable d'idioma Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "No s'ha pogut trobar $1 al menú d'idioma del tauler."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "S'ha fet clic a $1, però el tauler encara mostra $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "un lloc desconegut"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "No hi ha cap text de llista per a $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "No s'ha pogut trobar el camp de descripció Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "No s'ha pogut detectar l'idioma actual del tauler."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Parat. $1 idiomes del tauler de control emplenats."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "No s'ha importat cap llista de projectes."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "No hi ha cap configuració regional importada que coincideixi amb el menú d'idioma del tauler."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Parat. $1 idiomes omplerts del tauler de control; encara pendent: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "S'ha recuperat $1 després de tornar-ho a provar."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "S'ha tornat a provar $1; cap es va recuperar."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "$1 idiomes omplerts del tauler de control; fallat $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 idiomes del tauler de control emplenats."
+  },
+  "fillAllDashboardSummary": {
+    "message": "$1 importat; $2 idiomes del tauler coincidents."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "$1 importat; $2 idiomes del quadre de comandament coincidents; locals importats no coincidents: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store no va oferir localitzacions no admeses: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "El tauler de control no va oferir locals importats admesos: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "S'ha sol·licitat avortament. StorePilot s'aturarà després del pas actual del tauler de control."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "El diagnòstic del tauler de control s'ha aprovat."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Els diagnòstics del tauler de control han trobat elements que falten a la pàgina."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Omplir-ho tot ja s'està executant."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Ompliu tot parat."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Farciment"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "S'està tornant a provar"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Obriu les opcions StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "S'està obrint la importació del projecte..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Desconegut"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Projecte sense títol"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Projecte importat"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Importació manual"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Llistes importades"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Importació manual de fitxers"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "S'ha seleccionat $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 localitzacions a $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "ja connectat"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "va tenir èxit"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "alt"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "mitjà"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "baix"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Opcions"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Última actualització a Mai."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "No s'ha importat cap llistat"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "S'estan carregant les llistes..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot demanarà confirmació abans de llegir la carpeta del projecte seleccionada. S'espera aquesta indicació."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "La importació de carpetes es gestiona a la pestanya d'opcions, on la sol·licitud de confirmació de la carpeta es pot completar de manera fiable."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Seleccioneu una arrel del projecte, una carpeta de llista de botiga o una carpeta de llista directa. StorePilot us demanarà que confirmeu l'accés a la carpeta."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Camp de privadesa omès: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "S'han omès $1 camps de privadesa: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "El camp de privadesa no va acceptar el valor: $1."
   }
 }

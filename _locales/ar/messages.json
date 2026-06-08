@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: ملء قوائم CWS"
   },
   "extensionDescription": {
-    "message": "أتمتة أعمال نشر إضافات المتصفح المتكررة."
+    "message": "املأ تلقائيا حقول قائمة Chrome Web Store والأوصاف المترجمة واللقطات ونماذج الخصوصية من ملفات محلية."
   },
   "optionsSubtitle": {
     "message": "استورد ملفات قوائم لغات مسطحة واستخدمها في لوحات متاجر الإضافات."
@@ -33,22 +33,121 @@
     "message": "استيراد مشروع/مجلد"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "حدد جذر المشروع، أو مجلد قائمة المتجر، أو مجلد القائمة المباشرة."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "يبحث StorePilot عن ملفات القائمة ذات الأسماء المحلية مثل"
   },
   "or": {
     "message": "أو"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "يمكنك أيضًا سحب ملفات قائمة الإعدادات المحلية المباشرة إلى هذه اللوحة."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "مرجع وثيقة أتمتة الخصوصية"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "يمكن لـ StorePilot مسح مستند مشروع واحد ضوئيًا بحثًا عن حقول الخصوصية Chrome Web Store. استخدم هذه المفاتيح الأساسية حتى يتمكن الماسح الضوئي من توجيه النص دون التخمين."
+  },
+  "privacyDocPermissionRule": {
+    "message": "للحصول على مبررات الأذونات، استخدم permission.<manifest permission code>. يجب أن تتطابق اللاحقة مع الكود الموجود في أذونات البيان، optional_permissions، host_permissions، أو content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "أسماء الملفات الموصى بها: docs/chrome-web-store-privacy-form.md أو STORE_JUSTIFICATIONS.md. يقبل StorePilot أيضًا ملفات.md أو.txt الأخرى عندما يحتوي المحتوى على كتلة [privacy]، أو مفاتيح أساسية، أو عناوين ضبط المتجر التي يمكن التعرف عليها."
+  },
+  "privacyDocCoreKeys": {
+    "message": "المفاتيح الأساسية"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "مفاتيح الأذونات المشتركة"
+  },
+  "privacyDocFutureProof": {
+    "message": "إذا لم يكن الإذن مدرجًا هنا، فاستخدم نفس النمط على أي حال، على سبيل المثال permission.bookmarks أو permission.system.display. StorePilot يجب أن يتعامل مع كود البيان نفسه باعتباره مصدر الحقيقة."
   },
   "projects": {
     "message": "المشاريع"
   },
   "importedListings": {
     "message": "القوائم المستوردة"
+  },
+  "storeMediaAssets": {
+    "message": "تخزين أصول الوسائط"
+  },
+  "privacyDocument": {
+    "message": "وثيقة الخصوصية"
+  },
+  "privacyDocNotScanned": {
+    "message": "لم يتم مسحها ضوئيا"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "لم يتم العثور على مستند خصوصية قابل للاستخدام (تم مسح $1 للمرشح (المرشحين) ضوئيًا)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "لم يتم العثور على مستند خصوصية قابل للاستخدام."
+  },
+  "privacyDocSummary": {
+    "message": "$1 الحقل (الحقول) في $2"
+  },
+  "privacyDocFile": {
+    "message": "ملف"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 حقل (حقول) الخصوصية في $2"
+  },
+  "privacyDocFileFound": {
+    "message": "وثيقة الخصوصية: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "لم يتم استيراد أي مستند خصوصية للمشروع النشط."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "قم باستيراد المشروع أو إعادة استيراده في خيارات StorePilot لتحميل مستند خصوصية."
+  },
+  "fillSinglePurpose": {
+    "message": "ملء غرض واحد"
+  },
+  "fillPrivacy": {
+    "message": "ملء الخصوصية"
+  },
+  "privacyNoValueForField": {
+    "message": "لا توجد قيمة وثيقة خصوصية لـ $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "تعذر العثور على حقل الخصوصية: $1."
+  },
+  "privacyFilledField": {
+    "message": "حقل الخصوصية المملوء: $1."
+  },
+  "privacyFilledFields": {
+    "message": "تم ملء حقل (حقول) الخصوصية $1: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "تعذر العثور على: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "لم تكن هناك حقول خصوصية مدعومة متاحة لملءها."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "إجراءات الخصوصية متاحة فقط على صفحة الخصوصية."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "تم العثور على $1 مرشح (مرشحين) للخصوصية قابلين للتحرير."
+  },
+  "status": {
+    "message": "الحالة"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "المرشحين"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "الممسوحة ضوئيًا: $1; متطابق: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "أعد استيراد مجلد المشروع لمسح مستند الخصوصية."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "لم يتم مسحها ضوئيا"
   },
   "diagnostics": {
     "message": "التشخيص"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "ملء كل اللغات"
   },
+  "uploadStoreIcon": {
+    "message": "تحميل أيقونة المتجر"
+  },
+  "uploadMedia": {
+    "message": "تحميل الوسائط"
+  },
+  "uploadScreenshots": {
+    "message": "تحميل لقطات الشاشة"
+  },
+  "uploadSmallPromo": {
+    "message": "تحميل عرض ترويجي صغير"
+  },
+  "uploadMarqueePromo": {
+    "message": "تحميل شاشة العرض الترويجية"
+  },
+  "clearScreenshots": {
+    "message": "مسح لقطات الشاشة"
+  },
+  "clearStoreIcon": {
+    "message": "مسح رمز المتجر"
+  },
+  "clearSmallPromo": {
+    "message": "مسح الترويجي الصغير"
+  },
+  "clearMarqueePromo": {
+    "message": "مسح شاشة العرض الترويجية"
+  },
   "abortFillAll": {
     "message": "إيقاف ملء الكل"
   },
+  "abortOperation": {
+    "message": "إحباط العملية"
+  },
   "diagnosePage": {
     "message": "تشخيص الصفحة"
+  },
+  "openPanel": {
+    "message": "لوحة مفتوحة"
   },
   "options": {
     "message": "الخيارات"
@@ -90,318 +222,441 @@
     "message": "استورد القوائم في خيارات StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "أبدا"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "تم استيراد هذا المشروع من منتقي ملفات المتصفح. أعد استيراد مجلد المشروع لتحديثه."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "آخر تحديث في $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 تم استيراد الإعدادات المحلية"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "لا يوجد مشروع نشط"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(فارغ)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 أحرف"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 المشروع (المشاريع)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "لا مشاريع"
+  },
+  "yes": {
+    "message": "نعم"
+  },
+  "no": {
+    "message": "لا"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "المشروع المختار"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "المصدر: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "لا يوجد مجلد المصدر"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "الكشف: $1 الثقة"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "التحديث: إعادة استيراد المجلد"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "تم التحديث: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 اللغات"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "لم يتم تحديد أي ملفات قائمة محلية."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "مستورد $1; تم تخطي $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "تم تخطي: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "لم يتم العثور على مجلد قائمة الإعدادات المحلية في المجلد المحدد."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "تم استيراد $1 إلى $2 من $3 ($4 الثقة)؛ تم تخطي $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "تم العثور على مجلدات مرشحة $1."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 لقطة الشاشة، الأيقونة: $2، عرض ترويجي صغير: $3، عرض ترويجي مستطيل: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "لم يتم العثور على أصول وسائط المتجر."
+  },
+  "mediaUploadedKind": {
+    "message": "تم تحميل $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "تم مسح $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 واضح بالفعل."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 موجود بالفعل أو قيد المعالجة."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "لا توجد لقطات لمسحها."
+  },
+  "screenshotsLimitReached": {
+    "message": "لقطات الشاشة: تم الوصول بالفعل إلى حد CWS لـ $1"
+  },
+  "storeIcon": {
+    "message": "رمز المتجر"
+  },
+  "minimizePanel": {
+    "message": "تصغير اللوحة"
+  },
+  "maximizePanel": {
+    "message": "تكبير اللوحة"
+  },
+  "closePanel": {
+    "message": "إغلاق اللوحة"
+  },
+  "panelOpened": {
+    "message": "تم فتح اللوحة."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "تتوفر إجراءات القائمة والوسائط فقط على صفحة قائمة المتجر."
+  },
+  "clearingMedia": {
+    "message": "مسح الوسائط..."
+  },
+  "mediaClearFailed": {
+    "message": "فشل مسح الوسائط: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "عملية الوسائط قيد التشغيل بالفعل: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "العملية الإعلامية جارية."
+  },
+  "noOperationRunning": {
+    "message": "لا توجد عملية قيد التشغيل."
+  },
+  "operationStopped": {
+    "message": "توقف."
+  },
+  "missing": {
+    "message": "مفقود"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "أعد استيراد مجلد المشروع لفحص أصول الوسائط."
+  },
+  "screenshotNumber": {
+    "message": "لقطة الشاشة $1"
+  },
+  "smallPromoTile": {
+    "message": "بلاط ترويجي صغير"
+  },
+  "marqueePromoTile": {
+    "message": "شاشة سرادق ترويجية"
+  },
+  "mediaCandidateCounts": {
+    "message": "المرشحين"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "الرمز: $1؛ لقطات: $2؛ عرض ترويجي صغير: $3؛ إعلان ترويجي: $4."
+  },
+  "uploadingMedia": {
+    "message": "جارٍ تحميل الوسائط..."
+  },
+  "mediaUploaded": {
+    "message": "الوسائط التي تم تحميلها: $1."
+  },
+  "mediaSkipped": {
+    "message": "تم تخطي: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "فشل: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "فشل تحميل الوسائط: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "تم إلغاء استيراد المجلد."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "فشل استيراد المجلد: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "الملفات المختارة"
   },
   "manual": {
-    "message": "manual"
+    "message": "دليل"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "فشل الاستيراد: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "هل تريد حذف مشروع StorePilot \"$1\"؟"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "تم حذف $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "محو قوائم \"$1\"؟"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "تم مسح قوائم $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 قائمة الإعدادات المحلية في $2. آخر تحديث في $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "لا توجد مشاريع حتى الآن"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "لم يتم تحديد نص القائمة لنسخه."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "تم النسخ $1 من $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "تم استيراد $1 إلى $2 (ثقة $3)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "لا توجد علامة تبويب نشطة."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "علامة التبويب النشطة ليست صفحة Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "تعذر على StorePilot الاتصال بعلامة تبويب لوحة المعلومات هذه. افتح التشخيص لمعرفة الخطأ الدقيق."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "اكتمل التشخيص."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "فشلت عمليات التشخيص."
   },
   "done": {
-    "message": "Done."
+    "message": "تم."
   },
   "failed": {
-    "message": "Failed."
+    "message": "فشل."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "لم يتم العثور على ملفات قائمة الإعدادات المحلية."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "تم استيراد $1 إلى $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "تم اختيار المشروع."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "تعبئة جميع اللغات..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "طلب التوقف."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "ملء الكل لا يعمل."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "لا يمكن التوقف عن ملء الكل."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "فشل التشخيص: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "لم يتم العثور على المشروع."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "أعد استيراد مجلد المشروع حتى يتمكن StorePilot من تخزين ملفات الوسائط للتحميل."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "هناك حاجة إلى إذن المجلد قبل قراءة ملفات الوسائط."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "لم يتم حفظ مقبض المجلد."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "لم يتم تحديد أي قائمة."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "منسوخ $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "لم يتم العثور على حقل مرئي قابل للتحرير."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "معبأ $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "تعذر العثور على القائمة المنسدلة للغة Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "تعذر العثور على $1 في قائمة لغة لوحة المعلومات."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "تم النقر على $1، لكن لوحة المعلومات ما زالت تعرض $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "لغة غير معروفة"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "لا يوجد نص قائمة لـ $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "تعذر العثور على حقل الوصف Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "تعذر اكتشاف لغة لوحة المعلومات الحالية."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "توقف. تم ملء $1 لغة (لغات) لوحة المعلومات."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "لم يتم استيراد قوائم المشروع."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "لا توجد لغات مستوردة تتطابق مع قائمة لغة لوحة المعلومات."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "توقف. تم ملء $1 لغة (لغات) لوحة المعلومات؛ لا يزال معلقًا: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "تم استرداد $1 بعد إعادة المحاولة."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "إعادة المحاولة $1; لم يتعاف أحد."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "تم ملء $1 لغة (لغات) لوحة المعلومات؛ فشل $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "تم ملء $1 لغة (لغات) لوحة المعلومات."
+  },
+  "fillAllDashboardSummary": {
+    "message": "مستورد $1; لغة (لغات) لوحة المعلومات $2 المتطابقة."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "مستورد $1; لغة (لغات) لوحة المعلومات $2 المتطابقة؛ لغة (لغات) مستوردة لا مثيل لها: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "لم يقدم Chrome Web Store لغة (لغات) غير مدعومة: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "لم تقدم لوحة المعلومات اللغة (اللغات المحلية) المستوردة المدعومة: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "تم طلب الإجهاض. سيتوقف StorePilot بعد خطوة لوحة المعلومات الحالية."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "مرت تشخيصات لوحة القيادة."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "عثرت تشخيصات لوحة المعلومات على عناصر صفحة مفقودة."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "ملء الكل قيد التشغيل بالفعل."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "ملء جميع توقفت."
   },
   "filling": {
-    "message": "Filling"
+    "message": "ملء"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "إعادة المحاولة"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "افتح خيارات StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "جارٍ فتح استيراد المشروع..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "غير معروف"
+  },
+  "alphaChannel": {
+    "message": "ألفا"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "مشروع بلا عنوان"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "مشروع مستورد"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "الاستيراد اليدوي"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "القوائم المستوردة"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "استيراد الملف يدويا"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "تم التحديد $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 اللغات في $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "متصل بالفعل"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "نجح"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "عالية"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "متوسطة"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "منخفض"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot الخيارات"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "آخر تحديث بتاريخ أبدا."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "لم يتم استيراد أي قوائم"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "جارٍ تحميل القوائم..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "سيطلب StorePilot التأكيد قبل قراءة مجلد المشروع المحدد. ومن المتوقع أن المطالبة."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "تتم معالجة استيراد المجلد في علامة تبويب الخيارات، حيث يمكن إكمال مطالبة تأكيد المجلد بشكل موثوق."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "حدد جذر المشروع، أو مجلد قائمة المتجر، أو مجلد القائمة المباشرة. سيطلب منك StorePilot تأكيد الوصول إلى المجلد."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "تم تخطي حقل الخصوصية: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "تم تخطي حقل (حقول) الخصوصية $1: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "لم يقبل حقل الخصوصية القيمة: $1."
   }
 }

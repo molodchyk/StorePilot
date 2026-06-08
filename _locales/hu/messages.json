@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS automatikus kitöltés"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Automatikusan kitölti a Chrome Web Store mezőit, lokalizált leírásokat, képernyőképeket és adatvédelmi űrlapokat helyi fájlokból."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Importáljon egysíkú nyelv- és országkód-lista fájlokat, és használja őket a kiterjesztésüzlet irányítópultjain."
   },
   "theme": {
     "message": "Téma"
@@ -21,37 +21,136 @@
     "message": "Sötét"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Világos"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Aktív projekt"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Projekt törlése"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Import projekt/mappa"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Válasszon ki egy projektgyökeret, egy áruházi adatlap mappát vagy egy közvetlen listamappát."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "Az StorePilot terület-nevű listafájlokat keres, mint pl"
   },
   "or": {
     "message": "vagy"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "A közvetlen nyelvi listát tartalmazó fájlokat is áthúzhatja erre a panelre."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Adatvédelmi automatizálási dokumentum hivatkozás"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot képes beolvasni egy projektdokumentumot Chrome Web Store adatvédelmi mezőre. Használja ezeket a kanonikus kulcsokat, hogy a lapolvasó találgatás nélkül továbbítsa a szöveget."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Az engedélyek indoklásához használja az permission.<manifest permission code>-t. Az utótagnak meg kell egyeznie a jegyzékengedélyek kódjával, optional_permissions, host_permissions vagy content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Javasolt fájlnevek: docs/chrome-web-store-privacy-form.md vagy STORE_JUSTIFICATIONS.md. Az StorePilot más.md vagy.txt fájlokat is elfogad, ha a tartalom [privacy] blokkot, kanonikus kulcsokat vagy felismerhető bolti igazoló fejléceket tartalmaz."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Alapbillentyűk"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Közös engedélykulcsok"
+  },
+  "privacyDocFutureProof": {
+    "message": "Ha egy engedély nem szerepel itt, akkor is ugyanazt a mintát használja, például az permission.bookmarks vagy permission.system.display. StorePilot magát a manifeszt kódot kell, hogy kezelje az igazság forrásaként."
   },
   "projects": {
     "message": "Projektek"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Importált listák"
+  },
+  "storeMediaAssets": {
+    "message": "Médiaeszközök tárolása"
+  },
+  "privacyDocument": {
+    "message": "Adatvédelmi dokumentum"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nincs beolvasva"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Nem található használható adatvédelmi dokumentum ($1 jelölt(ek) beolvasva)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nem található használható adatvédelmi dokumentum."
+  },
+  "privacyDocSummary": {
+    "message": "$1 mező(k) itt: $2"
+  },
+  "privacyDocFile": {
+    "message": "Fájl"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 adatvédelmi mező(k) itt: $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Adatvédelmi dokumentum: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Nincs adatvédelmi dokumentum importálva az aktív projekthez."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importálja vagy újraimportálja a projektet az StorePilot beállításokban adatvédelmi dokumentum betöltéséhez."
+  },
+  "fillSinglePurpose": {
+    "message": "Egyetlen célú kitöltése"
+  },
+  "fillPrivacy": {
+    "message": "Töltse ki a magánéletet"
+  },
+  "privacyNoValueForField": {
+    "message": "Nincs adatvédelmi dokumentum értéke a következőhöz: $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Nem található adatvédelmi mező: $1."
+  },
+  "privacyFilledField": {
+    "message": "Kitöltött adatvédelmi mező: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Kitöltött $1 adatvédelmi mező(k): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Nem található: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Nem állt rendelkezésre támogatott adatvédelmi mező kitöltése."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Az adatvédelmi műveletek csak az Adatvédelem oldalon érhetők el."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 szerkeszthető adatvédelmi jelöltet találtunk."
+  },
+  "status": {
+    "message": "Állapot"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Jelöltek"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Beolvasott: $1; egyezik: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Importálja újra a projektmappát az adatvédelmi dokumentum beolvasásához."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nincs beolvasva"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Diagnosztika"
   },
   "project": {
     "message": "Projekt"
@@ -60,16 +159,49 @@
     "message": "Területi beállítás"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Töltse ki az aktuális nyelvet"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Töltse ki az összes nyelvet"
+  },
+  "uploadStoreIcon": {
+    "message": "Áruház feltöltése ikonra"
+  },
+  "uploadMedia": {
+    "message": "Média feltöltése"
+  },
+  "uploadScreenshots": {
+    "message": "Képernyőképek feltöltése"
+  },
+  "uploadSmallPromo": {
+    "message": "Tölts fel kis promóciót"
+  },
+  "uploadMarqueePromo": {
+    "message": "Töltsön fel sátor promóciót"
+  },
+  "clearScreenshots": {
+    "message": "Tiszta képernyőképek"
+  },
+  "clearStoreIcon": {
+    "message": "Törölje az üzlet ikonját"
+  },
+  "clearSmallPromo": {
+    "message": "Tiszta kis promóció"
+  },
+  "clearMarqueePromo": {
+    "message": "Tiszta sátor promóció"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Megszakítás, töltse ki az összeset"
+  },
+  "abortOperation": {
+    "message": "Művelet megszakítása"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Diagnosztikai oldal"
+  },
+  "openPanel": {
+    "message": "Nyissa meg a panelt"
   },
   "options": {
     "message": "Beállítások"
@@ -78,330 +210,453 @@
     "message": "Magyar"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Töltse ki az aktuális nyelvet"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Töltse ki az összes nyelvet"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Megszakítás, töltse ki az összeset"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Adatok importálása a StorePilot opciókban"
   },
   "never": {
-    "message": "Never"
+    "message": "Soha"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Ezt a projektet egy böngésző fájlválasztóból importálták. A frissítéshez importálja újra a projektmappát."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Utolsó frissítés: $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 területi beállítás importálva"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Nincs aktív projekt"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(üres)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 karakter"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projekt"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Nincsenek projektek"
+  },
+  "yes": {
+    "message": "igen"
+  },
+  "no": {
+    "message": "nem"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Kiválasztott projekt"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Forrás: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Nincs forrásmappa"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Észlelés: $1 megbízhatóság"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Frissítés: mappa újraimportálása"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Frissítve: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 nyelvi beállítások"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Nem lettek kiválasztva területi listát tartalmazó fájlok."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Importált $1; kihagyva $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Kihagyva: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "A kiválasztott mappában nem található a nyelvi beállítások listája."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$1 importálva $2-ba innen: $3 ($4 megbízhatóság); kihagyva $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 jelölt mappát találtunk."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 képernyőkép(ek), ikon: $2, kis promóció: $3, kijelölő promóció: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Nem található bolti médiatartalom."
+  },
+  "mediaUploadedKind": {
+    "message": "Feltöltve $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Törölve $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 már tiszta."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 már jelen van vagy feldolgozás alatt áll."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Nincsenek törölhető képernyőképek."
+  },
+  "screenshotsLimitReached": {
+    "message": "képernyőképek: a CWS $1 korlátot már elérte"
+  },
+  "storeIcon": {
+    "message": "Store ikonra"
+  },
+  "minimizePanel": {
+    "message": "Panel minimalizálása"
+  },
+  "maximizePanel": {
+    "message": "Panel maximalizálása"
+  },
+  "closePanel": {
+    "message": "Panel bezárása"
+  },
+  "panelOpened": {
+    "message": "Panel megnyílt."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Az adatlap és a médiaműveletek csak az Áruház adatlapján érhetők el."
+  },
+  "clearingMedia": {
+    "message": "Média törlése..."
+  },
+  "mediaClearFailed": {
+    "message": "Az adathordozó törlése nem sikerült: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "A médiaművelet már fut: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Médiaművelet folyamatban."
+  },
+  "noOperationRunning": {
+    "message": "Nem fut semmilyen művelet."
+  },
+  "operationStopped": {
+    "message": "Megállt."
+  },
+  "missing": {
+    "message": "Hiányzik"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Importálja újra a projektmappát a médiaeszközök vizsgálatához."
+  },
+  "screenshotNumber": {
+    "message": "Képernyőkép $1"
+  },
+  "smallPromoTile": {
+    "message": "Kis promóciós csempe"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee promóciós csempe"
+  },
+  "mediaCandidateCounts": {
+    "message": "Jelöltek"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikon: $1; képernyőképek: $2; kis promóció: $3; marquee promóció: $4."
+  },
+  "uploadingMedia": {
+    "message": "Média feltöltése..."
+  },
+  "mediaUploaded": {
+    "message": "Feltöltött média: $1."
+  },
+  "mediaSkipped": {
+    "message": "Kihagyva: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Sikertelen: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "A médiafeltöltés sikertelen: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Mappaimportálás megszakítva."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "A mappaimportálás sikertelen: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "kiválasztott fájlokat"
   },
   "manual": {
-    "message": "manual"
+    "message": "kézikönyvet"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Sikertelen importálás: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Törli a StorePilot \"$1\" projektet?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Törölve $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Törli a \"$1\" bejegyzéseit?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "A $1 listái törölve."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 listázza a területi beállításokat a $2 nyelven. Utolsó frissítés: $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Még nincsenek projektek"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Nincs kiválasztva másolandó listaszöveg."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$1 másolva innen: $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 importálva ide: $2 ($3 megbízhatóság)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Nincs aktív lap."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Az aktív lap nem Chrome Web Store Developer Dashboard oldal."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot nem tudott csatlakozni ehhez az irányítópult-laphoz. Nyissa meg a Diagnosztikát a pontos hibaért."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "A diagnosztika kész."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "A diagnosztika nem sikerült."
   },
   "done": {
-    "message": "Done."
+    "message": "Kész."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Sikertelen."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Nem találhatók nyelvi listát tartalmazó fájlok."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1 importálva ide: $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projekt kiválasztva."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Az összes nyelv kitöltése..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Stop kérve."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Az összes kitöltése nem fut."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Nem sikerült leállítani, hogy minden kitöltse."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "A diagnosztika sikertelen: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projekt nem található."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Importálja újra a projektmappát, hogy az StorePilot tárolhassa a médiafájlokat feltöltéshez."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "A médiafájlok olvasásához mappaengedély szükséges."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Nincs mentett mappafogó."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Nincs kiválasztva lista."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Másolva $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Nem található látható szerkeszthető mező."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Töltve $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Nem található a Chrome Web Store nyelv legördülő menü."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "A $1 nem található az irányítópult nyelvi menüjében."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Az $1 gombra kattintott, de az irányítópulton továbbra is az $2 látható."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "egy ismeretlen terület"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Nincs listaszöveg a következőhöz: $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Nem található a Chrome Web Store leírási mező."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Nem sikerült észlelni az irányítópult aktuális nyelvét."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Megállt. $1 irányítópult-nyelv kitöltve."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Nincsenek importált projektlisták."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Egyetlen importált nyelv sem felel meg az irányítópult nyelvi menüjének."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Megállt. Kitöltött $1 irányítópult-nyelv(ek); még függőben: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Újrapróbálkozás után $1 helyreállítva."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Újrapróbálva $1; egyik sem gyógyult meg."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Kitöltött $1 irányítópult-nyelv(ek); sikertelen $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 irányítópult-nyelv kitöltve."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importált $1; egyező $2 irányítópult nyelve(i)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importált $1; egyező $2 irányítópult nyelve(i); páratlan importált terület(ek): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Az Chrome Web Store nem kínált nem támogatott területi beállításokat: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Az irányítópult nem kínált támogatott importált területi beállításokat: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Megszakítás kérve. Az StorePilot az aktuális irányítópult-lépés után leáll."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "A műszerfali diagnosztika sikeres."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Az irányítópult diagnosztikája hiányzó oldalelemeket talált."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "A Fill all már fut."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Töltse ki az összes megállt."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Kitöltés"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Újrapróbálkozás"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Nyissa meg az StorePilot opciókat"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Projektimportálás megnyitása..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Ismeretlen"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Cím nélküli projekt"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Importált projekt"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Kézi importálás"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Importált listák"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Kézi fájlimportálás"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Kijelölve: $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 nyelvi beállítások $2 nyelven"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "már csatlakoztatva"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "sikerült"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "magas"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "közepes"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "alacsony"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Opciók"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Utolsó frissítés: Soha."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Nincsenek importált adatok"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Adatok betöltése..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "Az StorePilot megerősítést kér a kiválasztott projektmappa elolvasása előtt. Ez a felszólítás várható."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "A mappaimportálás a beállítások lapon történik, ahol a mappa megerősítését kérő üzenet megbízhatóan befejeződik."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Válasszon ki egy projektgyökeret, egy áruházi adatlap mappát vagy egy közvetlen listamappát. Az StorePilot meg fogja kérni, hogy erősítse meg a mappa elérését."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Kihagyott adatvédelmi mező: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Kihagyva $1 adatvédelmi mező(k): $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Az adatvédelmi mező nem fogadta el a következő értéket: $1."
   }
 }

@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS ఆటోఫిల్"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "స్థానిక ఫైళ్ల నుంచి Chrome Web Store జాబితా ఫీల్డ్లు, వివరణలు, స్క్రీన్షాట్లు, గోప్యత ఫారమ్లను ఆటోఫిల్ చేస్తుంది."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "ఫ్లాట్ లొకేల్ లిస్టింగ్ ఫైల్లను దిగుమతి చేయండి మరియు వాటిని పొడిగింపు స్టోర్ డాష్బోర్డ్లలో ఉపయోగించండి."
   },
   "theme": {
     "message": "థీమ్"
@@ -21,37 +21,136 @@
     "message": "డార్క్"
   },
   "clear": {
-    "message": "Clear"
+    "message": "క్లియర్"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "క్రియాశీల ప్రాజెక్ట్"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "ప్రాజెక్ట్ను తొలగించండి"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "ప్రాజెక్ట్/ఫోల్డర్ని దిగుమతి చేయండి"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "ప్రాజెక్ట్ రూట్, స్టోర్-లిస్టింగ్ ఫోల్డర్ లేదా డైరెక్ట్ లిస్టింగ్ ఫోల్డర్ని ఎంచుకోండి."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot వంటి లొకేల్-పేరు గల లిస్టింగ్ ఫైల్ల కోసం చూస్తుంది"
   },
   "or": {
     "message": "లేదా"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "మీరు డైరెక్ట్ లొకేల్ లిస్టింగ్ ఫైల్లను కూడా ఈ ప్యానెల్పైకి లాగవచ్చు."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "గోప్యతా ఆటోమేషన్ డాక్యుమెంట్ సూచన"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot Chrome Web Store గోప్యతా ఫీల్డ్ల కోసం ఒక ప్రాజెక్ట్ డాక్యుమెంట్ని స్కాన్ చేయగలదు. ఈ నియమానుగుణ కీలను ఉపయోగించండి, తద్వారా స్కానర్ ఊహించకుండానే వచనాన్ని మార్చగలదు."
+  },
+  "privacyDocPermissionRule": {
+    "message": "అనుమతి సమర్థనల కోసం, permission.<manifest permission code>ని ఉపయోగించండి. ప్రత్యయం మీ మానిఫెస్ట్ అనుమతులు, optional_permissions, host_permissions లేదా content_scripts.matchesలోని కోడ్తో సరిపోలాలి."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "సిఫార్సు చేయబడిన ఫైల్ పేర్లు: docs/chrome-web-store-privacy-form.md లేదా STORE_JUSTIFICATIONS.md. కంటెంట్లో [privacy] బ్లాక్, కానానికల్ కీలు లేదా గుర్తించదగిన స్టోర్-జస్టిఫికేషన్ హెడ్డింగ్లు ఉన్నప్పుడు StorePilot ఇతర.md లేదా.txt ఫైల్లను కూడా అంగీకరిస్తుంది."
+  },
+  "privacyDocCoreKeys": {
+    "message": "కోర్ కీలు"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "సాధారణ అనుమతి కీలు"
+  },
+  "privacyDocFutureProof": {
+    "message": "అనుమతి ఇక్కడ జాబితా చేయబడకపోతే, అదే నమూనాను ఉపయోగించండి, ఉదాహరణకు permission.bookmarks లేదా permission.system.display. StorePilot మానిఫెస్ట్ కోడ్ను సత్యానికి మూలంగా పరిగణించాలి."
   },
   "projects": {
     "message": "ప్రాజెక్టులు"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "దిగుమతి చేసిన జాబితాలు"
+  },
+  "storeMediaAssets": {
+    "message": "మీడియా ఆస్తులను స్టోర్ చేయండి"
+  },
+  "privacyDocument": {
+    "message": "గోప్యతా పత్రం"
+  },
+  "privacyDocNotScanned": {
+    "message": "స్కాన్ చేయలేదు"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "ఉపయోగించదగిన గోప్యతా పత్రం కనుగొనబడలేదు ($1 అభ్యర్థి(లు) స్కాన్ చేయబడింది)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "ఉపయోగించగల గోప్యతా పత్రం కనుగొనబడలేదు."
+  },
+  "privacyDocSummary": {
+    "message": "$2లో $1 ఫీల్డ్(లు)"
+  },
+  "privacyDocFile": {
+    "message": "ఫైల్"
+  },
+  "privacyPanelSummary": {
+    "message": "$2లో $1 గోప్యతా ఫీల్డ్(లు)"
+  },
+  "privacyDocFileFound": {
+    "message": "గోప్యతా పత్రం: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "సక్రియ ప్రాజెక్ట్ కోసం గోప్యతా పత్రం దిగుమతి చేయబడలేదు."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "గోప్యతా పత్రాన్ని లోడ్ చేయడానికి StorePilot ఎంపికలలో ప్రాజెక్ట్ను దిగుమతి చేయండి లేదా మళ్లీ దిగుమతి చేయండి."
+  },
+  "fillSinglePurpose": {
+    "message": "ఒకే ప్రయోజనాన్ని పూరించండి"
+  },
+  "fillPrivacy": {
+    "message": "గోప్యతను పూరించండి"
+  },
+  "privacyNoValueForField": {
+    "message": "$1 కోసం గోప్యతా పత్రం విలువ లేదు."
+  },
+  "privacyFieldNotFound": {
+    "message": "గోప్యతా ఫీల్డ్ కనుగొనబడలేదు: $1."
+  },
+  "privacyFilledField": {
+    "message": "పూరించిన గోప్యతా ఫీల్డ్: $1."
+  },
+  "privacyFilledFields": {
+    "message": "పూరించిన $1 గోప్యతా ఫీల్డ్(లు): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "కనుగొనబడలేదు: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "పూరించడానికి మద్దతు ఉన్న గోప్యతా ఫీల్డ్లు ఏవీ అందుబాటులో లేవు."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "గోప్యతా చర్యలు గోప్యతా పేజీలో మాత్రమే అందుబాటులో ఉంటాయి."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 సవరించగలిగే గోప్యతా అభ్యర్థి(లు) కనుగొనబడింది."
+  },
+  "status": {
+    "message": "స్థితి"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "అభ్యర్థులు"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "స్కాన్ చేయబడింది: $1; సరిపోలినది: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "గోప్యతా పత్రాన్ని స్కాన్ చేయడానికి ప్రాజెక్ట్ ఫోల్డర్ను మళ్లీ దిగుమతి చేయండి."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "స్కాన్ చేయలేదు"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "డయాగ్నోస్టిక్స్"
   },
   "project": {
     "message": "ప్రాజెక్ట్"
@@ -60,16 +159,49 @@
     "message": "లోకేల్"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "ప్రస్తుత భాషను పూరించండి"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "అన్ని భాషలను పూరించండి"
+  },
+  "uploadStoreIcon": {
+    "message": "స్టోర్ చిహ్నాన్ని అప్లోడ్ చేయండి"
+  },
+  "uploadMedia": {
+    "message": "మీడియాను అప్లోడ్ చేయండి"
+  },
+  "uploadScreenshots": {
+    "message": "స్క్రీన్షాట్లను అప్లోడ్ చేయండి"
+  },
+  "uploadSmallPromo": {
+    "message": "చిన్న ప్రోమోను అప్లోడ్ చేయండి"
+  },
+  "uploadMarqueePromo": {
+    "message": "మార్క్యూ ప్రోమోను అప్లోడ్ చేయండి"
+  },
+  "clearScreenshots": {
+    "message": "స్క్రీన్షాట్లను క్లియర్ చేయండి"
+  },
+  "clearStoreIcon": {
+    "message": "స్టోర్ చిహ్నాన్ని క్లియర్ చేయండి"
+  },
+  "clearSmallPromo": {
+    "message": "చిన్న ప్రోమోను క్లియర్ చేయండి"
+  },
+  "clearMarqueePromo": {
+    "message": "మార్క్యూ ప్రోమోను క్లియర్ చేయండి"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "అన్నింటినీ పూరించండి"
+  },
+  "abortOperation": {
+    "message": "ఆపరేషన్ రద్దు"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "నిర్ధారణ పేజీ"
+  },
+  "openPanel": {
+    "message": "ప్యానెల్ తెరవండి"
   },
   "options": {
     "message": "ఎంపికలు"
@@ -78,330 +210,453 @@
     "message": "తెలుగు"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "ప్రస్తుత భాషను పూరించండి"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "అన్ని భాషలను పూరించండి"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "అన్నింటినీ పూరించండి"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "StorePilot ఎంపికలలో జాబితాలను దిగుమతి చేయండి"
   },
   "never": {
-    "message": "Never"
+    "message": "ఎప్పుడూ"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "ఈ ప్రాజెక్ట్ బ్రౌజర్ ఫైల్ పికర్ నుండి దిగుమతి చేయబడింది. ప్రాజెక్ట్ ఫోల్డర్ను రిఫ్రెష్ చేయడానికి దాన్ని మళ్లీ దిగుమతి చేయండి."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "చివరిగా $1న నవీకరించబడింది."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 లొకేల్(లు) దిగుమతి చేయబడ్డాయి"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "క్రియాశీల ప్రాజెక్ట్ లేదు"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(ఖాళీ)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 అక్షరాలు"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 ప్రాజెక్ట్(లు)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "ప్రాజెక్టులు లేవు"
+  },
+  "yes": {
+    "message": "అవును"
+  },
+  "no": {
+    "message": "సంఖ్య"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "ఎంచుకున్న ప్రాజెక్ట్"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "మూలం: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "సోర్స్ ఫోల్డర్ లేదు"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "గుర్తింపు: $1 విశ్వాసం"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "రిఫ్రెష్: ఫోల్డర్ను మళ్లీ దిగుమతి చేయండి"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "నవీకరించబడింది: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 లొకేల్లు"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "లొకేల్ లిస్టింగ్ ఫైల్లు ఏవీ ఎంచుకోబడలేదు."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "దిగుమతి చేయబడింది $1; $2 దాటవేయబడింది."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "దాటవేయబడింది: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "ఎంచుకున్న ఫోల్డర్లో లొకేల్ లిస్టింగ్ ఫోల్డర్ ఏదీ కనుగొనబడలేదు."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$3 ($4 విశ్వాసం) నుండి $2లోకి $1 దిగుమతి చేయబడింది; $5 దాటవేయబడింది."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 అభ్యర్థి ఫోల్డర్లు కనుగొనబడ్డాయి."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 స్క్రీన్షాట్(లు), చిహ్నం: $2, చిన్న ప్రోమో: $3, మార్క్యూ ప్రోమో: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "స్టోర్ మీడియా ఆస్తులు ఏవీ కనుగొనబడలేదు."
+  },
+  "mediaUploadedKind": {
+    "message": "$1: $2 అప్లోడ్ చేయబడింది."
+  },
+  "mediaClearedKind": {
+    "message": "క్లియర్ చేయబడింది $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 ఇప్పటికే స్పష్టంగా ఉంది."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 ఇప్పటికే ఉంది లేదా ప్రాసెస్ చేస్తోంది."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "క్లియర్ చేయడానికి స్క్రీన్షాట్లు లేవు."
+  },
+  "screenshotsLimitReached": {
+    "message": "స్క్రీన్షాట్లు: CWS పరిమితి $1 ఇప్పటికే చేరుకుంది"
+  },
+  "storeIcon": {
+    "message": "స్టోర్ చిహ్నం"
+  },
+  "minimizePanel": {
+    "message": "ప్యానెల్ కనిష్టీకరించండి"
+  },
+  "maximizePanel": {
+    "message": "ప్యానెల్ను గరిష్టీకరించండి"
+  },
+  "closePanel": {
+    "message": "ప్యానెల్ మూసివేయి"
+  },
+  "panelOpened": {
+    "message": "ప్యానెల్ తెరవబడింది."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "జాబితా మరియు మీడియా చర్యలు స్టోర్ జాబితా పేజీలో మాత్రమే అందుబాటులో ఉంటాయి."
+  },
+  "clearingMedia": {
+    "message": "మీడియాను క్లియర్ చేస్తోంది..."
+  },
+  "mediaClearFailed": {
+    "message": "మీడియా క్లియర్ విఫలమైంది: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "మీడియా ఆపరేషన్ ఇప్పటికే అమలవుతోంది: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "మీడియా ఆపరేషన్ పురోగతిలో ఉంది."
+  },
+  "noOperationRunning": {
+    "message": "ఏ ఆపరేషన్ అమలు కావడం లేదు."
+  },
+  "operationStopped": {
+    "message": "ఆగిపోయింది."
+  },
+  "missing": {
+    "message": "తప్పిపోయింది"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "మీడియా ఆస్తులను స్కాన్ చేయడానికి ప్రాజెక్ట్ ఫోల్డర్ని మళ్లీ దిగుమతి చేయండి."
+  },
+  "screenshotNumber": {
+    "message": "స్క్రీన్షాట్ $1"
+  },
+  "smallPromoTile": {
+    "message": "చిన్న ప్రోమో టైల్"
+  },
+  "marqueePromoTile": {
+    "message": "మార్క్యూ ప్రోమో టైల్"
+  },
+  "mediaCandidateCounts": {
+    "message": "అభ్యర్థులు"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "చిహ్నం: $1; స్క్రీన్షాట్లు: $2; చిన్న ప్రోమో: $3; మార్క్యూ ప్రోమో: $4."
+  },
+  "uploadingMedia": {
+    "message": "మీడియాను అప్లోడ్ చేస్తోంది..."
+  },
+  "mediaUploaded": {
+    "message": "అప్లోడ్ చేయబడిన మీడియా: $1."
+  },
+  "mediaSkipped": {
+    "message": "దాటవేయబడింది: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "విఫలమైంది: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "మీడియా అప్లోడ్ విఫలమైంది: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "ఫోల్డర్ దిగుమతి రద్దు చేయబడింది."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "ఫోల్డర్ దిగుమతి విఫలమైంది: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "ఎంచుకున్న ఫైల్లు"
   },
   "manual": {
-    "message": "manual"
+    "message": "మాన్యువల్"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "దిగుమతి విఫలమైంది: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot ప్రాజెక్ట్ \"$1\"ని తొలగించాలా?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1 తొలగించబడింది."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "\"$1\" కోసం జాబితాలను క్లియర్ చేయాలా?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "$1 కోసం జాబితాలు క్లియర్ చేయబడ్డాయి."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$2లో $1 జాబితా లొకేల్(లు). చివరిగా $3న నవీకరించబడింది."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "ఇంకా ప్రాజెక్ట్లు లేవు"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "కాపీ చేయడానికి లిస్టింగ్ టెక్స్ట్ ఏదీ ఎంచుకోబడలేదు."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$2 నుండి $1 కాపీ చేయబడింది."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 $2లోకి దిగుమతి చేయబడింది ($3 విశ్వాసం)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "సక్రియ ట్యాబ్ లేదు."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "క్రియాశీల ట్యాబ్ Chrome Web Store Developer Dashboard పేజీ కాదు."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot ఈ డాష్బోర్డ్ ట్యాబ్కి కనెక్ట్ కాలేదు. ఖచ్చితమైన లోపం కోసం డయాగ్నోస్టిక్స్ తెరవండి."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "డయాగ్నస్టిక్స్ పూర్తయ్యాయి."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "డయాగ్నస్టిక్స్ విఫలమైంది."
   },
   "done": {
-    "message": "Done."
+    "message": "పూర్తయింది."
   },
   "failed": {
-    "message": "Failed."
+    "message": "విఫలమైంది."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "లొకేల్ లిస్టింగ్ ఫైల్లు ఏవీ కనుగొనబడలేదు."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$2లోకి $1 దిగుమతి చేయబడింది."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "ప్రాజెక్ట్ ఎంపిక చేయబడింది."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "అన్ని భాషలను నింపుతోంది..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "ఆపు అభ్యర్థించారు."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "అన్నీ అమలు చేయడం లేదు."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "అన్నింటినీ నింపడం ఆపలేకపోయింది."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "డయాగ్నస్టిక్స్ విఫలమైంది: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "ప్రాజెక్ట్ కనుగొనబడలేదు."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "ప్రాజెక్ట్ ఫోల్డర్ను మళ్లీ దిగుమతి చేయండి, తద్వారా StorePilot అప్లోడ్ కోసం మీడియా ఫైల్లను నిల్వ చేయగలదు."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "మీడియా ఫైల్లను చదవడానికి ముందు ఫోల్డర్ అనుమతి అవసరం."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "ఫోల్డర్ హ్యాండిల్ ఏదీ సేవ్ చేయబడలేదు."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "జాబితా ఏదీ ఎంచుకోబడలేదు."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "$1 కాపీ చేయబడింది."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "కనిపించే సవరించదగిన ఫీల్డ్ కనుగొనబడలేదు."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "$1 నిండింది."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Chrome Web Store భాష డ్రాప్డౌన్ కనుగొనబడలేదు."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "డాష్బోర్డ్ భాషా మెనులో $1 కనుగొనబడలేదు."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "$1ని క్లిక్ చేసారు, కానీ డాష్బోర్డ్ ఇప్పటికీ $2ని చూపుతుంది."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "తెలియని ప్రదేశం"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "$1 కోసం జాబితా వచనం లేదు."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Chrome Web Store వివరణ ఫీల్డ్ కనుగొనబడలేదు."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "ప్రస్తుత డాష్బోర్డ్ భాషను గుర్తించడం సాధ్యపడలేదు."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "ఆగిపోయింది. నిండిన $1 డాష్బోర్డ్ భాష(లు)."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "ప్రాజెక్ట్ జాబితాలు ఏవీ దిగుమతి చేయబడలేదు."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "డ్యాష్బోర్డ్ భాషా మెనుకి దిగుమతి చేసిన లొకేల్లు ఏవీ సరిపోలలేదు."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "ఆగిపోయింది. నిండిన $1 డాష్బోర్డ్ భాష(లు); ఇంకా పెండింగ్లో ఉంది: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "మళ్లీ ప్రయత్నించిన తర్వాత $1 పునరుద్ధరించబడింది."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "మళ్లీ ప్రయత్నించారు $1; ఏదీ కోలుకోలేదు."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "నిండిన $1 డాష్బోర్డ్ భాష(లు); విఫలమైంది $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "నిండిన $1 డాష్బోర్డ్ భాష(లు)."
+  },
+  "fillAllDashboardSummary": {
+    "message": "దిగుమతి చేయబడింది $1; సరిపోలిన $2 డాష్బోర్డ్ భాష(లు)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "దిగుమతి చేయబడింది $1; సరిపోలిన $2 డాష్బోర్డ్ భాష(లు); సరిపోలని దిగుమతి చేయబడిన లొకేల్(లు): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store మద్దతు లేని లొకేల్(లు)ను అందించలేదు: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "డాష్బోర్డ్ మద్దతు ఉన్న దిగుమతి చేయబడిన లొకేల్(లు)ను అందించలేదు: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "రద్దు చేయమని అభ్యర్థించారు. ప్రస్తుత డాష్బోర్డ్ దశ తర్వాత StorePilot ఆగిపోతుంది."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "డ్యాష్బోర్డ్ డయాగ్నోస్టిక్స్ ఆమోదించబడ్డాయి."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "డ్యాష్బోర్డ్ డయాగ్నస్టిక్స్ పేజీ ఎలిమెంట్లు తప్పిపోయినట్లు గుర్తించింది."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "అన్నీ ఇప్పటికే అమలవుతున్నాయి."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "నింపడం అన్నీ ఆగిపోయాయి."
   },
   "filling": {
-    "message": "Filling"
+    "message": "నింపడం"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "మళ్లీ ప్రయత్నిస్తోంది"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "StorePilot ఎంపికలను తెరవండి"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "ప్రాజెక్ట్ దిగుమతిని తెరుస్తోంది..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "తెలియదు"
+  },
+  "alphaChannel": {
+    "message": "ఆల్ఫా"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "పేరులేని ప్రాజెక్ట్"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "దిగుమతి చేసుకున్న ప్రాజెక్ట్"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "మాన్యువల్ దిగుమతి"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "దిగుమతి చేసిన జాబితాలు"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "మాన్యువల్ ఫైల్ దిగుమతి"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1 ఎంచుకోబడింది."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2లో $1 లొకేల్లు"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "ఇప్పటికే కనెక్ట్ చేయబడింది"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "విజయం సాధించారు"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "అధిక"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "మధ్యస్థ"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "తక్కువ"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot ఎంపికలు"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "నెవర్లో చివరిగా అప్డేట్ చేయబడింది."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "జాబితాలు ఏవీ దిగుమతి చేయబడలేదు"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "జాబితాలను లోడ్ చేస్తోంది..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "ఎంచుకున్న ప్రాజెక్ట్ ఫోల్డర్ని చదవడానికి ముందు StorePilot నిర్ధారణ కోసం అడుగుతుంది. ఆ ప్రాంప్ట్ ఆశించబడింది."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "ఫోల్డర్ దిగుమతి ఎంపికల ట్యాబ్లో నిర్వహించబడుతుంది, ఇక్కడ ఫోల్డర్ నిర్ధారణ ప్రాంప్ట్ విశ్వసనీయంగా పూర్తి అవుతుంది."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "ప్రాజెక్ట్ రూట్, స్టోర్-లిస్టింగ్ ఫోల్డర్ లేదా డైరెక్ట్ లిస్టింగ్ ఫోల్డర్ని ఎంచుకోండి. ఫోల్డర్ యాక్సెస్ని నిర్ధారించమని StorePilot మిమ్మల్ని అడుగుతుంది."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "దాటవేయబడిన గోప్యతా ఫీల్డ్: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "దాటవేయబడింది $1 గోప్యతా ఫీల్డ్(లు): $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "గోప్యతా ఫీల్డ్ విలువను ఆమోదించలేదు: $1."
   }
 }

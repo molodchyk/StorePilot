@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: Autoisi CWS"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Isi automatik medan Chrome Web Store, perihalan setempat, tangkapan skrin dan borang privasi daripada fail tempatan."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Import fail penyenaraian setempat rata dan gunakannya dalam papan pemuka kedai sambungan."
   },
   "theme": {
     "message": "Tema"
@@ -21,37 +21,136 @@
     "message": "Gelap"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Jelas"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Projek aktif"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Padamkan projek"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Import projek/folder"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Pilih akar projek, folder penyenaraian kedai atau folder penyenaraian langsung."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot mencari fail penyenaraian bernama setempat seperti"
   },
   "or": {
     "message": "atau"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Anda juga boleh menyeret fail penyenaraian setempat terus ke panel ini."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Rujukan dokumen automasi privasi"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot boleh mengimbas satu dokumen projek untuk Chrome Web Store medan privasi. Gunakan kekunci kanonik ini supaya pengimbas boleh menghalakan teks tanpa meneka."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Untuk justifikasi kebenaran, gunakan permission.<manifest permission code>. Akhiran hendaklah sepadan dengan kod dalam kebenaran manifes anda, optional_permissions, host_permissions atau content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Nama fail yang disyorkan: docs/chrome-web-store-privacy-form.md atau STORE_JUSTIFICATIONS.md. StorePilot juga menerima fail.md atau.txt lain apabila kandungan mengandungi blok [privacy], kunci kanonik atau tajuk justifikasi stor yang boleh dikenali."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Kekunci teras"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Kunci kebenaran biasa"
+  },
+  "privacyDocFutureProof": {
+    "message": "Jika kebenaran tidak disenaraikan di sini, gunakan corak yang sama, contohnya permission.bookmarks atau permission.system.display. StorePilot harus menganggap kod manifes itu sendiri sebagai sumber kebenaran."
   },
   "projects": {
     "message": "Projek"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Penyenaraian yang diimport"
+  },
+  "storeMediaAssets": {
+    "message": "Simpan Aset Media"
+  },
+  "privacyDocument": {
+    "message": "Dokumen Privasi"
+  },
+  "privacyDocNotScanned": {
+    "message": "Tidak diimbas"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Tiada dokumen privasi yang boleh digunakan ditemui ($1 calon diimbas)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Tiada dokumen privasi yang boleh digunakan ditemui."
+  },
+  "privacyDocSummary": {
+    "message": "$1 medan dalam $2"
+  },
+  "privacyDocFile": {
+    "message": "Fail"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 medan privasi dalam $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Dokumen privasi: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Tiada dokumen privasi diimport untuk projek aktif."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Import atau import semula projek dalam pilihan StorePilot untuk memuatkan dokumen privasi."
+  },
+  "fillSinglePurpose": {
+    "message": "Isi satu tujuan"
+  },
+  "fillPrivacy": {
+    "message": "Isi privasi"
+  },
+  "privacyNoValueForField": {
+    "message": "Tiada nilai dokumen privasi untuk $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Tidak dapat mencari medan privasi: $1."
+  },
+  "privacyFilledField": {
+    "message": "Medan privasi yang diisi: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Mengisi $1 medan privasi: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Tidak dapat mencari: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Tiada medan privasi yang disokong tersedia untuk diisi."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Tindakan privasi hanya tersedia pada halaman Privasi."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Menjumpai $1 calon privasi yang boleh diedit."
+  },
+  "status": {
+    "message": "Status"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "calon"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Diimbas: $1; dipadankan: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Import semula folder projek untuk mengimbas dokumen privasi."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Tidak diimbas"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Diagnostik"
   },
   "project": {
     "message": "Projek"
@@ -60,16 +159,49 @@
     "message": "Lokal"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Isi bahasa semasa"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Isi semua bahasa"
+  },
+  "uploadStoreIcon": {
+    "message": "Muat naik ikon kedai"
+  },
+  "uploadMedia": {
+    "message": "Muat naik media"
+  },
+  "uploadScreenshots": {
+    "message": "Muat naik tangkapan skrin"
+  },
+  "uploadSmallPromo": {
+    "message": "Muat naik promosi kecil"
+  },
+  "uploadMarqueePromo": {
+    "message": "Muat naik promo marquee"
+  },
+  "clearScreenshots": {
+    "message": "Kosongkan tangkapan skrin"
+  },
+  "clearStoreIcon": {
+    "message": "Kosongkan ikon kedai"
+  },
+  "clearSmallPromo": {
+    "message": "Promo kecil yang jelas"
+  },
+  "clearMarqueePromo": {
+    "message": "Promo clear marquee"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Batalkan isi semua"
+  },
+  "abortOperation": {
+    "message": "Hentikan operasi"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Halaman diagnosis"
+  },
+  "openPanel": {
+    "message": "Buka panel"
   },
   "options": {
     "message": "Pilihan"
@@ -78,330 +210,453 @@
     "message": "Melayu"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Isi bahasa semasa"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Isi semua bahasa"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Batalkan isi semua"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Import penyenaraian dalam pilihan StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "tidak pernah"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Projek ini telah diimport daripada pemilih fail penyemak imbas. Import semula folder projek untuk menyegarkannya."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Kemas kini terakhir pada $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 tempat (s) diimport"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Tiada projek aktif"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(kosong)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 aksara"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projek"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Tiada projek"
+  },
+  "yes": {
+    "message": "ya"
+  },
+  "no": {
+    "message": "tidak"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Projek terpilih"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Sumber: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Tiada folder sumber"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Pengesanan: $1 keyakinan"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Muat semula: import semula folder"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Dikemas kini: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 tempat"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Tiada fail penyenaraian setempat dipilih."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Diimport $1; melangkau $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Dilangkau: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Tiada folder penyenaraian tempat ditemui dalam folder yang dipilih."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Diimport $1 ke dalam $2 daripada $3 ($4 keyakinan); melangkau $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Menemui $1 folder calon."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 tangkapan skrin, ikon: $2, promosi kecil: $3, promosi marquee: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Tiada aset media kedai ditemui."
+  },
+  "mediaUploadedKind": {
+    "message": "Dimuat naik $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Dikosongkan $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 sudah jelas."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 sudah ada atau diproses."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Tiada tangkapan skrin untuk dikosongkan."
+  },
+  "screenshotsLimitReached": {
+    "message": "tangkapan skrin: CWS had $1 sudah dicapai"
+  },
+  "storeIcon": {
+    "message": "Ikon kedai"
+  },
+  "minimizePanel": {
+    "message": "Minimumkan panel"
+  },
+  "maximizePanel": {
+    "message": "Maksimumkan panel"
+  },
+  "closePanel": {
+    "message": "Tutup panel"
+  },
+  "panelOpened": {
+    "message": "Panel dibuka."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Penyenaraian dan tindakan media hanya tersedia pada halaman penyenaraian Gedung."
+  },
+  "clearingMedia": {
+    "message": "Membersihkan media..."
+  },
+  "mediaClearFailed": {
+    "message": "Pembersihan media gagal: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Operasi media sudah berjalan: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Operasi media sedang berjalan."
+  },
+  "noOperationRunning": {
+    "message": "Tiada operasi sedang berjalan."
+  },
+  "operationStopped": {
+    "message": "Berhenti."
+  },
+  "missing": {
+    "message": "hilang"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Import semula folder projek untuk mengimbas aset media."
+  },
+  "screenshotNumber": {
+    "message": "Tangkapan skrin $1"
+  },
+  "smallPromoTile": {
+    "message": "Jubin promosi kecil"
+  },
+  "marqueePromoTile": {
+    "message": "Jubin promosi marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "calon"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikon: $1; tangkapan skrin: $2; promosi kecil: $3; promo marquee: $4."
+  },
+  "uploadingMedia": {
+    "message": "Memuat naik media..."
+  },
+  "mediaUploaded": {
+    "message": "Media yang dimuat naik: $1."
+  },
+  "mediaSkipped": {
+    "message": "Dilangkau: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Gagal: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Muat naik media gagal: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Import folder dibatalkan."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Import folder gagal: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "fail yang dipilih"
   },
   "manual": {
     "message": "manual"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Import gagal: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Padamkan StorePilot projek \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Dipadamkan $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Kosongkan penyenaraian untuk \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Senarai dikosongkan untuk $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 menyenaraikan tempat dalam $2. Kemas kini terakhir pada $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Tiada projek lagi"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Tiada teks penyenaraian dipilih untuk disalin."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Disalin $1 daripada $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Mengimport $1 ke dalam $2 ($3 keyakinan)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Tiada tab aktif."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Tab aktif bukan halaman Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot tidak dapat menyambung ke tab papan pemuka ini. Buka Diagnostik untuk ralat yang tepat."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostik selesai."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnostik gagal."
   },
   "done": {
-    "message": "Done."
+    "message": "Selesai."
   },
   "failed": {
-    "message": "Failed."
+    "message": "gagal."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Tiada fail penyenaraian tempat ditemui."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Diimport $1 ke dalam $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projek dipilih."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Mengisi semua bahasa..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Berhenti diminta."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Isi semua tidak berjalan."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Tidak boleh berhenti mengisi semua."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnostik gagal: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projek tidak ditemui."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Import semula folder projek supaya StorePilot boleh menyimpan fail media untuk dimuat naik."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Kebenaran folder diperlukan sebelum membaca fail media."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Tiada pemegang folder disimpan."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Tiada penyenaraian dipilih."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Disalin $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Tiada medan yang boleh diedit yang kelihatan ditemui."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Diisi $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Tidak dapat mencari lungsur turun bahasa Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Tidak dapat mencari $1 dalam menu bahasa papan pemuka."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Mengklik $1, tetapi papan pemuka masih menunjukkan $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "tempat yang tidak diketahui"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Tiada teks penyenaraian untuk $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Tidak dapat mencari medan penerangan Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Tidak dapat mengesan bahasa papan pemuka semasa."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Berhenti. Mengisi $1 bahasa papan pemuka."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Tiada penyenaraian projek diimport."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Tiada tempat yang diimport sepadan dengan menu bahasa papan pemuka."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Berhenti. Mengisi $1 bahasa papan pemuka; masih belum selesai: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Dipulihkan $1 selepas mencuba semula."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Dicuba semula $1; tiada yang pulih."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Mengisi $1 bahasa papan pemuka; gagal $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Mengisi $1 bahasa papan pemuka."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Diimport $1; dipadankan $2 bahasa papan pemuka."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Diimport $1; dipadankan $2 bahasa papan pemuka; tempat import tidak sepadan: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store tidak menawarkan tempat yang tidak disokong: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Papan pemuka tidak menawarkan tempat yang diimport yang disokong: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Menggugurkan diminta. StorePilot akan berhenti selepas langkah papan pemuka semasa."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Diagnostik papan pemuka diluluskan."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Diagnostik papan pemuka mendapati tiada unsur halaman."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Isi semua sudah berjalan."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Isi semua berhenti."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Pengisian"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Mencuba semula"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Buka StorePilot pilihan"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Membuka import projek..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Tidak diketahui"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Projek tanpa tajuk"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Projek yang diimport"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Import manual"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Penyenaraian yang diimport"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Import fail manual"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Dipilih $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 tempat dalam $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "sudah bersambung"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "berjaya"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "tinggi"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "sederhana"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "rendah"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Pilihan"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Kemas kini terakhir pada Never."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Tiada penyenaraian diimport"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Memuatkan senarai..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot akan meminta pengesahan sebelum membaca folder projek yang dipilih. Gesaan itu dijangka."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Import folder dikendalikan dalam tab pilihan, di mana gesaan pengesahan folder boleh diselesaikan dengan pasti."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Pilih akar projek, folder penyenaraian kedai atau folder penyenaraian langsung. StorePilot akan meminta anda mengesahkan akses folder."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Medan privasi dilangkau: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Melangkau $1 medan privasi: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Medan privasi tidak menerima nilai: $1."
   }
 }

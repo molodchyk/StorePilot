@@ -2,20 +2,19 @@
 
 Use this file when submitting StorePilot to Firefox Add-ons.
 
-## Version 1.1.0 Fields
+## Version 1.1.1 Fields
 
 Release Notes:
 
 ```text
-StorePilot 1.1.0 makes StorePilot Firefox-only and adds store media handling, privacy-form filling, and stronger project import automation.
+StorePilot 1.1.1 improves discoverability and Firefox locale coverage.
 
 What's changed:
-- Removed the separate Chrome build path and streamlined the project as a Firefox extension.
-- Improved project root detection, locale filename parsing, and privacy-document discovery for real project folder layouts.
-- Added store media discovery and dashboard upload/clear controls for icon, screenshots, small promo, and marquee promo assets.
-- Added draggable, minimizable, closable dashboard panel behavior with clearer grouped controls.
-- Added Chrome Web Store privacy-form document discovery and privacy field filling for single purpose, privacy policy URL, host permissions, remote code, and permission justifications.
-- Improved parser handling for human-written justification documents, including "Permission Justifications" sections with activeTab/storage headings.
+- Renamed the public add-on title to "StorePilot: Chrome Web Store Listing Autofill" so developers can find it by the actual task it performs.
+- Rewrote the manifest summary and AMO page description around Chrome Web Store listing autofill, localized descriptions, screenshots, and privacy forms.
+- Localized the manifest-facing add-on name and summary across all packaged locale directories.
+- Added sparse locale files for AMO-visible Firefox locales that were missing from the previous package.
+- No permissions, data collection behavior, host permissions, or automatic submit/review behavior changed.
 ```
 
 Notes to Reviewer:
@@ -23,14 +22,13 @@ Notes to Reviewer:
 ```text
 StorePilot is a local-first extension for browser extension publishers. It imports localized listing text, store media references, and privacy-form text from user-selected local files/folders, then helps fill Chrome Web Store Developer Dashboard fields at the user's request.
 
-Version 1.1.0 changes:
-- StorePilot is now maintained as a Firefox extension only; obsolete separate Chrome/Firefox build split files were removed.
-- The import scanner detects likely project roots more accurately by looking at common local project markers such as README files, manifests, .git, src, _locales, and store-listing folders. This only affects local user-selected folders.
-- Locale filename parsing accepts both underscore and hyphen regional forms, for example pt_BR.txt and pt-BR.txt.
-- Fill-all dashboard reporting makes a clearer distinction between imported listing locales, dashboard languages found, locales filled, unsupported locales not offered by the dashboard, and supported imported locales not offered by the dashboard.
-- The dashboard panel can be dragged, minimized, closed, reopened from the popup, and constrained to the visible viewport.
-- Store media automation can upload and clear reviewable assets to the dashboard, but it enforces the Chrome Web Store five-screenshot limit and does not click final submit/review actions.
-- Privacy automation reads a user-selected project document and fills matching Chrome Web Store privacy fields. It uses dashboard data-payload attributes when available and otherwise falls back to label/context matching.
+Version 1.1.1 changes:
+- The public manifest name and summary now target Chrome Web Store listing autofill searches.
+- AMO page copy was rewritten to describe listing-field autofill, localized descriptions, screenshots/media, and privacy forms directly.
+- Localized the manifest-facing add-on name and summary for every packaged locale directory.
+- Filled the full extension UI message set for translation-supported packaged locale directories.
+- Added locale files for dsb, en_CA, en_GB, en_US, es_AR, es_CL, es_ES, es_MX, fur, fy_NL, he, hsb, ia, ka, kab, nb_NO, nn_NO, sq, and sv_SE. Translation-supported additions now include the full UI message set; dsb, hsb, ia, and kab keep English fallback UI strings beyond localized manifest metadata.
+- No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed.
 
 Privacy/data:
 - StorePilot has no analytics, tracking, telemetry, remote server, or off-device data transmission.
@@ -44,11 +42,11 @@ Build:
 - Source is not bundled, minified, transpiled, or obfuscated.
 - The submitted zip is built from this repository with:
   powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-- The build copies source files, locales, icons, and manifest into dist, then writes artifacts/storepilot-1.1.0.zip.
+- The build copies source files, locales, icons, and manifest into dist, then writes artifacts/storepilot-1.1.1.zip.
 - The build script uses System.IO.Compression.ZipArchive instead of PowerShell Compress-Archive so zip entries use forward slashes, which AMO validation requires.
 
 Source package:
-- If source code is requested, upload artifacts/source/storepilot-source-1.1.0.zip.
+- If source code is requested, upload artifacts/source/storepilot-source-1.1.1.zip.
 - It was generated with:
   powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
 ```
@@ -58,7 +56,7 @@ Source package:
 Name:
 
 ```text
-StorePilot
+StorePilot: Chrome Web Store Listing Autofill
 ```
 
 Add-on URL slug:
@@ -70,19 +68,25 @@ storepilot
 Summary:
 
 ```text
-Automate repetitive browser extension store publishing work.
+Autofill Chrome Web Store listing fields, localized descriptions, screenshots, and privacy forms from local files.
 ```
 
 Description:
 
 ```text
-StorePilot helps browser extension developers maintain localized store listings and fill Chrome Web Store Developer Dashboard fields.
+StorePilot: Chrome Web Store Listing Autofill helps browser extension developers fill Chrome Web Store Developer Dashboard listing fields from local project files instead of copy-pasting every locale by hand.
 
-Import an extension project root, a store-listing folder, or a direct listing folder containing locale-named files such as en.txt, de.md, or pt_BR.markdown. StorePilot keeps each extension as its own local project, detects listing locales, detects store media assets, scans a privacy-form document when present, and stores imported data only in local browser extension storage.
+Import an extension project root, a store-listing folder, or a direct listing folder containing locale-named listing text files such as en, de, or pt_BR. StorePilot keeps each extension as its own local project, detects localized descriptions, screenshots, icons, promo tiles, and privacy-form text, and stores imported data only in local browser extension storage.
 
-On the Chrome Web Store Developer Dashboard, StorePilot can fill the current dashboard language, fill all matching dashboard languages with progress and abort support, upload reviewable store media assets, clear media assets, and fill privacy fields from the imported project document.
+On the Chrome Web Store Developer Dashboard, StorePilot can autofill the current listing language, fill all matching listing languages with progress and abort support, upload screenshots and other reviewable store media, clear uploaded media, and fill privacy fields from the imported project document.
 
 StorePilot never clicks final submit, publish, or review actions automatically.
+```
+
+Search/SEO notes:
+
+```text
+The previous name/summary only matched users who already knew "StorePilot" or searched broadly for browser extension publishing. The public title and summary now include exact intent phrases: Chrome Web Store, listing, listing fields, autofill, localized descriptions, screenshots, privacy forms, and Developer Dashboard.
 ```
 
 Experimental:
@@ -150,28 +154,44 @@ StorePilot does not sell, share, or transfer user data to third parties.
 
 Upload screenshots in this order:
 
-1. `artifacts/screenshots/01-storepilot-options-projects.png`
+1. `artifacts/screenshots/01-storepilot-options-project-overview.png`
 
 Caption:
 
 ```text
-Import project folders, manage localized listing projects, and preview imported locale text.
+Manage imported projects, review detected listing locales, media assets, privacy documents, and project source status.
 ```
 
-2. `artifacts/screenshots/02-storepilot-dashboard-panel.png`
+2. `artifacts/screenshots/02-storepilot-listing-dashboard-panel.png`
 
 Caption:
 
 ```text
-Use the StorePilot dashboard panel to fill listing fields, upload media, and manage dashboard automation.
+Fill listing languages and manage uploaded store media directly from the Chrome Web Store dashboard panel.
 ```
 
-3. `artifacts/screenshots/03-storepilot-dashboard-popup.png`
+3. `artifacts/screenshots/03-storepilot-media-assets-preview.png`
 
 Caption:
 
 ```text
-Select a project from the popup and run dashboard actions without leaving the listing page.
+Review detected store icons, screenshots, small promo tiles, and marquee promo tiles before uploading.
+```
+
+4. `artifacts/screenshots/04-storepilot-privacy-dashboard-panel.png`
+
+Caption:
+
+```text
+Fill Chrome Web Store privacy fields from a detected project privacy document.
+```
+
+5. `artifacts/screenshots/05-storepilot-dashboard-popup.png`
+
+Caption:
+
+```text
+Select a project from the popup and run page-specific dashboard actions without leaving the store page.
 ```
 
 ## Additional Details
@@ -179,12 +199,31 @@ Select a project from the popup and run dashboard actions without leaving the li
 Tags:
 
 ```text
-translate
-user scripts
+chrome web store
+developer tools
+autofill
+form filler
+store listing
+extension publishing
+localization
+screenshots
+privacy form
 google
 ```
 
 Do not use unrelated tags such as ad blocker, privacy, security, vpn, shopping, or video downloader. StorePilot is a publishing/localization workflow tool, and AMO only allows up to 10 tags.
+
+## Language Coverage Notes
+
+Firefox/WebExtension locale fallback lets sparse locale files provide only add-on name, summary, and language name while missing UI messages fall back to the default locale. StorePilot now has localized manifest-facing add-on names and summaries for all packaged locale directories, and full UI message coverage for translation-supported packaged locales.
+
+AMO-visible Firefox locale gaps added in this repo:
+
+```text
+dsb, en_CA, en_GB, en_US, es_AR, es_CL, es_ES, es_MX, fur, fy_NL, he, hsb, ia, ka, kab, nb_NO, nn_NO, sq, sv_SE
+```
+
+The packaged `dsb`, `hsb`, `ia`, and `kab` locale files keep English fallback UI strings beyond the localized manifest metadata because no safe translation-backend target was available for those locale codes. Firefox supports additional browser UI locales that are still not included here. Do not add the full remaining set as English-only placeholders unless there is a release reason; add them when there are real translated summary/UI strings or a clear user signal.
 
 Contributions URL:
 
@@ -245,7 +284,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 Expected output:
 
 ```text
-artifacts/storepilot-1.1.0.zip
+artifacts/storepilot-1.1.1.zip
 ```
 
 ## Source Code Upload
@@ -253,7 +292,7 @@ artifacts/storepilot-1.1.0.zip
 Upload this source package when AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.1.0.zip
+artifacts/source/storepilot-source-1.1.1.zip
 ```
 
 Create it with:
@@ -272,12 +311,12 @@ Required programs: PowerShell and Git.
 Node.js/npm: not required to build the submitted extension package.
 External dependencies: none.
 Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-Expected output: artifacts/storepilot-1.1.0.zip
+Expected output: artifacts/storepilot-1.1.1.zip
 ```
 
 ## Validation Requirements Learned
 
-- Submit `artifacts/storepilot-1.1.0.zip`.
+- Submit `artifacts/storepilot-1.1.1.zip`.
 - AMO rejects zip entries with Windows backslashes. The build script must preserve forward-slash archive names such as `src/background.js`.
 - The manifest declares:
 
@@ -321,7 +360,7 @@ Expected output: artifacts/storepilot-1.1.0.zip
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.1.0.zip))
+$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.1.1.zip))
 $entries = $zip.Entries | Select-Object -ExpandProperty FullName
 if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash paths' }
 $zip.Dispose()
@@ -330,11 +369,11 @@ $zip.Dispose()
 4. Upload extension package:
 
 ```text
-artifacts/storepilot-1.1.0.zip
+artifacts/storepilot-1.1.1.zip
 ```
 
 5. Upload source package if AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.1.0.zip
+artifacts/source/storepilot-source-1.1.1.zip
 ```

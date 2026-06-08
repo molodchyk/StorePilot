@@ -4,7 +4,7 @@ $root = Split-Path -Parent $PSScriptRoot
 $dist = Join-Path $root "dist"
 $stagedDist = Join-Path $root "dist-next"
 $artifacts = Join-Path $root "artifacts"
-$zip = Join-Path $artifacts "storepilot-1.1.0.zip"
+$zip = Join-Path $artifacts "storepilot-1.1.1.zip"
 
 if (Test-Path -LiteralPath $stagedDist) {
   Remove-Item -LiteralPath $stagedDist -Recurse -Force

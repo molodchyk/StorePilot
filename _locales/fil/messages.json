@@ -1,18 +1,18 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS autofill"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Awtomatikong punan ang mga field ng Chrome Web Store, lokal na paglalarawan, screenshot, at privacy form mula sa lokal na file."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Mag-import ng mga flat locale listing file at gamitin ang mga ito sa mga dashboard ng extension store."
   },
   "theme": {
     "message": "Tema"
   },
   "themeSystem": {
-    "message": "System"
+    "message": "Sistema"
   },
   "themeLight": {
     "message": "Maliwanag"
@@ -21,55 +21,187 @@
     "message": "Madilim"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Maaliwalas"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Aktibong proyekto"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Tanggalin ang proyekto"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Mag-import ng proyekto/folder"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Pumili ng ugat ng proyekto, folder ng listahan ng tindahan, o folder ng direktang listahan."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "Ang StorePilot ay naghahanap ng mga file ng listahan na pinangalanang lokal tulad ng"
   },
   "or": {
     "message": "o"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Maaari mo ring i-drag ang mga direktang lokal na listahan ng mga file papunta sa panel na ito."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Sanggunian ng dokumento sa automation ng privacy"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "Maaaring i-scan ng StorePilot ang isang dokumento ng proyekto para sa mga field ng privacy ng Chrome Web Store. Gamitin ang mga canonical key na ito para mairuta ng scanner ang text nang hindi nanghuhula."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Para sa mga katwiran ng pahintulot, gamitin ang permission.<manifest permission code>. Dapat tumugma ang suffix sa code sa iyong mga manifest na pahintulot, optional_permissions, host_permissions, o content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Mga inirerekomendang filename: docs/chrome-web-store-privacy-form.md o STORE_JUSTIFICATIONS.md. Tumatanggap din ang StorePilot ng iba pang.md o.txt file kapag naglalaman ang content ng [privacy] block, canonical key, o nakikilalang store-justification heading."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Mga pangunahing susi"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Mga karaniwang key ng pahintulot"
+  },
+  "privacyDocFutureProof": {
+    "message": "Kung ang isang pahintulot ay hindi nakalista dito, gamitin pa rin ang parehong pattern, halimbawa permission.bookmarks o permission.system.display. StorePilot dapat ituring ang mismong manifest code bilang ang pinagmulan ng katotohanan."
   },
   "projects": {
     "message": "Mga proyekto"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Mga na-import na Listahan"
+  },
+  "storeMediaAssets": {
+    "message": "Store Media Assets"
+  },
+  "privacyDocument": {
+    "message": "Dokumento sa Pagkapribado"
+  },
+  "privacyDocNotScanned": {
+    "message": "Hindi na-scan"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Walang nakitang magagamit na dokumento sa privacy ($1 (mga) kandidato ang na-scan)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Walang nahanap na magagamit na dokumento sa privacy."
+  },
+  "privacyDocSummary": {
+    "message": "$1 (mga) field sa $2"
+  },
+  "privacyDocFile": {
+    "message": "file"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 (mga) field ng privacy sa $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Dokumento sa privacy: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Walang na-import na dokumento sa privacy para sa aktibong proyekto."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "I-import o muling i-import ang proyekto sa StorePilot na mga opsyon upang mag-load ng isang dokumento sa privacy."
+  },
+  "fillSinglePurpose": {
+    "message": "Punan ang isang layunin"
+  },
+  "fillPrivacy": {
+    "message": "Punan ang privacy"
+  },
+  "privacyNoValueForField": {
+    "message": "Walang halaga ng dokumento sa privacy para sa $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Hindi mahanap ang field ng privacy: $1."
+  },
+  "privacyFilledField": {
+    "message": "Punan ang field ng privacy: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Napunan ang $1 (mga) field ng privacy: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Hindi mahanap: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Walang suportadong mga patlang sa privacy ang magagamit upang punan."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Ang mga pagkilos sa privacy ay magagamit lamang sa pahina ng Privacy."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Nakakita ng $1 (mga) nae-edit na kandidato sa privacy."
+  },
+  "status": {
+    "message": "Katayuan"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Mga kandidato"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Na-scan: $1; tumugma: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Muling i-import ang folder ng proyekto upang i-scan ang dokumento ng privacy."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Hindi na-scan"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Mga diagnostic"
   },
   "project": {
     "message": "Proyekto"
   },
   "locale": {
-    "message": "Locale"
+    "message": "Lokal"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Punan ang kasalukuyang wika"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Punan ang lahat ng mga wika"
+  },
+  "uploadStoreIcon": {
+    "message": "I-upload ang icon ng tindahan"
+  },
+  "uploadMedia": {
+    "message": "Mag-upload ng media"
+  },
+  "uploadScreenshots": {
+    "message": "Mag-upload ng mga screenshot"
+  },
+  "uploadSmallPromo": {
+    "message": "Mag-upload ng maliit na promo"
+  },
+  "uploadMarqueePromo": {
+    "message": "Mag-upload ng marquee promo"
+  },
+  "clearScreenshots": {
+    "message": "I-clear ang mga screenshot"
+  },
+  "clearStoreIcon": {
+    "message": "I-clear ang icon ng tindahan"
+  },
+  "clearSmallPromo": {
+    "message": "Malinaw na maliit na promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Clear marquee promo"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "I-abort punan lahat"
+  },
+  "abortOperation": {
+    "message": "I-abort ang operasyon"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "I-diagnose ang pahina"
+  },
+  "openPanel": {
+    "message": "Buksan ang panel"
   },
   "options": {
     "message": "Mga opsyon"
@@ -78,330 +210,453 @@
     "message": "Filipino"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Punan ang kasalukuyang wika"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Punan ang lahat ng mga wika"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "I-abort punan lahat"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Mag-import ng mga listahan sa StorePilot na mga opsyon"
   },
   "never": {
-    "message": "Never"
+    "message": "Hindi kailanman"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Ang proyektong ito ay na-import mula sa isang browser file picker. Muling i-import ang folder ng proyekto upang i-refresh ito."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Huling na-update noong $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 (mga) lokal na na-import"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Walang aktibong proyekto"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(walang laman)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 character"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 (mga) proyekto"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Walang projects"
+  },
+  "yes": {
+    "message": "oo"
+  },
+  "no": {
+    "message": "hindi"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Napiling proyekto"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Pinagmulan: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Walang source folder"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Detection: $1 kumpiyansa"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "I-refresh: muling i-import ang folder"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Na-update: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 na mga lokal"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Walang napiling mga file ng listahan ng lokal."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Na-import $1; nilaktawan ang $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Nilaktawan: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Walang nakitang folder ng listahan ng lokal sa napiling folder."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Na-import ang $1 sa $2 mula sa $3 ($4 kumpiyansa); nilaktawan ang $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Nakakita ng $1 na folder ng kandidato."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 (mga) screenshot, icon: $2, maliit na promo: $3, marquee promo: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Walang nakitang store media asset."
+  },
+  "mediaUploadedKind": {
+    "message": "Na-upload $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Na-clear $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 malinaw na."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 naroroon na o pinoproseso na."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Walang mga screenshot na i-clear."
+  },
+  "screenshotsLimitReached": {
+    "message": "mga screenshot: CWS limitasyon ng $1 naabot na"
+  },
+  "storeIcon": {
+    "message": "Icon ng tindahan"
+  },
+  "minimizePanel": {
+    "message": "I-minimize ang panel"
+  },
+  "maximizePanel": {
+    "message": "I-maximize ang panel"
+  },
+  "closePanel": {
+    "message": "Isara ang panel"
+  },
+  "panelOpened": {
+    "message": "Binuksan ang panel."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Available lang ang listing at media actions sa page ng listing ng Store."
+  },
+  "clearingMedia": {
+    "message": "Ni-clear ang media..."
+  },
+  "mediaClearFailed": {
+    "message": "Nabigo ang pag-clear ng media: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Ang pagpapatakbo ng media ay tumatakbo na: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Kasalukuyang isinasagawa ang operasyon ng media."
+  },
+  "noOperationRunning": {
+    "message": "Walang tumatakbong operasyon."
+  },
+  "operationStopped": {
+    "message": "Huminto."
+  },
+  "missing": {
+    "message": "Nawawala"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Muling i-import ang folder ng proyekto upang i-scan ang mga asset ng media."
+  },
+  "screenshotNumber": {
+    "message": "Screenshot $1"
+  },
+  "smallPromoTile": {
+    "message": "Maliit na promo tile"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee promo tile"
+  },
+  "mediaCandidateCounts": {
+    "message": "Mga kandidato"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Icon: $1; mga screenshot: $2; maliit na promo: $3; marquee promo: $4."
+  },
+  "uploadingMedia": {
+    "message": "Nag-a-upload ng media..."
+  },
+  "mediaUploaded": {
+    "message": "Na-upload na media: $1."
+  },
+  "mediaSkipped": {
+    "message": "Nilaktawan: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Nabigo: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Nabigo ang pag-upload ng media: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Kinansela ang pag-import ng folder."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Nabigo ang pag-import ng folder: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "mga napiling file"
   },
   "manual": {
-    "message": "manual"
+    "message": "manwal"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Nabigo ang pag-import: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Tanggalin ang StorePilot proyekto \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Tinanggal ang $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "I-clear ang mga listahan para sa \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Na-clear ang mga listahan para sa $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 listahan ng (mga) lokal sa $2. Huling na-update noong $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Wala pang projects"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Walang napiling teksto ng listahan upang kopyahin."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Kinopya ang $1 mula sa $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Na-import ang $1 sa $2 ($3 kumpiyansa)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Walang aktibong tab."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Ang aktibong tab ay hindi isang Chrome Web Store Developer Dashboard na pahina."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "Hindi makakonekta si StorePilot sa tab ng dashboard na ito. Buksan ang Diagnostics para sa eksaktong error."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Kumpleto na ang mga diagnostic."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Nabigo ang mga diagnostic."
   },
   "done": {
-    "message": "Done."
+    "message": "Tapos na."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Nabigo."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Walang nakitang mga file ng listahan ng lokal."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Na-import ang $1 sa $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Pinili ang proyekto."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Pinuno ang lahat ng wika..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Hiniling na huminto."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Punan ang lahat ay hindi tumatakbo."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Hindi mapigilang punuin lahat."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Nabigo ang mga diagnostic: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Hindi nahanap ang proyekto."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Muling i-import ang folder ng proyekto upang maiimbak ng StorePilot ang mga media file para sa pag-upload."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Kinakailangan ang pahintulot sa folder bago basahin ang mga media file."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Walang naka-save na handle ng folder."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Walang napiling listahan."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Kinopya $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Walang nakitang nae-edit na field."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Napunan $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Hindi mahanap ang dropdown na Chrome Web Store na wika."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Hindi mahanap ang $1 sa menu ng wika ng dashboard."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Na-click ang $1, ngunit ipinapakita pa rin ng dashboard ang $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "isang hindi kilalang lokal"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Walang text ng listahan para sa $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Hindi mahanap ang field ng paglalarawan ng Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Hindi matukoy ang kasalukuyang wika ng dashboard."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Huminto. Napunan ang $1 (mga) wika ng dashboard."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Walang na-import na listahan ng proyekto."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Walang na-import na lokal na tumutugma sa menu ng wika ng dashboard."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Huminto. Napunan ang $1 (mga) wika ng dashboard; nakabinbin pa rin: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Nabawi $1 pagkatapos muling subukan."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Sinubukan muli $1; walang nakabawi."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Napunan ang $1 (mga) wika ng dashboard; nabigo $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Napunan ang $1 (mga) wika ng dashboard."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Na-import $1; tumugma sa $2 (mga) wika ng dashboard."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Na-import $1; tumugma sa $2 (mga) wika ng dashboard; walang kaparis na na-import na (mga) lokal: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Hindi nag-alok ang Chrome Web Store ng (mga) hindi sinusuportahang lokal: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Hindi nag-aalok ang Dashboard ng suportadong na-import na (mga) lokal: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Hiniling ang pagpapalaglag. Hihinto ang StorePilot pagkatapos ng kasalukuyang hakbang sa dashboard."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Naipasa ang mga diagnostic ng dashboard."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Nakita ng mga diagnostic ng dashboard ang mga nawawalang elemento ng page."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Punan ang lahat ay tumatakbo na."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Punan lahat tumigil."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Pagpupuno"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Sinusubukang muli"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Buksan ang StorePilot na mga opsyon"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Binubuksan ang pag-import ng proyekto..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Hindi kilala"
+  },
+  "alphaChannel": {
+    "message": "alpha"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Walang pamagat na proyekto"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Imported na proyekto"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Manu-manong pag-import"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Mga na-import na listahan"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Manu-manong pag-import ng file"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Pinili $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 mga lokal sa $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "konektado na"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "nagtagumpay"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "mataas"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "daluyan"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "mababa"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Mga Pagpipilian"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Huling na-update sa Never."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Walang na-import na listahan"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Nilo-load ang mga listahan..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot ay hihingi ng kumpirmasyon bago basahin ang napiling folder ng proyekto. Inaasahan ang prompt na iyon."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Ang pag-import ng folder ay pinangangasiwaan sa tab na mga opsyon, kung saan maaasahang makumpleto ang prompt ng pagkumpirma ng folder."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Pumili ng ugat ng proyekto, folder ng listahan ng tindahan, o folder ng direktang listahan. Hihilingin sa iyo ng StorePilot na kumpirmahin ang pag-access sa folder."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Nilaktawan ang field ng privacy: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Nilaktawan ang $1 (mga) field ng privacy: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Ang field ng privacy ay hindi tumanggap ng halaga: $1."
   }
 }

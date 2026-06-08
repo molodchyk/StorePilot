@@ -1,0 +1,662 @@
+{
+  "extensionName": {
+    "message": "StorePilot: compilazion CWS"
+  },
+  "extensionDescription": {
+    "message": "Compile in automatic i cjamps di Chrome Web Store, descrizions localizadis, schermadis e modui privacy dai files locâi."
+  },
+  "optionsSubtitle": {
+    "message": "Importâ file di elenc dai locâi plans e doprâju tai 'dashboard' dal magazen di estensions."
+  },
+  "theme": {
+    "message": "Teme"
+  },
+  "themeSystem": {
+    "message": "Sisteme"
+  },
+  "themeLight": {
+    "message": "Lûs"
+  },
+  "themeDark": {
+    "message": "Scûr"
+  },
+  "clear": {
+    "message": "Clâr"
+  },
+  "activeProject": {
+    "message": "Progjet atîf"
+  },
+  "deleteProject": {
+    "message": "Elimina progjet"
+  },
+  "importProjectFolder": {
+    "message": "Importâ progjet/cartele"
+  },
+  "importHintFlexible": {
+    "message": "Seleziona une lidrîs dal progjet, une cjarte di elenc di buteghis o une cjarte di elenc diret."
+  },
+  "importHintLocaleFiles": {
+    "message": "StorePilot al cîr file di elenc cun nons locâi come"
+  },
+  "or": {
+    "message": "o"
+  },
+  "importHintDrag": {
+    "message": "A si pues ancje straçâ i file di elenc dai locâi direts su chest panel."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Riferiment al document pe automatizazion de riservatece"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot al pues scansionâ un document di progjet pai cjamps di riservatece Chrome Web Store. Utilizâ chestis clâfs canonichis cussì il scanner al pues inviâ il test cence indovinâ."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Par justificazions dal permès, doprâ permission.<manifest permission code>. Il sufìs al à di corispondi al codiç tai permès manifests, optional_permissions, host_permissions o content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Nons di file conseâts: docs/chrome-web-store-privacy-form.md o STORE_JUSTIFICATIONS.md. StorePilot al acete ancje altris file.md o.txt cuant che il contignût al conten un bloc [privacy], clâfs canonichis o titui di justificazion dal magazen ricognossibii."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Cjavis clâf"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Cjavis di permès comuns"
+  },
+  "privacyDocFutureProof": {
+    "message": "Se un permès nol è elencât culì, doprâ il stes model in ogni câs, par esempli permission.bookmarks o permission.system.display. StorePilot a dovaressin tratâ il codiç manifest stes come font de veretât."
+  },
+  "projects": {
+    "message": "Progjets"
+  },
+  "importedListings": {
+    "message": "Inserzions impuartadis"
+  },
+  "storeMediaAssets": {
+    "message": "Archiviâ bens media"
+  },
+  "privacyDocument": {
+    "message": "Document di riservatece"
+  },
+  "privacyDocNotScanned": {
+    "message": "No scansionât"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Nissun document di riservatece doprabil al è stât cjatât ($1 candidâts scansionâts)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nissun document di riservatece doprabil cjatât."
+  },
+  "privacyDocSummary": {
+    "message": "Cjamp(s) $1 in $2"
+  },
+  "privacyDocFile": {
+    "message": "Racueidôr"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 cjamp(s) di riservatece in $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Document di riservatece:. $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Nissun document di riservatece impuartât pal progjet atîf."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importâ o riimpuartâ il progjet intes opzions StorePilot par cjargjâ un document di riservatece."
+  },
+  "fillSinglePurpose": {
+    "message": "Riempî un fin ugnul"
+  },
+  "fillPrivacy": {
+    "message": "Completâ la privacy"
+  },
+  "privacyNoValueForField": {
+    "message": "Nissun valôr di document di riservatece par $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Nol è stât cjatât il cjamp di riservatece: $1."
+  },
+  "privacyFilledField": {
+    "message": "Camp di riservatece completât: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Camps di riservatece $1 compilâts: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "No si è rivât a cjatâ: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Nissun cjamp di riservatece supuartât al jere disponibil par jemplâ."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Lis azions di riservatece a son disponibilis dome su la pagjine di riservatece."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "A son cjatâts $1 candidâts pe riservatece modificabii."
+  },
+  "status": {
+    "message": "Stât"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Candidâts"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Scansionât: $1; corispondent: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Tornâ a impuartâ la cjarte dal progjet par scansionâ il document di riservatece."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "No scansionât"
+  },
+  "diagnostics": {
+    "message": "Diagnosi"
+  },
+  "project": {
+    "message": "Progjet"
+  },
+  "locale": {
+    "message": "Locâl"
+  },
+  "fillCurrentLanguage": {
+    "message": "Completâ la lenghe corint"
+  },
+  "fillAllLanguages": {
+    "message": "Completâ dutis lis lenghis"
+  },
+  "uploadStoreIcon": {
+    "message": "Caricament icone de buteghe"
+  },
+  "uploadMedia": {
+    "message": "Carica media"
+  },
+  "uploadScreenshots": {
+    "message": "Carica imagjins dal schermi"
+  },
+  "uploadSmallPromo": {
+    "message": "Carica une piçule promozion"
+  },
+  "uploadMarqueePromo": {
+    "message": "Carica la promozion de tende"
+  },
+  "clearScreenshots": {
+    "message": "Cancelâ imagjins dal schermi"
+  },
+  "clearStoreIcon": {
+    "message": "Cancelâ l’icon de buteghe"
+  },
+  "clearSmallPromo": {
+    "message": "Cjacarâ piçule promozion"
+  },
+  "clearMarqueePromo": {
+    "message": "Promozion de tende clare"
+  },
+  "abortFillAll": {
+    "message": "Abortî jemplâ ducj"
+  },
+  "abortOperation": {
+    "message": "Abort la operazion"
+  },
+  "diagnosePage": {
+    "message": "Pagjine di diagnosi"
+  },
+  "openPanel": {
+    "message": "Panel viert"
+  },
+  "options": {
+    "message": "Opzions"
+  },
+  "localeName": {
+    "message": "Furlan"
+  },
+  "fillCurrent": {
+    "message": "Completâ la lenghe corint"
+  },
+  "fillAll": {
+    "message": "Completâ dutis lis lenghis"
+  },
+  "abort": {
+    "message": "Abortî jemplâ ducj"
+  },
+  "importListingsInOptions": {
+    "message": "Importâ lis listis intes opzions StorePilot"
+  },
+  "never": {
+    "message": "Mai"
+  },
+  "reimportFolderToRefresh": {
+    "message": "Chest progjet al è stât impuartât di un selezionadôr di file dal navigadôr. Tornâ a impuartâ la cjarte dal progjet par rinfrescjâle."
+  },
+  "lastUpdatedOn": {
+    "message": "Ultim agjiornament su $1."
+  },
+  "projectLocalesImported": {
+    "message": "$1: $2 lûcs impuartâts"
+  },
+  "noActiveProject": {
+    "message": "Nissun progjet atîf"
+  },
+  "emptyValue": {
+    "message": "(vueit)"
+  },
+  "charCount": {
+    "message": "$1 caratars"
+  },
+  "projectCount": {
+    "message": "progjet(s) $1"
+  },
+  "noProjects": {
+    "message": "Nissun progjet"
+  },
+  "yes": {
+    "message": "sì"
+  },
+  "no": {
+    "message": "No"
+  },
+  "selectedProject": {
+    "message": "Progjet selezionât"
+  },
+  "sourceLabel": {
+    "message": "Font: $1"
+  },
+  "noSourceFolder": {
+    "message": "Nissune cjarte di font"
+  },
+  "detectionConfidence": {
+    "message": "Rilevament: $1 sigurece"
+  },
+  "refreshReimportFolder": {
+    "message": "Rifrescjâ: tornâ a impuartâ la cjarte"
+  },
+  "updatedLabel": {
+    "message": "Atualizazion: $1"
+  },
+  "localesCount": {
+    "message": "$1 lûcs"
+  },
+  "noLocaleListingFilesSelected": {
+    "message": "Nissun file di elenc locâl al è stât selezionât."
+  },
+  "importedSkipped": {
+    "message": "Importât $1; saltât $2."
+  },
+  "skippedList": {
+    "message": "Saltât: $1"
+  },
+  "noLocaleListingFolderFound": {
+    "message": "Nissune cjarte di elenc locâl e je stade cjatade inte cjarte selezionade."
+  },
+  "importedIntoFrom": {
+    "message": "Importât $1 in $2 di $3 ($4 sigurece); saltât $5."
+  },
+  "foundCandidateFolders": {
+    "message": "A son stadis cjatadis cjartis candidâts $1."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 imagjin(s), icone: $2, piçule promozion: $3, promozion di tende: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Nissune risorse media de buteghe e je stade cjatade."
+  },
+  "mediaUploadedKind": {
+    "message": "Caricade $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Cancelât $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 za clâr."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 za presint o in elaborazion."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Nissune imagjin di schermi di cancelâ."
+  },
+  "screenshotsLimitReached": {
+    "message": "imagjins di schermi: CWS limit di $1 za rivât"
+  },
+  "storeIcon": {
+    "message": "Icone dal magazen"
+  },
+  "minimizePanel": {
+    "message": "Minimizâ il panel"
+  },
+  "maximizePanel": {
+    "message": "Massimizâ il panel"
+  },
+  "closePanel": {
+    "message": "Sierâ il panel"
+  },
+  "panelOpened": {
+    "message": "Panel viert."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Lis azions di elenc e media a son disponibilis dome su la pagjine di elenc dal Negozi."
+  },
+  "clearingMedia": {
+    "message": "Cancelâ i mieçs di comunicazion..."
+  },
+  "mediaClearFailed": {
+    "message": "Cancelâ i mieçs di comunicazion al è falit: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Operazion media za in cors: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Operazions dai media in cors."
+  },
+  "noOperationRunning": {
+    "message": "Nissune operazion e je in cors."
+  },
+  "operationStopped": {
+    "message": "Fermât."
+  },
+  "missing": {
+    "message": "Mancjant"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Tornâ a impuartâ la cjarte dal progjet par scansionâ i asset media."
+  },
+  "screenshotNumber": {
+    "message": "Imagjin dal schermi $1"
+  },
+  "smallPromoTile": {
+    "message": "Piçule piastrele promozionâl"
+  },
+  "marqueePromoTile": {
+    "message": "Piastrel promozionâl de tende"
+  },
+  "mediaCandidateCounts": {
+    "message": "Candidâts"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Icone: $1; imagjins di schermi: $2; piçule promozion: $3; promozion de tende: $4."
+  },
+  "uploadingMedia": {
+    "message": "Caricament dai media..."
+  },
+  "mediaUploaded": {
+    "message": "Media caricade: $1."
+  },
+  "mediaSkipped": {
+    "message": "Saltât: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Falît: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Caricament dai mieçs di comunicazion al è falit: $1"
+  },
+  "folderImportCanceled": {
+    "message": "Importazion de cjarte cancelade."
+  },
+  "folderImportFailed": {
+    "message": "La impuartazion de cjarte e je falide: $1"
+  },
+  "selectedFiles": {
+    "message": "file selezionâts"
+  },
+  "manual": {
+    "message": "manuâl"
+  },
+  "importFailed": {
+    "message": "Importazion no rivade: $1"
+  },
+  "deleteProjectConfirm": {
+    "message": "Elimina il progjet \"SPPH0__\"?. $1"
+  },
+  "deletedProject": {
+    "message": "Eliminât $1."
+  },
+  "clearListingsConfirm": {
+    "message": "Cancelâ lis listis par \"$1\"?"
+  },
+  "clearedListingsFor": {
+    "message": "Liscj cancelâts par $1."
+  },
+  "popupSummary": {
+    "message": "$1 che al elenche i lûcs in $2. Ultim agjiornament su $3."
+  },
+  "noProjectsYet": {
+    "message": "Ancjemò nissun progjet"
+  },
+  "noListingTextSelected": {
+    "message": "Nissun test di elenc selezionât par copiâ."
+  },
+  "copiedLocaleFromProject": {
+    "message": "Copiât $1 di $2."
+  },
+  "importedIntoConfidence": {
+    "message": "Importât $1 in $2 (fidance $3)."
+  },
+  "noActiveTab": {
+    "message": "Nissune schede ative."
+  },
+  "notDashboardPage": {
+    "message": "La schede ative no je une pagjine Chrome Web Store Developer Dashboard."
+  },
+  "couldNotConnectDashboard": {
+    "message": "StorePilot nol è stât bon di conetisi a cheste schede dal scheme di control. Viert la Diagnosi pal erôr precîs."
+  },
+  "diagnosticsComplete": {
+    "message": "La diagnosi e je complete."
+  },
+  "diagnosticsFailed": {
+    "message": "La diagnosi e je falide."
+  },
+  "done": {
+    "message": "Fat."
+  },
+  "failed": {
+    "message": "Falît."
+  },
+  "noLocaleListingFilesFound": {
+    "message": "Nissun file di elenc locâl al è stât cjatât."
+  },
+  "importedInto": {
+    "message": "Importât $1 in $2."
+  },
+  "projectSelected": {
+    "message": "Progjet selezionât."
+  },
+  "fillingAllLanguages": {
+    "message": "Riempî dutis lis lenghis..."
+  },
+  "stopRequested": {
+    "message": "Fermâsi domandât."
+  },
+  "fillAllNotRunning": {
+    "message": "Riempî dut nol è in cors."
+  },
+  "couldNotStopFillAll": {
+    "message": "No podeve fermâ di jemplâ ducj."
+  },
+  "diagnosticsFailedWithError": {
+    "message": "La diagnosi e je falide: $1"
+  },
+  "projectNotFound": {
+    "message": "Progjet no cjatât."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Tornâ a impuartâ la cjarte dal progjet in mût che StorePilot al puedi archiviâ i file media par cambiâju."
+  },
+  "folderPermissionNeeded": {
+    "message": "Al covente il permès de cjarte prime di leî i file media."
+  },
+  "noFolderHandleSaved": {
+    "message": "Nissune mantie di cjarte salvade."
+  },
+  "noListingSelected": {
+    "message": "Nissune lista selezionade."
+  },
+  "copiedLocale": {
+    "message": "Copiât $1."
+  },
+  "noVisibleEditableField": {
+    "message": "Nissun cjamp visibil modificabil cjatât."
+  },
+  "filledLocale": {
+    "message": "Completât $1."
+  },
+  "languageDropdownNotFound": {
+    "message": "No si è rivât a cjatâ la liste a scomenciament dal lengaç Chrome Web Store."
+  },
+  "localeNotInDashboardMenu": {
+    "message": "No si è rivât a cjatâ $1 tal menût dal lengaç dal scheme di comandament."
+  },
+  "clickedButDashboardShows": {
+    "message": "Clicât su $1, ma il cuadri di control al mostre ancjemò $2."
+  },
+  "unknownLocale": {
+    "message": "un lûc scognossût"
+  },
+  "noListingTextFor": {
+    "message": "Nissun test di elenc par $1."
+  },
+  "descriptionFieldNotFound": {
+    "message": "No si è rivât a cjatâ il cjamp di descrizion Chrome Web Store."
+  },
+  "currentDashboardLanguageNotDetected": {
+    "message": "Nol è stât rivât a rilevâ il lengaç dal 'dashboard' corint."
+  },
+  "stoppedFilledLanguages": {
+    "message": "Fermât. Completât $1 lengaç(s) dal cuadri di control."
+  },
+  "noProjectListingsImported": {
+    "message": "Nissune liste di progjets impuartade."
+  },
+  "noImportedLocalesMatchMenu": {
+    "message": "Nissun locâl impuartât al corispuint al menût dal lengaç dal 'dashboard'."
+  },
+  "stoppedFilledLanguagesPending": {
+    "message": "Fermât. Compilât $1 lengaç(s) dal cuadri di control; ancjemò in cors: $2."
+  },
+  "recoveredAfterRetry": {
+    "message": "Recuperât $1 dopo di tornâ a provâ."
+  },
+  "retriedNoneRecovered": {
+    "message": "Riprovât $1; nissun si è recuperât."
+  },
+  "filledLanguagesFailed": {
+    "message": "Compilât $1 lengaç(s) dal cuadri di control; falit $2: $3."
+  },
+  "filledLanguages": {
+    "message": "Completât $1 lengaç(s) dal cuadri di control."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importât $1; corispondent $2 lengaç(s) dal cuadri di control."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importât $1; corispondent $2 lengaç(s) dal cuadri di control; lûcs impuartâts cence corispondence: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store nol à ufrît lûcs no supuartâts: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Il scheme di control nol ufrîs lûcs impuartâts supuartâts: $1."
+  },
+  "abortRequestedStopAfterStep": {
+    "message": "Abort domandât. StorePilot si fermarà dopo dal pas dal cruscot corint."
+  },
+  "dashboardDiagnosticsPassed": {
+    "message": "La diagnosi dal cruscot e je passade."
+  },
+  "dashboardDiagnosticsMissingElements": {
+    "message": "La diagnosi dal 'dashboard' e à cjatât elements di pagjine mancjants."
+  },
+  "fillAllAlreadyRunning": {
+    "message": "Fill all al è za in cors."
+  },
+  "fillAllStopped": {
+    "message": "Riempî ducj fermâts."
+  },
+  "filling": {
+    "message": "Riempî"
+  },
+  "retrying": {
+    "message": "Riprovâ"
+  },
+  "openProjectImport": {
+    "message": "Gjestî la impuartazion dal progjet"
+  },
+  "openStorePilotOptions": {
+    "message": "Viert lis opzions StorePilot"
+  },
+  "openingProjectImport": {
+    "message": "Impuartazion dal progjet di vierzidure..."
+  },
+  "unknown": {
+    "message": "No cognossût"
+  },
+  "alphaChannel": {
+    "message": "alfa"
+  },
+  "untitledProject": {
+    "message": "Progjet cence titul"
+  },
+  "importedProject": {
+    "message": "Progjet impuartât"
+  },
+  "manualImport": {
+    "message": "Importazion manuâl"
+  },
+  "importedListingsProject": {
+    "message": "Inserzions impuartadis"
+  },
+  "manualFileImport": {
+    "message": "Importazion manuâl dal file"
+  },
+  "selectedDashboardLanguage": {
+    "message": "Selezionât $1."
+  },
+  "miniPanelLocalesInProject": {
+    "message": "$1 lûcs in $2"
+  },
+  "contentScriptAlreadyConnected": {
+    "message": "za colegât"
+  },
+  "injectionSucceeded": {
+    "message": "al à vût sucès"
+  },
+  "confidenceHigh": {
+    "message": "alt"
+  },
+  "confidenceMedium": {
+    "message": "medi"
+  },
+  "confidenceLow": {
+    "message": "bas"
+  },
+  "optionsTitle": {
+    "message": "Opzions StorePilot"
+  },
+  "lastUpdatedInitial": {
+    "message": "Ultim agjiornament su Mai."
+  },
+  "noListingsImported": {
+    "message": "Nissune inserzion impuartade"
+  },
+  "loadingListings": {
+    "message": "Caricament des listis..."
+  },
+  "folderAccessPrompt": {
+    "message": "StorePilot al domandarà la conferme prime di lei la cjarte dal progjet selezionât. Chel prompt al è previodût."
+  },
+  "folderImportHandledInOptions": {
+    "message": "La impuartazion de cjarte e je gjestude inte schede opzions, dulà che il prompt di conferme de cjarte al pues completâsi in mût afidabil."
+  },
+  "folderImportHintFlexible": {
+    "message": "Seleziona une lidrîs dal progjet, une cjarte di elenc di buteghis o une cjarte di elenc diret. StorePilot al domandarà di confermâ l'acès ae cjarte."
+  },
+  "privacySkippedField": {
+    "message": "Camp di riservatece saltât: $1."
+  },
+  "privacySkippedFields": {
+    "message": "Saltât cjamp(s) di riservatece $1. $2"
+  },
+  "privacyFieldDidNotAcceptValue": {
+    "message": "Il cjamp di riservatece nol à acetât il valôr: $1."
+  }
+}

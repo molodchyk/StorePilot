@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS 自動入力"
   },
   "extensionDescription": {
-    "message": "ブラウザー拡張機能ストア公開作業の反復タスクを自動化します。"
+    "message": "ローカルファイルから Chrome Web Store の掲載項目、翻訳済み説明、スクリーンショット、プライバシーフォームを自動入力します。"
   },
   "optionsSubtitle": {
     "message": "フラットなロケール掲載ファイルをインポートし、拡張機能ストアのダッシュボードで使用します。"
@@ -33,22 +33,121 @@
     "message": "プロジェクト/フォルダーをインポート"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "プロジェクト ルート、ストア掲載フォルダー、または直接掲載フォルダーを選択します。"
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot は、次のようなロケール名付きのリスト ファイルを検索します。"
   },
   "or": {
     "message": "または"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "ロケール リスト ファイルをこのパネルに直接ドラッグすることもできます。"
+  },
+  "privacyDocReferenceTitle": {
+    "message": "プライバシー自動化ドキュメントのリファレンス"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot は、1 つのプロジェクト ドキュメントをスキャンして Chrome Web Store プライバシー フィールドを見つけることができます。これらの正規キーを使用すると、スキャナーが推測せずにテキストをルーティングできるようになります。"
+  },
+  "privacyDocPermissionRule": {
+    "message": "権限の正当性については、permission.<manifest permission code> を使用します。サフィックスは、マニフェスト権限のコード、optional_permissions、host_permissions、または content_scripts.matches と一致する必要があります。"
+  },
+  "privacyDocNamingGuideline": {
+    "message": "推奨されるファイル名: docs/chrome-web-store-privacy-form.md または STORE_JUSTIFICATIONS.md。 StorePilot は、コンテンツに [privacy] ブロック、正規キー、または認識可能なストア位置調整見出しが含まれている場合、他の.md または.txt ファイルも受け入れます。"
+  },
+  "privacyDocCoreKeys": {
+    "message": "コアキー"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "共通の権限キー"
+  },
+  "privacyDocFutureProof": {
+    "message": "権限がここにリストされていない場合でも、同じパターンを使用してください。たとえば、permission.bookmarks または permission.system.display. StorePilot は、マニフェスト コード自体を真実のソースとして扱う必要があります。"
   },
   "projects": {
     "message": "プロジェクト"
   },
   "importedListings": {
     "message": "インポート済み掲載情報"
+  },
+  "storeMediaAssets": {
+    "message": "メディア資産を保存する"
+  },
+  "privacyDocument": {
+    "message": "プライバシー文書"
+  },
+  "privacyDocNotScanned": {
+    "message": "スキャンされていません"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "使用可能なプライバシー文書が見つかりませんでした ($1 候補がスキャンされました)。"
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "使用可能なプライバシー文書が見つかりません。"
+  },
+  "privacyDocSummary": {
+    "message": "$2 の $1 フィールド"
+  },
+  "privacyDocFile": {
+    "message": "ファイル"
+  },
+  "privacyPanelSummary": {
+    "message": "$2 の $1 プライバシー フィールド"
+  },
+  "privacyDocFileFound": {
+    "message": "プライバシー文書: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "アクティブなプロジェクトにはプライバシー文書がインポートされていません。"
+  },
+  "importPrivacyDocInOptions": {
+    "message": "StorePilot オプションでプロジェクトをインポートまたは再インポートして、プライバシー文書をロードします。"
+  },
+  "fillSinglePurpose": {
+    "message": "単一の目的を満たす"
+  },
+  "fillPrivacy": {
+    "message": "プライバシーを埋める"
+  },
+  "privacyNoValueForField": {
+    "message": "$1 にはプライバシー文書の値がありません。"
+  },
+  "privacyFieldNotFound": {
+    "message": "プライバシー フィールドが見つかりませんでした: $1。"
+  },
+  "privacyFilledField": {
+    "message": "プライバシー フィールドが入力されました: $1。"
+  },
+  "privacyFilledFields": {
+    "message": "$1 プライバシー フィールドが入力されました: $2。"
+  },
+  "privacyFieldsNotFound": {
+    "message": "$1 が見つかりませんでした。"
+  },
+  "privacyNoSupportedFields": {
+    "message": "サポートされているプライバシー フィールドに入力できるものはありませんでした。"
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "プライバシー アクションは、[プライバシー] ページでのみ利用できます。"
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "編集可能なプライバシー候補 $1 が見つかりました。"
+  },
+  "status": {
+    "message": "状態"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "候補者"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "スキャン済み: $1;一致しました: $2。"
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "プロジェクト フォルダーを再インポートして、プライバシー ドキュメントをスキャンします。"
+  },
+  "mediaAssetsNotScanned": {
+    "message": "スキャンされていません"
   },
   "diagnostics": {
     "message": "診断"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "すべての言語を入力"
   },
+  "uploadStoreIcon": {
+    "message": "ストアアイコンをアップロード"
+  },
+  "uploadMedia": {
+    "message": "メディアをアップロードする"
+  },
+  "uploadScreenshots": {
+    "message": "スクリーンショットをアップロードする"
+  },
+  "uploadSmallPromo": {
+    "message": "小さなプロモーションをアップロードする"
+  },
+  "uploadMarqueePromo": {
+    "message": "マーキープロモーションをアップロードする"
+  },
+  "clearScreenshots": {
+    "message": "スクリーンショットをクリアする"
+  },
+  "clearStoreIcon": {
+    "message": "ストアアイコンをクリア"
+  },
+  "clearSmallPromo": {
+    "message": "小規模なプロモーションをクリアする"
+  },
+  "clearMarqueePromo": {
+    "message": "クリアマーキープロモーション"
+  },
   "abortFillAll": {
     "message": "すべての入力を中止"
   },
+  "abortOperation": {
+    "message": "操作を中止する"
+  },
   "diagnosePage": {
     "message": "ページを診断"
+  },
+  "openPanel": {
+    "message": "オープンパネル"
   },
   "options": {
     "message": "オプション"
@@ -90,318 +222,441 @@
     "message": "StorePilot のオプションで掲載情報をインポート"
   },
   "never": {
-    "message": "Never"
+    "message": "一度もない"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "このプロジェクトはブラウザのファイル ピッカーからインポートされました。プロジェクト フォルダーを再インポートして更新します。"
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "最終更新日は $1 です。"
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 ロケールがインポートされました"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "アクティブなプロジェクトはありません"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "（空の）"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 文字"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 プロジェクト"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "プロジェクトがありません"
+  },
+  "yes": {
+    "message": "はい"
+  },
+  "no": {
+    "message": "いいえ"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "選択したプロジェクト"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "出典: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "ソースフォルダーがありません"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "検出: $1 の信頼度"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "更新: フォルダーを再インポートします"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "更新日: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 ロケール"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "ロケール リスト ファイルが選択されていません。"
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "$1 をインポートしました。 $2 をスキップしました。"
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "スキップされました: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "選択したフォルダー内にロケール一覧フォルダーが見つかりませんでした。"
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$1 を $3 から $2 にインポートしました ($4 の信頼度)。 $5 をスキップしました。"
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 個の候補フォルダーが見つかりました。"
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 スクリーンショット、アイコン: $2、小さなプロモーション: $3、マーキー プロモーション: $4。"
+  },
+  "mediaAssetsNone": {
+    "message": "ストア メディア アセットが見つかりません。"
+  },
+  "mediaUploadedKind": {
+    "message": "$1: $2 をアップロードしました。"
+  },
+  "mediaClearedKind": {
+    "message": "$1: $2 をクリアしました。"
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 はすでにクリアされています。"
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 はすでに存在しているか、処理中です。"
+  },
+  "screenshotsAlreadyClear": {
+    "message": "クリアするスクリーンショットはありません。"
+  },
+  "screenshotsLimitReached": {
+    "message": "スクリーンショット: $1 の CWS 制限にすでに達しています"
+  },
+  "storeIcon": {
+    "message": "ストアアイコン"
+  },
+  "minimizePanel": {
+    "message": "パネルを最小化する"
+  },
+  "maximizePanel": {
+    "message": "パネルを最大化する"
+  },
+  "closePanel": {
+    "message": "パネルを閉じる"
+  },
+  "panelOpened": {
+    "message": "パネルが開いた状態。"
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "出品とメディア アクションは、ストアの出品ページでのみ利用できます。"
+  },
+  "clearingMedia": {
+    "message": "メディアをクリア中..."
+  },
+  "mediaClearFailed": {
+    "message": "メディアのクリアに失敗しました: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "メディア操作はすでに実行中です: $1。"
+  },
+  "mediaOperationInProgress": {
+    "message": "メディア操作が進行中です。"
+  },
+  "noOperationRunning": {
+    "message": "操作は実行されていません。"
+  },
+  "operationStopped": {
+    "message": "止まった。"
+  },
+  "missing": {
+    "message": "ない"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "プロジェクト フォルダーを再インポートしてメディア アセットをスキャンします。"
+  },
+  "screenshotNumber": {
+    "message": "スクリーンショット $1"
+  },
+  "smallPromoTile": {
+    "message": "小さなプロモーション タイル"
+  },
+  "marqueePromoTile": {
+    "message": "マーキープロモーションタイル"
+  },
+  "mediaCandidateCounts": {
+    "message": "候補者"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "アイコン: $1;スクリーンショット: $2;小さなプロモーション: $3;マーキープロモーション: $4。"
+  },
+  "uploadingMedia": {
+    "message": "メディアをアップロードしています..."
+  },
+  "mediaUploaded": {
+    "message": "アップロードされたメディア: $1。"
+  },
+  "mediaSkipped": {
+    "message": "スキップされました: $1。"
+  },
+  "mediaUploadFailures": {
+    "message": "失敗: $1。"
+  },
+  "mediaUploadFailed": {
+    "message": "メディアのアップロードに失敗しました: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "フォルダーのインポートがキャンセルされました。"
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "フォルダーのインポートに失敗しました: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "選択したファイル"
   },
   "manual": {
-    "message": "manual"
+    "message": "マニュアル"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "インポートに失敗しました: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot プロジェクト「$1」を削除しますか?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1 を削除しました。"
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "「$1」のリストをクリアしますか?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "$1 のリストをクリアしました。"
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 は $2 のロケールをリストします。最終更新日は $3 です。"
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "まだプロジェクトはありません"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "コピーするリスト テキストが選択されていません。"
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$2 から $1 をコピーしました。"
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 を $2 にインポートしました ($3 の信頼度)。"
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "アクティブなタブがありません。"
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "アクティブなタブは Chrome Web Store Developer Dashboard ページではありません。"
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot はこのダッシュボード タブに接続できませんでした。診断を開いて正確なエラーを確認します。"
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "診断が完了しました。"
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "診断が失敗しました。"
   },
   "done": {
-    "message": "Done."
+    "message": "終わり。"
   },
   "failed": {
-    "message": "Failed."
+    "message": "失敗した。"
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "ロケール リスト ファイルが見つかりませんでした。"
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1 を $2 にインポートしました。"
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "プロジェクトが選択されました。"
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "すべての言語を入力してください..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "停止が要求されました。"
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "「すべてを埋める」は実行されていません。"
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "すべてを埋めることを停止できませんでした。"
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "診断が失敗しました: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "プロジェクトが見つかりません。"
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "StorePilot がアップロード用のメディア ファイルを保存できるように、プロジェクト フォルダーを再インポートします。"
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "メディア ファイルを読み取る前にフォルダーのアクセス許可が必要です。"
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "フォルダーハンドルが保存されていません。"
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "リスティングが選択されていません。"
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "$1 をコピーしました。"
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "表示される編集可能なフィールドが見つかりません。"
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "$1 を入力しました。"
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Chrome Web Store 言語ドロップダウンが見つかりませんでした。"
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "ダッシュボードの言語メニューに $1 が見つかりませんでした。"
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "$1 をクリックしましたが、ダッシュボードには依然として $2 が表示されます。"
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "未知のロケール"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "$1 のリスト テキストがありません。"
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Chrome Web Store 説明フィールドが見つかりませんでした。"
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "現在のダッシュボード言語を検出できませんでした。"
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "止まった。 $1 ダッシュボード言語を入力しました。"
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "プロジェクトリストはインポートされていません。"
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "インポートされたロケールがダッシュボードの言語メニューと一致しません。"
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "止まった。 $1 ダッシュボード言語を入力しました。まだ保留中: $2。"
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "再試行後、$1 を回復しました。"
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "$1 を再試行しました。どれも回復しなかった。"
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "$1 ダッシュボード言語を入力しました。 $2 が失敗しました: $3。"
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 ダッシュボード言語を入力しました。"
+  },
+  "fillAllDashboardSummary": {
+    "message": "$1 をインポートしました。 $2 ダッシュボード言語と一致しました。"
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "$1 をインポートしました。 $2 ダッシュボード言語と一致しました。インポートされたロケールが一致しません: $3。"
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store はサポートされていないロケールを提供していません: $1。"
+  },
+  "unmatchedImportedLocales": {
+    "message": "ダッシュボードは、サポートされているインポートされたロケールを提供していませんでした: $1。"
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "中止が要求されました。 StorePilot は、現在のダッシュボード ステップの後に停止します。"
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "ダッシュボード診断に合格しました。"
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "ダッシュボード診断により、欠落しているページ要素が見つかりました。"
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "「すべてを入力」はすでに実行されています。"
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "すべてを停止して充填します。"
   },
   "filling": {
-    "message": "Filling"
+    "message": "充填"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "再試行中"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "StorePilot オプションを開く"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "プロジェクトのインポートを開いています..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "未知"
+  },
+  "alphaChannel": {
+    "message": "アルファ"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "無題のプロジェクト"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "インポートされたプロジェクト"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "手動インポート"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "輸入物件"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "手動ファイルインポート"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1 を選択しました。"
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2 の $1 ロケール"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "すでに接続されています"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "成功しました"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "高い"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "中くらい"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "低い"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot オプション"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "最終更新日はNeverです。"
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "インポートされたリストはありません"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "リストを読み込んでいます..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot は、選択したプロジェクト フォルダーを読み取る前に確認を求めます。そのプロンプトは予期されています。"
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "フォルダーのインポートはオプション タブで処理され、フォルダーの確認プロンプトが確実に完了します。"
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "プロジェクト ルート、ストア掲載フォルダー、または直接掲載フォルダーを選択します。 StorePilot はフォルダーへのアクセスを確認するように求めます。"
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "スキップされたプライバシー フィールド: $1。"
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "$1 プライバシー フィールドをスキップしました: $2。"
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "プライバシー フィールドは値 $1 を受け入れませんでした。"
   }
 }

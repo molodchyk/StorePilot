@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS otomatik doldurma"
   },
   "extensionDescription": {
-    "message": "Tarayıcı uzantısı mağazası yayımlama işlerini otomatikleştirir."
+    "message": "Yerel dosyalardan Chrome Web Store alanlarını, açıklamaları, ekran görüntülerini ve gizlilik formlarını otomatik doldurur."
   },
   "optionsSubtitle": {
     "message": "Düz yerel listeleme dosyalarını içe aktarın ve uzantı mağazası panellerinde kullanın."
@@ -33,22 +33,121 @@
     "message": "Proje/klasör içe aktar"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Bir proje kökü, mağaza girişi klasörü veya doğrudan listeleme klasörü seçin."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot aşağıdaki gibi yerel ayarlı listeleme dosyalarını arar:"
   },
   "or": {
     "message": "veya"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Doğrudan yerel ayar listeleme dosyalarını da bu panele sürükleyebilirsiniz."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Gizlilik otomasyonu belge referansı"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot, Chrome Web Store gizlilik alanları için bir proje belgesini tarayabilir. Tarayıcının metni tahmin etmeden yönlendirebilmesi için bu kurallı tuşları kullanın."
+  },
+  "privacyDocPermissionRule": {
+    "message": "İzin gerekçeleri için permission.<manifest permission code> kullanın. Sonek, manifest izinlerinizdeki optional_permissions, host_permissions veya content_scripts.matches koduyla eşleşmelidir."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Önerilen dosya adları: docs/chrome-web-store-privacy-form.md veya STORE_JUSTIFICATIONS.md. StorePilot ayrıca içerik bir [privacy] bloğu, standart anahtarlar veya tanınabilir mağaza gerekçelendirme başlıkları içerdiğinde diğer.md veya.txt dosyalarını da kabul eder."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Çekirdek anahtarlar"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Ortak izin anahtarları"
+  },
+  "privacyDocFutureProof": {
+    "message": "Burada bir izin listelenmiyorsa yine de aynı modeli kullanın; örneğin permission.bookmarks veya permission.system.display. StorePilot bildirim kodunun kendisini gerçeğin kaynağı olarak ele almalıdır."
   },
   "projects": {
     "message": "Projeler"
   },
   "importedListings": {
     "message": "İçe aktarılan listeler"
+  },
+  "storeMediaAssets": {
+    "message": "Medya Varlıklarını Depolama"
+  },
+  "privacyDocument": {
+    "message": "Gizlilik Belgesi"
+  },
+  "privacyDocNotScanned": {
+    "message": "Taranmadı"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Kullanılabilir bir gizlilik belgesi bulunamadı ($1 aday(lar)ı tarandı)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Kullanılabilir bir gizlilik belgesi bulunamadı."
+  },
+  "privacyDocSummary": {
+    "message": "$2 içindeki $1 alanları"
+  },
+  "privacyDocFile": {
+    "message": "Dosya"
+  },
+  "privacyPanelSummary": {
+    "message": "$2'deki $1 gizlilik alanları"
+  },
+  "privacyDocFileFound": {
+    "message": "Gizlilik belgesi: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Etkin proje için içe aktarılan gizlilik belgesi yok."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Bir gizlilik belgesi yüklemek için projeyi StorePilot seçeneklerinde içe aktarın veya yeniden içe aktarın."
+  },
+  "fillSinglePurpose": {
+    "message": "Tek amacı doldurun"
+  },
+  "fillPrivacy": {
+    "message": "Gizliliği doldurun"
+  },
+  "privacyNoValueForField": {
+    "message": "$1 için gizlilik belgesi değeri yok."
+  },
+  "privacyFieldNotFound": {
+    "message": "Gizlilik alanı bulunamadı: $1."
+  },
+  "privacyFilledField": {
+    "message": "Doldurulmuş gizlilik alanı: $1."
+  },
+  "privacyFilledFields": {
+    "message": "$1 gizlilik alanları dolduruldu: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Bulunamadı: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Doldurulabilecek desteklenen bir gizlilik alanı yoktu."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Gizlilik işlemleri yalnızca Gizlilik sayfasında mevcuttur."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 düzenlenebilir gizlilik adayı/adayı bulundu."
+  },
+  "status": {
+    "message": "Durum"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Adaylar"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Taranan: $1; eşleşti: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Gizlilik belgesini taramak için proje klasörünü yeniden içe aktarın."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Taranmadı"
   },
   "diagnostics": {
     "message": "Tanılama"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Tüm dilleri doldur"
   },
+  "uploadStoreIcon": {
+    "message": "Mağaza simgesini yükle"
+  },
+  "uploadMedia": {
+    "message": "Medya yükle"
+  },
+  "uploadScreenshots": {
+    "message": "Ekran görüntülerini yükleyin"
+  },
+  "uploadSmallPromo": {
+    "message": "Küçük promosyonu yükle"
+  },
+  "uploadMarqueePromo": {
+    "message": "Seçim çerçevesi tanıtımını yükleyin"
+  },
+  "clearScreenshots": {
+    "message": "Ekran görüntülerini temizle"
+  },
+  "clearStoreIcon": {
+    "message": "Mağaza simgesini temizle"
+  },
+  "clearSmallPromo": {
+    "message": "Küçük promosyonu temizle"
+  },
+  "clearMarqueePromo": {
+    "message": "Seçim çerçevesi tanıtımını temizle"
+  },
   "abortFillAll": {
     "message": "Tümünü doldurmayı durdur"
   },
+  "abortOperation": {
+    "message": "İşlemi iptal et"
+  },
   "diagnosePage": {
     "message": "Sayfayı tanıla"
+  },
+  "openPanel": {
+    "message": "Paneli aç"
   },
   "options": {
     "message": "Seçenekler"
@@ -90,318 +222,441 @@
     "message": "StorePilot seçeneklerinde listeleri içe aktar"
   },
   "never": {
-    "message": "Never"
+    "message": "Asla"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Bu proje bir tarayıcı dosya seçicisinden içe aktarıldı. Yenilemek için proje klasörünü yeniden içe aktarın."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "En son $1 tarihinde güncellendi."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 yerel ayarları içe aktarıldı"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Aktif proje yok"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(boş)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 karakter"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 proje(ler)i"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Proje yok"
+  },
+  "yes": {
+    "message": "evet"
+  },
+  "no": {
+    "message": "hayır"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Seçilen proje"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Kaynak: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Kaynak klasör yok"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Algılama: $1 güven"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Yenile: klasörü yeniden içe aktar"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Güncellendi: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 yerel ayarlar"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Hiçbir yerel ayar listesi dosyası seçilmedi."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "İçe aktarılan $1; $2 atlandı."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Atlandı: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Seçilen klasörde yerel ayar listesi klasörü bulunamadı."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$1, $3'den $2'ye aktarıldı ($4 güven); $5 atlandı."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 aday klasörleri bulundu."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 ekran görüntüleri, simge: $2, küçük promosyon: $3, kayan yazı promosyonu: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Mağaza medya varlığı bulunamadı."
+  },
+  "mediaUploadedKind": {
+    "message": "Yüklendi $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "$1 temizlendi: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 zaten temiz."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 zaten mevcut veya işleniyor."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Temizlenecek ekran görüntüsü yok."
+  },
+  "screenshotsLimitReached": {
+    "message": "ekran görüntüleri: CWS $1 sınırına zaten ulaşıldı"
+  },
+  "storeIcon": {
+    "message": "Mağaza simgesi"
+  },
+  "minimizePanel": {
+    "message": "Paneli simge durumuna küçült"
+  },
+  "maximizePanel": {
+    "message": "Paneli büyüt"
+  },
+  "closePanel": {
+    "message": "Paneli kapat"
+  },
+  "panelOpened": {
+    "message": "Panel açıldı."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Listeleme ve medya işlemleri yalnızca Mağaza girişi sayfasında kullanılabilir."
+  },
+  "clearingMedia": {
+    "message": "Medya temizleniyor..."
+  },
+  "mediaClearFailed": {
+    "message": "Medya temizleme işlemi başarısız oldu: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Medya işlemi zaten çalışıyor: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Medya işlemi devam ediyor."
+  },
+  "noOperationRunning": {
+    "message": "Hiçbir işlem yürütülmüyor."
+  },
+  "operationStopped": {
+    "message": "Durdu."
+  },
+  "missing": {
+    "message": "Eksik"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Medya varlıklarını taramak için proje klasörünü yeniden içe aktarın."
+  },
+  "screenshotNumber": {
+    "message": "Ekran görüntüsü $1"
+  },
+  "smallPromoTile": {
+    "message": "Küçük promosyon kutucuğu"
+  },
+  "marqueePromoTile": {
+    "message": "Kayan yazı promosyon kutucuğu"
+  },
+  "mediaCandidateCounts": {
+    "message": "Adaylar"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Simge: $1; ekran görüntüleri: $2; küçük promosyon: $3; önemli promosyon: $4."
+  },
+  "uploadingMedia": {
+    "message": "Medya yükleniyor..."
+  },
+  "mediaUploaded": {
+    "message": "Yüklenen medya: $1."
+  },
+  "mediaSkipped": {
+    "message": "Atlandı: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Başarısız: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Medya yükleme başarısız oldu: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Klasör içe aktarma işlemi iptal edildi."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Klasör içe aktarma işlemi başarısız oldu: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "seçili dosyalar"
   },
   "manual": {
-    "message": "manual"
+    "message": "manuel"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "İçe aktarma başarısız oldu: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot projesi \"$1\" silinsin mi?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1 silindi."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "\"$1\" için listeler temizlensin mi?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "$1 için listeler temizlendi."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1, $2'de yerel ayarları listeliyor. En son $3 tarihinde güncellendi."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Henüz proje yok"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Kopyalanacak liste metni seçilmedi."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$1, $2'den kopyalandı."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1, $2'e aktarıldı ($3 güven)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Etkin sekme yok."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Etkin sekme bir Chrome Web Store Developer Dashboard sayfası değil."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot bu kontrol paneli sekmesine bağlanamadı. Tam hata için Teşhis'i açın."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Teşhis tamamlandı."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Teşhis başarısız oldu."
   },
   "done": {
-    "message": "Done."
+    "message": "Bitti."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Başarısız oldu."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Yerel ayar listesi dosyası bulunamadı."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1, $2'e aktarıldı."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Proje seçildi."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Tüm diller dolduruluyor..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Durdurma istendi."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Tümünü doldur çalışmıyor."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Hepsini doldurma durdurulamadı."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Teşhis başarısız oldu: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Proje bulunamadı."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "StorePilot'ın medya dosyalarını yükleme amacıyla saklayabilmesi için proje klasörünü yeniden içe aktarın."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Medya dosyalarını okumadan önce klasör izni gereklidir."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Hiçbir klasör tanıtıcısı kaydedilmedi."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Hiçbir liste seçilmedi."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "$1 kopyalandı."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Görünür düzenlenebilir alan bulunamadı."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "$1 dolduruldu."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Chrome Web Store dil açılır menüsü bulunamadı."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Kontrol paneli dil menüsünde $1 bulunamadı."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "$1 tıklandı ancak kontrol panelinde hala $2 gösteriliyor."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "bilinmeyen bir yer"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "$1 için liste metni yok."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Chrome Web Store açıklama alanı bulunamadı."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Geçerli kontrol paneli dili algılanamadı."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Durdu. $1 kontrol paneli dil(ler)i dolduruldu."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Hiçbir proje listesi içe aktarılmadı."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "İçe aktarılan yerel ayarlardan hiçbiri kontrol paneli dil menüsüyle eşleşmiyor."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Durdu. $1 kontrol paneli dil(ler)i doldurulmuştur; hala beklemede: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Yeniden denemeden sonra $1 kurtarıldı."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "$1 yeniden denendi; hiçbiri iyileşmedi."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "$1 kontrol paneli dil(ler)i doldurulmuştur; başarısız oldu $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 kontrol paneli dil(ler)i dolduruldu."
+  },
+  "fillAllDashboardSummary": {
+    "message": "İçe aktarılan $1; $2 kontrol paneli diliyle/dilleriyle eşleşti."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "İçe aktarılan $1; eşleşen $2 kontrol paneli dili/dilleri; eşleşmeyen içe aktarılan yerel ayarlar: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store desteklenmeyen yerel ayarlar sunmadı: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Kontrol Paneli, desteklenen içe aktarılan yerel ayarları sunmuyordu: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "İptal talep edildi. StorePilot mevcut kontrol paneli adımından sonra duracaktır."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Kontrol paneli teşhisi başarılı oldu."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Kontrol paneli teşhisleri eksik sayfa öğeleri buldu."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Tümünü doldur zaten çalışıyor."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Doldurma durduruldu."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Doldurma"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Yeniden deneniyor"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "StorePilot seçeneklerini aç"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Proje içe aktarımı açılıyor..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Bilinmiyor"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Başlıksız proje"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "İçe aktarılan proje"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Manuel içe aktarma"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "İçe aktarılan listeler"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Manuel dosya içe aktarma"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1 seçildi."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2 içindeki $1 yerel ayarları"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "zaten bağlı"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "Başarılı"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "yüksek"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "orta"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "düşük"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Seçenekler"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "En son Never tarihinde güncellendi."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "İçe aktarılan liste yok"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Listeler yükleniyor..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot seçilen proje klasörünü okumadan önce onay isteyecektir. Bu istem bekleniyor."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Klasörün içe aktarımı, klasör onay isteminin güvenilir bir şekilde tamamlanabileceği seçenekler sekmesinde gerçekleştirilir."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Bir proje kökü, mağaza girişi klasörü veya doğrudan listeleme klasörü seçin. StorePilot sizden klasör erişimini onaylamanızı isteyecektir."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Gizlilik alanı atlandı: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "$1 gizlilik alanları atlandı: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Gizlilik alanı şu değeri kabul etmedi: $1."
   }
 }

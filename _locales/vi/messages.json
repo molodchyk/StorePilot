@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: tự điền CWS"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Tự điền trường Chrome Web Store, mô tả bản địa hóa, ảnh chụp màn hình và biểu mẫu quyền riêng tư từ tệp cục bộ."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Nhập tệp danh sách ngôn ngữ phẳng và sử dụng chúng trong trang tổng quan của cửa hàng tiện ích mở rộng."
   },
   "theme": {
     "message": "Giao diện"
@@ -21,37 +21,136 @@
     "message": "Tối"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Xóa"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Dự án đang hoạt động"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Xóa dự án"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Nhập dự án/thư mục"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Chọn thư mục gốc của dự án, thư mục danh sách cửa hàng hoặc thư mục danh sách trực tiếp."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot tìm kiếm các tệp danh sách có tên miền địa phương, chẳng hạn như"
   },
   "or": {
     "message": "hoặc"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Bạn cũng có thể kéo trực tiếp các tệp danh sách ngôn ngữ vào bảng này."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Tài liệu tham khảo về tự động hóa quyền riêng tư"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot có thể quét một tài liệu dự án để tìm các trường quyền riêng tư Chrome Web Store. Sử dụng các phím chuẩn này để máy quét có thể định tuyến văn bản mà không cần đoán."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Để giải thích về quyền, hãy sử dụng permission.<manifest permission code>. Hậu tố phải khớp với mã trong quyền trong tệp kê khai của bạn, optional_permissions, host_permissions hoặc content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Tên tệp được đề xuất: docs/chrome-web-store-privacy-form.md hoặc STORE_JUSTIFICATIONS.md. StorePilot cũng chấp nhận các tệp.md hoặc.txt khác khi nội dung chứa khối [privacy], khóa chuẩn hoặc tiêu đề căn chỉnh cửa hàng có thể nhận biết được."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Phím lõi"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Các phím cấp phép phổ biến"
+  },
+  "privacyDocFutureProof": {
+    "message": "Nếu một quyền không được liệt kê ở đây, hãy sử dụng cùng một mẫu, ví dụ: permission.bookmarks hoặc permission.system.display. StorePilot nên coi chính mã kê khai là nguồn đáng tin cậy."
   },
   "projects": {
     "message": "Dự án"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Danh sách đã nhập"
+  },
+  "storeMediaAssets": {
+    "message": "Lưu trữ tài sản truyền thông"
+  },
+  "privacyDocument": {
+    "message": "Tài liệu về quyền riêng tư"
+  },
+  "privacyDocNotScanned": {
+    "message": "Chưa được quét"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Không tìm thấy tài liệu về quyền riêng tư có thể sử dụng được ($1 đã quét (các) ứng viên)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Không tìm thấy tài liệu bảo mật có thể sử dụng được."
+  },
+  "privacyDocSummary": {
+    "message": "$1 trường trong $2"
+  },
+  "privacyDocFile": {
+    "message": "tập tin"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 trường quyền riêng tư trong $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Tài liệu bảo mật: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Không có tài liệu bảo mật nào được nhập cho dự án đang hoạt động."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Nhập hoặc nhập lại dự án trong các tùy chọn StorePilot để tải tài liệu về quyền riêng tư."
+  },
+  "fillSinglePurpose": {
+    "message": "Điền vào mục đích duy nhất"
+  },
+  "fillPrivacy": {
+    "message": "Điền vào quyền riêng tư"
+  },
+  "privacyNoValueForField": {
+    "message": "Không có giá trị tài liệu về quyền riêng tư cho $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Không thể tìm thấy trường quyền riêng tư: $1."
+  },
+  "privacyFilledField": {
+    "message": "Trường quyền riêng tư đã được điền: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Đã điền $1 trường quyền riêng tư: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Không thể tìm thấy: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Không có trường quyền riêng tư được hỗ trợ nào có sẵn để điền vào."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Các hành động về quyền riêng tư chỉ khả dụng trên trang Quyền riêng tư."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Đã tìm thấy $1 ứng cử viên về quyền riêng tư có thể chỉnh sửa."
+  },
+  "status": {
+    "message": "Trạng thái"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Ứng viên"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Đã quét: $1; trùng khớp: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Nhập lại thư mục dự án để quét tài liệu về quyền riêng tư."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Chưa được quét"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Chẩn đoán"
   },
   "project": {
     "message": "Dự án"
@@ -60,16 +159,49 @@
     "message": "Ngôn ngữ"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Điền ngôn ngữ hiện tại"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Điền vào tất cả các ngôn ngữ"
+  },
+  "uploadStoreIcon": {
+    "message": "Tải lên biểu tượng cửa hàng"
+  },
+  "uploadMedia": {
+    "message": "Tải lên phương tiện"
+  },
+  "uploadScreenshots": {
+    "message": "Tải ảnh chụp màn hình lên"
+  },
+  "uploadSmallPromo": {
+    "message": "Tải lên quảng cáo nhỏ"
+  },
+  "uploadMarqueePromo": {
+    "message": "Tải lên quảng cáo marquee"
+  },
+  "clearScreenshots": {
+    "message": "Xóa ảnh chụp màn hình"
+  },
+  "clearStoreIcon": {
+    "message": "Xóa biểu tượng cửa hàng"
+  },
+  "clearSmallPromo": {
+    "message": "Xóa quảng cáo nhỏ"
+  },
+  "clearMarqueePromo": {
+    "message": "Quảng cáo vùng chọn rõ ràng"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Hủy bỏ điền tất cả"
+  },
+  "abortOperation": {
+    "message": "Hủy bỏ hoạt động"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Trang chẩn đoán"
+  },
+  "openPanel": {
+    "message": "Mở bảng điều khiển"
   },
   "options": {
     "message": "Tùy chọn"
@@ -78,330 +210,453 @@
     "message": "Tiếng Việt"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Điền ngôn ngữ hiện tại"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Điền vào tất cả các ngôn ngữ"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Hủy bỏ điền tất cả"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Nhập danh sách trong tùy chọn StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "không bao giờ"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Dự án này đã được nhập từ trình chọn tệp trình duyệt. Nhập lại thư mục dự án để làm mới nó."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Cập nhật lần cuối vào $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 ngôn ngữ đã được nhập"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Không có dự án đang hoạt động"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(trống)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 ký tự"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 dự án"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Không có dự án nào"
+  },
+  "yes": {
+    "message": "vâng"
+  },
+  "no": {
+    "message": "không"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Dự án đã chọn"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Nguồn: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Không có thư mục nguồn"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Phát hiện: độ tin cậy $1"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Làm mới: nhập lại thư mục"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Đã cập nhật: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 ngôn ngữ"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Không có tệp danh sách ngôn ngữ nào được chọn."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Đã nhập $1; đã bỏ qua $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Đã bỏ qua: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Không tìm thấy thư mục danh sách ngôn ngữ nào trong thư mục đã chọn."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Đã nhập $1 vào $2 từ $3 (độ tin cậy $4); đã bỏ qua $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Đã tìm thấy $1 thư mục ứng viên."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 ảnh chụp màn hình, biểu tượng: $2, quảng cáo nhỏ: $3, quảng cáo marquee: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Không tìm thấy nội dung phương tiện lưu trữ nào."
+  },
+  "mediaUploadedKind": {
+    "message": "Đã tải lên $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Đã xóa $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 đã rõ ràng rồi."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 đã có mặt hoặc đang xử lý."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Không có ảnh chụp màn hình để xóa."
+  },
+  "screenshotsLimitReached": {
+    "message": "ảnh chụp màn hình: CWS đã đạt tới giới hạn $1"
+  },
+  "storeIcon": {
+    "message": "Biểu tượng cửa hàng"
+  },
+  "minimizePanel": {
+    "message": "Thu nhỏ bảng điều khiển"
+  },
+  "maximizePanel": {
+    "message": "Bảng phóng to"
+  },
+  "closePanel": {
+    "message": "Đóng bảng điều khiển"
+  },
+  "panelOpened": {
+    "message": "Đã mở bảng điều khiển."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Danh sách và tác vụ đa phương tiện chỉ khả dụng trên trang Danh sách cửa hàng."
+  },
+  "clearingMedia": {
+    "message": "Đang xóa phương tiện..."
+  },
+  "mediaClearFailed": {
+    "message": "Xóa phương tiện không thành công: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Hoạt động đa phương tiện đang chạy: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Hoạt động truyền thông đang được tiến hành."
+  },
+  "noOperationRunning": {
+    "message": "Không có hoạt động nào đang chạy."
+  },
+  "operationStopped": {
+    "message": "Đã dừng lại."
+  },
+  "missing": {
+    "message": "Thiếu"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Nhập lại thư mục dự án để quét nội dung phương tiện."
+  },
+  "screenshotNumber": {
+    "message": "Ảnh chụp màn hình $1"
+  },
+  "smallPromoTile": {
+    "message": "Ngói quảng cáo nhỏ"
+  },
+  "marqueePromoTile": {
+    "message": "Ô quảng cáo Marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "Ứng viên"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Biểu tượng: $1; ảnh chụp màn hình: $2; khuyến mãi nhỏ: $3; quảng cáo marquee: $4."
+  },
+  "uploadingMedia": {
+    "message": "Đang tải lên phương tiện..."
+  },
+  "mediaUploaded": {
+    "message": "Phương tiện đã tải lên: $1."
+  },
+  "mediaSkipped": {
+    "message": "Đã bỏ qua: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Không thành công: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Tải lên phương tiện không thành công: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Đã hủy nhập thư mục."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Nhập thư mục không thành công: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "tập tin đã chọn"
   },
   "manual": {
-    "message": "manual"
+    "message": "hướng dẫn sử dụng"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Nhập không thành công: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Xóa dự án StorePilot \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Đã xóa $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Xóa danh sách cho \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Đã xóa danh sách cho $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 liệt kê (các) ngôn ngữ trong $2. Cập nhật lần cuối vào $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Chưa có dự án nào"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Không có văn bản danh sách nào được chọn để sao chép."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Đã sao chép $1 từ $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Đã nhập $1 vào $2 (độ tin cậy $3)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Không có tab hoạt động."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Tab đang hoạt động không phải là trang Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot không thể kết nối với tab trang tổng quan này. Mở Chẩn đoán để biết lỗi chính xác."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Chẩn đoán hoàn tất."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Chẩn đoán không thành công."
   },
   "done": {
-    "message": "Done."
+    "message": "Xong."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Không thành công."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Không tìm thấy tập tin danh sách miền địa phương."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Đã nhập $1 vào $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Dự án đã chọn."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Điền vào tất cả các ngôn ngữ..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Dừng yêu cầu."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Điền vào tất cả không chạy."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Không thể ngừng lấp đầy tất cả."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Chẩn đoán không thành công: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Dự án không được tìm thấy."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Nhập lại thư mục dự án để StorePilot có thể lưu trữ các tệp phương tiện để tải lên."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Cần có sự cho phép của thư mục trước khi đọc các tập tin media."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Không có địa chỉ thư mục nào được lưu."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Không có danh sách nào được chọn."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Đã sao chép $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Không tìm thấy trường có thể chỉnh sửa được."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Đã điền $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Không thể tìm thấy danh sách thả xuống ngôn ngữ Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Không thể tìm thấy $1 trong menu ngôn ngữ của trang tổng quan."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Đã nhấp vào $1 nhưng trang tổng quan vẫn hiển thị $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "một địa phương không xác định"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Không có văn bản liệt kê cho $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Không thể tìm thấy trường mô tả Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Không thể phát hiện ngôn ngữ trang tổng quan hiện tại."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Đã dừng lại. Đã điền $1 ngôn ngữ trang tổng quan."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Không có danh sách dự án nào được nhập."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Không có ngôn ngữ đã nhập nào khớp với menu ngôn ngữ của trang tổng quan."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Đã dừng lại. Đã điền $1 ngôn ngữ trang tổng quan; vẫn đang chờ xử lý: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Đã khôi phục $1 sau khi thử lại."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Đã thử lại $1; không ai phục hồi được."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Đã điền $1 ngôn ngữ trang tổng quan; thất bại $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Đã điền $1 ngôn ngữ trang tổng quan."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Đã nhập $1; (các) ngôn ngữ của trang tổng quan $2 phù hợp."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Đã nhập $1; (các) ngôn ngữ của trang tổng quan $2 phù hợp; (các) ngôn ngữ được nhập chưa từng có: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store không cung cấp (các) ngôn ngữ không được hỗ trợ: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Trang tổng quan không cung cấp (các) ngôn ngữ đã nhập được hỗ trợ: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Đã yêu cầu hủy bỏ. StorePilot sẽ dừng sau bước bảng điều khiển hiện tại."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Chẩn đoán trang tổng quan đã được thông qua."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Chẩn đoán trang tổng quan đã tìm thấy các thành phần trang bị thiếu."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Điền vào tất cả đã chạy."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Điền tất cả dừng lại."
   },
   "filling": {
-    "message": "Filling"
+    "message": "điền"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Đang thử lại"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Mở tùy chọn StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Đang mở nhập dự án..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Không xác định"
+  },
+  "alphaChannel": {
+    "message": "alpha"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Dự án không có tiêu đề"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Dự án đã nhập"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Nhập thủ công"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Danh sách đã nhập"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Nhập tập tin thủ công"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Đã chọn $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 ngôn ngữ trong $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "đã kết nối"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "đã thành công"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "cao"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "trung bình"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "thấp"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Tùy chọn"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Cập nhật lần cuối vào Không bao giờ."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Không có danh sách nào được nhập"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Đang tải danh sách..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot sẽ yêu cầu xác nhận trước khi đọc thư mục dự án đã chọn. Lời nhắc đó được mong đợi."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Quá trình nhập thư mục được xử lý trong tab tùy chọn, nơi lời nhắc xác nhận thư mục có thể hoàn tất một cách đáng tin cậy."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Chọn thư mục gốc của dự án, thư mục danh sách cửa hàng hoặc thư mục danh sách trực tiếp. StorePilot sẽ yêu cầu bạn xác nhận quyền truy cập thư mục."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Trường quyền riêng tư bị bỏ qua: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Đã bỏ qua (các) trường quyền riêng tư $1: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Trường bảo mật không chấp nhận giá trị: $1."
   }
 }

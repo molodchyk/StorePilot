@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS автопопълване"
   },
   "extensionDescription": {
-    "message": "Автоматизира повтарящата се работа по публикуване на разширения за браузър."
+    "message": "Автоматично попълва полета на Chrome Web Store, локализирани описания, снимки и формуляри за поверителност от локални файлове."
   },
   "optionsSubtitle": {
     "message": "Импортирайте файлове за локализирани описания и ги използвайте в таблата на магазините за разширения."
@@ -33,22 +33,121 @@
     "message": "Импортиране на проект/папка"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Изберете корен на проект, папка за списък в магазина или папка за директен списък."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot търси файлове със списъци с име на локал, като напр"
   },
   "or": {
     "message": "или"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Можете също така да плъзнете директно файлове със списък на локали в този панел."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Референтен документ за автоматизиране на поверителността"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot може да сканира един проектен документ за Chrome Web Store полета за поверителност. Използвайте тези канонични ключове, така че скенерът да може да маршрутизира текст без да предполага."
+  },
+  "privacyDocPermissionRule": {
+    "message": "За обосновки на разрешения използвайте permission.<manifest permission code>. Суфиксът трябва да съответства на кода във вашите разрешения за манифест, optional_permissions, host_permissions или content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Препоръчителни имена на файлове: docs/chrome-web-store-privacy-form.md или STORE_JUSTIFICATIONS.md. StorePilot приема и други.md или.txt файлове, когато съдържанието съдържа [privacy] блок, канонични ключове или разпознаваеми заглавия за оправдаване на магазина."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Основни ключове"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Общи ключове за разрешение"
+  },
+  "privacyDocFutureProof": {
+    "message": "Ако дадено разрешение не е посочено тук, все пак използвайте същия модел, например permission.bookmarks или permission.system.display. StorePilot трябва да третира самия код на манифеста като източник на истина."
   },
   "projects": {
     "message": "Проекти"
   },
   "importedListings": {
     "message": "Импортирани описания"
+  },
+  "storeMediaAssets": {
+    "message": "Съхранявайте медийни активи"
+  },
+  "privacyDocument": {
+    "message": "Документ за поверителност"
+  },
+  "privacyDocNotScanned": {
+    "message": "Не е сканиран"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Не е намерен използваем документ за поверителност ($1 кандидат(и) са сканирани)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Не е намерен използваем документ за поверителност."
+  },
+  "privacyDocSummary": {
+    "message": "$1 поле(я) в $2"
+  },
+  "privacyDocFile": {
+    "message": "Файл"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 поле(я) за поверителност в $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Документ за поверителност: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Няма импортиран документ за поверителност за активния проект."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Импортирайте или повторно импортирайте проекта в опциите StorePilot, за да заредите документ за поверителност."
+  },
+  "fillSinglePurpose": {
+    "message": "Попълнете единична цел"
+  },
+  "fillPrivacy": {
+    "message": "Попълнете поверителност"
+  },
+  "privacyNoValueForField": {
+    "message": "Няма стойност на документ за поверителност за $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Не може да се намери поле за поверителност: $1."
+  },
+  "privacyFilledField": {
+    "message": "Попълнено поле за поверителност: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Попълнени $1 поле(я) за поверителност: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Не може да се намери: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Не бяха налични поддържани полета за поверителност за попълване."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Действията за поверителност са достъпни само на страницата за поверителност."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Намерени са $1 редактируеми кандидати за поверителност."
+  },
+  "status": {
+    "message": "Статус"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "кандидати"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Сканирано: $1; съвпадение: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Повторно импортирайте папката на проекта, за да сканирате документа за поверителност."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Не е сканиран"
   },
   "diagnostics": {
     "message": "Диагностика"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Попълни всички езици"
   },
+  "uploadStoreIcon": {
+    "message": "Икона на магазин за качване"
+  },
+  "uploadMedia": {
+    "message": "Качване на медия"
+  },
+  "uploadScreenshots": {
+    "message": "Качете екранни снимки"
+  },
+  "uploadSmallPromo": {
+    "message": "Качете малка промоция"
+  },
+  "uploadMarqueePromo": {
+    "message": "Качване на промоция за маркиране"
+  },
+  "clearScreenshots": {
+    "message": "Изчистване на екранни снимки"
+  },
+  "clearStoreIcon": {
+    "message": "Изчистване на иконата на магазина"
+  },
+  "clearSmallPromo": {
+    "message": "Изчистване на малка промоция"
+  },
+  "clearMarqueePromo": {
+    "message": "Изчистете промоцията на маркирането"
+  },
   "abortFillAll": {
     "message": "Прекъсни попълването"
   },
+  "abortOperation": {
+    "message": "Прекъсване на операцията"
+  },
   "diagnosePage": {
     "message": "Диагностика на страницата"
+  },
+  "openPanel": {
+    "message": "Отворен панел"
   },
   "options": {
     "message": "Опции"
@@ -90,318 +222,441 @@
     "message": "Импортирайте описания в опциите на StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Никога"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Този проект е импортиран от програма за избор на файлове на браузъра. Повторно импортирайте папката на проекта, за да я опресните."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Последна актуализация на $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 локал(и) е импортиран"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Няма активен проект"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(празен)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 знака"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 проект(а)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Без проекти"
+  },
+  "yes": {
+    "message": "да"
+  },
+  "no": {
+    "message": "не"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Избран проект"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Източник: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Няма изходна папка"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Откриване: $1 увереност"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Обновяване: повторно импортиране на папка"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Актуализирано: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 локали"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Не са избрани файлове със списък на локали."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Импортиран $1; пропусна $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Пропуснати: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "В избраната папка не е намерена папка със списък на локали."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Импортиран $1 в $2 от $3 ($4 увереност); пропуснато $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Намерени са $1 кандидат папки."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 екранна(и) снимка(и), икона: $2, малка промоция: $3, промоция с маркировка: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Няма намерени медийни активи на магазина."
+  },
+  "mediaUploadedKind": {
+    "message": "Качен $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Изчистено $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 вече е ясно."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 вече присъства или се обработва."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Няма екранни снимки за изчистване."
+  },
+  "screenshotsLimitReached": {
+    "message": "екранни снимки: CWS ограничението от $1 вече е достигнато"
+  },
+  "storeIcon": {
+    "message": "Икона на магазин"
+  },
+  "minimizePanel": {
+    "message": "Минимизиране на панела"
+  },
+  "maximizePanel": {
+    "message": "Увеличете панела"
+  },
+  "closePanel": {
+    "message": "Затваряне на панела"
+  },
+  "panelOpened": {
+    "message": "Панелът е отворен."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Списъкът и медийните действия са достъпни само на страницата за списък в магазина."
+  },
+  "clearingMedia": {
+    "message": "Медиите се изчистват..."
+  },
+  "mediaClearFailed": {
+    "message": "Неуспешно изчистване на мултимедия: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Медийната операция вече се изпълнява: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Медийната операция е в ход."
+  },
+  "noOperationRunning": {
+    "message": "Не се изпълнява операция."
+  },
+  "operationStopped": {
+    "message": "Спряно."
+  },
+  "missing": {
+    "message": "Липсва"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Повторно импортирайте папката на проекта, за да сканирате медийни активи."
+  },
+  "screenshotNumber": {
+    "message": "Екранна снимка $1"
+  },
+  "smallPromoTile": {
+    "message": "Малка рекламна плочка"
+  },
+  "marqueePromoTile": {
+    "message": "Промоционална плочка Marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "кандидати"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Икона: $1; екранни снимки: $2; малка промоция: $3; промоция на шатра: $4."
+  },
+  "uploadingMedia": {
+    "message": "Качване на мултимедия..."
+  },
+  "mediaUploaded": {
+    "message": "Качена медия: $1."
+  },
+  "mediaSkipped": {
+    "message": "Пропуснати: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Неуспешно: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Неуспешно качване на медия: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Импортирането на папка е отменено."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Неуспешно импортиране на папка: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "избрани файлове"
   },
   "manual": {
-    "message": "manual"
+    "message": "ръководство"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Неуспешно импортиране: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Изтриване на StorePilot проект „$1“?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Изтрит $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Изчистване на списъците за „$1“?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Изчистени обяви за $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 изброява локал(и) в $2. Последна актуализация на $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Все още няма проекти"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Няма избран текст за копиране."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Копирано $1 от $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Импортиран $1 в $2 ($3 увереност)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Няма активен раздел."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Активният раздел не е страница Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot не можа да се свърже с този раздел на таблото за управление. Отворете Diagnostics за точната грешка."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Диагностиката е завършена."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Диагностиката е неуспешна."
   },
   "done": {
-    "message": "Done."
+    "message": "Готово."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Неуспешно."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Не бяха намерени файлове със списък на локали."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Импортиран $1 в $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Избран проект."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Попълване на всички езици..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Поискано спиране."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Попълнете всичко не работи."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Не може да се спре запълването на всички."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Неуспешна диагностика: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Проектът не е намерен."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Повторно импортирайте папката на проекта, така че StorePilot да може да съхранява медийните файлове за качване."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Преди четене на медийни файлове е необходимо разрешение за папка."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Няма запазен манипулатор на папка."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Няма избрана обява."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Копирано $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Не е намерено видимо поле за редактиране."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Попълнено $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Не можах да намеря падащото меню за език Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Не можах да намеря $1 в езиковото меню на таблото."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Щракна върху $1, но таблото все още показва $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "неизвестен локал"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Няма текст за списък за $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Не може да се намери полето за описание Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Не можа да се открие текущият език на таблото."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Спряно. Попълнен $1 език(а) на таблото за управление."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Няма импортирани списъци с проекти."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Няма импортирани локали, които да съответстват на езиковото меню на таблото."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Спряно. Попълнени $1 език(ове) на таблото за управление; все още чака: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Възстановено $1 след повторен опит."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Повторен опит $1; няма възстановени."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Попълнени $1 език(ове) на таблото за управление; неуспешно $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Попълнен $1 език(а) на таблото за управление."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Импортиран $1; съответства на $2 език(а) на таблото за управление."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Импортиран $1; съответства на $2 език(а) на таблото за управление; несрещнати импортирани локали: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store не предложи неподдържан локал(и): $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Таблото за управление не предлага поддържани импортирани локали: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Поискано прекъсване. StorePilot ще спре след текущата стъпка на таблото."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Диагностиката на таблото премина."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Диагностиката на таблото за управление откри липсващи елементи на страницата."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Попълнете всичко вече работи."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Попълнете всички спряни."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Пълнеж"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Повторен опит"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Отворете опциите StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Отваряне на импортиране на проект..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "неизвестен"
+  },
+  "alphaChannel": {
+    "message": "алфа"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Проект без заглавие"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Импортиран проект"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Ръчен импорт"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Импортирани обяви"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Ръчно импортиране на файлове"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Избрано $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 локали в $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "вече е свързан"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "успя"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "високо"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "среден"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "ниско"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Опции"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Последна актуализация на Никога."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Няма импортирани обяви"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Зареждат се обяви..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot ще поиска потвърждение, преди да прочете избраната папка на проекта. Тази подкана се очаква."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Импортирането на папка се обработва в раздела с опции, където подканата за потвърждение на папката може да завърши надеждно."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Изберете корен на проект, папка за списък в магазина или папка за директен списък. StorePilot ще ви помоли да потвърдите достъпа до папката."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Пропуснато поле за поверителност: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Пропуснати $1 поле(я) за поверителност: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Полето за поверителност не прие стойност: $1."
   }
 }

@@ -1,0 +1,662 @@
+{
+  "extensionName": {
+    "message": "StorePilot: CWS-autofyll"
+  },
+  "extensionDescription": {
+    "message": "Autofyll Chrome Web Store-felt, lokaliserte beskrivelser, skjermbilder og personvernskjemaer fra lokale filer."
+  },
+  "optionsSubtitle": {
+    "message": "Importer flate lokalitetsoppføringsfiler og bruk dem i utvidelsesbutikkdashbord."
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeSystem": {
+    "message": "System"
+  },
+  "themeLight": {
+    "message": "Lys"
+  },
+  "themeDark": {
+    "message": "Mørkt"
+  },
+  "clear": {
+    "message": "Klart"
+  },
+  "activeProject": {
+    "message": "Aktivt prosjekt"
+  },
+  "deleteProject": {
+    "message": "Slett prosjekt"
+  },
+  "importProjectFolder": {
+    "message": "Importer prosjekt/mappe"
+  },
+  "importHintFlexible": {
+    "message": "Velg en prosjektrot, en butikkoppføringsmappe eller en direktelistemappe."
+  },
+  "importHintLocaleFiles": {
+    "message": "StorePilot ser etter lokale navngitte oppføringsfiler som f.eks"
+  },
+  "or": {
+    "message": "eller"
+  },
+  "importHintDrag": {
+    "message": "Du kan også dra direkte lokaliseringsfiler til dette panelet."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Dokumentreferanse for personvernautomatisering"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot kan skanne ett prosjektdokument for Chrome Web Store personvernfelt. Bruk disse kanoniske tastene slik at skanneren kan rute tekst uten å gjette."
+  },
+  "privacyDocPermissionRule": {
+    "message": "For tillatelsesbegrunnelser, bruk permission.<manifest permission code>. Suffikset skal samsvare med koden i manifesttillatelsene dine, optional_permissions, host_permissions eller content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Anbefalte filnavn: docs/chrome-web-store-privacy-form.md eller STORE_JUSTIFICATIONS.md. StorePilot godtar også andre.md- eller.txt-filer når innholdet inneholder en [privacy]-blokk, kanoniske nøkler eller gjenkjennelige lagringsjusteringsoverskrifter."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Kjernenøkler"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Vanlige tillatelsesnøkler"
+  },
+  "privacyDocFutureProof": {
+    "message": "Hvis en tillatelse ikke er oppført her, bruk det samme mønsteret uansett, for eksempel permission.bookmarks eller permission.system.display. StorePilot bør behandle manifestkoden i seg selv som kilden til sannhet."
+  },
+  "projects": {
+    "message": "Prosjekter"
+  },
+  "importedListings": {
+    "message": "Importerte oppføringer"
+  },
+  "storeMediaAssets": {
+    "message": "Lagre mediemidler"
+  },
+  "privacyDocument": {
+    "message": "Personverndokument"
+  },
+  "privacyDocNotScanned": {
+    "message": "Ikke skannet"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Ingen brukbart personverndokument funnet ($1 kandidat(er) skannet)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Finner ikke noe brukbart personverndokument."
+  },
+  "privacyDocSummary": {
+    "message": "$1 felt(er) i $2"
+  },
+  "privacyDocFile": {
+    "message": "Fil"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 personvernfelt(er) i $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Personverndokument: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Ingen personverndokumenter er importert for det aktive prosjektet."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importer eller re-importer prosjektet i StorePilot alternativer for å laste et personverndokument."
+  },
+  "fillSinglePurpose": {
+    "message": "Fyll ett formål"
+  },
+  "fillPrivacy": {
+    "message": "Fyll personvern"
+  },
+  "privacyNoValueForField": {
+    "message": "Ingen verdi for personverndokument for $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Fant ikke personvernfeltet: $1."
+  },
+  "privacyFilledField": {
+    "message": "Utfylt personvernfelt: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Utfylte $1 personvernfelt(er): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Kunne ikke finne: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Ingen støttede personvernfelt var tilgjengelige å fylle ut."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Personvernhandlinger er bare tilgjengelig på Personvern-siden."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Fant $1 redigerbare personvernkandidat(er)."
+  },
+  "status": {
+    "message": "Status"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidater"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Skannet: $1; matchet: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Importer prosjektmappen på nytt for å skanne personverndokumentet."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Ikke skannet"
+  },
+  "diagnostics": {
+    "message": "Diagnostikk"
+  },
+  "project": {
+    "message": "Prosjekt"
+  },
+  "locale": {
+    "message": "Språk"
+  },
+  "fillCurrentLanguage": {
+    "message": "Fyll ut gjeldende språk"
+  },
+  "fillAllLanguages": {
+    "message": "Fyll ut alle språk"
+  },
+  "uploadStoreIcon": {
+    "message": "Last opp butikkikon"
+  },
+  "uploadMedia": {
+    "message": "Last opp media"
+  },
+  "uploadScreenshots": {
+    "message": "Last opp skjermbilder"
+  },
+  "uploadSmallPromo": {
+    "message": "Last opp liten promo"
+  },
+  "uploadMarqueePromo": {
+    "message": "Last opp markeringskampanje"
+  },
+  "clearScreenshots": {
+    "message": "Tydelige skjermbilder"
+  },
+  "clearStoreIcon": {
+    "message": "Fjern butikkikon"
+  },
+  "clearSmallPromo": {
+    "message": "Tydelig liten promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Tydelig markeringskampanje"
+  },
+  "abortFillAll": {
+    "message": "Avbryt fyll alle"
+  },
+  "abortOperation": {
+    "message": "Avbryt operasjonen"
+  },
+  "diagnosePage": {
+    "message": "Diagnoseside"
+  },
+  "openPanel": {
+    "message": "Åpne panel"
+  },
+  "options": {
+    "message": "Alternativer"
+  },
+  "localeName": {
+    "message": "Norsk Bokmål"
+  },
+  "fillCurrent": {
+    "message": "Fyll ut gjeldende språk"
+  },
+  "fillAll": {
+    "message": "Fyll ut alle språk"
+  },
+  "abort": {
+    "message": "Avbryt fyll alle"
+  },
+  "importListingsInOptions": {
+    "message": "Importer oppføringer i alternativer for StorePilot"
+  },
+  "never": {
+    "message": "Aldri"
+  },
+  "reimportFolderToRefresh": {
+    "message": "Dette prosjektet ble importert fra en filvelger i nettleseren. Importer prosjektmappen på nytt for å oppdatere den."
+  },
+  "lastUpdatedOn": {
+    "message": "Sist oppdatert $1."
+  },
+  "projectLocalesImported": {
+    "message": "$1: $2 lokalitet(er) importert"
+  },
+  "noActiveProject": {
+    "message": "Ikke noe aktivt prosjekt"
+  },
+  "emptyValue": {
+    "message": "(tom)"
+  },
+  "charCount": {
+    "message": "$1 tegn"
+  },
+  "projectCount": {
+    "message": "$1 prosjekt(er)"
+  },
+  "noProjects": {
+    "message": "Ingen prosjekter"
+  },
+  "yes": {
+    "message": "ja"
+  },
+  "no": {
+    "message": "nei"
+  },
+  "selectedProject": {
+    "message": "Valgt prosjekt"
+  },
+  "sourceLabel": {
+    "message": "Kilde: $1"
+  },
+  "noSourceFolder": {
+    "message": "Ingen kildemappe"
+  },
+  "detectionConfidence": {
+    "message": "Deteksjon: $1 konfidens"
+  },
+  "refreshReimportFolder": {
+    "message": "Oppdater: re-importer mappe"
+  },
+  "updatedLabel": {
+    "message": "Oppdatert: $1"
+  },
+  "localesCount": {
+    "message": "$1 lokaliteter"
+  },
+  "noLocaleListingFilesSelected": {
+    "message": "Ingen lokalitetsoppføringsfiler ble valgt."
+  },
+  "importedSkipped": {
+    "message": "Importert $1; hoppet over $2."
+  },
+  "skippedList": {
+    "message": "Hoppet over: $1"
+  },
+  "noLocaleListingFolderFound": {
+    "message": "Ingen lokalitetsmappe ble funnet i den valgte mappen."
+  },
+  "importedIntoFrom": {
+    "message": "Importerte $1 til $2 fra $3 ($4 konfidens); hoppet over $5."
+  },
+  "foundCandidateFolders": {
+    "message": "Fant $1 kandidatmapper."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 skjermdump(er), ikon: $2, liten kampanje: $3, markeringskampanje: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Fant ingen butikkmedieelementer."
+  },
+  "mediaUploadedKind": {
+    "message": "Lastet opp $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Fjernet $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 er allerede fjernet."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 er allerede til stede eller behandles."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Ingen skjermbilder å fjerne."
+  },
+  "screenshotsLimitReached": {
+    "message": "skjermbilder: CWS grensen på $1 allerede nådd"
+  },
+  "storeIcon": {
+    "message": "Butikkikon"
+  },
+  "minimizePanel": {
+    "message": "Minimer panelet"
+  },
+  "maximizePanel": {
+    "message": "Maksimer panelet"
+  },
+  "closePanel": {
+    "message": "Lukk panelet"
+  },
+  "panelOpened": {
+    "message": "Panelet åpnet."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Oppføring og mediehandlinger er bare tilgjengelige på Butikkoppføringssiden."
+  },
+  "clearingMedia": {
+    "message": "Sletter media..."
+  },
+  "mediaClearFailed": {
+    "message": "Mediasletting mislyktes: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Medieoperasjon kjører allerede: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Medieoperasjon pågår."
+  },
+  "noOperationRunning": {
+    "message": "Ingen operasjon kjører."
+  },
+  "operationStopped": {
+    "message": "Stoppet."
+  },
+  "missing": {
+    "message": "Mangler"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Importer prosjektmappen på nytt for å skanne medieressurser."
+  },
+  "screenshotNumber": {
+    "message": "Skjermbilde $1"
+  },
+  "smallPromoTile": {
+    "message": "Liten kampanjebrikke"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee promo flis"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidater"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikon: $1; skjermbilder: $2; liten kampanje: $3; markeringskampanje: $4."
+  },
+  "uploadingMedia": {
+    "message": "Laster opp media..."
+  },
+  "mediaUploaded": {
+    "message": "Opplastede medier: $1."
+  },
+  "mediaSkipped": {
+    "message": "Hoppet over: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Mislyktes: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Medieopplasting mislyktes: $1"
+  },
+  "folderImportCanceled": {
+    "message": "Mappeimport avbrutt."
+  },
+  "folderImportFailed": {
+    "message": "Mappeimport mislyktes: $1"
+  },
+  "selectedFiles": {
+    "message": "valgte filer"
+  },
+  "manual": {
+    "message": "manuell"
+  },
+  "importFailed": {
+    "message": "Import mislyktes: $1"
+  },
+  "deleteProjectConfirm": {
+    "message": "Vil du slette StorePilot-prosjektet \"$1\"?"
+  },
+  "deletedProject": {
+    "message": "Slettet $1."
+  },
+  "clearListingsConfirm": {
+    "message": "Vil du slette oppføringer for \"$1\"?"
+  },
+  "clearedListingsFor": {
+    "message": "Fjernede oppføringer for $1."
+  },
+  "popupSummary": {
+    "message": "$1 viser lokal(er) i $2. Sist oppdatert $3."
+  },
+  "noProjectsYet": {
+    "message": "Ingen prosjekter ennå"
+  },
+  "noListingTextSelected": {
+    "message": "Ingen oppføringstekst er valgt å kopiere."
+  },
+  "copiedLocaleFromProject": {
+    "message": "Kopiert $1 fra $2."
+  },
+  "importedIntoConfidence": {
+    "message": "Importerte $1 til $2 ($3 konfidens)."
+  },
+  "noActiveTab": {
+    "message": "Ingen aktiv fane."
+  },
+  "notDashboardPage": {
+    "message": "Den aktive fanen er ikke en Chrome Web Store Developer Dashboard side."
+  },
+  "couldNotConnectDashboard": {
+    "message": "StorePilot kunne ikke koble til denne dashbordfanen. Åpne Diagnostikk for den nøyaktige feilen."
+  },
+  "diagnosticsComplete": {
+    "message": "Diagnostikk fullført."
+  },
+  "diagnosticsFailed": {
+    "message": "Diagnostikk mislyktes."
+  },
+  "done": {
+    "message": "Ferdig."
+  },
+  "failed": {
+    "message": "Mislyktes."
+  },
+  "noLocaleListingFilesFound": {
+    "message": "Ingen lokalitetsoppføringsfiler ble funnet."
+  },
+  "importedInto": {
+    "message": "Importerte $1 til $2."
+  },
+  "projectSelected": {
+    "message": "Prosjekt valgt."
+  },
+  "fillingAllLanguages": {
+    "message": "Fyller alle språk..."
+  },
+  "stopRequested": {
+    "message": "Stopp forespurt."
+  },
+  "fillAllNotRunning": {
+    "message": "Fyll alt kjører ikke."
+  },
+  "couldNotStopFillAll": {
+    "message": "Kunne ikke stoppe å fylle alt."
+  },
+  "diagnosticsFailedWithError": {
+    "message": "Diagnostikk mislyktes: $1"
+  },
+  "projectNotFound": {
+    "message": "Finner ikke prosjektet."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Importer prosjektmappen på nytt slik at StorePilot kan lagre mediefilene for opplasting."
+  },
+  "folderPermissionNeeded": {
+    "message": "Mappetillatelse er nødvendig før du kan lese mediefiler."
+  },
+  "noFolderHandleSaved": {
+    "message": "Ingen mappehåndtak lagret."
+  },
+  "noListingSelected": {
+    "message": "Ingen oppføring er valgt."
+  },
+  "copiedLocale": {
+    "message": "Kopiert $1."
+  },
+  "noVisibleEditableField": {
+    "message": "Fant ikke noe synlig redigerbart felt."
+  },
+  "filledLocale": {
+    "message": "Fyllte $1."
+  },
+  "languageDropdownNotFound": {
+    "message": "Kunne ikke finne rullegardinmenyen Chrome Web Store språk."
+  },
+  "localeNotInDashboardMenu": {
+    "message": "Kunne ikke finne $1 i dashbordets språkmeny."
+  },
+  "clickedButDashboardShows": {
+    "message": "Klikket $1, men dashbordet viser fortsatt $2."
+  },
+  "unknownLocale": {
+    "message": "et ukjent sted"
+  },
+  "noListingTextFor": {
+    "message": "Ingen oppføringstekst for $1."
+  },
+  "descriptionFieldNotFound": {
+    "message": "Kunne ikke finne beskrivelsesfeltet Chrome Web Store."
+  },
+  "currentDashboardLanguageNotDetected": {
+    "message": "Kunne ikke finne gjeldende dashbordspråk."
+  },
+  "stoppedFilledLanguages": {
+    "message": "Stoppet. Utfylte $1 dashbordspråk."
+  },
+  "noProjectListingsImported": {
+    "message": "Ingen prosjektoppføringer importert."
+  },
+  "noImportedLocalesMatchMenu": {
+    "message": "Ingen importerte lokaliteter samsvarer med språkmenyen på dashbordet."
+  },
+  "stoppedFilledLanguagesPending": {
+    "message": "Stoppet. Utfylt $1 dashbordspråk; venter fortsatt: $2."
+  },
+  "recoveredAfterRetry": {
+    "message": "Gjenopprettet $1 etter nytt forsøk."
+  },
+  "retriedNoneRecovered": {
+    "message": "Prøvde på nytt $1; ingen gjenopprettet."
+  },
+  "filledLanguagesFailed": {
+    "message": "Utfylt $1 dashbordspråk; mislyktes $2: $3."
+  },
+  "filledLanguages": {
+    "message": "Utfylte $1 dashbordspråk."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importert $1; samsvarte med $2 dashbordspråk."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importert $1; matchet $2 dashbordspråk; umatchede importerte lokaliteter: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store tilbød ikke ustøttede lokalitet(er): $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Dashboard tilbød ikke støttede importerte lokaliteter: $1."
+  },
+  "abortRequestedStopAfterStep": {
+    "message": "Avbryt forespurt. StorePilot vil stoppe etter det gjeldende dashboard-trinnet."
+  },
+  "dashboardDiagnosticsPassed": {
+    "message": "Dashboarddiagnostikk bestått."
+  },
+  "dashboardDiagnosticsMissingElements": {
+    "message": "Dashboarddiagnostikk fant manglende sideelementer."
+  },
+  "fillAllAlreadyRunning": {
+    "message": "Fyll alt kjører allerede."
+  },
+  "fillAllStopped": {
+    "message": "Fyll alle stoppet."
+  },
+  "filling": {
+    "message": "Fylling"
+  },
+  "retrying": {
+    "message": "Prøver på nytt"
+  },
+  "openProjectImport": {
+    "message": "Administrer prosjektimport"
+  },
+  "openStorePilotOptions": {
+    "message": "Åpne alternativer for StorePilot"
+  },
+  "openingProjectImport": {
+    "message": "Åpner prosjektimport..."
+  },
+  "unknown": {
+    "message": "Ukjent"
+  },
+  "alphaChannel": {
+    "message": "alfa"
+  },
+  "untitledProject": {
+    "message": "Uten tittel prosjekt"
+  },
+  "importedProject": {
+    "message": "Importert prosjekt"
+  },
+  "manualImport": {
+    "message": "Manuell import"
+  },
+  "importedListingsProject": {
+    "message": "Importerte oppføringer"
+  },
+  "manualFileImport": {
+    "message": "Manuell filimport"
+  },
+  "selectedDashboardLanguage": {
+    "message": "Valgt $1."
+  },
+  "miniPanelLocalesInProject": {
+    "message": "$1 lokaliteter i $2"
+  },
+  "contentScriptAlreadyConnected": {
+    "message": "allerede tilkoblet"
+  },
+  "injectionSucceeded": {
+    "message": "lyktes"
+  },
+  "confidenceHigh": {
+    "message": "høy"
+  },
+  "confidenceMedium": {
+    "message": "medium"
+  },
+  "confidenceLow": {
+    "message": "lav"
+  },
+  "optionsTitle": {
+    "message": "StorePilot Alternativer"
+  },
+  "lastUpdatedInitial": {
+    "message": "Sist oppdatert på Aldri."
+  },
+  "noListingsImported": {
+    "message": "Ingen oppføringer importert"
+  },
+  "loadingListings": {
+    "message": "Laster oppføringer..."
+  },
+  "folderAccessPrompt": {
+    "message": "StorePilot vil be om bekreftelse før du leser den valgte prosjektmappen. Den oppfordringen er forventet."
+  },
+  "folderImportHandledInOptions": {
+    "message": "Mappeimport håndteres i fanen Alternativer, hvor mappebekreftelsen kan fullføres pålitelig."
+  },
+  "folderImportHintFlexible": {
+    "message": "Velg en prosjektrot, en butikkoppføringsmappe eller en direktelistemappe. StorePilot vil be deg om å bekrefte mappetilgang."
+  },
+  "privacySkippedField": {
+    "message": "Hoppet over personvernfelt: $1."
+  },
+  "privacySkippedFields": {
+    "message": "Hoppet over $1 personvernfelt(er): $2."
+  },
+  "privacyFieldDidNotAcceptValue": {
+    "message": "Personvernfeltet godtok ikke verdien: $1."
+  }
+}

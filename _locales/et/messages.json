@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS automaattäide"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Täidab kohalikest failidest automaatselt Chrome Web Store'i väljad, tõlgitud kirjeldused, kuvatõmmised ja privaatsusvormid."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Importige kindlad lokaadiloendi failid ja kasutage neid laienduste poe armatuurlaudadel."
   },
   "theme": {
     "message": "Teema"
@@ -21,37 +21,136 @@
     "message": "Tume"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Selge"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Aktiivne projekt"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Kustuta projekt"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Impordi projekt/kaust"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Valige projekti juur, poe kirje kaust või otsekirje kaust."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot otsib lokaadi nimega loendifaile, näiteks"
   },
   "or": {
     "message": "või"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Sellele paneelile saate lohistada ka lokaadi otseloendi failid."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Privaatsuse automatiseerimise dokumendi viide"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot saab skannida ühte projektidokumenti Chrome Web Store privaatsusvälja jaoks. Kasutage neid kanoonilisi klahve, et skanner saaks teksti ilma arvata."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Lubade põhjenduseks kasutage permission.<manifest permission code>. Järelliide peaks ühtima teie manifesti lubades oleva koodiga optional_permissions, host_permissions või content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Soovitatavad failinimed: docs/chrome-web-store-privacy-form.md või STORE_JUSTIFICATIONS.md. StorePilot aktsepteerib ka muid.md või.txt faile, kui sisu sisaldab plokki [privacy], kanoonilisi võtmeid või äratuntavaid poe õigustuspäiseid."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Põhiklahvid"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Ühised lubade võtmed"
+  },
+  "privacyDocFutureProof": {
+    "message": "Kui luba pole siin loetletud, kasutage sama mustrit, näiteks permission.bookmarks või permission.system.display. StorePilot peaks käsitlema manifesti koodi ennast tõe allikana."
   },
   "projects": {
     "message": "Projektid"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Imporditud nimekirjad"
+  },
+  "storeMediaAssets": {
+    "message": "Meediumivarade hoidmine"
+  },
+  "privacyDocument": {
+    "message": "Privaatsusdokument"
+  },
+  "privacyDocNotScanned": {
+    "message": "Pole skaneeritud"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Kasutatavat privaatsusdokumenti ei leitud ($1 kandidaat(id) on skannitud)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Kasutatavat privaatsusdokumenti ei leitud."
+  },
+  "privacyDocSummary": {
+    "message": "$1 väli(d) $2"
+  },
+  "privacyDocFile": {
+    "message": "Fail"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 privaatsusväli(d) $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Privaatsusdokument: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Aktiivse projekti jaoks ei imporditud ühtegi privaatsusdokumenti."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Privaatsusdokumendi laadimiseks importige või importige projekt uuesti suvandites StorePilot."
+  },
+  "fillSinglePurpose": {
+    "message": "Täitke üks eesmärk"
+  },
+  "fillPrivacy": {
+    "message": "Täida privaatsus"
+  },
+  "privacyNoValueForField": {
+    "message": "Privaatsusdokumendi väärtus puudub $1 jaoks."
+  },
+  "privacyFieldNotFound": {
+    "message": "Privaatsusvälja ei leitud: $1."
+  },
+  "privacyFilledField": {
+    "message": "Täidetud privaatsusväli: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Täidetud $1 privaatsusväli(d): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Ei leitud: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Ühtegi toetatud privaatsusvälju polnud täita."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Privaatsustoimingud on saadaval ainult lehel Privaatsus."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Leiti $1 muudetavat privaatsuskandidaati."
+  },
+  "status": {
+    "message": "Olek"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidaadid"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Skaneeritud: $1; sobitatud: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Privaatsusdokumendi skannimiseks importige projekti kaust uuesti."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Pole skaneeritud"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Diagnostika"
   },
   "project": {
     "message": "Projekt"
@@ -60,16 +159,49 @@
     "message": "Lokaat"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Täida praegune keel"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Täida kõik keeled"
+  },
+  "uploadStoreIcon": {
+    "message": "Laadi poe ikoon"
+  },
+  "uploadMedia": {
+    "message": "Laadige meedia üles"
+  },
+  "uploadScreenshots": {
+    "message": "Laadige üles ekraanipildid"
+  },
+  "uploadSmallPromo": {
+    "message": "Laadige üles väike reklaam"
+  },
+  "uploadMarqueePromo": {
+    "message": "Laadige üles telgi reklaam"
+  },
+  "clearScreenshots": {
+    "message": "Selge ekraanipildid"
+  },
+  "clearStoreIcon": {
+    "message": "Tühjenda poe ikoon"
+  },
+  "clearSmallPromo": {
+    "message": "Selge väike reklaam"
+  },
+  "clearMarqueePromo": {
+    "message": "Selge telgi reklaam"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Katkesta täitke kõik"
+  },
+  "abortOperation": {
+    "message": "Katkestage operatsioon"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Diagnoosimise leht"
+  },
+  "openPanel": {
+    "message": "Ava paneel"
   },
   "options": {
     "message": "Valikud"
@@ -78,330 +210,453 @@
     "message": "Eesti"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Täida praegune keel"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Täida kõik keeled"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Katkesta täitke kõik"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Importige kirjed StorePilot valikutes"
   },
   "never": {
-    "message": "Never"
+    "message": "Mitte kunagi"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "See projekt imporditi brauseri failivalijast. Importige projekti kaust selle värskendamiseks uuesti."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Viimati värskendatud $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: imporditud $2 lokaati"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Aktiivne projekt puudub"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(tühi)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 tähemärki"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projekt(id)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Projekte pole"
+  },
+  "yes": {
+    "message": "jah"
+  },
+  "no": {
+    "message": "ei"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Valitud projekt"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Allikas: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Lähtekausta pole"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Tuvastamine: $1 usaldus"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Värskenda: importige kaust uuesti"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Värskendatud: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 lokaadid"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Lokaatide loendifaile pole valitud."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Imporditud $1; vahele jäetud $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Vahele jäetud: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Valitud kaustast ei leitud lokaadiloendi kausta."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$1 imporditud $2-sse $3-st ($4 usaldus); vahele jäetud $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Leiti $1 kandidaatkausta."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 ekraanipilt(id), ikoon: $2, väike reklaam: $3, telgi reklaam: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Poe meediavarasid ei leitud."
+  },
+  "mediaUploadedKind": {
+    "message": "Üles laaditud $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Kustutatud $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 on juba selge."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 on juba olemas või seda töödeldakse."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Kustutatavaid ekraanipilte pole."
+  },
+  "screenshotsLimitReached": {
+    "message": "ekraanipildid: CWS limiit $1 on juba saavutatud"
+  },
+  "storeIcon": {
+    "message": "Kaupluse ikoon"
+  },
+  "minimizePanel": {
+    "message": "Minimeeri paneel"
+  },
+  "maximizePanel": {
+    "message": "Paneeli maksimeerimine"
+  },
+  "closePanel": {
+    "message": "Sule paneel"
+  },
+  "panelOpened": {
+    "message": "Paneel avatud."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Kirje ja meediatoimingud on saadaval ainult poe kirje lehel."
+  },
+  "clearingMedia": {
+    "message": "Meediumi kustutamine..."
+  },
+  "mediaClearFailed": {
+    "message": "Meedia kustutamine ebaõnnestus: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Meediumitoiming juba töötab: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Meedia toiming on pooleli."
+  },
+  "noOperationRunning": {
+    "message": "Ükski operatsioon ei käivitu."
+  },
+  "operationStopped": {
+    "message": "Peatatud."
+  },
+  "missing": {
+    "message": "Puudub"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Meediumivarade skannimiseks importige projekti kaust uuesti."
+  },
+  "screenshotNumber": {
+    "message": "Ekraanipilt $1"
+  },
+  "smallPromoTile": {
+    "message": "Väike promoplaat"
+  },
+  "marqueePromoTile": {
+    "message": "Markee reklaamplaat"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidaadid"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikoon: $1; ekraanipildid: $2; väike reklaam: $3; marquee reklaam: $4."
+  },
+  "uploadingMedia": {
+    "message": "Meediumi üleslaadimine..."
+  },
+  "mediaUploaded": {
+    "message": "Üleslaaditud meedium: $1."
+  },
+  "mediaSkipped": {
+    "message": "Vahele jäetud: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Ebaõnnestunud: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Meediumi üleslaadimine ebaõnnestus: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Kausta import tühistati."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Kausta import ebaõnnestus: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "valitud failid"
   },
   "manual": {
-    "message": "manual"
+    "message": "manuaal"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Import ebaõnnestus: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Kas kustutada StorePilot projekt \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Kustutatud $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Kas kustutada \"$1\" kirjed?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Kustutatud kirjed $1 jaoks."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 loendi lokaadid $2-s. Viimati värskendatud $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Projekte veel pole"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Kopeerimiseks pole loendi teksti valitud."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$1 kopeeritud $2-st."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 imporditi $2-sse ($3 usaldus)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Pole aktiivset vahekaarti."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Aktiivne vahekaart ei ole Chrome Web Store Developer Dashboard leht."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot ei saanud selle armatuurlaua vahekaardiga ühendust luua. Täpse vea leidmiseks avage Diagnostika."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostika lõpetatud."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnostika ebaõnnestus."
   },
   "done": {
-    "message": "Done."
+    "message": "Valmis."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Ebaõnnestunud."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Lokaatide loendi faile ei leitud."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1 imporditi $2-sse."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projekt valitud."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Kõigi keelte täitmine..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Taotleti peatust."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Täitke kõik ei tööta."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Kõiki täitmist ei saanud lõpetada."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnostika ebaõnnestus: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projekti ei leitud."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Importige projekti kaust uuesti, et StorePilot saaks meediumifaile üleslaadimiseks salvestada."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Enne meediumifailide lugemist on vaja kausta luba."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Ühtegi kausta käepidet pole salvestatud."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Ühtegi kirjet pole valitud."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Kopeeritud $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Ühtegi nähtavat redigeeritavat välja ei leitud."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Täidetud $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Keele Chrome Web Store rippmenüüd ei leitud."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Armatuurlaua keelemenüüst ei leitud $1."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Klõpsas $1, kuid armatuurlaual kuvatakse endiselt $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "tundmatu lokaat"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Üksuse $1 loendi tekst puudub."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Kirjeldusvälja Chrome Web Store ei leitud."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Armatuurlaua praegust keelt ei õnnestunud tuvastada."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Peatatud. Täidetud $1 armatuurlaua keelt."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Projektide loendeid ei imporditud."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Ükski imporditud lokaat ei vasta armatuurlaua keelemenüüle."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Peatatud. Täidetud $1 armatuurlaua keel(i); endiselt ootel: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Taastatud $1 pärast uuesti proovimist."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Proovitud uuesti $1; ükski ei paranenud."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Täidetud $1 armatuurlaua keel(i); ebaõnnestus $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Täidetud $1 armatuurlaua keelt."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Imporditud $1; sobis $2 armatuurlaua keele(te)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Imporditud $1; sobitatud $2 armatuurlaua keel(ed); sobimatud imporditud lokaadid: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store ei pakkunud toetamata lokaate: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Armatuurlaud ei pakkunud toetatud imporditud lokaate: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Taotleti katkestamist. StorePilot peatub pärast praegust armatuurlaua sammu."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Armatuurlaua diagnostika läbitud."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Armatuurlaua diagnostika leidis puuduvad leheelemendid."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Täitke kõik juba töötab."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Täitke kõik peatunud."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Täitmine"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Uuesti proovimine"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Avage StorePilot valikud"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Projekti importimise avamine..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Tundmatu"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Pealkirjata projekt"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Imporditud projekt"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Käsitsi importimine"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Imporditud nimekirjad"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Failide käsitsi importimine"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Valitud $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 lokaadid $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "juba ühendatud"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "õnnestus"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "kõrge"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "keskmine"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "madal"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Valikud"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Viimati värskendatud Mitte kunagi."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Kirjeid pole imporditud"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Kirjete laadimine..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot küsib enne valitud projektikausta lugemist kinnitust. Seda käsku oodatakse."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Kaustade importimist käsitletakse vahekaardil Valikud, kus kausta kinnitusviipa saab usaldusväärselt lõpule viia."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Valige projekti juur, poe kirje kaust või otsekirje kaust. StorePilot palub teil kausta juurdepääsu kinnitada."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Vahele jäetud privaatsusväli: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Vahele jäetud $1 privaatsusväli(d): $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Privaatsusväli ei aktsepteerinud väärtust: $1."
   }
 }

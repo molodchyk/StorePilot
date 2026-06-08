@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: αυτόματη συμπλήρωση CWS"
   },
   "extensionDescription": {
-    "message": "Αυτοματοποιεί επαναλαμβανόμενες εργασίες δημοσίευσης επεκτάσεων προγράμματος περιήγησης."
+    "message": "Συμπληρώνει αυτόματα πεδία Chrome Web Store, τοπικές περιγραφές, στιγμιότυπα και φόρμες απορρήτου από τοπικά αρχεία."
   },
   "optionsSubtitle": {
     "message": "Εισαγάγετε επίπεδα αρχεία καταχωρίσεων γλωσσών και χρησιμοποιήστε τα σε πίνακες καταστημάτων επεκτάσεων."
@@ -33,22 +33,121 @@
     "message": "Εισαγωγή έργου/φακέλου"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Επιλέξτε μια ρίζα έργου, έναν φάκελο καταχώρισης καταστήματος ή έναν φάκελο άμεσης καταχώρισης."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "Το StorePilot αναζητά αρχεία καταχώρισης με ονομασία τοπικής ρύθμισης, όπως π.χ"
   },
   "or": {
     "message": "ή"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Μπορείτε επίσης να σύρετε αρχεία καταχώρισης απευθείας τοπικών ρυθμίσεων σε αυτόν τον πίνακα."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Αναφορά εγγράφου αυτοματισμού απορρήτου"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "Το StorePilot μπορεί να σαρώσει ένα έγγραφο έργου για Chrome Web Store πεδία απορρήτου. Χρησιμοποιήστε αυτά τα κανονικά πλήκτρα, ώστε ο σαρωτής να μπορεί να δρομολογήσει κείμενο χωρίς να μαντέψει."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Για αιτιολογήσεις αδειών, χρησιμοποιήστε permission.<manifest permission code>. Το επίθημα πρέπει να ταιριάζει με τον κώδικα στα δικαιώματα δήλωσης, optional_permissions, host_permissions ή content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Προτεινόμενα ονόματα αρχείων: docs/chrome-web-store-privacy-form.md ή STORE_JUSTIFICATIONS.md. Το StorePilot δέχεται επίσης άλλα αρχεία.md ή.txt όταν το περιεχόμενο περιέχει ένα μπλοκ [privacy], κανονικά κλειδιά ή αναγνωρίσιμες επικεφαλίδες αιτιολόγησης καταστήματος."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Κλειδιά πυρήνα"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Κοινά κλειδιά άδειας"
+  },
+  "privacyDocFutureProof": {
+    "message": "Εάν μια άδεια δεν αναφέρεται εδώ, χρησιμοποιήστε το ίδιο μοτίβο ούτως ή άλλως, για παράδειγμα permission.bookmarks ή permission.system.display. StorePilot θα πρέπει να αντιμετωπίζουν τον ίδιο τον κώδικα δήλωσης ως την πηγή της αλήθειας."
   },
   "projects": {
     "message": "Έργα"
   },
   "importedListings": {
     "message": "Εισαγμένες καταχωρίσεις"
+  },
+  "storeMediaAssets": {
+    "message": "Αποθήκευση στοιχείων μέσων"
+  },
+  "privacyDocument": {
+    "message": "Έγγραφο απορρήτου"
+  },
+  "privacyDocNotScanned": {
+    "message": "Δεν έχει σαρωθεί"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Δεν βρέθηκε χρησιμοποιήσιμο έγγραφο απορρήτου ($1 υποψήφιος(οι) σαρώθηκαν)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Δεν βρέθηκε χρησιμοποιήσιμο έγγραφο απορρήτου."
+  },
+  "privacyDocSummary": {
+    "message": "$1 πεδία σε $2"
+  },
+  "privacyDocFile": {
+    "message": "Αρχείο"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 πεδία απορρήτου σε $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Έγγραφο απορρήτου: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Δεν έχει εισαχθεί έγγραφο απορρήτου για το ενεργό έργο."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Εισαγάγετε ή επανεισαγάγετε το έργο σε επιλογές StorePilot για να φορτώσετε ένα έγγραφο απορρήτου."
+  },
+  "fillSinglePurpose": {
+    "message": "Συμπληρώστε έναν μοναδικό σκοπό"
+  },
+  "fillPrivacy": {
+    "message": "Συμπληρώστε το απόρρητο"
+  },
+  "privacyNoValueForField": {
+    "message": "Δεν υπάρχει τιμή εγγράφου απορρήτου για $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Δεν ήταν δυνατή η εύρεση του πεδίου απορρήτου: $1."
+  },
+  "privacyFilledField": {
+    "message": "Συμπληρωμένο πεδίο απορρήτου: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Συμπληρωμένα $1 πεδία απορρήτου: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Δεν ήταν δυνατή η εύρεση: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Δεν υπήρχαν διαθέσιμα υποστηριζόμενα πεδία απορρήτου για συμπλήρωση."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Οι ενέργειες απορρήτου είναι διαθέσιμες μόνο στη σελίδα Απορρήτου."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Βρέθηκαν $1 επεξεργάσιμοι υποψήφιοι απορρήτου."
+  },
+  "status": {
+    "message": "Κατάσταση"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Υποψήφιοι"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Σάρωση: $1; αντιστοιχισμένο: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Εισαγάγετε ξανά το φάκελο του έργου για να σαρώσετε το έγγραφο απορρήτου."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Δεν έχει σαρωθεί"
   },
   "diagnostics": {
     "message": "Διαγνωστικά"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Συμπλήρωση όλων των γλωσσών"
   },
+  "uploadStoreIcon": {
+    "message": "Μεταφόρτωση εικονιδίου καταστήματος"
+  },
+  "uploadMedia": {
+    "message": "Μεταφόρτωση πολυμέσων"
+  },
+  "uploadScreenshots": {
+    "message": "Ανεβάστε στιγμιότυπα οθόνης"
+  },
+  "uploadSmallPromo": {
+    "message": "Ανεβάστε μικρή προσφορά"
+  },
+  "uploadMarqueePromo": {
+    "message": "Ανεβάστε promo marquee"
+  },
+  "clearScreenshots": {
+    "message": "Εκκαθάριση στιγμιότυπων οθόνης"
+  },
+  "clearStoreIcon": {
+    "message": "Διαγραφή εικονιδίου καταστήματος"
+  },
+  "clearSmallPromo": {
+    "message": "Καθαρή μικρή προσφορά"
+  },
+  "clearMarqueePromo": {
+    "message": "Εκκαθάριση μαρκίζας promo"
+  },
   "abortFillAll": {
     "message": "Διακοπή συμπλήρωσης όλων"
   },
+  "abortOperation": {
+    "message": "Διακοπή λειτουργίας"
+  },
   "diagnosePage": {
     "message": "Διάγνωση σελίδας"
+  },
+  "openPanel": {
+    "message": "Άνοιγμα πίνακα"
   },
   "options": {
     "message": "Επιλογές"
@@ -90,318 +222,441 @@
     "message": "Εισαγάγετε καταχωρίσεις στις επιλογές StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Ποτέ"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Αυτό το έργο εισήχθη από πρόγραμμα επιλογής αρχείων προγράμματος περιήγησης. Εισαγάγετε ξανά το φάκελο του έργου για να τον ανανεώσετε."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Τελευταία ενημέρωση στις $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 τοπικές ρυθμίσεις εισαγωγής"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Κανένα ενεργό έργο"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(άδειο)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 χαρακτήρες"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 έργο(α)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Κανένα έργο"
+  },
+  "yes": {
+    "message": "ναι"
+  },
+  "no": {
+    "message": "όχι"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Επιλεγμένο έργο"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Πηγή: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Δεν υπάρχει φάκελος πηγής"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Ανίχνευση: $1 εμπιστοσύνη"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Ανανέωση: επανεισαγωγή φακέλου"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Ενημερώθηκε: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 τοπικές ρυθμίσεις"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Δεν επιλέχθηκαν αρχεία καταχώρισης τοπικών ρυθμίσεων."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Εισήχθη $1; παρέλειψε $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Παράβλεψη: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Δεν βρέθηκε φάκελος καταχώρισης τοπικών ρυθμίσεων στον επιλεγμένο φάκελο."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Έγινε εισαγωγή $1 στο $2 από $3 ($4 σιγουριά); παρέλειψε $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Βρέθηκαν $1 φάκελοι υποψηφίων."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 στιγμιότυπο(α) οθόνης, εικονίδιο: $2, μικρή προσφορά: $3, promo marquee: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Δεν βρέθηκαν στοιχεία μέσων καταστήματος."
+  },
+  "mediaUploadedKind": {
+    "message": "Μεταφορτώθηκε $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Διαγράφηκε $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 είναι ήδη σαφές."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 ήδη υπάρχει ή βρίσκεται υπό επεξεργασία."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Δεν υπάρχουν στιγμιότυπα οθόνης για διαγραφή."
+  },
+  "screenshotsLimitReached": {
+    "message": "στιγμιότυπα οθόνης: CWS το όριο των $1 έχει ήδη συμπληρωθεί"
+  },
+  "storeIcon": {
+    "message": "Εικονίδιο καταστήματος"
+  },
+  "minimizePanel": {
+    "message": "Ελαχιστοποίηση πίνακα"
+  },
+  "maximizePanel": {
+    "message": "Μεγιστοποίηση πίνακα"
+  },
+  "closePanel": {
+    "message": "Κλείσιμο πίνακα"
+  },
+  "panelOpened": {
+    "message": "Ο πίνακας άνοιξε."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Οι ενέργειες καταχώρισης και πολυμέσων είναι διαθέσιμες μόνο στη σελίδα καταχώρισης καταστήματος."
+  },
+  "clearingMedia": {
+    "message": "Εκκαθάριση πολυμέσων..."
+  },
+  "mediaClearFailed": {
+    "message": "Η διαγραφή πολυμέσων απέτυχε: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Η λειτουργία πολυμέσων εκτελείται ήδη: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Λειτουργία πολυμέσων σε εξέλιξη."
+  },
+  "noOperationRunning": {
+    "message": "Δεν εκτελείται καμία λειτουργία."
+  },
+  "operationStopped": {
+    "message": "Σταμάτησε."
+  },
+  "missing": {
+    "message": "Λείπει"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Εισαγάγετε ξανά το φάκελο του έργου για σάρωση στοιχείων πολυμέσων."
+  },
+  "screenshotNumber": {
+    "message": "Στιγμιότυπο οθόνης $1"
+  },
+  "smallPromoTile": {
+    "message": "Μικρό πλακίδιο προώθησης"
+  },
+  "marqueePromoTile": {
+    "message": "Πλακίδιο προώθησης Marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "Υποψήφιοι"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Εικονίδιο: $1; στιγμιότυπα οθόνης: $2; μικρή προσφορά: $3; marquee promo: $4."
+  },
+  "uploadingMedia": {
+    "message": "Μεταφόρτωση πολυμέσων..."
+  },
+  "mediaUploaded": {
+    "message": "Μεταφορτωμένα μέσα: $1."
+  },
+  "mediaSkipped": {
+    "message": "Παράβλεψη: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Απέτυχε: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Η μεταφόρτωση πολυμέσων απέτυχε: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Η εισαγωγή φακέλου ακυρώθηκε."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Η εισαγωγή φακέλου απέτυχε: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "επιλεγμένα αρχεία"
   },
   "manual": {
-    "message": "manual"
+    "message": "εγχειρίδιο"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Η εισαγωγή απέτυχε: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Διαγραφή StorePilot έργου \"$1\";"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Διαγράφηκε $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Διαγραφή καταχωρίσεων για \"$1\";"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Εκκαθάριση καταχωρίσεων για $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 καταχώριση τοπικών ρυθμίσεων στο $2. Τελευταία ενημέρωση στις $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Δεν υπάρχουν ακόμη έργα"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Δεν έχει επιλεγεί κείμενο καταχώρισης για αντιγραφή."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Αντιγράφηκε $1 από $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Εισήχθη $1 στο $2 ($3 σιγουριά)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Δεν υπάρχει ενεργή καρτέλα."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Η ενεργή καρτέλα δεν είναι σελίδα Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "Δεν ήταν δυνατή η σύνδεση του StorePilot σε αυτήν την καρτέλα του πίνακα ελέγχου. Ανοίξτε το Διαγνωστικό για το ακριβές σφάλμα."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Ολοκληρώθηκαν τα διαγνωστικά."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Τα διαγνωστικά απέτυχαν."
   },
   "done": {
-    "message": "Done."
+    "message": "Έγινε."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Απέτυχε."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Δεν βρέθηκαν αρχεία καταχώρισης τοπικών ρυθμίσεων."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Έγινε εισαγωγή $1 στο $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Επιλέχτηκε το έργο."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Συμπλήρωση όλων των γλωσσών..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Ζητήθηκε διακοπή."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Συμπληρώστε όλα δεν εκτελείται."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Δεν ήταν δυνατή η διακοπή της πλήρωσης όλων."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Τα διαγνωστικά απέτυχαν: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Το έργο δεν βρέθηκε."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Εισαγάγετε ξανά το φάκελο του έργου, ώστε ο StorePilot να μπορεί να αποθηκεύσει τα αρχεία πολυμέσων για μεταφόρτωση."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Απαιτείται άδεια φακέλου πριν από την ανάγνωση αρχείων πολυμέσων."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Δεν έχει αποθηκευτεί λαβή φακέλου."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Δεν έχει επιλεγεί καταχώριση."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Αντιγράφηκε $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Δεν βρέθηκε ορατό επεξεργάσιμο πεδίο."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Συμπλήρωσε $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Δεν ήταν δυνατή η εύρεση του αναπτυσσόμενου μενού γλώσσας Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Δεν ήταν δυνατή η εύρεση του $1 στο μενού γλώσσας του πίνακα ελέγχου."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Κάντε κλικ στο $1, αλλά ο πίνακας ελέγχου εξακολουθεί να εμφανίζει $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "μια άγνωστη τοποθεσία"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Δεν υπάρχει κείμενο καταχώρισης για $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Δεν ήταν δυνατή η εύρεση του πεδίου περιγραφής Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Δεν ήταν δυνατός ο εντοπισμός της τρέχουσας γλώσσας του πίνακα ελέγχου."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Σταμάτησε. Συμπληρωμένες $1 γλώσσες πίνακα ελέγχου."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Δεν έχουν εισαχθεί καταχωρίσεις έργων."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Δεν υπάρχουν εισαγόμενες τοπικές ρυθμίσεις που να αντιστοιχούν στο μενού γλώσσας του πίνακα ελέγχου."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Σταμάτησε. Συμπληρωμένες $1 γλώσσες πίνακα ελέγχου. ακόμα σε εκκρεμότητα: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Ανακτήθηκε $1 μετά από επανάληψη."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Επανάληψη $1; κανένας δεν αναρρώθηκε."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Συμπληρωμένες $1 γλώσσες πίνακα ελέγχου. απέτυχε $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Συμπληρωμένες $1 γλώσσες πίνακα ελέγχου."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Εισήχθη $1; αντιστοιχισμένες $2 γλώσσες πίνακα ελέγχου."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Εισήχθη $1; αντιστοιχισμένες $2 γλώσσες πίνακα εργαλείων. ασύγκριτες τοπικές ρυθμίσεις εισαγωγής: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Το Chrome Web Store δεν προσέφερε μη υποστηριζόμενες τοπικές ρυθμίσεις: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Ο πίνακας ελέγχου δεν προσέφερε υποστηριζόμενες εισαγόμενες τοπικές ρυθμίσεις: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Ζητήθηκε ματαίωση. Το StorePilot θα σταματήσει μετά το τρέχον βήμα του πίνακα ελέγχου."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Τα διαγνωστικά του πίνακα ελέγχου πέρασαν."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Τα διαγνωστικά του πίνακα ελέγχου εντόπισαν στοιχεία σελίδας που λείπουν."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Το Fill all εκτελείται ήδη."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Συμπληρώστε όλα σταμάτησαν."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Γέμισμα"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Επανάληψη"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Ανοίξτε τις επιλογές StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Άνοιγμα εισαγωγής έργου..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Άγνωστο"
+  },
+  "alphaChannel": {
+    "message": "άλφα"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Έργο χωρίς τίτλο"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Εισαγόμενο έργο"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Χειροκίνητη εισαγωγή"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Εισαγόμενες καταχωρίσεις"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Χειροκίνητη εισαγωγή αρχείων"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Επιλέχθηκε $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 τοπικές ρυθμίσεις σε $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "ήδη συνδεδεμένο"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "πέτυχε"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "ψηλά"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "μεσαίο"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "χαμηλά"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Επιλογές"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Τελευταία ενημέρωση στις Ποτέ."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Δεν έχουν εισαχθεί καταχωρίσεις"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Φόρτωση καταχωρίσεων..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "Το StorePilot θα ζητήσει επιβεβαίωση πριν διαβάσει τον επιλεγμένο φάκελο του έργου. Αυτή η προτροπή είναι αναμενόμενη."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Ο χειρισμός της εισαγωγής φακέλου γίνεται στην καρτέλα επιλογών, όπου η προτροπή επιβεβαίωσης φακέλου μπορεί να ολοκληρωθεί αξιόπιστα."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Επιλέξτε μια ρίζα έργου, έναν φάκελο καταχώρισης καταστήματος ή έναν φάκελο άμεσης καταχώρισης. Το StorePilot θα σας ζητήσει να επιβεβαιώσετε την πρόσβαση στον φάκελο."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Παράβλεψη πεδίου απορρήτου: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Παράβλεψη $1 πεδίων απορρήτου: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Το πεδίο απορρήτου δεν αποδέχτηκε την τιμή: $1."
   }
 }

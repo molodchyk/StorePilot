@@ -1,0 +1,662 @@
+{
+  "extensionName": {
+    "message": "StorePilot: plotësim automatik CWS"
+  },
+  "extensionDescription": {
+    "message": "Plotëson automatikisht fushat e Chrome Web Store, përshkrimet, pamjet e ekranit dhe formularët e privatësisë nga skedarë lokalë."
+  },
+  "optionsSubtitle": {
+    "message": "Importoni skedarë të listimit të vendndodhjes së sheshtë dhe përdorni ato në panelet e dyqaneve shtesë."
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeSystem": {
+    "message": "Sistemi"
+  },
+  "themeLight": {
+    "message": "Drita"
+  },
+  "themeDark": {
+    "message": "E errët"
+  },
+  "clear": {
+    "message": "E qartë"
+  },
+  "activeProject": {
+    "message": "Projekt aktiv"
+  },
+  "deleteProject": {
+    "message": "Fshi projektin"
+  },
+  "importProjectFolder": {
+    "message": "Importoni projekt/dosje"
+  },
+  "importHintFlexible": {
+    "message": "Zgjidhni një rrënjë të projektit, një dosje me listë dyqanesh ose një dosje të listimit të drejtpërdrejtë."
+  },
+  "importHintLocaleFiles": {
+    "message": "StorePilot kërkon për skedarë të listimit të emërtuar sipas vendndodhjes, si p.sh"
+  },
+  "or": {
+    "message": "ose"
+  },
+  "importHintDrag": {
+    "message": "Ju gjithashtu mund të tërhiqni skedarët e listimit të vendndodhjes direkte në këtë panel."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Referenca e dokumentit të automatizimit të privatësisë"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot mund të skanojë një dokument projekti për fushat e privatësisë Chrome Web Store. Përdorni këta çelësa kanonikë në mënyrë që skaneri të mund të drejtojë tekstin pa hamendje."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Për arsyetimet e lejes, përdorni permission.<manifest permission code>. Prapashtesa duhet të përputhet me kodin në lejet tuaja të manifestit, optional_permissions, host_permissions, ose content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Emrat e rekomanduar të skedarëve: docs/chrome-web-store-privacy-form.md ose STORE_JUSTIFICATIONS.md. StorePilot pranon gjithashtu skedarë të tjerë.md ose.txt kur përmbajtja përmban një bllok [privacy], çelësa kanonikë ose tituj të njohur të justifikimit të dyqanit."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Çelësat bazë"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Çelësat e lejeve të zakonshme"
+  },
+  "privacyDocFutureProof": {
+    "message": "Nëse një leje nuk renditet këtu, përdorni gjithsesi të njëjtin model, për shembull permission.bookmarks ose permission.system.display. StorePilot duhet ta trajtojnë vetë kodin e manifestit si burim të së vërtetës."
+  },
+  "projects": {
+    "message": "Projektet"
+  },
+  "importedListings": {
+    "message": "Listimet e importuara"
+  },
+  "storeMediaAssets": {
+    "message": "Ruani asetet e medias"
+  },
+  "privacyDocument": {
+    "message": "Dokument privatësie"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nuk është skanuar"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Nuk u gjet asnjë dokument i përdorshëm i privatësisë ($1 kandidat(ët) të skanuar)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nuk u gjet asnjë dokument i përdorshëm i privatësisë."
+  },
+  "privacyDocSummary": {
+    "message": "Fusha(t) $1 në $2"
+  },
+  "privacyDocFile": {
+    "message": "Skedari"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 fusha(et) e privatësisë në $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Dokumenti i privatësisë: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Asnjë dokument privatësie i importuar për projektin aktiv."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importoni ose riimportoni projektin në opsionet StorePilot për të ngarkuar një dokument privatësie."
+  },
+  "fillSinglePurpose": {
+    "message": "Plotësoni një qëllim të vetëm"
+  },
+  "fillPrivacy": {
+    "message": "Plotësoni privatësinë"
+  },
+  "privacyNoValueForField": {
+    "message": "Nuk ka vlerë dokumenti privatësie për $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Fusha e privatësisë nuk u gjet: $1."
+  },
+  "privacyFilledField": {
+    "message": "Fusha e mbushur e privatësisë: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Fusha e privatësisë e mbushur $1: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Nuk u gjet: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Nuk kishte fusha të mbështetura të privatësisë për t'u plotësuar."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Veprimet e privatësisë janë të disponueshme vetëm në faqen e privatësisë."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "U gjet $1 kandidat(a) për privatësi të modifikueshme."
+  },
+  "status": {
+    "message": "Statusi"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidatët"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Skanuar: $1; përputhet: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Ri-importoni dosjen e projektit për të skanuar dokumentin e privatësisë."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nuk është skanuar"
+  },
+  "diagnostics": {
+    "message": "Diagnostifikimi"
+  },
+  "project": {
+    "message": "Projekti"
+  },
+  "locale": {
+    "message": "Lokal"
+  },
+  "fillCurrentLanguage": {
+    "message": "Plotësoni gjuhën aktuale"
+  },
+  "fillAllLanguages": {
+    "message": "Plotësoni të gjitha gjuhët"
+  },
+  "uploadStoreIcon": {
+    "message": "Ngarko ikonën e dyqanit"
+  },
+  "uploadMedia": {
+    "message": "Ngarko media"
+  },
+  "uploadScreenshots": {
+    "message": "Ngarko pamjet e ekranit"
+  },
+  "uploadSmallPromo": {
+    "message": "Ngarko një promovim të vogël"
+  },
+  "uploadMarqueePromo": {
+    "message": "Ngarko promovimin e marquee"
+  },
+  "clearScreenshots": {
+    "message": "Pastro pamjet e ekranit"
+  },
+  "clearStoreIcon": {
+    "message": "Pastro ikonën e dyqanit"
+  },
+  "clearSmallPromo": {
+    "message": "Pastro promovimin e vogël"
+  },
+  "clearMarqueePromo": {
+    "message": "Pastro promovimin e marquee"
+  },
+  "abortFillAll": {
+    "message": "Mbush të gjitha"
+  },
+  "abortOperation": {
+    "message": "Ndërprit operacionin"
+  },
+  "diagnosePage": {
+    "message": "Faqja e diagnostikimit"
+  },
+  "openPanel": {
+    "message": "Hap panelin"
+  },
+  "options": {
+    "message": "Opsionet"
+  },
+  "localeName": {
+    "message": "Shqip"
+  },
+  "fillCurrent": {
+    "message": "Plotësoni gjuhën aktuale"
+  },
+  "fillAll": {
+    "message": "Plotësoni të gjitha gjuhët"
+  },
+  "abort": {
+    "message": "Mbush të gjitha"
+  },
+  "importListingsInOptions": {
+    "message": "Importo listimet në opsionet StorePilot"
+  },
+  "never": {
+    "message": "kurrë"
+  },
+  "reimportFolderToRefresh": {
+    "message": "Ky projekt u importua nga një përzgjedhës skedari i shfletuesit. Ri-importoni dosjen e projektit për ta rifreskuar atë."
+  },
+  "lastUpdatedOn": {
+    "message": "Përditësimi i fundit më $1."
+  },
+  "projectLocalesImported": {
+    "message": "$1: $2 lokalitete të importuara"
+  },
+  "noActiveProject": {
+    "message": "Asnjë projekt aktiv"
+  },
+  "emptyValue": {
+    "message": "(bosh)"
+  },
+  "charCount": {
+    "message": "$1 karaktere"
+  },
+  "projectCount": {
+    "message": "$1 projekt(et)"
+  },
+  "noProjects": {
+    "message": "Asnjë projekt"
+  },
+  "yes": {
+    "message": "po"
+  },
+  "no": {
+    "message": "nr"
+  },
+  "selectedProject": {
+    "message": "Projekti i zgjedhur"
+  },
+  "sourceLabel": {
+    "message": "Burimi: $1"
+  },
+  "noSourceFolder": {
+    "message": "Nuk ka dosje burimi"
+  },
+  "detectionConfidence": {
+    "message": "Zbulimi: $1 besim"
+  },
+  "refreshReimportFolder": {
+    "message": "Rifresko: ri-importo dosjen"
+  },
+  "updatedLabel": {
+    "message": "Përditësuar: $1"
+  },
+  "localesCount": {
+    "message": "$1 lokale"
+  },
+  "noLocaleListingFilesSelected": {
+    "message": "Nuk u zgjodh asnjë skedar listimi lokal."
+  },
+  "importedSkipped": {
+    "message": "I importuar $1; kapërceu $2."
+  },
+  "skippedList": {
+    "message": "U anashkalua: $1"
+  },
+  "noLocaleListingFolderFound": {
+    "message": "Në dosjen e zgjedhur nuk u gjet asnjë dosje me listë lokale."
+  },
+  "importedIntoFrom": {
+    "message": "U importua $1 në $2 nga $3 ($4 besim); kapërceu $5."
+  },
+  "foundCandidateFolders": {
+    "message": "U gjetën $1 dosje kandidatësh."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 pamje(t) e ekranit, ikona: $2, promovim i vogël: $3, promo me llambë: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Nuk u gjetën asete mediatike në dyqan."
+  },
+  "mediaUploadedKind": {
+    "message": "Ngarkuar $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "U pastrua $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 tashmë është e qartë."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 tashmë i pranishëm ose në përpunim."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Nuk ka pamje ekrani për t'u pastruar."
+  },
+  "screenshotsLimitReached": {
+    "message": "pamjet e ekranit: CWS kufiri prej $1 është arritur tashmë"
+  },
+  "storeIcon": {
+    "message": "Ikona e dyqanit"
+  },
+  "minimizePanel": {
+    "message": "Minimizo panelin"
+  },
+  "maximizePanel": {
+    "message": "Maksimizimi i panelit"
+  },
+  "closePanel": {
+    "message": "Mbyll panelin"
+  },
+  "panelOpened": {
+    "message": "Paneli u hap."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Veprimet e listimit dhe medias ofrohen vetëm në faqen e listimit të Dyqanit."
+  },
+  "clearingMedia": {
+    "message": "Po pastron median..."
+  },
+  "mediaClearFailed": {
+    "message": "Pastrimi i medias dështoi: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Operacioni i medias po funksionon tashmë: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Operacioni i medias në vazhdim."
+  },
+  "noOperationRunning": {
+    "message": "Asnjë operacion nuk po funksionon."
+  },
+  "operationStopped": {
+    "message": "Ndaloi."
+  },
+  "missing": {
+    "message": "Mungon"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Ri-importoni dosjen e projektit për të skanuar asetet e medias."
+  },
+  "screenshotNumber": {
+    "message": "Pamja e ekranit $1"
+  },
+  "smallPromoTile": {
+    "message": "Pllakë e vogël promovuese"
+  },
+  "marqueePromoTile": {
+    "message": "Pllakë promocionale marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidatët"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikona: $1; pamjet e ekranit: $2; promovim i vogël: $3; Promo marquee: $4."
+  },
+  "uploadingMedia": {
+    "message": "Po ngarkon media..."
+  },
+  "mediaUploaded": {
+    "message": "Media e ngarkuar: $1."
+  },
+  "mediaSkipped": {
+    "message": "U anashkalua: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Dështoi: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Ngarkimi i medias dështoi: $1"
+  },
+  "folderImportCanceled": {
+    "message": "Importimi i dosjes u anulua."
+  },
+  "folderImportFailed": {
+    "message": "Importimi i dosjes dështoi: $1"
+  },
+  "selectedFiles": {
+    "message": "skedarët e zgjedhur"
+  },
+  "manual": {
+    "message": "manual"
+  },
+  "importFailed": {
+    "message": "Importi dështoi: $1"
+  },
+  "deleteProjectConfirm": {
+    "message": "Të fshihet projekti StorePilot \"$1\"?"
+  },
+  "deletedProject": {
+    "message": "U fshi $1."
+  },
+  "clearListingsConfirm": {
+    "message": "Të pastrohen listimet për \"$1\"?"
+  },
+  "clearedListingsFor": {
+    "message": "Listimet u pastruan për $1."
+  },
+  "popupSummary": {
+    "message": "$1 liston vendndodhje(et) në $2. Përditësimi i fundit më $3."
+  },
+  "noProjectsYet": {
+    "message": "Nuk ka ende projekte"
+  },
+  "noListingTextSelected": {
+    "message": "Nuk është zgjedhur tekst listimi për t'u kopjuar."
+  },
+  "copiedLocaleFromProject": {
+    "message": "U kopjua $1 nga $2."
+  },
+  "importedIntoConfidence": {
+    "message": "U importua $1 në $2 ($3 konfidencë)."
+  },
+  "noActiveTab": {
+    "message": "Nuk ka skedë aktive."
+  },
+  "notDashboardPage": {
+    "message": "Skeda aktive nuk është një faqe Chrome Web Store Developer Dashboard."
+  },
+  "couldNotConnectDashboard": {
+    "message": "StorePilot nuk mund të lidhej me këtë skedë pulti. Hapni Diagnostifikimin për gabimin e saktë."
+  },
+  "diagnosticsComplete": {
+    "message": "Diagnostifikimi ka përfunduar."
+  },
+  "diagnosticsFailed": {
+    "message": "Diagnostifikimi dështoi."
+  },
+  "done": {
+    "message": "U krye."
+  },
+  "failed": {
+    "message": "Dështoi."
+  },
+  "noLocaleListingFilesFound": {
+    "message": "Nuk u gjet asnjë skedar listimi lokal."
+  },
+  "importedInto": {
+    "message": "U importua $1 në $2."
+  },
+  "projectSelected": {
+    "message": "Projekti i zgjedhur."
+  },
+  "fillingAllLanguages": {
+    "message": "Plotësimi i të gjitha gjuhëve..."
+  },
+  "stopRequested": {
+    "message": "Kërkohet ndalimi."
+  },
+  "fillAllNotRunning": {
+    "message": "Plotësoni të gjitha nuk po funksionon."
+  },
+  "couldNotStopFillAll": {
+    "message": "Nuk mund të ndalej së mbushuri të gjitha."
+  },
+  "diagnosticsFailedWithError": {
+    "message": "Diagnostifikimi dështoi: $1"
+  },
+  "projectNotFound": {
+    "message": "Projekti nuk u gjet."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Ri-importoni dosjen e projektit në mënyrë që StorePilot të mund të ruajë skedarët e medias për ngarkim."
+  },
+  "folderPermissionNeeded": {
+    "message": "Leja e dosjes është e nevojshme përpara se të lexoni skedarët e medias."
+  },
+  "noFolderHandleSaved": {
+    "message": "Asnjë dorezë dosjeje nuk është ruajtur."
+  },
+  "noListingSelected": {
+    "message": "Asnjë listim i përzgjedhur."
+  },
+  "copiedLocale": {
+    "message": "Kopjuar $1."
+  },
+  "noVisibleEditableField": {
+    "message": "Nuk u gjet asnjë fushë e dukshme e modifikueshme."
+  },
+  "filledLocale": {
+    "message": "E mbushur $1."
+  },
+  "languageDropdownNotFound": {
+    "message": "Nuk mundi të gjente listën e gjuhës Chrome Web Store."
+  },
+  "localeNotInDashboardMenu": {
+    "message": "Nuk mund të gjente $1 në menynë e gjuhës së pultit."
+  },
+  "clickedButDashboardShows": {
+    "message": "Klikoni $1, por pulti ende shfaq $2."
+  },
+  "unknownLocale": {
+    "message": "një vend i panjohur"
+  },
+  "noListingTextFor": {
+    "message": "Nuk ka tekst listimi për $1."
+  },
+  "descriptionFieldNotFound": {
+    "message": "Nuk mund të gjeja fushën e përshkrimit Chrome Web Store."
+  },
+  "currentDashboardLanguageNotDetected": {
+    "message": "Gjuha aktuale e panelit të kontrollit nuk mund të zbulohej."
+  },
+  "stoppedFilledLanguages": {
+    "message": "Ndaloi. Gjuhët e panelit të kontrollit $1 të mbushura."
+  },
+  "noProjectListingsImported": {
+    "message": "Nuk u importuan lista projektesh."
+  },
+  "noImportedLocalesMatchMenu": {
+    "message": "Asnjë gjuhë e importuar nuk përputhet me menynë e gjuhës së panelit të kontrollit."
+  },
+  "stoppedFilledLanguagesPending": {
+    "message": "Ndaloi. Gjuhët e pultit të plotësuara $1; ende në pritje: $2."
+  },
+  "recoveredAfterRetry": {
+    "message": "U rikuperua $1 pas riprovës."
+  },
+  "retriedNoneRecovered": {
+    "message": "Riprovuar $1; asnjë nuk u shërua."
+  },
+  "filledLanguagesFailed": {
+    "message": "Gjuhët e pultit të plotësuara $1; dështoi $2: $3."
+  },
+  "filledLanguages": {
+    "message": "Gjuhët e panelit të kontrollit $1 të mbushura."
+  },
+  "fillAllDashboardSummary": {
+    "message": "I importuar $1; përputhen $2 gjuhë(t) e panelit të kontrollit."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "I importuar $1; përputhen $2 gjuhë(t) e panelit të kontrollit; vendndodhje(et) e importuara të pakrahasueshme: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store nuk ofroi lokalitete të pambështetura: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Paneli nuk ofroi gjuhë të mbështetura të importuara: $1."
+  },
+  "abortRequestedStopAfterStep": {
+    "message": "Kërkohet ndërprerja. StorePilot do të ndalojë pas hapit aktual të panelit."
+  },
+  "dashboardDiagnosticsPassed": {
+    "message": "Diagnostifikimi i panelit të kontrollit kaloi."
+  },
+  "dashboardDiagnosticsMissingElements": {
+    "message": "Diagnostifikimi i panelit të kontrollit gjeti elementë të faqes që mungojnë."
+  },
+  "fillAllAlreadyRunning": {
+    "message": "Plotësoni të gjitha tashmë po funksionon."
+  },
+  "fillAllStopped": {
+    "message": "Plotësoni të gjitha të ndaluara."
+  },
+  "filling": {
+    "message": "Mbushje"
+  },
+  "retrying": {
+    "message": "Po provon sërish"
+  },
+  "openProjectImport": {
+    "message": "Menaxhoni importin e projektit"
+  },
+  "openStorePilotOptions": {
+    "message": "Hap opsionet StorePilot"
+  },
+  "openingProjectImport": {
+    "message": "Importimi i projektit po hapet..."
+  },
+  "unknown": {
+    "message": "E panjohur"
+  },
+  "alphaChannel": {
+    "message": "alfa"
+  },
+  "untitledProject": {
+    "message": "Projekt pa titull"
+  },
+  "importedProject": {
+    "message": "Projekt i importuar"
+  },
+  "manualImport": {
+    "message": "Importi manual"
+  },
+  "importedListingsProject": {
+    "message": "Listimet e importuara"
+  },
+  "manualFileImport": {
+    "message": "Importimi manual i skedarit"
+  },
+  "selectedDashboardLanguage": {
+    "message": "Zgjedhur $1."
+  },
+  "miniPanelLocalesInProject": {
+    "message": "$1 lokale në $2"
+  },
+  "contentScriptAlreadyConnected": {
+    "message": "tashmë të lidhur"
+  },
+  "injectionSucceeded": {
+    "message": "ia doli"
+  },
+  "confidenceHigh": {
+    "message": "lartë"
+  },
+  "confidenceMedium": {
+    "message": "e mesme"
+  },
+  "confidenceLow": {
+    "message": "të ulëta"
+  },
+  "optionsTitle": {
+    "message": "Opsionet StorePilot"
+  },
+  "lastUpdatedInitial": {
+    "message": "Përditësimi i fundit në Kurrë."
+  },
+  "noListingsImported": {
+    "message": "Nuk ka listime të importuara"
+  },
+  "loadingListings": {
+    "message": "Listimet po ngarkohen..."
+  },
+  "folderAccessPrompt": {
+    "message": "StorePilot do të kërkojë konfirmim përpara se të lexojë dosjen e përzgjedhur të projektit. Kjo nxitje pritet."
+  },
+  "folderImportHandledInOptions": {
+    "message": "Importimi i dosjeve trajtohet në skedën e opsioneve, ku kërkesa e konfirmimit të dosjes mund të përfundojë në mënyrë të besueshme."
+  },
+  "folderImportHintFlexible": {
+    "message": "Zgjidhni një rrënjë të projektit, një dosje me listë dyqanesh ose një dosje të listimit të drejtpërdrejtë. StorePilot do t'ju kërkojë të konfirmoni hyrjen në dosje."
+  },
+  "privacySkippedField": {
+    "message": "Fusha e privatësisë e kapërcyer: $1."
+  },
+  "privacySkippedFields": {
+    "message": "Kapërceu $1 fusha e privatësisë: $2."
+  },
+  "privacyFieldDidNotAcceptValue": {
+    "message": "Fusha e privatësisë nuk pranoi vlerën: $1."
+  }
+}

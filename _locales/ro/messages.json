@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: completare automată CWS"
   },
   "extensionDescription": {
-    "message": "Automatizează munca repetitivă de publicare în magazinele de extensii pentru browser."
+    "message": "Completează câmpuri Chrome Web Store, descrieri, capturi de ecran și formulare de confidențialitate din fișiere locale."
   },
   "optionsSubtitle": {
     "message": "Importă fișiere plate de listări locale și folosește-le în panourile magazinelor de extensii."
@@ -33,22 +33,121 @@
     "message": "Importă proiect/dosar"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Selectați o rădăcină de proiect, un folder cu lista de magazin sau un folder cu listare directă."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot caută fișiere de listare cu nume locale, cum ar fi"
   },
   "or": {
     "message": "sau"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Puteți, de asemenea, să trageți fișierele cu listare a localităților directe în acest panou."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Referința documentului de automatizare a confidențialității"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot poate scana un document de proiect pentru Chrome Web Store câmpuri de confidențialitate. Utilizați aceste taste canonice pentru ca scanerul să poată direcționa textul fără să ghicească."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Pentru justificări de permisiune, utilizați permission.<manifest permission code>. Sufixul trebuie să se potrivească cu codul din permisiunile dvs. manifest, optional_permissions, host_permissions sau content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Nume de fișiere recomandate: docs/chrome-web-store-privacy-form.md sau STORE_JUSTIFICATIONS.md. StorePilot acceptă, de asemenea, alte fișiere.md sau.txt atunci când conținutul conține un bloc [privacy], chei canonice sau titluri recunoscute de justificare a magazinului."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Cheile de bază"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Chei de permisiuni comune"
+  },
+  "privacyDocFutureProof": {
+    "message": "Dacă o permisiune nu este listată aici, utilizați oricum același model, de exemplu permission.bookmarks sau permission.system.display. StorePilot ar trebui să trateze codul manifest în sine ca sursă a adevărului."
   },
   "projects": {
     "message": "Proiecte"
   },
   "importedListings": {
     "message": "Listări importate"
+  },
+  "storeMediaAssets": {
+    "message": "Stocați active media"
+  },
+  "privacyDocument": {
+    "message": "Document de confidențialitate"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nu a fost scanat"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Nu a fost găsit niciun document de confidențialitate utilizabil ($1 candidat(i) scanat(i)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nu a fost găsit niciun document de confidențialitate utilizabil."
+  },
+  "privacyDocSummary": {
+    "message": "$1 câmp(e) în $2"
+  },
+  "privacyDocFile": {
+    "message": "Fișier"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 câmp(e) de confidențialitate în $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Document de confidențialitate: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Niciun document de confidențialitate importat pentru proiectul activ."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importați sau reimportați proiectul în opțiunile StorePilot pentru a încărca un document de confidențialitate."
+  },
+  "fillSinglePurpose": {
+    "message": "Umpleți un singur scop"
+  },
+  "fillPrivacy": {
+    "message": "Umpleți confidențialitatea"
+  },
+  "privacyNoValueForField": {
+    "message": "Nicio valoare a documentului de confidențialitate pentru $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Nu s-a putut găsi câmpul de confidențialitate: $1."
+  },
+  "privacyFilledField": {
+    "message": "Câmp de confidențialitate completat: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Câmp(e) de confidențialitate $1 completat(e): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Nu s-a putut găsi: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Nu au fost disponibile câmpuri de confidențialitate acceptate pentru completare."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Acțiunile de confidențialitate sunt disponibile numai pe pagina de confidențialitate."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "S-au găsit $1 candidați de confidențialitate editabili."
+  },
+  "status": {
+    "message": "Stare"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Candidații"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Scanat: $1; potrivite: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Reimportați folderul proiectului pentru a scana documentul de confidențialitate."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nu a fost scanat"
   },
   "diagnostics": {
     "message": "Diagnosticare"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Completează toate limbile"
   },
+  "uploadStoreIcon": {
+    "message": "Încărcați pictograma magazin"
+  },
+  "uploadMedia": {
+    "message": "Încărcați conținut media"
+  },
+  "uploadScreenshots": {
+    "message": "Încărcați capturi de ecran"
+  },
+  "uploadSmallPromo": {
+    "message": "Încărcați o promoție mică"
+  },
+  "uploadMarqueePromo": {
+    "message": "Încărcați o promoție marcată"
+  },
+  "clearScreenshots": {
+    "message": "Capturi de ecran clare"
+  },
+  "clearStoreIcon": {
+    "message": "Ștergeți pictograma magazinului"
+  },
+  "clearSmallPromo": {
+    "message": "O promoție mică clară"
+  },
+  "clearMarqueePromo": {
+    "message": "O promoție clară"
+  },
   "abortFillAll": {
     "message": "Oprește completarea tuturor"
   },
+  "abortOperation": {
+    "message": "Anulați operația"
+  },
   "diagnosePage": {
     "message": "Diagnostichează pagina"
+  },
+  "openPanel": {
+    "message": "Deschide panoul"
   },
   "options": {
     "message": "Opțiuni"
@@ -90,318 +222,441 @@
     "message": "Importă listări în opțiunile StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Niciodată"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Acest proiect a fost importat dintr-un selector de fișiere din browser. Reimportați folderul de proiect pentru a-l reîmprospăta."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Ultima actualizare pe $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 locale(e) importate"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Niciun proiect activ"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(gol)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 caractere"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 proiect(e)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Fara proiecte"
+  },
+  "yes": {
+    "message": "da"
+  },
+  "no": {
+    "message": "nu"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Proiect selectat"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Sursa: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Niciun folder sursă"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Detectare: $1 încredere"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Reîmprospătare: re-import folderul"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Actualizat: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 localități"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Nu au fost selectate fișiere cu listare locale."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Importat $1; a omis $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Omis: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Nu s-a găsit niciun folder cu listare locale în folderul selectat."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Importat $1 în $2 de la $3 ($4 încredere); a omis $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "S-au găsit $1 dosare candidate."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 captură(e) de ecran, pictogramă: $2, promoție mică: $3, promoție marcată: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Nu s-au găsit materiale media din magazin."
+  },
+  "mediaUploadedKind": {
+    "message": "Încărcat $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Șterge $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 deja clar."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 deja prezent sau în procesare."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Nicio captură de ecran de șters."
+  },
+  "screenshotsLimitReached": {
+    "message": "capturi de ecran: CWS limita de $1 a fost deja atinsă"
+  },
+  "storeIcon": {
+    "message": "Pictograma magazin"
+  },
+  "minimizePanel": {
+    "message": "Minimizați panoul"
+  },
+  "maximizePanel": {
+    "message": "Maximizați panoul"
+  },
+  "closePanel": {
+    "message": "Închideți panoul"
+  },
+  "panelOpened": {
+    "message": "Panoul deschis."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Acțiunile de înregistrare și media sunt disponibile numai pe pagina de înregistrare în magazin."
+  },
+  "clearingMedia": {
+    "message": "Se șterge media..."
+  },
+  "mediaClearFailed": {
+    "message": "Ștergerea media nu a reușit: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Operațiune media rulează deja: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Operațiune media în curs."
+  },
+  "noOperationRunning": {
+    "message": "Nu rulează nicio operațiune."
+  },
+  "operationStopped": {
+    "message": "oprit."
+  },
+  "missing": {
+    "message": "Lipsă"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Reimportați folderul proiectului pentru a scana elementele media."
+  },
+  "screenshotNumber": {
+    "message": "Captură de ecran $1"
+  },
+  "smallPromoTile": {
+    "message": "Dală promoțională mică"
+  },
+  "marqueePromoTile": {
+    "message": "Tigla promoțională pentru marcaj"
+  },
+  "mediaCandidateCounts": {
+    "message": "Candidații"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Pictogramă: $1; capturi de ecran: $2; promo mica: $3; promoție marcaj: $4."
+  },
+  "uploadingMedia": {
+    "message": "Se încarcă media..."
+  },
+  "mediaUploaded": {
+    "message": "Media încărcate: $1."
+  },
+  "mediaSkipped": {
+    "message": "Omis: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Eșuat: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Încărcarea media nu a reușit: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Importul folderului a fost anulat."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Importul folderului a eșuat: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "fișierele selectate"
   },
   "manual": {
     "message": "manual"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Importarea nu a reușit: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Ștergeți proiectul StorePilot „$1”?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "S-a șters $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Ștergeți înregistrările pentru „$1”?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Înregistrări șterse pentru $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 afișează local(ele) în $2. Ultima actualizare pe $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Niciun proiect încă"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Nu a fost selectat niciun text de listă pentru copiere."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$1 a fost copiat de la $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Importat $1 în $2 ($3 încredere)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Nicio filă activă."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Fila activă nu este o pagină Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot nu s-a putut conecta la această filă tablou de bord. Deschideți Diagnostics pentru eroarea exactă."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnosticare finalizată."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnosticarea a eșuat."
   },
   "done": {
-    "message": "Done."
+    "message": "Gata."
   },
   "failed": {
-    "message": "Failed."
+    "message": "A eșuat."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Nu s-au găsit fișiere de listă locală."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Importat $1 în $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Proiect selectat."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Se completează toate limbile..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Stop solicitat."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Fill all nu rulează."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Nu s-a putut opri să umple totul."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnosticarea a eșuat: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Proiectul nu a fost găsit."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Reimportați folderul proiectului, astfel încât StorePilot să poată stoca fișierele media pentru încărcare."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Este necesară permisiunea folderului înainte de a citi fișierele media."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Nu a fost salvat niciun handle de folder."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Nicio listă selectată."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "S-a copiat $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Nu a fost găsit niciun câmp editabil vizibil."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Completat $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Nu s-a putut găsi meniul drop-down pentru limba Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Nu s-a putut găsi $1 în meniul de limbă al tabloului de bord."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "S-a făcut clic pe $1, dar tabloul de bord afișează în continuare $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "un loc necunoscut"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Niciun text de înregistrare pentru $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Nu s-a putut găsi câmpul de descriere Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Nu s-a putut detecta limba curentă a tabloului de bord."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "oprit. Completate $1 limbile tabloului de bord."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Nu au fost importate liste de proiecte."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Nicio localitate importată nu se potrivește cu meniul de limbă al tabloului de bord."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "oprit. $1 completate limbi de bord; încă în așteptare: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Recuperat $1 după reîncercare."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Reîncercat $1; niciunul nu și-a revenit."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "$1 completate limbi de bord; a eșuat $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Completate $1 limbile tabloului de bord."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importat $1; $2 corespunzator limbilor tabloului de bord."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importat $1; $2 corespunzator limbilor tabloului de bord; locale importate nepotrivite: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store nu a oferit localuri neacceptate: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Tabloul de bord nu a oferit locale(e) importate acceptate: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Avortul solicitat. StorePilot se va opri după pasul curent al tabloului de bord."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Diagnosticarea tabloului de bord a trecut."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Diagnosticarea tabloului de bord a găsit elemente lipsă ale paginii."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Fill all este deja în funcțiune."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Umpleți totul oprit."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Umplere"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Reîncerc"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Deschideți opțiunile StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Se deschide importul proiectului..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Necunoscut"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Proiect fără titlu"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Proiect importat"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Import manual"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Listări importate"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Import manual de fișiere"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Selectat $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 localități în $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "deja conectat"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "a reusit"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "înalt"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "mediu"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "scăzută"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Opțiuni"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Ultima actualizare pe Never."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Nu au fost importate înregistrări"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Se încarcă listele..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot va cere confirmarea înainte de a citi folderul de proiect selectat. Acest prompt este de așteptat."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Importul folderului este gestionat în fila Opțiuni, unde solicitarea de confirmare a folderului se poate finaliza în mod fiabil."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Selectați o rădăcină de proiect, un folder cu lista de magazin sau un folder cu listare directă. StorePilot vă va cere să confirmați accesul la folder."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Câmp de confidențialitate omis: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Câmp(e) de confidențialitate $1 omis: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Câmpul de confidențialitate nu a acceptat valoarea: $1."
   }
 }

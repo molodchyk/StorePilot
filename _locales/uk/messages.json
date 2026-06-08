@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: автозаповнення CWS"
   },
   "extensionDescription": {
-    "message": "Автоматизує повторювану роботу з публікації розширень браузера."
+    "message": "Автозаповнює поля Chrome Web Store, локалізовані описи, знімки екрана та форми приватності з локальних файлів."
   },
   "optionsSubtitle": {
     "message": "Імпортуйте плоскі файли локалізованих описів і використовуйте їх у панелях магазинів розширень."
@@ -44,11 +44,110 @@
   "importHintDrag": {
     "message": "Також можна перетягнути файли описів безпосередньо на цю панель."
   },
+  "privacyDocReferenceTitle": {
+    "message": "Посилання на документ автоматизації конфіденційності"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot може сканувати один проектний документ для Chrome Web Store полів конфіденційності. Використовуйте ці канонічні ключі, щоб сканер міг маршрутизувати текст без вгадування."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Для обґрунтування дозволу використовуйте permission.<manifest permission code>. Суфікс має збігатися з кодом у ваших дозволах маніфесту, optional_permissions, host_permissions або content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Рекомендовані імена файлів: docs/chrome-web-store-privacy-form.md або STORE_JUSTIFICATIONS.md. StorePilot також приймає інші файли.md або.txt, якщо вміст містить блок [privacy], канонічні ключі або розпізнавані заголовки вирівнювання збереження."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Основні ключі"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Загальні ключі дозволів"
+  },
+  "privacyDocFutureProof": {
+    "message": "Якщо дозволу тут немає, все одно використовуйте той самий шаблон, наприклад, permission.bookmarks або permission.system.display. StorePilot має розглядати сам код маніфесту як джерело правди."
+  },
   "projects": {
     "message": "Проєкти"
   },
   "importedListings": {
     "message": "Імпортовані описи"
+  },
+  "storeMediaAssets": {
+    "message": "Зберігайте медіа-активи"
+  },
+  "privacyDocument": {
+    "message": "Документ про конфіденційність"
+  },
+  "privacyDocNotScanned": {
+    "message": "Не скановано"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Не знайдено жодного документа про конфіденційність ($1 кандидатів відскановано)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Не знайдено жодного документа про конфіденційність."
+  },
+  "privacyDocSummary": {
+    "message": "$1 поля в $2"
+  },
+  "privacyDocFile": {
+    "message": "Файл"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 поля конфіденційності в $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Документ про конфіденційність: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Для активного проекту не імпортовано документів про конфіденційність."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Імпортуйте або повторно імпортуйте проект у параметрах StorePilot, щоб завантажити конфіденційний документ."
+  },
+  "fillSinglePurpose": {
+    "message": "Заповнити одну мету"
+  },
+  "fillPrivacy": {
+    "message": "Заповнити конфіденційність"
+  },
+  "privacyNoValueForField": {
+    "message": "Немає значення документа про конфіденційність для $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Не вдалося знайти поле конфіденційності: $1."
+  },
+  "privacyFilledField": {
+    "message": "Заповнене поле конфіденційності: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Заповнено $1 полів конфіденційності: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Не вдалося знайти: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Жодне підтримуване поле конфіденційності не було доступним для заповнення."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Дії конфіденційності доступні лише на сторінці конфіденційності."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Знайдено $1 кандидатів конфіденційності, які можна редагувати."
+  },
+  "status": {
+    "message": "Статус"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Кандидати"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Відскановано: $1; відповідність: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Повторно імпортуйте папку проекту, щоб відсканувати конфіденційний документ."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Не скановано"
   },
   "diagnostics": {
     "message": "Діагностика"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Заповнити всі мови"
   },
+  "uploadStoreIcon": {
+    "message": "Завантажити значок магазину"
+  },
+  "uploadMedia": {
+    "message": "Завантажте медіа"
+  },
+  "uploadScreenshots": {
+    "message": "Завантажте скріншоти"
+  },
+  "uploadSmallPromo": {
+    "message": "Завантажте невелику рекламу"
+  },
+  "uploadMarqueePromo": {
+    "message": "Завантажити рекламу рамки"
+  },
+  "clearScreenshots": {
+    "message": "Очистити скріншоти"
+  },
+  "clearStoreIcon": {
+    "message": "Очистити значок магазину"
+  },
+  "clearSmallPromo": {
+    "message": "Прозора невелика акція"
+  },
+  "clearMarqueePromo": {
+    "message": "Очистити рекламний рядок"
+  },
   "abortFillAll": {
     "message": "Зупинити заповнення"
   },
+  "abortOperation": {
+    "message": "Перервати операцію"
+  },
   "diagnosePage": {
     "message": "Діагностика сторінки"
+  },
+  "openPanel": {
+    "message": "Відкрита панель"
   },
   "options": {
     "message": "Параметри"
@@ -90,318 +222,441 @@
     "message": "Імпортуйте описи в параметрах StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Ніколи"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Цей проект було імпортовано з засобу вибору файлів браузера. Повторно імпортуйте папку проекту, щоб оновити її."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Востаннє оновлено $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: імпортовано $2 мову(і)."
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Немає активного проекту"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(порожній)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 символів"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 проект(и)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Жодних проектів"
+  },
+  "yes": {
+    "message": "так"
+  },
+  "no": {
+    "message": "немає"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Вибраний проект"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Джерело: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Немає вихідної папки"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Виявлення: $1 впевненість"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Оновити: повторно імпортувати папку"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Оновлено: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 локалі"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Не вибрано жодного файлу зі списком мовних налаштувань."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Імпортовано $1; пропущено $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Пропущено: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "У вибраній папці не знайдено папки зі списком мовних налаштувань."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Імпортовано $1 в $2 з $3 (достовірність $4); пропущено $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Знайдено $1 папок кандидатів."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 скріншот(ів), піктограма: $2, маленька реклама: $3, реклама рамки: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Медіа-ресурси магазину не знайдено."
+  },
+  "mediaUploadedKind": {
+    "message": "Завантажено $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Очищено $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 вже ясно."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 вже присутній або обробляється."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Немає скріншотів для очищення."
+  },
+  "screenshotsLimitReached": {
+    "message": "знімки екрана: CWS обмеження $1 вже досягнуто"
+  },
+  "storeIcon": {
+    "message": "Значок магазину"
+  },
+  "minimizePanel": {
+    "message": "Згорнути панель"
+  },
+  "maximizePanel": {
+    "message": "Розгорнути панель"
+  },
+  "closePanel": {
+    "message": "Закрити панель"
+  },
+  "panelOpened": {
+    "message": "Панель відкрито."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Дії зі списком і медіа доступні лише на сторінці списку магазину."
+  },
+  "clearingMedia": {
+    "message": "Очищення носія..."
+  },
+  "mediaClearFailed": {
+    "message": "Не вдалося очистити носій: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Медіаоперація вже запущена: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Виконується медіаоперація."
+  },
+  "noOperationRunning": {
+    "message": "Жодна операція не виконується."
+  },
+  "operationStopped": {
+    "message": "Зупинився."
+  },
+  "missing": {
+    "message": "Відсутня"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Повторно імпортуйте папку проекту, щоб сканувати медіаресурси."
+  },
+  "screenshotNumber": {
+    "message": "Знімок екрана $1"
+  },
+  "smallPromoTile": {
+    "message": "Маленька рекламна плитка"
+  },
+  "marqueePromoTile": {
+    "message": "Рекламна плитка Marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "Кандидати"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Значок: $1; скріншоти: $2; маленька акція: $3; рекламний набір: $4."
+  },
+  "uploadingMedia": {
+    "message": "Завантаження медіа..."
+  },
+  "mediaUploaded": {
+    "message": "Завантажено медіа: $1."
+  },
+  "mediaSkipped": {
+    "message": "Пропущено: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Помилка: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Помилка завантаження медіа: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Імпорт папки скасовано."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Помилка імпорту папки: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "вибрані файли"
   },
   "manual": {
-    "message": "manual"
+    "message": "посібник"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Помилка імпорту: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Видалити проект StorePilot \"$1\"?"
   },
   "deletedProject": {
     "message": "Deleted $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Очистити списки для \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Очищено списки для $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 перераховує мову(и) у $2. Востаннє оновлено $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Проектів ще немає"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Не вибрано текст списку для копіювання."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Скопійовано $1 з $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Імпортовано $1 в $2 (достовірність $3)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Немає активної вкладки."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Активна вкладка не є сторінкою Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot не вдалося підключитися до цієї вкладки інформаційної панелі. Відкрийте Діагностику для точної помилки."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Діагностика завершена."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Збій діагностики."
   },
   "done": {
-    "message": "Done."
+    "message": "Готово."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Не вдалося."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Файли зі списком мовних налаштувань не знайдено."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Імпортовано $1 в $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Вибраний проект."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Заповнення всіх мов..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Зупинити запит."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Заповнити все не працює."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Не вдалося зупинити заповнення всіх."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Помилка діагностики: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Проект не знайдено."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Повторно імпортуйте папку проекту, щоб StorePilot міг зберігати мультимедійні файли для завантаження."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Перед читанням медіафайлів потрібен дозвіл папки."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Немає дескриптора папки."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Список не вибрано."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Скопійовано $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Не знайдено видимого редагованого поля."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Заповнено $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Не вдалося знайти спадне меню мови Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Не вдалося знайти $1 у меню мови приладової панелі."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Клацнув $1, але на панелі все ще відображається $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "невідома локаль"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Немає тексту списку для $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Не вдалося знайти поле опису Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Не вдалося визначити поточну мову інформаційної панелі."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Зупинився. Заповнено $1 мов інформаційної панелі."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Немає списків проектів імпортованих."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Жодна імпортована мова не відповідає мовному меню інформаційної панелі."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Зупинився. Заповнено $1 мов панелі керування; ще очікує на розгляд: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Відновлено $1 після повторної спроби."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Повторна спроба $1; ніхто не відновився."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Заповнено $1 мов панелі керування; не вдалося $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Заповнено $1 мов інформаційної панелі."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Імпортовано $1; відповідає $2 мовам панелі керування."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Імпортовано $1; відповідність $2 мов панелі керування; невідповідна імпортована локаль(и): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store не запропонував непідтримувані мови: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Інформаційна панель не пропонувала підтримувані імпортовані мови: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Запит на скасування. StorePilot зупиниться після поточного кроку інформаційної панелі."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Пройшов діагностику приладової панелі."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Діагностика інформаційної панелі виявила відсутні елементи сторінки."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Заповнити все вже запущено."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Заповнити все зупинено."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Наповнення"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Повторна спроба"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Відкрийте параметри StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Відкриття імпорту проекту..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Невідомий"
+  },
+  "alphaChannel": {
+    "message": "альфа"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Проект без назви"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Імпортований проект"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Ручний імпорт"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Імпортовані списки"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Імпорт файлів вручну"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Вибрано $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 локалі в $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "вже підключено"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "вдалося"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "висока"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "середній"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "низький"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Параметри"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Востаннє оновлено Ніколи."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Немає списків імпортованих"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Завантаження списків..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot запитає підтвердження перед читанням вибраної папки проекту. Це повідомлення очікується."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Імпорт папки обробляється на вкладці параметрів, де запит на підтвердження папки може надійно завершитися."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Виберіть корінь проекту, папку зі списком у магазині або папку з прямим списком. StorePilot попросить вас підтвердити доступ до папки."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Пропущене поле конфіденційності: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Пропущено $1 полів конфіденційності: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Поле конфіденційності не прийняло значення: $1."
   }
 }

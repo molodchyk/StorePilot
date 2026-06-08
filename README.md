@@ -1,10 +1,10 @@
-# StorePilot
+# StorePilot: Chrome Web Store Listing Autofill
 
-StorePilot is a local-first Firefox extension for maintaining localized browser-extension store listings. It imports listing files from extension projects, keeps each extension as a separate project, and helps fill Chrome Web Store Developer Dashboard fields.
+StorePilot is a local-first Firefox extension for autofilling Chrome Web Store listing fields, localized descriptions, screenshots, and privacy forms from local project files.
 
 ## What It Does
 
-- Imports locale listing files such as `en.txt`, `de.md`, and `pt_BR.markdown`.
+- Imports locale-named listing text files such as `en`, `de`, and `pt_BR` files.
 - Detects listing folders inside project roots, `store-listing` folders, and direct listing folders.
 - Keeps multiple extension projects separate.
 - Stores listing text, media metadata, privacy-form text, preferences, and folder handles locally.
@@ -31,7 +31,7 @@ Load it temporarily:
 The build also creates:
 
 ```text
-artifacts/storepilot-1.1.0.zip
+artifacts/storepilot-1.1.1.zip
 ```
 
 AMO source-code upload package:
@@ -43,7 +43,7 @@ AMO source-code upload package:
 This creates:
 
 ```text
-artifacts/source/storepilot-source-1.1.0.zip
+artifacts/source/storepilot-source-1.1.1.zip
 ```
 
 ## Current Workflow

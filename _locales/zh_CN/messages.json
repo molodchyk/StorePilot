@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot：CWS 自动填写"
   },
   "extensionDescription": {
-    "message": "自动处理浏览器扩展商店发布中的重复工作。"
+    "message": "从本地文件自动填写 Chrome Web Store 上架字段、本地化说明、截图和隐私表单。"
   },
   "optionsSubtitle": {
     "message": "导入扁平的语言 listing 文件，并在扩展商店仪表板中使用。"
@@ -33,22 +33,121 @@
     "message": "导入项目/文件夹"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "选择项目根目录、商店列表文件夹或直接列表文件夹。"
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot 查找以语言环境命名的列表文件，例如"
   },
   "or": {
     "message": "或"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "您还可以将区域设置列表文件直接拖到此面板上。"
+  },
+  "privacyDocReferenceTitle": {
+    "message": "隐私自动化文档参考"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot 可以扫描一份项目文档中的 Chrome Web Store 隐私字段。使用这些规范键，以便扫描仪可以路由文本而无需猜测。"
+  },
+  "privacyDocPermissionRule": {
+    "message": "对于权限理由，请使用 permission.<manifest permission code>。后缀应与清单权限中的代码 optional_permissions、host_permissions 或 content_scripts.matches 匹配。"
+  },
+  "privacyDocNamingGuideline": {
+    "message": "推荐的文件名：docs/chrome-web-store-privacy-form.md 或 STORE_JUSTIFICATIONS.md。当内容包含 [privacy] 块、规范键或可识别的存储调整标题时，StorePilot 还接受其他.md 或.txt 文件。"
+  },
+  "privacyDocCoreKeys": {
+    "message": "核心关键"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "常用权限键"
+  },
+  "privacyDocFutureProof": {
+    "message": "如果此处未列出权限，请无论如何使用相同的模式，例如 permission.bookmarks 或 permission.system.display. StorePilot 应将清单代码本身视为事实来源。"
   },
   "projects": {
     "message": "项目"
   },
   "importedListings": {
     "message": "已导入的列表"
+  },
+  "storeMediaAssets": {
+    "message": "存储媒体资产"
+  },
+  "privacyDocument": {
+    "message": "隐私文件"
+  },
+  "privacyDocNotScanned": {
+    "message": "未扫描"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "未找到可用的隐私文件（已扫描 $1 候选人）。"
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "未找到可用的隐私文件。"
+  },
+  "privacyDocSummary": {
+    "message": "$2 中的 $1 字段"
+  },
+  "privacyDocFile": {
+    "message": "文件"
+  },
+  "privacyPanelSummary": {
+    "message": "$2 中的 $1 隐私字段"
+  },
+  "privacyDocFileFound": {
+    "message": "隐私文件：$1"
+  },
+  "privacyDocNotImported": {
+    "message": "没有为活动项目导入隐私文档。"
+  },
+  "importPrivacyDocInOptions": {
+    "message": "在 StorePilot 选项中导入或重新导入项目以加载隐私文档。"
+  },
+  "fillSinglePurpose": {
+    "message": "填写单一目的"
+  },
+  "fillPrivacy": {
+    "message": "填写隐私"
+  },
+  "privacyNoValueForField": {
+    "message": "$1 没有隐私文档价值。"
+  },
+  "privacyFieldNotFound": {
+    "message": "找不到隐私字段：$1。"
+  },
+  "privacyFilledField": {
+    "message": "已填充隐私字段：$1。"
+  },
+  "privacyFilledFields": {
+    "message": "已填写 $1 隐私字段：$2。"
+  },
+  "privacyFieldsNotFound": {
+    "message": "找不到：$1。"
+  },
+  "privacyNoSupportedFields": {
+    "message": "没有可填写的受支持的隐私字段。"
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "隐私操作仅在隐私页面上可用。"
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "找到 $1 可编辑隐私候选者。"
+  },
+  "status": {
+    "message": "状态"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "候选人"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "扫描：$1；匹配：$2。"
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "重新导入项目文件夹以扫描隐私文档。"
+  },
+  "mediaAssetsNotScanned": {
+    "message": "未扫描"
   },
   "diagnostics": {
     "message": "诊断"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "填写所有语言"
   },
+  "uploadStoreIcon": {
+    "message": "上传商店图标"
+  },
+  "uploadMedia": {
+    "message": "上传媒体"
+  },
+  "uploadScreenshots": {
+    "message": "上传截图"
+  },
+  "uploadSmallPromo": {
+    "message": "上传小促销"
+  },
+  "uploadMarqueePromo": {
+    "message": "上传天棚宣传片"
+  },
+  "clearScreenshots": {
+    "message": "清晰的截图"
+  },
+  "clearStoreIcon": {
+    "message": "清除商店图标"
+  },
+  "clearSmallPromo": {
+    "message": "清除小促销"
+  },
+  "clearMarqueePromo": {
+    "message": "清晰的字幕宣传片"
+  },
   "abortFillAll": {
     "message": "中止全部填写"
   },
+  "abortOperation": {
+    "message": "中止操作"
+  },
   "diagnosePage": {
     "message": "诊断页面"
+  },
+  "openPanel": {
+    "message": "打开面板"
   },
   "options": {
     "message": "选项"
@@ -90,318 +222,441 @@
     "message": "在 StorePilot 选项中导入列表"
   },
   "never": {
-    "message": "Never"
+    "message": "从来没有"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "该项目是从浏览器文件选择器导入的。重新导入项目文件夹以刷新它。"
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "最后更新于 $1。"
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1：导入了 $2 语言环境"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "没有活跃的项目"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "（空）"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 字符"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 项目"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "没有项目"
+  },
+  "yes": {
+    "message": "是的"
+  },
+  "no": {
+    "message": "不"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "选定项目"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "来源：$1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "无源文件夹"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "检测：$1 置信度"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "刷新：重新导入文件夹"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "更新：$1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 语言环境"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "未选择任何区域设置列表文件。"
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "导入$1；跳过$2。"
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "跳过：$1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "在所选文件夹中找不到区域设置列表文件夹。"
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "将 $1 从 $3 导入到 $2（$4 置信度）；跳过$5。"
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "找到 $1 候选文件夹。"
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 屏幕截图，图标：$2，小促销：$3，字幕促销：$4。"
+  },
+  "mediaAssetsNone": {
+    "message": "找不到商店媒体资产。"
+  },
+  "mediaUploadedKind": {
+    "message": "已上传 $1：$2。"
+  },
+  "mediaClearedKind": {
+    "message": "已清除 $1：$2。"
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 已经清楚了。"
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 已存在或正在处理。"
+  },
+  "screenshotsAlreadyClear": {
+    "message": "没有要清除的屏幕截图。"
+  },
+  "screenshotsLimitReached": {
+    "message": "屏幕截图： $1 的 CWS 限制已达到"
+  },
+  "storeIcon": {
+    "message": "商店图标"
+  },
+  "minimizePanel": {
+    "message": "最小化面板"
+  },
+  "maximizePanel": {
+    "message": "最大化面板"
+  },
+  "closePanel": {
+    "message": "关闭面板"
+  },
+  "panelOpened": {
+    "message": "面板打开。"
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "商品详情和媒体操作仅在商品详情页面上可用。"
+  },
+  "clearingMedia": {
+    "message": "正在清除媒体..."
+  },
+  "mediaClearFailed": {
+    "message": "介质清除失败：$1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "媒体操作已在运行：$1。"
+  },
+  "mediaOperationInProgress": {
+    "message": "媒体运营正在进行中。"
+  },
+  "noOperationRunning": {
+    "message": "没有任何操作正在运行。"
+  },
+  "operationStopped": {
+    "message": "停了。"
+  },
+  "missing": {
+    "message": "失踪"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "重新导入项目文件夹以扫描媒体资产。"
+  },
+  "screenshotNumber": {
+    "message": "屏幕截图$1"
+  },
+  "smallPromoTile": {
+    "message": "小促销瓷砖"
+  },
+  "marqueePromoTile": {
+    "message": "天棚促销瓷砖"
+  },
+  "mediaCandidateCounts": {
+    "message": "候选人"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "图标：$1；屏幕截图：$2；小促销：$3；天棚促销：$4。"
+  },
+  "uploadingMedia": {
+    "message": "正在上传媒体..."
+  },
+  "mediaUploaded": {
+    "message": "上传的媒体：$1。"
+  },
+  "mediaSkipped": {
+    "message": "跳过：$1。"
+  },
+  "mediaUploadFailures": {
+    "message": "失败：$1。"
+  },
+  "mediaUploadFailed": {
+    "message": "媒体上传失败：$1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "文件夹导入已取消。"
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "文件夹导入失败：$1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "选定的文件"
   },
   "manual": {
-    "message": "manual"
+    "message": "手册"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "导入失败：$1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "删除 StorePilot 项目“$1”？"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "已删除 $1。"
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "清除“$1”的列表吗？"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "已清除 $1 的列表。"
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 在 $2 中列出语言环境。最后更新于 $3。"
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "还没有项目"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "没有选择要复制的列表文本。"
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "从 $2 复制 $1。"
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "将 $1 导入 $2（$3 置信度）。"
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "没有活动选项卡。"
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "活动选项卡不是 Chrome Web Store Developer Dashboard 页面。"
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot 无法连接到此仪表板选项卡。打开诊断以查找确切的错误。"
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "诊断完成。"
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "诊断失败。"
   },
   "done": {
-    "message": "Done."
+    "message": "完成。"
   },
   "failed": {
-    "message": "Failed."
+    "message": "失败了。"
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "未找到区域设置列表文件。"
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "将 $1 导入到 $2 中。"
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "项目选定。"
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "填写所有语言..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "要求停止。"
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "填充全部不运行。"
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "无法停止全部填满。"
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "诊断失败：$1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "未找到项目。"
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "重新导入项目文件夹，以便 StorePilot 可以存储要上传的媒体文件。"
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "读取媒体文件之前需要文件夹权限。"
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "未保存文件夹句柄。"
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "未选择列表。"
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "复制$1。"
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "找不到可见的可编辑字段。"
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "填充$1。"
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "找不到 Chrome Web Store 语言下拉列表。"
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "在仪表板语言菜单中找不到 $1。"
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "单击$1，但仪表板仍然显示$2。"
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "未知的语言环境"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "没有 $1 的列表文本。"
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "找不到 Chrome Web Store 描述字段。"
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "无法检测当前仪表板语言。"
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "停了。已填充 $1 仪表板语言。"
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "没有导入项目列表。"
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "没有导入的区域设置与仪表板语言菜单匹配。"
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "停了。已填充 $1 仪表板语言；仍在等待：$2。"
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "重试后恢复了$1。"
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "重试$1；没有人康复。"
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "已填充 $1 仪表板语言；失败 $2：$3。"
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "已填充 $1 仪表板语言。"
+  },
+  "fillAllDashboardSummary": {
+    "message": "导入$1；匹配 $2 仪表板语言。"
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "导入$1；匹配的 $2 仪表板语言；不匹配的导入语言环境：$3。"
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store 未提供不受支持的区域设置：$1。"
+  },
+  "unmatchedImportedLocales": {
+    "message": "仪表板未提供受支持的导入区域设置：$1。"
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "已请求中止。 StorePilot 将在当前仪表板步骤之后停止。"
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "仪表板诊断已通过。"
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "仪表板诊断发现缺少页面元素。"
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "填充全部已经在运行。"
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "补全停了。"
   },
   "filling": {
-    "message": "Filling"
+    "message": "灌装"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "重试"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "打开 StorePilot 选项"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "打开项目导入..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "未知"
+  },
+  "alphaChannel": {
+    "message": "阿尔法"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "无标题项目"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "引进项目"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "手动导入"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "导入列表"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "手动文件导入"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "选择$1。"
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2 中的 $1 语言环境"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "已经连接"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "成功了"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "高"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "中等"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "低"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot 选项"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "最后更新于从不。"
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "没有导入列表"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "正在加载列表..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot 在读取所选项目文件夹之前将要求确认。该提示是预期的。"
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "文件夹导入在选项选项卡中处理，其中文件夹确认提示可以可靠地完成。"
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "选择项目根目录、商店列表文件夹或直接列表文件夹。 StorePilot 将要求您确认文件夹访问权限。"
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "跳过隐私字段：$1。"
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "跳过 $1 隐私字段：$2。"
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "隐私字段不接受值：$1。"
   }
 }

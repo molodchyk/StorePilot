@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: automatické vyplnění CWS"
   },
   "extensionDescription": {
-    "message": "Automatizuje opakovanou práci při publikování rozšíření prohlížeče."
+    "message": "Automaticky vyplní pole Chrome Web Store, lokalizované popisy, snímky obrazovky a formuláře ochrany soukromí z místních souborů."
   },
   "optionsSubtitle": {
     "message": "Importujte ploché lokalizační soubory a používejte je v panelech obchodů s rozšířeními."
@@ -33,22 +33,121 @@
     "message": "Importovat projekt/složku"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Vyberte kořen projektu, složku se seznamem obchodu nebo složku s přímým seznamem."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot hledá soubory výpisů pojmenované podle národního prostředí, jako např"
   },
   "or": {
     "message": "nebo"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Na tento panel můžete také přetáhnout soubory s přímým výpisem národního prostředí."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Odkaz na dokument o automatizaci ochrany osobních údajů"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot může naskenovat jeden projektový dokument pro Chrome Web Store pole ochrany osobních údajů. Použijte tyto kanonické klávesy, aby skener mohl směrovat text bez hádání."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Pro zdůvodnění oprávnění použijte permission.<manifest permission code>. Přípona by se měla shodovat s kódem v oprávněních manifestu, optional_permissions, host_permissions nebo content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Doporučené názvy souborů: docs/chrome-web-store-privacy-form.md nebo STORE_JUSTIFICATIONS.md. StorePilot také přijímá další soubory.md nebo.txt, pokud obsah obsahuje blok [privacy], kanonické klíče nebo rozpoznatelné nadpisy zarovnání obchodu."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Klíče jádra"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Společné klíče oprávnění"
+  },
+  "privacyDocFutureProof": {
+    "message": "Pokud zde oprávnění není uvedeno, použijte stejný vzor, například permission.bookmarks nebo permission.system.display. StorePilot by měly považovat samotný kód manifestu za zdroj pravdy."
   },
   "projects": {
     "message": "Projekty"
   },
   "importedListings": {
     "message": "Importované záznamy"
+  },
+  "storeMediaAssets": {
+    "message": "Ukládat mediální aktiva"
+  },
+  "privacyDocument": {
+    "message": "Dokument o ochraně osobních údajů"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nenaskenováno"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Nebyl nalezen žádný použitelný dokument o ochraně osobních údajů (naskenováni kandidáti $1)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nebyl nalezen žádný použitelný dokument o ochraně osobních údajů."
+  },
+  "privacyDocSummary": {
+    "message": "$1 pole v $2"
+  },
+  "privacyDocFile": {
+    "message": "Soubor"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 pole ochrany osobních údajů v $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Dokument o ochraně osobních údajů: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Pro aktivní projekt nebyl importován žádný dokument o ochraně osobních údajů."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importujte nebo znovu importujte projekt v možnostech StorePilot a načtěte dokument o ochraně osobních údajů."
+  },
+  "fillSinglePurpose": {
+    "message": "Vyplňte jednoúčelové"
+  },
+  "fillPrivacy": {
+    "message": "Naplňte soukromí"
+  },
+  "privacyNoValueForField": {
+    "message": "Žádná hodnota dokumentu o ochraně osobních údajů pro $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Nelze najít pole ochrany osobních údajů: $1."
+  },
+  "privacyFilledField": {
+    "message": "Vyplněné pole ochrany osobních údajů: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Vyplněných $1 polí ochrany osobních údajů: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Nelze najít: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Nebyla k dispozici žádná podporovaná pole ochrany osobních údajů k vyplnění."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Akce ochrany osobních údajů jsou dostupné pouze na stránce Ochrana osobních údajů."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Nalezeno $1 upravitelných kandidátů na ochranu soukromí."
+  },
+  "status": {
+    "message": "Stav"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidáti"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Naskenováno: $1; odpovídající: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Znovu naimportujte složku projektu a naskenujte dokument o ochraně osobních údajů."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nenaskenováno"
   },
   "diagnostics": {
     "message": "Diagnostika"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Vyplnit všechny jazyky"
   },
+  "uploadStoreIcon": {
+    "message": "Nahrát ikonu obchodu"
+  },
+  "uploadMedia": {
+    "message": "Nahrajte média"
+  },
+  "uploadScreenshots": {
+    "message": "Nahrajte snímky obrazovky"
+  },
+  "uploadSmallPromo": {
+    "message": "Nahrajte malou propagaci"
+  },
+  "uploadMarqueePromo": {
+    "message": "Nahrajte promo stan"
+  },
+  "clearScreenshots": {
+    "message": "Vymazat snímky obrazovky"
+  },
+  "clearStoreIcon": {
+    "message": "Vymazat ikonu obchodu"
+  },
+  "clearSmallPromo": {
+    "message": "Jasné malé promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Jasná markýza promo"
+  },
   "abortFillAll": {
     "message": "Zrušit vyplnění všeho"
   },
+  "abortOperation": {
+    "message": "Přerušit operaci"
+  },
   "diagnosePage": {
     "message": "Diagnostika stránky"
+  },
+  "openPanel": {
+    "message": "Otevřete panel"
   },
   "options": {
     "message": "Možnosti"
@@ -90,318 +222,441 @@
     "message": "Importujte záznamy v možnostech StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Nikdy"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Tento projekt byl importován z nástroje pro výběr souborů prohlížeče. Znovu naimportujte složku projektu a obnovte ji."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Naposledy aktualizováno $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 národní prostředí importováno"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Žádný aktivní projekt"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(prázdný)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 znaků"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projektů"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Žádné projekty"
+  },
+  "yes": {
+    "message": "ano"
+  },
+  "no": {
+    "message": "ne"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Vybraný projekt"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Zdroj: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Žádná zdrojová složka"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Detekce: spolehlivost $1"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Obnovit: znovu importovat složku"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Aktualizováno: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 národních prostředí"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Nebyly vybrány žádné soubory se seznamem národního prostředí."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Importováno $1; přeskočeno $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Přeskočeno: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Ve vybrané složce nebyla nalezena žádná složka se seznamem národního prostředí."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Importováno $1 do $2 z $3 (spolehlivost $4); přeskočeno $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Nalezeno $1 kandidátských složek."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 snímky obrazovky, ikona: $2, malá propagace: $3, propagace výřezu: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Nebyla nalezena žádná mediální díla obchodu."
+  },
+  "mediaUploadedKind": {
+    "message": "Nahráno $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Vymazáno $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 je již jasné."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 již existuje nebo se zpracovává."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Žádné snímky obrazovky k vymazání."
+  },
+  "screenshotsLimitReached": {
+    "message": "snímky obrazovky: CWS limitu $1 již bylo dosaženo"
+  },
+  "storeIcon": {
+    "message": "Ikona obchodu"
+  },
+  "minimizePanel": {
+    "message": "Minimalizovat panel"
+  },
+  "maximizePanel": {
+    "message": "Maximalizovat panel"
+  },
+  "closePanel": {
+    "message": "Zavřít panel"
+  },
+  "panelOpened": {
+    "message": "Panel otevřen."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Záznamy a mediální akce jsou k dispozici pouze na stránce záznamu v obchodu."
+  },
+  "clearingMedia": {
+    "message": "Mazání média..."
+  },
+  "mediaClearFailed": {
+    "message": "Vymazání média se nezdařilo: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Operace médií již běží: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Probíhá operace s médiem."
+  },
+  "noOperationRunning": {
+    "message": "Neprobíhá žádná operace."
+  },
+  "operationStopped": {
+    "message": "Zastaveno."
+  },
+  "missing": {
+    "message": "Chybí"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Znovu naimportujte složku projektu pro skenování mediálních prostředků."
+  },
+  "screenshotNumber": {
+    "message": "Snímek obrazovky $1"
+  },
+  "smallPromoTile": {
+    "message": "Malá promo dlaždice"
+  },
+  "marqueePromoTile": {
+    "message": "Markýza promo dlaždice"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidáti"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikona: $1; snímky obrazovky: $2; malá promo: $3; promo stan: $4."
+  },
+  "uploadingMedia": {
+    "message": "Nahrávání médií..."
+  },
+  "mediaUploaded": {
+    "message": "Nahraná média: $1."
+  },
+  "mediaSkipped": {
+    "message": "Přeskočeno: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Selhalo: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Nahrání média se nezdařilo: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Import složky byl zrušen."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Import složky se nezdařil: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "vybrané soubory"
   },
   "manual": {
-    "message": "manual"
+    "message": "manuál"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Import se nezdařil: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Smazat StorePilot projekt \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Smazáno $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Vymazat záznamy pro „$1“?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Vymazány záznamy pro $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 výpis lokalit v $2. Naposledy aktualizováno $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Zatím žádné projekty"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Nebyl vybrán žádný text záznamu ke kopírování."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Zkopírováno $1 z $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Importováno $1 do $2 (spolehlivost $3)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Žádná aktivní karta."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Aktivní karta není stránka Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot se nemohl připojit k této kartě řídicího panelu. Pro přesnou chybu otevřete Diagnostiku."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostika dokončena."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnostika selhala."
   },
   "done": {
-    "message": "Done."
+    "message": "Hotovo."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Nepodařilo se."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Nebyly nalezeny žádné soubory se seznamem národního prostředí."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Importováno $1 do $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projekt vybrán."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Vyplňování všech jazyků..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Požadováno zastavení."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Fill all neběží."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Vše se nepodařilo zastavit."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnostika selhala: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projekt nenalezen."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Znovu naimportujte složku projektu, aby StorePilot mohl ukládat mediální soubory pro nahrání."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Před čtením mediálních souborů je potřeba oprávnění ke složce."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Nebyl uložen žádný popisovač složky."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Není vybrán žádný záznam."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Zkopírováno $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Nebylo nalezeno žádné viditelné upravitelné pole."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Vyplněno $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Nelze najít rozbalovací nabídku jazyka Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Nelze najít $1 v nabídce jazyků řídicího panelu."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Kliknuto na $1, ale na hlavním panelu se stále zobrazuje $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "neznámé místo"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Žádný text záznamu pro $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Nepodařilo se najít pole popisu Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Nelze zjistit aktuální jazyk řídicího panelu."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Zastaveno. Vyplněných $1 jazyků řídicích panelů."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Nebyly importovány žádné výpisy projektů."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Žádné importované národní prostředí neodpovídají nabídce jazyků řídicího panelu."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Zastaveno. Jazyk(y) řídicího panelu vyplněných $1; stále nevyřízeno: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Po opětovném pokusu obnoveno $1."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Znovu vyzkoušeno $1; nikdo se nevzpamatoval."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Jazyk(y) řídicího panelu vyplněných $1; selhalo $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Vyplněných $1 jazyků řídicích panelů."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importováno $1; odpovídající $2 jazyky řídicího panelu."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importováno $1; odpovídající jazyky řídicího panelu $2; neodpovídající importovaná národní prostředí: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store nenabídl nepodporované národní prostředí: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Dashboard nenabízel podporované importované národní prostředí: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Požadováno přerušení. StorePilot se zastaví po aktuálním kroku na řídicím panelu."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Diagnostika palubní desky proběhla úspěšně."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Diagnostika řídicího panelu našla chybějící prvky stránky."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Fill all již běží."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Vyplňte vše zastaveno."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Plnění"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Opakuji pokus"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Otevřete možnosti StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Otevírá se import projektu..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Neznámý"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Projekt bez názvu"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Importovaný projekt"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Ruční import"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Importované výpisy"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Ruční import souboru"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Vybráno $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 národní prostředí v $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "již připojeno"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "podařilo"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "vysoká"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "střední"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "nízká"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Možnosti"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Naposledy aktualizováno nikdy."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Nebyly importovány žádné záznamy"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Načítání záznamů..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot požádá o potvrzení před čtením vybrané složky projektu. Ta výzva se očekává."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Import složky se řeší v záložce Možnosti, kde se spolehlivě dokončí výzva k potvrzení složky."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Vyberte kořen projektu, složku se seznamem obchodu nebo složku s přímým seznamem. StorePilot vás požádá o potvrzení přístupu ke složce."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Vynechané pole ochrany osobních údajů: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Vynechána $1 pole ochrany osobních údajů: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Pole ochrany osobních údajů nepřijalo hodnotu: $1."
   }
 }

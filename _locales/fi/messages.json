@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS-automaattitäyttö"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Täyttää Chrome Web Store -kentät, lokalisoidut kuvaukset, näyttökuvat ja tietosuojalomakkeet paikallisista tiedostoista."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Tuo tasaiset maa-asetustiedostot ja käytä niitä laajennuskaupan hallintapaneeleissa."
   },
   "theme": {
     "message": "Teema"
@@ -21,37 +21,136 @@
     "message": "Tumma"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Selkeä"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Aktiivinen projekti"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Poista projekti"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Tuo projekti/kansio"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Valitse projektin juuri, tietosivukansio tai suoraluettelokansio."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot etsii alue-nimettyjä luettelotiedostoja, kuten"
   },
   "or": {
     "message": "tai"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Voit myös vetää suoria maa-asetustiedostoja tähän paneeliin."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Tietosuojaautomaation asiakirjaviite"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot voi skannata yhden projektidokumentin Chrome Web Store tietosuojakenttään. Käytä näitä kanonisia näppäimiä, jotta skanneri voi reitittää tekstiä arvaamatta."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Käytä lupien perusteluja permission.<manifest permission code>. Loppuliitteen tulee vastata luettelon käyttöoikeuksissasi olevaa koodia optional_permissions, host_permissions tai content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Suositellut tiedostonimet: docs/chrome-web-store-privacy-form.md tai STORE_JUSTIFICATIONS.md. StorePilot hyväksyy myös muut.md- tai.txt-tiedostot, kun sisältö sisältää [privacy]-lohkon, ensisijaiset avaimet tai tunnistettavat kaupan perusteluotsikot."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Ydinnäppäimet"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Yhteiset käyttöoikeusavaimet"
+  },
+  "privacyDocFutureProof": {
+    "message": "Jos lupaa ei ole lueteltu tässä, käytä joka tapauksessa samaa mallia, esimerkiksi permission.bookmarks tai permission.system.display. StorePilot pitäisi käsitellä itse manifestikoodia totuuden lähteenä."
   },
   "projects": {
     "message": "Projektit"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Tuodut luettelot"
+  },
+  "storeMediaAssets": {
+    "message": "Store Media Assets"
+  },
+  "privacyDocument": {
+    "message": "Tietosuoja-asiakirja"
+  },
+  "privacyDocNotScanned": {
+    "message": "Ei skannattu"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Käyttökelpoista tietosuojaasiakirjaa ei löytynyt ($1 ehdokasta skannattu)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Käyttökelpoista tietosuojaasiakirjaa ei löytynyt."
+  },
+  "privacyDocSummary": {
+    "message": "$1 kentät kohteessa $2"
+  },
+  "privacyDocFile": {
+    "message": "Tiedosto"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 tietosuojakenttä(t) kohteessa $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Tietosuojadokumentti: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Aktiiviselle projektille ei ole tuotu tietosuojaasiakirjaa."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Tuo projekti tai tuo se uudelleen StorePilot-vaihtoehdoissa ladataksesi tietosuojaasiakirjan."
+  },
+  "fillSinglePurpose": {
+    "message": "Täytä yksi tarkoitus"
+  },
+  "fillPrivacy": {
+    "message": "Täytä yksityisyys"
+  },
+  "privacyNoValueForField": {
+    "message": "Ei tietosuoja-asiakirjan arvoa kohteelle $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Tietosuojakenttää ei löytynyt: $1."
+  },
+  "privacyFilledField": {
+    "message": "Täytetty tietosuojakenttä: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Täytetty $1 tietosuojakenttä(t): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Ei löytynyt: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Tuettuja tietosuojakenttiä ei ollut täytettävänä."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Tietosuojatoimenpiteet ovat käytettävissä vain Tietosuoja-sivulla."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Löytyi $1 muokattavaa tietosuojaehdokasta."
+  },
+  "status": {
+    "message": "Tila"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Ehdokkaat"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Skannattu: $1; osui: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Tuo projektikansio uudelleen skannataksesi tietosuojaasiakirjan."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Ei skannattu"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Diagnostiikka"
   },
   "project": {
     "message": "Projekti"
@@ -60,16 +159,49 @@
     "message": "Lokaali"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Täytä nykyinen kieli"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Täytä kaikki kielet"
+  },
+  "uploadStoreIcon": {
+    "message": "Lataa kauppakuvake"
+  },
+  "uploadMedia": {
+    "message": "Lataa mediaa"
+  },
+  "uploadScreenshots": {
+    "message": "Lataa kuvakaappauksia"
+  },
+  "uploadSmallPromo": {
+    "message": "Lataa pieni promo"
+  },
+  "uploadMarqueePromo": {
+    "message": "Lataa telttapromo"
+  },
+  "clearScreenshots": {
+    "message": "Selkeät kuvakaappaukset"
+  },
+  "clearStoreIcon": {
+    "message": "Tyhjennä myymäläkuvake"
+  },
+  "clearSmallPromo": {
+    "message": "Selkeä pieni promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Selkeä telttapromo"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Keskeytä täytä kaikki"
+  },
+  "abortOperation": {
+    "message": "Keskeytä toiminta"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Diagnoosisivu"
+  },
+  "openPanel": {
+    "message": "Avaa paneeli"
   },
   "options": {
     "message": "Asetukset"
@@ -78,330 +210,453 @@
     "message": "Suomi"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Täytä nykyinen kieli"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Täytä kaikki kielet"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Keskeytä täytä kaikki"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Tuo listat StorePilot-vaihtoehdoissa"
   },
   "never": {
-    "message": "Never"
+    "message": "Ei koskaan"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Tämä projekti tuotiin selaimen tiedostovalitsimesta. Tuo projektikansio uudelleen päivittääksesi sen."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Päivitetty viimeksi $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 maa-asetusta tuotu"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Ei aktiivista projektia"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(tyhjä)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 merkkiä"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projekti(a)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Ei projekteja"
+  },
+  "yes": {
+    "message": "kyllä"
+  },
+  "no": {
+    "message": "ei"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Valittu projekti"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Lähde: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Ei lähdekansiota"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Havainto: $1 luottamus"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Päivitä: tuo kansio uudelleen"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Päivitetty: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 maa-alueet"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Kieliluettelotiedostoja ei valittu."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Tuotu $1; ohitettu $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Ohitettu: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Valitusta kansiosta ei löytynyt kieliasetuskansiota."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Tuotu $1 kohteeseen $2 kohteesta $3 ($4 luottamus); ohitettu $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Löytyi $1 ehdokaskansiota."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 kuvakaappaukset, kuvake: $2, pieni mainos: $3, telttamainos: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Kaupan mediasisältöjä ei löytynyt."
+  },
+  "mediaUploadedKind": {
+    "message": "Ladattu $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Tyhjennetty $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 on jo selvä."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 on jo olemassa tai käsitellään."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Ei tyhjennettävää kuvakaappausta."
+  },
+  "screenshotsLimitReached": {
+    "message": "kuvakaappaukset: CWS raja $1 on jo saavutettu"
+  },
+  "storeIcon": {
+    "message": "Kaupan kuvake"
+  },
+  "minimizePanel": {
+    "message": "Pienennä paneeli"
+  },
+  "maximizePanel": {
+    "message": "Maksimoi paneeli"
+  },
+  "closePanel": {
+    "message": "Sulje paneeli"
+  },
+  "panelOpened": {
+    "message": "Paneeli avattu."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Tietosivut ja mediatoiminnot ovat saatavilla vain tietosivulla."
+  },
+  "clearingMedia": {
+    "message": "Tyhjennetään mediaa..."
+  },
+  "mediaClearFailed": {
+    "message": "Median tyhjennys epäonnistui: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Mediatoiminto on jo käynnissä: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Mediatoiminta käynnissä."
+  },
+  "noOperationRunning": {
+    "message": "Mikään toiminto ei ole käynnissä."
+  },
+  "operationStopped": {
+    "message": "Pysähtynyt."
+  },
+  "missing": {
+    "message": "Puuttuu"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Tuo projektikansio uudelleen mediaresurssien skannausta varten."
+  },
+  "screenshotNumber": {
+    "message": "Kuvakaappaus $1"
+  },
+  "smallPromoTile": {
+    "message": "Pieni promolaatta"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee promo laatta"
+  },
+  "mediaCandidateCounts": {
+    "message": "Ehdokkaat"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Kuvake: $1; kuvakaappaukset: $2; pieni promo: $3; telttapromo: $4."
+  },
+  "uploadingMedia": {
+    "message": "Ladataan mediaa..."
+  },
+  "mediaUploaded": {
+    "message": "Ladattu media: $1."
+  },
+  "mediaSkipped": {
+    "message": "Ohitettu: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Epäonnistui: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Median lataus epäonnistui: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Kansion tuonti peruutettu."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Kansion tuonti epäonnistui: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "valitut tiedostot"
   },
   "manual": {
-    "message": "manual"
+    "message": "manuaalinen"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Tuonti epäonnistui: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Poistetaanko StorePilot projekti \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Poistettu $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Tyhjennetäänkö luettelot kohteelle \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Tyhjennetyt tiedot kohteelle $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 luettelo maa-alueet kielellä $2. Päivitetty viimeksi $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Ei vielä projekteja"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Kopioitavaa luettelotekstiä ei ole valittu."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Kopioitu $1 kohteesta $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Tuotu $1 kohteeseen $2 ($3 luottamus)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Ei aktiivista välilehteä."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Aktiivinen välilehti ei ole Chrome Web Store Developer Dashboard -sivu."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot ei voinut muodostaa yhteyttä tähän hallintapaneelin välilehteen. Avaa Diagnostiikka nähdäksesi tarkan virheen."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostiikka valmis."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnostiikka epäonnistui."
   },
   "done": {
-    "message": "Done."
+    "message": "Valmis."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Epäonnistui."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Kieliluettelotiedostoja ei löytynyt."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Tuotu $1 kohteeseen $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projekti valittu."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Täytetään kaikki kielet..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Pysäytys pyydetty."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Täytä kaikki ei ole käynnissä."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Ei voinut lopettaa täyttämistä."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnostiikka epäonnistui: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projektia ei löydy."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Tuo projektikansio uudelleen, jotta StorePilot voi tallentaa mediatiedostot lähetettäväksi."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Ennen mediatiedostojen lukemista tarvitaan kansion lupa."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Kansion kahvaa ei ole tallennettu."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Tietoja ei ole valittu."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Kopioitu $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Näkyvää muokattavaa kenttää ei löytynyt."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Täytetty $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Avattavaa Chrome Web Store-kielen valikkoa ei löytynyt."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Ei löytynyt $1 kojelaudan kielivalikosta."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Napsautettiin $1, mutta hallintapaneelissa näkyy edelleen $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "tuntematon paikka"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Ei luettelotekstiä kohteelle $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Kuvauskenttää Chrome Web Store ei löytynyt."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Kojelaudan nykyistä kieltä ei voitu havaita."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Pysähtynyt. Täytetty $1 hallintapaneelin kieltä."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Projektitietoja ei tuotu."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Mitkään tuodut maa-asetukset eivät vastaa hallintapaneelin kielivalikkoa."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Pysähtynyt. Täytetty $1 kojelaudan kieli(t); vielä vireillä: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Palautettu $1 uudelleen yrittämisen jälkeen."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Yritetty uudelleen $1; kukaan ei toipunut."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Täytetty $1 kojelaudan kieli(t); epäonnistui $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Täytetty $1 hallintapaneelin kieltä."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Tuotu $1; vastaavat $2 hallintapaneelin kieltä."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Tuotu $1; vastaavat $2 kojelaudan kieli(t); vertaansa vailla olevat tuodut alueet: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store ei tarjonnut ei-tuettuja kieliasetuksia: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Hallintapaneeli ei tarjonnut tuettuja tuotuja alueita: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Keskeytystä pyydettiin. StorePilot pysähtyy nykyisen kojelautavaiheen jälkeen."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Kojelaudan diagnostiikka läpäissyt."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Kojelaudan diagnostiikka löysi puuttuvia sivuelementtejä."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Täytä kaikki on jo käynnissä."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Täytä kaikki pysähtyneet."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Täyttö"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Yritetään uudelleen"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Avaa StorePilot-asetukset"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Avataan projektin tuontia..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Tuntematon"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Nimetön projekti"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Tuotu projekti"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Manuaalinen tuonti"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Tuodut listaukset"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Manuaalinen tiedoston tuonti"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Valittu $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 maa-alueet kohteessa $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "jo yhdistetty"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "onnistunut"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "korkea"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "keskikokoinen"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "alhainen"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Vaihtoehdot"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Viimeksi päivitetty Ei koskaan."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Tietoja ei tuotu"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Ladataan tietoja..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot pyytää vahvistusta ennen valitun projektikansion lukemista. Tätä kehotusta odotetaan."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Kansion tuonti käsitellään Asetukset-välilehdellä, jossa kansion vahvistuskehote voidaan suorittaa luotettavasti."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Valitse projektin juuri, tietosivukansio tai suoraluettelokansio. StorePilot pyytää sinua vahvistamaan kansion käyttöoikeuden."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Ohitettu tietosuojakenttä: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Ohitettu $1 tietosuojakenttä(t): $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Tietosuojakenttä ei hyväksynyt arvoa: $1."
   }
 }

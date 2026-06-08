@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS automatsko popunjavanje"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Automatski popunjava polja Chrome Web Storea, lokalizirane opise, snimke zaslona i obrasce privatnosti iz lokalnih datoteka."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Uvezite datoteke popisa ravnih lokaliteta i upotrijebite ih na nadzornim pločama pohrane proširenja."
   },
   "theme": {
     "message": "Tema"
@@ -21,37 +21,136 @@
     "message": "Tamno"
   },
   "clear": {
-    "message": "Clear"
+    "message": "čisto"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Aktivan projekt"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Izbriši projekt"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Uvoz projekta/mape"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Odaberite korijen projekta, mapu s popisom trgovine ili mapu s izravnim popisom."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot traži ispisne datoteke s lokalnim jezikom kao što su"
   },
   "or": {
     "message": "ili"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Na ovu ploču također možete povući izravne datoteke s popisom lokaliteta."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Referenca dokumenta za automatizaciju privatnosti"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot može skenirati jedan projektni dokument za Chrome Web Store polja privatnosti. Koristite ove kanonske ključeve kako bi skener mogao usmjeravati tekst bez nagađanja."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Za opravdanje dopuštenja upotrijebite permission.<manifest permission code>. Sufiks bi trebao odgovarati kodu u vašim dopuštenjima manifesta, optional_permissions, host_permissions ili content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Preporučeni nazivi datoteka: docs/chrome-web-store-privacy-form.md ili STORE_JUSTIFICATIONS.md. StorePilot također prihvaća druge.md ili.txt datoteke kada sadržaj sadrži blok [privacy], kanonske ključeve ili prepoznatljiva zaglavlja opravdanja pohrane."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Jezgreni ključevi"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Uobičajeni ključevi dopuštenja"
+  },
+  "privacyDocFutureProof": {
+    "message": "Ako dopuštenje nije navedeno ovdje, svejedno upotrijebite isti obrazac, na primjer permission.bookmarks ili permission.system.display. StorePilot treba tretirati sam kod manifesta kao izvor istine."
   },
   "projects": {
     "message": "Projekti"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Uvezeni oglasi"
+  },
+  "storeMediaAssets": {
+    "message": "Pohranjujte medijska sredstva"
+  },
+  "privacyDocument": {
+    "message": "Dokument o privatnosti"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nije skenirano"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Nije pronađen upotrebljiv dokument o privatnosti ($1 kandidat(i) skenirani)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nije pronađen upotrebljiv dokument o privatnosti."
+  },
+  "privacyDocSummary": {
+    "message": "$1 polje(a) u $2"
+  },
+  "privacyDocFile": {
+    "message": "File"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 polja privatnosti u $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Dokument o privatnosti: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Nijedan dokument o privatnosti nije uvezen za aktivni projekt."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Uvezite ili ponovno uvezite projekt u opcijama StorePilot za učitavanje dokumenta o privatnosti."
+  },
+  "fillSinglePurpose": {
+    "message": "Ispunite jednu svrhu"
+  },
+  "fillPrivacy": {
+    "message": "Ispunite privatnost"
+  },
+  "privacyNoValueForField": {
+    "message": "Nema vrijednosti dokumenta o privatnosti za $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Nije moguće pronaći polje privatnosti: $1."
+  },
+  "privacyFilledField": {
+    "message": "Ispunjeno polje privatnosti: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Ispunjeno $1 polja privatnosti: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Nije moguće pronaći: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Nijedno podržano polje privatnosti nije bilo dostupno za ispunjavanje."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Radnje vezane uz privatnost dostupne su samo na stranici Privatnost."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Pronađen $1 kandidata za privatnost koji se mogu uređivati."
+  },
+  "status": {
+    "message": "Status"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidati"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Skenirano: $1; odgovara: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Ponovno uvezite mapu projekta za skeniranje dokumenta o privatnosti."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nije skenirano"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Dijagnostika"
   },
   "project": {
     "message": "Projekt"
@@ -60,16 +159,49 @@
     "message": "Lokalizacija"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Ispunite trenutni jezik"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Ispunite sve jezike"
+  },
+  "uploadStoreIcon": {
+    "message": "Ikona trgovine za prijenos"
+  },
+  "uploadMedia": {
+    "message": "Prijenos medija"
+  },
+  "uploadScreenshots": {
+    "message": "Prenesite snimke zaslona"
+  },
+  "uploadSmallPromo": {
+    "message": "Prenesi mali promo"
+  },
+  "uploadMarqueePromo": {
+    "message": "Prenesi promotivni okvir"
+  },
+  "clearScreenshots": {
+    "message": "Očisti snimke zaslona"
+  },
+  "clearStoreIcon": {
+    "message": "Očisti ikonu trgovine"
+  },
+  "clearSmallPromo": {
+    "message": "Jasna mala promocija"
+  },
+  "clearMarqueePromo": {
+    "message": "Očistite promotivni okvir"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Prekini popuniti sve"
+  },
+  "abortOperation": {
+    "message": "Prekini operaciju"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Stranica za dijagnostiku"
+  },
+  "openPanel": {
+    "message": "Otvorena ploča"
   },
   "options": {
     "message": "Opcije"
@@ -78,330 +210,453 @@
     "message": "Hrvatski"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Ispunite trenutni jezik"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Ispunite sve jezike"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Prekini popuniti sve"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Uvoz popisa u StorePilot opcijama"
   },
   "never": {
-    "message": "Never"
+    "message": "nikada"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Ovaj je projekt uvezen iz alata za odabir datoteka preglednika. Ponovno uvezite mapu projekta da biste je osvježili."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Zadnje ažuriranje $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 jezik(a) uvezen(e)."
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Nema aktivnog projekta"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(prazno)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 znakova"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projekt(i)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Nema projekata"
+  },
+  "yes": {
+    "message": "da"
+  },
+  "no": {
+    "message": "br"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Odabrani projekt"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Izvor: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Nema izvorne mape"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Detekcija: $1 pouzdanost"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Osvježi: ponovno uvezi mapu"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Ažurirano: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 lokalizacije"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Nisu odabrane datoteke s popisom jezika."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Uvezeno $1; preskočeno $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Preskočeno: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "U odabranoj mapi nije pronađena mapa s popisom lokaliteta."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Uvezeno $1 u $2 iz $3 ($4 pouzdanost); preskočen $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Pronađeno $1 mapa kandidata."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 snimak(a) zaslona(e), ikona: $2, mala promocija: $3, promocija okvira: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "No store media assets found."
+  },
+  "mediaUploadedKind": {
+    "message": "Učitano $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Izbrisano $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 već jasno."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 već postoji ili se obrađuje."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Nema snimaka zaslona za brisanje."
+  },
+  "screenshotsLimitReached": {
+    "message": "snimke zaslona: CWS ograničenje od $1 već je dosegnuto"
+  },
+  "storeIcon": {
+    "message": "Ikona trgovine"
+  },
+  "minimizePanel": {
+    "message": "Minimiziraj ploču"
+  },
+  "maximizePanel": {
+    "message": "Maksimiziraj ploču"
+  },
+  "closePanel": {
+    "message": "Zatvori ploču"
+  },
+  "panelOpened": {
+    "message": "Ploča otvorena."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Radnje unosa i medija dostupne su samo na stranici unosa trgovine."
+  },
+  "clearingMedia": {
+    "message": "Brisanje medija..."
+  },
+  "mediaClearFailed": {
+    "message": "Brisanje medija nije uspjelo: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Operacija medija već se izvodi: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Medijska operacija u tijeku."
+  },
+  "noOperationRunning": {
+    "message": "Ne izvodi se nijedna operacija."
+  },
+  "operationStopped": {
+    "message": "Zaustavljeno."
+  },
+  "missing": {
+    "message": "Nedostaje"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Ponovno uvezite mapu projekta za skeniranje medijskih sredstava."
+  },
+  "screenshotNumber": {
+    "message": "Snimak zaslona $1"
+  },
+  "smallPromoTile": {
+    "message": "Mala promo pločica"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee promo pločica"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidati"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikona: $1; snimke zaslona: $2; mali promo: $3; promidžbeni natpis: $4."
+  },
+  "uploadingMedia": {
+    "message": "Prijenos medija..."
+  },
+  "mediaUploaded": {
+    "message": "Uploaded media: $1."
+  },
+  "mediaSkipped": {
+    "message": "Preskočeno: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Neuspješno: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Prijenos medija nije uspio: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Uvoz mape otkazan."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Uvoz mape nije uspio: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "odabrane datoteke"
   },
   "manual": {
-    "message": "manual"
+    "message": "priručnik"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Uvoz nije uspio: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Izbrisati StorePilot projekt \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Izbrisano $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Očistiti unose za \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Izbrisani oglasi za $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 navodi jezik(e) u $2. Zadnje ažuriranje $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Još nema projekata"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Nema odabranog teksta za kopiranje."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Kopirano $1 iz $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Uvezeno $1 u $2 ($3 pouzdanost)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Nema aktivne kartice."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Aktivna kartica nije Chrome Web Store Developer Dashboard stranica."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot nije se mogao povezati s ovom karticom nadzorne ploče. Otvorite Dijagnostiku za točnu grešku."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Dijagnostika završena."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Dijagnostika nije uspjela."
   },
   "done": {
-    "message": "Done."
+    "message": "Gotovo."
   },
   "failed": {
-    "message": "Failed."
+    "message": "neuspješno"
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Nisu pronađene datoteke s popisom lokaliteta."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Uvezeno $1 u $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projekt odabran."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Popunjavanje svih jezika..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Zatraženo zaustavljanje."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Ispuni sve ne radi."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Nije moguće zaustaviti popunjavanje svih."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Dijagnostika nije uspjela: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projekt nije pronađen."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Ponovno uvezite mapu projekta tako da StorePilot može pohraniti medijske datoteke za učitavanje."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Prije čitanja medijskih datoteka potrebna je dozvola za mapu."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Nema spremljene oznake mape."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Nije odabran nijedan unos."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Kopirano $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Nije pronađeno vidljivo polje za uređivanje."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Ispunjeno $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Nije moguće pronaći padajući izbornik jezika Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Nije moguće pronaći $1 u izborniku jezika nadzorne ploče."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Kliknuli ste $1, ali nadzorna ploča i dalje prikazuje $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "nepoznat lokalitet"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Nema teksta popisa za $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Nije moguće pronaći polje opisa Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Nije moguće otkriti trenutni jezik nadzorne ploče."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Zaustavljeno. Ispunjeno $1 jezika nadzorne ploče."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Nema uvezenih popisa projekata."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Nijedan uvezeni jezik ne odgovara izborniku jezika nadzorne ploče."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Zaustavljeno. Ispunjen $1 jezik(a) nadzorne ploče; još uvijek u tijeku: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Oporavljeno $1 nakon ponovnog pokušaja."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Ponovno pokušano $1; nijedan se nije oporavio."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Ispunjen $1 jezik(a) nadzorne ploče; nije uspio $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Ispunjeno $1 jezika nadzorne ploče."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Uvezeno $1; odgovara $2 jeziku nadzorne ploče."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Uvezeno $1; odgovara $2 jezik(a) nadzorne ploče; neusklađeni uvezeni lokalitet(i): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store nije ponudio nepodržani jezik(e): $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Nadzorna ploča nije ponudila podržani uvezeni jezik(e): $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Zatražen je prekid. StorePilot će se zaustaviti nakon trenutnog koraka nadzorne ploče."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Prošla dijagnostika nadzorne ploče."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Dijagnostika nadzorne ploče pronašla je nedostajuće elemente stranice."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Fill all je već pokrenut."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Ispunite sve zaustavljeno."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Punjenje"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Ponovni pokušaj"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Otvorite opcije StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Otvaranje uvoza projekta..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Nepoznato"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Projekt bez naziva"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Uvezeni projekt"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Ručni uvoz"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Uvezeni oglasi"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Ručni uvoz datoteke"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Odabrano $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 lokalizacija u $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "već spojen"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "uspio"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "visoka"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "srednji"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "nizak"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Mogućnosti"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Zadnje ažuriranje na Nikad."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Nema uvezenih unosa"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Učitavanje popisa..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot će tražiti potvrdu prije čitanja odabrane mape projekta. Taj upit je očekivan."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Uvozom mape upravlja se na kartici opcija, gdje se upit za potvrdu mape može pouzdano dovršiti."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Odaberite korijen projekta, mapu s popisom trgovine ili mapu s izravnim popisom. StorePilot će vas pitati da potvrdite pristup mapi."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Preskočeno polje privatnosti: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Preskočeno $1 polje(a) privatnosti: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Polje privatnosti nije prihvatilo vrijednost: $1."
   }
 }

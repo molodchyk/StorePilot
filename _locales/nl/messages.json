@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS automatisch invullen"
   },
   "extensionDescription": {
-    "message": "Automatiseert herhaald publicatiewerk voor browserextensies."
+    "message": "Vul Chrome Web Store-velden, gelokaliseerde beschrijvingen, screenshots en privacyformulieren automatisch vanuit lokale bestanden."
   },
   "optionsSubtitle": {
     "message": "Importeer platte locale-listingbestanden en gebruik ze in dashboards van extensiewinkels."
@@ -33,22 +33,121 @@
     "message": "Project/map importeren"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Selecteer een projecthoofdmap, een map met winkelvermeldingen of een map met directe vermeldingen."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot zoekt naar lijstbestanden met de landinstelling, zoals"
   },
   "or": {
     "message": "of"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "U kunt ook bestanden met directe landinstellingen naar dit paneel slepen."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Documentreferentie voor privacyautomatisering"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot kan één projectdocument scannen voor Chrome Web Store privacyvelden. Gebruik deze canonieke sleutels zodat de scanner tekst kan routeren zonder te raden."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Gebruik permission.<manifest permission code> voor toestemmingsmotivaties. Het achtervoegsel moet overeenkomen met de code in uw manifestmachtigingen, optional_permissions, host_permissions of content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Aanbevolen bestandsnamen: docs/chrome-web-store-privacy-form.md of STORE_JUSTIFICATIONS.md. StorePilot accepteert ook andere.md- of.txt-bestanden wanneer de inhoud een [privacy]-blok, canonieke sleutels of herkenbare winkel-rechtvaardigingskoppen bevat."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Kern sleutels"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Algemene machtigingssleutels"
+  },
+  "privacyDocFutureProof": {
+    "message": "Als er hier geen toestemming wordt vermeld, gebruik dan toch hetzelfde patroon, bijvoorbeeld permission.bookmarks of permission.system.display. StorePilot moet de manifestcode zelf als de bron van de waarheid behandelen."
   },
   "projects": {
     "message": "Projecten"
   },
   "importedListings": {
     "message": "Geïmporteerde listings"
+  },
+  "storeMediaAssets": {
+    "message": "Bewaar media-items"
+  },
+  "privacyDocument": {
+    "message": "Privacydocument"
+  },
+  "privacyDocNotScanned": {
+    "message": "Niet gescand"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Geen bruikbaar privacydocument gevonden ($1 kandidaat(s) gescand)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Geen bruikbaar privacydocument gevonden."
+  },
+  "privacyDocSummary": {
+    "message": "$1 veld(en) in $2"
+  },
+  "privacyDocFile": {
+    "message": "Bestand"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 privacyveld(en) in $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Privacydocument: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Er is geen privacydocument geïmporteerd voor het actieve project."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importeer of importeer het project opnieuw in StorePilot opties om een privacydocument te laden."
+  },
+  "fillSinglePurpose": {
+    "message": "Vul één doel in"
+  },
+  "fillPrivacy": {
+    "message": "Privacy invullen"
+  },
+  "privacyNoValueForField": {
+    "message": "Geen privacydocumentwaarde voor $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Kan het privacyveld niet vinden: $1."
+  },
+  "privacyFilledField": {
+    "message": "Ingevuld privacyveld: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Ingevulde $1 privacyveld(en): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Kon het volgende niet vinden: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Er waren geen ondersteunde privacyvelden beschikbaar om in te vullen."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Privacyacties zijn alleen beschikbaar op de Privacypagina."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 bewerkbare privacykandidaat(en) gevonden."
+  },
+  "status": {
+    "message": "Status"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidaten"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Gescand: $1; overeenkomend: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Importeer de projectmap opnieuw om het privacydocument te scannen."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Niet gescand"
   },
   "diagnostics": {
     "message": "Diagnostiek"
@@ -57,7 +156,7 @@
     "message": "Project"
   },
   "locale": {
-    "message": "Locale"
+    "message": "Lokaal"
   },
   "fillCurrentLanguage": {
     "message": "Huidige taal invullen"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Alle talen invullen"
   },
+  "uploadStoreIcon": {
+    "message": "Winkelpictogram uploaden"
+  },
+  "uploadMedia": {
+    "message": "Media uploaden"
+  },
+  "uploadScreenshots": {
+    "message": "Upload schermafbeeldingen"
+  },
+  "uploadSmallPromo": {
+    "message": "Upload kleine promo"
+  },
+  "uploadMarqueePromo": {
+    "message": "Feestpromo uploaden"
+  },
+  "clearScreenshots": {
+    "message": "Duidelijke schermafbeeldingen"
+  },
+  "clearStoreIcon": {
+    "message": "Duidelijk winkelpictogram"
+  },
+  "clearSmallPromo": {
+    "message": "Duidelijke kleine promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Duidelijke promotie"
+  },
   "abortFillAll": {
     "message": "Alles invullen stoppen"
   },
+  "abortOperation": {
+    "message": "Operatie afbreken"
+  },
   "diagnosePage": {
     "message": "Pagina diagnosticeren"
+  },
+  "openPanel": {
+    "message": "Open paneel"
   },
   "options": {
     "message": "Opties"
@@ -90,318 +222,441 @@
     "message": "Importeer listings in StorePilot-opties"
   },
   "never": {
-    "message": "Never"
+    "message": "Nooit"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Dit project is geïmporteerd vanuit een browserbestandskiezer. Importeer de projectmap opnieuw om deze te vernieuwen."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Laatst bijgewerkt op $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 land(en) geïmporteerd"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Geen actief project"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(leeg)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 tekens"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 project(en)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Geen projecten"
+  },
+  "yes": {
+    "message": "ja"
+  },
+  "no": {
+    "message": "nee"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Geselecteerd project"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Bron: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Geen bronmap"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Detectie: $1 vertrouwen"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Vernieuwen: map opnieuw importeren"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Bijgewerkt: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 landinstellingen"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Er zijn geen bestanden met landinstellingen geselecteerd."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Geïmporteerd $1; $2 overgeslagen."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Overgeslagen: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Er is geen map met landinstellingen gevonden in de geselecteerde map."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$1 geïmporteerd in $2 vanuit $3 ($4 betrouwbaarheid); $5 overgeslagen."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 kandidaatmappen gevonden."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 screenshot(s), pictogram: $2, kleine promo: $3, selectiekaderpromo: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Geen winkelmedia-items gevonden."
+  },
+  "mediaUploadedKind": {
+    "message": "Geüpload $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "$1 gewist: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 al duidelijk."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 al aanwezig of bezig met verwerken."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Geen schermafbeeldingen om te wissen."
+  },
+  "screenshotsLimitReached": {
+    "message": "screenshots: CWS limiet van $1 al bereikt"
+  },
+  "storeIcon": {
+    "message": "Winkelpictogram"
+  },
+  "minimizePanel": {
+    "message": "Minimaliseer paneel"
+  },
+  "maximizePanel": {
+    "message": "Maximaliseer paneel"
+  },
+  "closePanel": {
+    "message": "Sluit paneel"
+  },
+  "panelOpened": {
+    "message": "Paneel geopend."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Vermeldings- en media-acties zijn alleen beschikbaar op de pagina Winkelvermelding."
+  },
+  "clearingMedia": {
+    "message": "Media wissen..."
+  },
+  "mediaClearFailed": {
+    "message": "Media wissen mislukt: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Mediabewerking is al actief: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Mediabewerking wordt uitgevoerd."
+  },
+  "noOperationRunning": {
+    "message": "Er is geen bewerking actief."
+  },
+  "operationStopped": {
+    "message": "Gestopt."
+  },
+  "missing": {
+    "message": "Ontbreekt"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Importeer de projectmap opnieuw om media-items te scannen."
+  },
+  "screenshotNumber": {
+    "message": "Schermafbeelding $1"
+  },
+  "smallPromoTile": {
+    "message": "Kleine promotegel"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee-promotietegel"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidaten"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Pictogram: $1; schermafbeeldingen: $2; kleine aanbieding: $3; grote promotie: $4."
+  },
+  "uploadingMedia": {
+    "message": "Media uploaden..."
+  },
+  "mediaUploaded": {
+    "message": "Geüploade media: $1."
+  },
+  "mediaSkipped": {
+    "message": "Overgeslagen: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Mislukt: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Media-upload mislukt: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Mapimport geannuleerd."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Mapimport mislukt: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "geselecteerde bestanden"
   },
   "manual": {
-    "message": "manual"
+    "message": "handleiding"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Importeren mislukt: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot project \"$1\" verwijderen?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1 verwijderd."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Lijsten voor \"$1\" wissen?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Lijsten gewist voor $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 geeft land(en) weer in $2. Laatst bijgewerkt op $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Nog geen projecten"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Er is geen aanbiedingstekst geselecteerd om te kopiëren."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$1 gekopieerd van $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 geïmporteerd in $2 ($3 betrouwbaarheid)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Geen actief tabblad."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Het actieve tabblad is geen Chrome Web Store Developer Dashboard pagina."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot kan geen verbinding maken met dit dashboardtabblad. Open Diagnostiek voor de exacte fout."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostiek voltooid."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnostiek is mislukt."
   },
   "done": {
-    "message": "Done."
+    "message": "Klaar."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Mislukt."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Er zijn geen bestanden met landinstellingen gevonden."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1 geïmporteerd in $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Project geselecteerd."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Alle talen invullen..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Stop aangevraagd."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Alles vullen loopt niet."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Kon niet stoppen met alles invullen."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnostiek mislukt: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Project niet gevonden."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Importeer de projectmap opnieuw zodat StorePilot de mediabestanden kan opslaan voor uploaden."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Er is maptoestemming nodig voordat u mediabestanden kunt lezen."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Geen maphandle opgeslagen."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Geen vermelding geselecteerd."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Gekopieerd $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Geen zichtbaar bewerkbaar veld gevonden."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Gevuld $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Kan de vervolgkeuzelijst voor de taal Chrome Web Store niet vinden."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Kan $1 niet vinden in het taalmenu van het dashboard."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Klik op $1, maar het dashboard toont nog steeds $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "een onbekende locatie"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Geen aanbiedingstekst voor $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Kan het beschrijvingsveld Chrome Web Store niet vinden."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Kan de huidige dashboardtaal niet detecteren."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Gestopt. $1 dashboardtaal/-talen ingevuld."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Er zijn geen projectvermeldingen geïmporteerd."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Er zijn geen geïmporteerde landinstellingen die overeenkomen met het taalmenu van het dashboard."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Gestopt. Ingevulde $1 dashboardtaal(en); nog in behandeling: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "$1 hersteld na nieuwe poging."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Opnieuw geprobeerd $1; niemand herstelde."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Ingevulde $1 dashboardtaal(en); mislukt $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 dashboardtaal/-talen ingevuld."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Geïmporteerd $1; komt overeen met $2 dashboardtaal/-talen."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Geïmporteerd $1; overeenkomende $2 dashboardtaal(en); ongeëvenaarde geïmporteerde land(en): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store heeft geen niet-ondersteunde landinstellingen aangeboden: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Dashboard bood geen ondersteunde geïmporteerde landinstelling(en): $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Afbreken gevraagd. StorePilot stopt na de huidige dashboardstap."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Dashboarddiagnostiek geslaagd."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Dashboarddiagnostiek heeft ontbrekende pagina-elementen gevonden."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Vul alles is al actief."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Vullen is allemaal gestopt."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Vullen"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Opnieuw proberen"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Open StorePilot opties"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Projectimport openen..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Onbekend"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Naamloos project"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Geïmporteerd project"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Handmatig importeren"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Geïmporteerde vermeldingen"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Handmatige bestandsimport"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1 geselecteerd."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 landinstellingen in $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "al verbonden"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "geslaagd"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "hoog"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "middelmatig"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "laag"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Opties"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Laatst bijgewerkt op Nooit."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Geen vermeldingen geïmporteerd"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Advertenties laden..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot vraagt om bevestiging voordat de geselecteerde projectmap wordt gelezen. Die prompt wordt verwacht."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Het importeren van mappen wordt afgehandeld op het tabblad Opties, waar de mapbevestigingsprompt betrouwbaar kan worden voltooid."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Selecteer een projecthoofdmap, een map met winkelvermeldingen of een map met directe vermeldingen. StorePilot vraagt u om de toegang tot de map te bevestigen."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Privacyveld overgeslagen: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "$1 privacyveld(en) overgeslagen: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Het privacyveld accepteerde de waarde niet: $1."
   }
 }

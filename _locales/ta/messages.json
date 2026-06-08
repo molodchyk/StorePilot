@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS தானாக நிரப்பல்"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "உள்ளூர் கோப்புகளில் இருந்து Chrome Web Store புலங்கள், விளக்கங்கள், திரைப்பிடிப்புகள், தனியுரிமை படிவங்களை தானாக நிரப்பும்."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "பிளாட் லோகேல் பட்டியல் கோப்புகளை இறக்குமதி செய்து அவற்றை நீட்டிப்பு அங்காடி டாஷ்போர்டுகளில் பயன்படுத்தவும்."
   },
   "theme": {
     "message": "தீம்"
@@ -21,37 +21,136 @@
     "message": "இருள்"
   },
   "clear": {
-    "message": "Clear"
+    "message": "தெளிவு"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "செயலில் உள்ள திட்டம்"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "திட்டத்தை நீக்கு"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "இறக்குமதி திட்டம்/கோப்புறை"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "திட்ட ரூட், ஸ்டோர்-லிஸ்டிங் கோப்புறை அல்லது நேரடி பட்டியல் கோப்புறையைத் தேர்ந்தெடுக்கவும்."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot போன்ற லோகேல்-பெயரிடப்பட்ட பட்டியல் கோப்புகளைத் தேடுகிறது"
   },
   "or": {
     "message": "அல்லது"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "இந்த பேனலில் நேரடி மொழி பட்டியல் கோப்புகளையும் இழுக்கலாம்."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "தனியுரிமை ஆட்டோமேஷன் ஆவணம் குறிப்பு"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot ஒரு திட்ட ஆவணத்தை Chrome Web Store தனியுரிமை புலங்களுக்கு ஸ்கேன் செய்யலாம். இந்த நியமன விசைகளைப் பயன்படுத்தவும், இதனால் ஸ்கேனர் யூகிக்காமல் உரையை அனுப்பும்."
+  },
+  "privacyDocPermissionRule": {
+    "message": "அனுமதி நியாயங்களுக்கு, permission.<manifest permission code> ஐப் பயன்படுத்தவும். பின்னொட்டு உங்கள் மேனிஃபெஸ்ட் அனுமதிகளில் உள்ள குறியீட்டுடன் பொருந்த வேண்டும், optional_permissions, host_permissions, அல்லது content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "பரிந்துரைக்கப்பட்ட கோப்பு பெயர்கள்: docs/chrome-web-store-privacy-form.md அல்லது STORE_JUSTIFICATIONS.md. StorePilot பிற.md அல்லது.txt கோப்புகளையும் ஏற்றுக்கொள்கிறது, உள்ளடக்கத்தில் [privacy] தொகுதி, நியமன விசைகள் அல்லது அங்கீகரிக்கக்கூடிய ஸ்டோர்-நியாயப்படுத்தல் தலைப்புகள் இருக்கும்."
+  },
+  "privacyDocCoreKeys": {
+    "message": "முக்கிய விசைகள்"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "பொதுவான அனுமதி விசைகள்"
+  },
+  "privacyDocFutureProof": {
+    "message": "அனுமதி இங்கே பட்டியலிடப்படவில்லை என்றால், எப்படியும் அதே மாதிரியைப் பயன்படுத்தவும், எடுத்துக்காட்டாக permission.bookmarks அல்லது permission.system.display. StorePilot உண்மையின் ஆதாரமாக மேனிஃபெஸ்ட் குறியீட்டைக் கருத வேண்டும்."
   },
   "projects": {
     "message": "திட்டங்கள்"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "இறக்குமதி செய்யப்பட்ட பட்டியல்கள்"
+  },
+  "storeMediaAssets": {
+    "message": "ஸ்டோர் மீடியா சொத்துகள்"
+  },
+  "privacyDocument": {
+    "message": "தனியுரிமை ஆவணம்"
+  },
+  "privacyDocNotScanned": {
+    "message": "ஸ்கேன் செய்யப்படவில்லை"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "பயன்படுத்தக்கூடிய தனியுரிமை ஆவணம் இல்லை ($1 வேட்பாளர்(கள்) ஸ்கேன் செய்யப்பட்டது)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "பயன்படுத்தக்கூடிய தனியுரிமை ஆவணம் இல்லை."
+  },
+  "privacyDocSummary": {
+    "message": "$2 இல் $1 புலம்(கள்)"
+  },
+  "privacyDocFile": {
+    "message": "கோப்பு"
+  },
+  "privacyPanelSummary": {
+    "message": "$2 இல் $1 தனியுரிமை புலம்(கள்)"
+  },
+  "privacyDocFileFound": {
+    "message": "தனியுரிமை ஆவணம்: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "செயலில் உள்ள திட்டத்திற்காக எந்த தனியுரிமை ஆவணமும் இறக்குமதி செய்யப்படவில்லை."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "தனியுரிமை ஆவணத்தை ஏற்றுவதற்கு StorePilot விருப்பங்களில் திட்டத்தை இறக்குமதி செய்யவும் அல்லது மீண்டும் இறக்குமதி செய்யவும்."
+  },
+  "fillSinglePurpose": {
+    "message": "ஒற்றை நோக்கத்தை நிரப்பவும்"
+  },
+  "fillPrivacy": {
+    "message": "தனியுரிமையை நிரப்பவும்"
+  },
+  "privacyNoValueForField": {
+    "message": "$1க்கு தனியுரிமை ஆவண மதிப்பு இல்லை."
+  },
+  "privacyFieldNotFound": {
+    "message": "தனியுரிமை புலத்தைக் கண்டறிய முடியவில்லை: $1."
+  },
+  "privacyFilledField": {
+    "message": "நிரப்பப்பட்ட தனியுரிமை புலம்: $1."
+  },
+  "privacyFilledFields": {
+    "message": "நிரப்பப்பட்ட $1 தனியுரிமை புலம்(கள்): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "கண்டுபிடிக்க முடியவில்லை: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "நிரப்புவதற்கு ஆதரிக்கப்படும் தனியுரிமை புலங்கள் எதுவும் இல்லை."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "தனியுரிமைச் செயல்கள் தனியுரிமை பக்கத்தில் மட்டுமே கிடைக்கும்."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 திருத்தக்கூடிய தனியுரிமை வேட்பாளர்(கள்) கண்டறியப்பட்டது."
+  },
+  "status": {
+    "message": "நிலை"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "வேட்பாளர்கள்"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "ஸ்கேன் செய்யப்பட்டது: $1; பொருந்தியது: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "தனியுரிமை ஆவணத்தை ஸ்கேன் செய்ய திட்ட கோப்புறையை மீண்டும் இறக்குமதி செய்யவும்."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "ஸ்கேன் செய்யப்படவில்லை"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "நோய் கண்டறிதல்"
   },
   "project": {
     "message": "திட்டம்"
@@ -60,16 +159,49 @@
     "message": "மொழி"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "தற்போதைய மொழியை நிரப்பவும்"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "அனைத்து மொழிகளையும் நிரப்பவும்"
+  },
+  "uploadStoreIcon": {
+    "message": "ஸ்டோர் ஐகானைப் பதிவேற்றவும்"
+  },
+  "uploadMedia": {
+    "message": "மீடியாவைப் பதிவேற்றவும்"
+  },
+  "uploadScreenshots": {
+    "message": "ஸ்கிரீன் ஷாட்களைப் பதிவேற்றவும்"
+  },
+  "uploadSmallPromo": {
+    "message": "சிறிய விளம்பரத்தைப் பதிவேற்றவும்"
+  },
+  "uploadMarqueePromo": {
+    "message": "மார்க்கீ விளம்பரத்தைப் பதிவேற்றவும்"
+  },
+  "clearScreenshots": {
+    "message": "ஸ்கிரீன் ஷாட்களை அழி"
+  },
+  "clearStoreIcon": {
+    "message": "ஸ்டோர் ஐகானை அழிக்கவும்"
+  },
+  "clearSmallPromo": {
+    "message": "சிறிய விளம்பரத்தை அழிக்கவும்"
+  },
+  "clearMarqueePromo": {
+    "message": "தெளிவான மார்க்கீ விளம்பரம்"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "அனைத்தையும் நிரப்புவதை நிறுத்து"
+  },
+  "abortOperation": {
+    "message": "அறுவை சிகிச்சையை நிறுத்துதல்"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "நோய் கண்டறிதல் பக்கம்"
+  },
+  "openPanel": {
+    "message": "பேனலைத் திற"
   },
   "options": {
     "message": "விருப்பங்கள்"
@@ -78,330 +210,453 @@
     "message": "தமிழ்"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "தற்போதைய மொழியை நிரப்பவும்"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "அனைத்து மொழிகளையும் நிரப்பவும்"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "அனைத்தையும் நிரப்புவதை நிறுத்து"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "StorePilot விருப்பங்களில் பட்டியல்களை இறக்குமதி செய்யவும்"
   },
   "never": {
-    "message": "Never"
+    "message": "ஒருபோதும் இல்லை"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "இந்தத் திட்டம் உலாவி கோப்புத் தேர்விலிருந்து இறக்குமதி செய்யப்பட்டது. திட்டக் கோப்புறையைப் புதுப்பிக்க அதை மீண்டும் இறக்குமதி செய்யவும்."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "கடைசியாக $1 அன்று புதுப்பிக்கப்பட்டது."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 மொழி(கள்) இறக்குமதி செய்யப்பட்டது"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "செயலில் உள்ள திட்டம் இல்லை"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(காலி)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 எழுத்துகள்"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 திட்டம்(கள்)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "திட்டங்கள் இல்லை"
+  },
+  "yes": {
+    "message": "ஆம்"
+  },
+  "no": {
+    "message": "இல்லை"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "தேர்ந்தெடுக்கப்பட்ட திட்டம்"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "ஆதாரம்: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "மூல கோப்புறை இல்லை"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "கண்டறிதல்: $1 நம்பிக்கை"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "புதுப்பிக்கவும்: கோப்புறையை மீண்டும் இறக்குமதி செய்யவும்"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "புதுப்பிக்கப்பட்டது: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 இடங்கள்"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "உள்ளூர் பட்டியல் கோப்புகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "இறக்குமதி செய்யப்பட்டது $1; $2 தவிர்க்கப்பட்டது."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "தவிர்க்கப்பட்டது: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "தேர்ந்தெடுக்கப்பட்ட கோப்புறையில் மொழி பட்டியல் கோப்புறை இல்லை."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$3 இலிருந்து $1 $2க்கு இறக்குமதி செய்யப்பட்டது ($4 நம்பிக்கை); $5 தவிர்க்கப்பட்டது."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 வேட்பாளர் கோப்புறைகள் கண்டறியப்பட்டன."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 ஸ்கிரீன்ஷாட்(கள்), ஐகான்: $2, சிறிய விளம்பரம்: $3, மார்க்கீ விளம்பரம்: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "ஸ்டோர் மீடியா சொத்துக்கள் எதுவும் இல்லை."
+  },
+  "mediaUploadedKind": {
+    "message": "பதிவேற்றப்பட்டது $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "அழிக்கப்பட்டது $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 ஏற்கனவே தெளிவாக உள்ளது."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 ஏற்கனவே உள்ளது அல்லது செயலாக்கப்படுகிறது."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "அழிக்க திரைக்காட்சிகள் இல்லை."
+  },
+  "screenshotsLimitReached": {
+    "message": "திரைக்காட்சிகள்: CWS வரம்பு $1 ஏற்கனவே அடைந்துள்ளது"
+  },
+  "storeIcon": {
+    "message": "ஸ்டோர் ஐகான்"
+  },
+  "minimizePanel": {
+    "message": "பேனலைக் குறைக்கவும்"
+  },
+  "maximizePanel": {
+    "message": "பேனலை பெரிதாக்கவும்"
+  },
+  "closePanel": {
+    "message": "பேனலை மூடு"
+  },
+  "panelOpened": {
+    "message": "பேனல் திறக்கப்பட்டது."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "பட்டியல் மற்றும் மீடியா செயல்கள் ஸ்டோர் பட்டியல் பக்கத்தில் மட்டுமே கிடைக்கும்."
+  },
+  "clearingMedia": {
+    "message": "மீடியாவை அழிக்கிறது..."
+  },
+  "mediaClearFailed": {
+    "message": "மீடியாவை அழிக்க முடியவில்லை: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "மீடியா செயல்பாடு ஏற்கனவே இயங்குகிறது: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "மீடியா செயல்பாடு நடந்து கொண்டிருக்கிறது."
+  },
+  "noOperationRunning": {
+    "message": "எந்த நடவடிக்கையும் இயங்கவில்லை."
+  },
+  "operationStopped": {
+    "message": "நிறுத்தப்பட்டது."
+  },
+  "missing": {
+    "message": "காணவில்லை"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "மீடியா சொத்துக்களை ஸ்கேன் செய்ய திட்ட கோப்புறையை மீண்டும் இறக்குமதி செய்யவும்."
+  },
+  "screenshotNumber": {
+    "message": "ஸ்கிரீன்ஷாட் $1"
+  },
+  "smallPromoTile": {
+    "message": "சிறிய விளம்பர ஓடு"
+  },
+  "marqueePromoTile": {
+    "message": "மார்க்யூ விளம்பர ஓடு"
+  },
+  "mediaCandidateCounts": {
+    "message": "வேட்பாளர்கள்"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "ஐகான்: $1; திரைக்காட்சிகள்: $2; சிறிய விளம்பரம்: $3; மார்க்கீ விளம்பரம்: $4."
+  },
+  "uploadingMedia": {
+    "message": "மீடியாவைப் பதிவேற்றுகிறது..."
+  },
+  "mediaUploaded": {
+    "message": "பதிவேற்றிய மீடியா: $1."
+  },
+  "mediaSkipped": {
+    "message": "தவிர்க்கப்பட்டது: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "தோல்வி: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "மீடியா பதிவேற்றம் தோல்வியடைந்தது: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "கோப்புறை இறக்குமதி ரத்துசெய்யப்பட்டது."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "கோப்புறை இறக்குமதி தோல்வியடைந்தது: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "தேர்ந்தெடுக்கப்பட்ட கோப்புகள்"
   },
   "manual": {
-    "message": "manual"
+    "message": "கையேடு"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "இறக்குமதி தோல்வி: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot திட்டத்தை \"$1\" நீக்கவா?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1 நீக்கப்பட்டது."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "\"$1\"க்கான பட்டியல்களை அழிக்கவா?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "$1க்கான பட்டியல்கள் அழிக்கப்பட்டன."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$2 இல் $1 பட்டியல் மொழி(கள்). கடைசியாக $3 அன்று புதுப்பிக்கப்பட்டது."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "இதுவரை திட்டங்கள் எதுவும் இல்லை"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "நகலெடுக்க பட்டியல் உரை எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$2 இலிருந்து $1 நகலெடுக்கப்பட்டது."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 $2க்கு இறக்குமதி செய்யப்பட்டது ($3 நம்பிக்கை)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "செயலில் உள்ள தாவல் இல்லை."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "செயலில் உள்ள தாவல் Chrome Web Store Developer Dashboard பக்கம் அல்ல."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot இந்த டாஷ்போர்டு தாவலுடன் இணைக்க முடியவில்லை. சரியான பிழைக்கான கண்டறிதலைத் திறக்கவும்."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "நோய் கண்டறிதல் முடிந்தது."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "நோய் கண்டறிதல் தோல்வியடைந்தது."
   },
   "done": {
-    "message": "Done."
+    "message": "முடிந்தது."
   },
   "failed": {
-    "message": "Failed."
+    "message": "தோல்வியடைந்தது."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "மொழி பட்டியல் கோப்புகள் எதுவும் காணப்படவில்லை."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$2 இல் $1 இறக்குமதி செய்யப்பட்டது."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "திட்டம் தேர்ந்தெடுக்கப்பட்டது."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "அனைத்து மொழிகளையும் நிரப்புகிறது..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "நிறுத்தம் கோரப்பட்டது."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "நிரப்பு அனைத்தும் இயங்கவில்லை."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "அனைத்தையும் நிரப்புவதை நிறுத்த முடியவில்லை."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "நோய் கண்டறிதல் தோல்வியடைந்தது: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "திட்டம் கிடைக்கவில்லை."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "திட்ட கோப்புறையை மீண்டும் இறக்குமதி செய்யவும், இதனால் StorePilot மீடியா கோப்புகளை பதிவேற்றம் செய்ய சேமிக்க முடியும்."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "மீடியா கோப்புகளைப் படிக்கும் முன் கோப்புறை அனுமதி தேவை."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "கோப்புறை கைப்பிடி சேமிக்கப்படவில்லை."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "பட்டியல் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "$1 நகலெடுக்கப்பட்டது."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "காணக்கூடிய திருத்தக்கூடிய புலம் எதுவும் இல்லை."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "$1 நிரப்பப்பட்டது."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Chrome Web Store மொழி கீழ்தோன்றலைக் கண்டறிய முடியவில்லை."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "டாஷ்போர்டு மொழி மெனுவில் $1 ஐக் கண்டுபிடிக்க முடியவில்லை."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "$1ஐக் கிளிக் செய்தேன், ஆனால் டாஷ்போர்டு $2ஐக் காட்டுகிறது."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "தெரியாத இடம்"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "$1க்கு பட்டியல் உரை இல்லை."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Chrome Web Store விளக்கப் புலத்தைக் கண்டறிய முடியவில்லை."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "தற்போதைய டாஷ்போர்டு மொழியைக் கண்டறிய முடியவில்லை."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "நிறுத்தப்பட்டது. நிரப்பப்பட்ட $1 டாஷ்போர்டு மொழி(கள்)."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "திட்டப் பட்டியல்கள் எதுவும் இறக்குமதி செய்யப்படவில்லை."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "டேஷ்போர்டு மொழி மெனுவுடன் இறக்குமதி செய்யப்பட்ட மொழிகள் எதுவும் பொருந்தவில்லை."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "நிறுத்தப்பட்டது. நிரப்பப்பட்ட $1 டாஷ்போர்டு மொழி(கள்); இன்னும் நிலுவையில் உள்ளது: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "மீண்டும் முயற்சித்த பிறகு $1 மீட்டெடுக்கப்பட்டது."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "மீண்டும் முயற்சித்தது $1; யாரும் மீட்கப்படவில்லை."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "நிரப்பப்பட்ட $1 டாஷ்போர்டு மொழி(கள்); தோல்வி $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "நிரப்பப்பட்ட $1 டாஷ்போர்டு மொழி(கள்)."
+  },
+  "fillAllDashboardSummary": {
+    "message": "இறக்குமதி செய்யப்பட்டது $1; பொருந்திய $2 டாஷ்போர்டு மொழி(கள்)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "இறக்குமதி செய்யப்பட்டது $1; பொருந்திய $2 டாஷ்போர்டு மொழி(கள்); பொருந்தாத இறக்குமதி செய்யப்பட்ட மொழி(கள்): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store ஆதரிக்கப்படாத மொழி(களை) வழங்கவில்லை: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "டாஷ்போர்டு ஆதரிக்கப்படும் இறக்குமதி செய்யப்பட்ட மொழி(களை) வழங்கவில்லை: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "கருச்சிதைவு கோரப்பட்டது. தற்போதைய டாஷ்போர்டு படிக்குப் பிறகு StorePilot நிறுத்தப்படும்."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "டாஷ்போர்டு கண்டறிதல் நிறைவேற்றப்பட்டது."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "டாஷ்போர்டு கண்டறிதலில் பக்க உறுப்புகள் விடுபட்டுள்ளன."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "அனைத்து நிரப்பவும் ஏற்கனவே இயங்கி வருகிறது."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "நிரப்புவது அனைத்தும் நிறுத்தப்பட்டது."
   },
   "filling": {
-    "message": "Filling"
+    "message": "நிரப்புதல்"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "மீண்டும் முயற்சிக்கிறது"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "StorePilot விருப்பங்களைத் திறக்கவும்"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "திட்ட இறக்குமதியைத் திறக்கிறது..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "தெரியவில்லை"
+  },
+  "alphaChannel": {
+    "message": "ஆல்பா"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "பெயரிடப்படாத திட்டம்"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "இறக்குமதி செய்யப்பட்ட திட்டம்"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "கைமுறை இறக்குமதி"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "இறக்குமதி செய்யப்பட்ட பட்டியல்கள்"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "கைமுறையாக கோப்பு இறக்குமதி"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1 தேர்ந்தெடுக்கப்பட்டது."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2 இல் $1 மொழிகள்"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "ஏற்கனவே இணைக்கப்பட்டுள்ளது"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "வெற்றி பெற்றது"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "உயர்"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "நடுத்தர"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "குறைந்த"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot விருப்பங்கள்"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Never இல் கடைசியாக புதுப்பிக்கப்பட்டது."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "பட்டியல்கள் எதுவும் இறக்குமதி செய்யப்படவில்லை"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "பட்டியல்களை ஏற்றுகிறது..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "தேர்ந்தெடுக்கப்பட்ட திட்டக் கோப்புறையைப் படிக்கும் முன் StorePilot உறுதிப்படுத்தலைக் கேட்கும். என்று எதிர்பார்க்கப்படுகிறது."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "கோப்புறை இறக்குமதியானது விருப்பங்கள் தாவலில் கையாளப்படுகிறது, அங்கு கோப்புறை உறுதிப்படுத்தல் வரியில் நம்பகத்தன்மையுடன் முடியும்."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "திட்ட ரூட், ஸ்டோர்-லிஸ்டிங் கோப்புறை அல்லது நேரடி பட்டியல் கோப்புறையைத் தேர்ந்தெடுக்கவும். கோப்புறை அணுகலை உறுதிப்படுத்த StorePilot கேட்கும்."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "தவிர்க்கப்பட்ட தனியுரிமை புலம்: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "தவிர்க்கப்பட்டது $1 தனியுரிமை புலம்(கள்): $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "தனியுரிமை புலம் மதிப்பை ஏற்கவில்லை: $1."
   }
 }

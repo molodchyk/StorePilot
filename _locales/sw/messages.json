@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS kujaza kiotomatiki"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Jaza kiotomatiki sehemu za Chrome Web Store, maelezo yaliyotafsiriwa, picha za skrini na fomu za faragha kutoka faili za ndani."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Ingiza faili za uorodheshaji wa lugha tambarare na uzitumie katika dashibodi za duka la viendelezi."
   },
   "theme": {
     "message": "Mandhari"
@@ -21,37 +21,136 @@
     "message": "Giza"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Wazi"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Mradi unaotumika"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Futa mradi"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Ingiza mradi/folda"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Chagua mzizi wa mradi, folda ya ukurasa wa programu katika Google Play, au folda ya uorodheshaji wa moja kwa moja."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot hutafuta faili za kuorodhesha zenye majina ya eneo kama vile"
   },
   "or": {
     "message": "au"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Unaweza pia kuburuta faili za uorodheshaji wa lugha moja kwa moja kwenye paneli hii."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Rejeleo la hati ya otomatiki ya faragha"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot inaweza kuchanganua hati moja ya mradi kwa Chrome Web Store sehemu za faragha. Tumia vitufe hivi vya kisheria ili kichanganuzi kiweze kuelekeza maandishi bila kubahatisha."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Kwa uhalali wa ruhusa, tumia permission.<manifest permission code>. Kiambishi tamati kinafaa kulingana na msimbo katika ruhusa zako za faili ya maelezo, optional_permissions, host_permissions, au content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Majina ya faili yanayopendekezwa: docs/chrome-web-store-privacy-form.md au STORE_JUSTIFICATIONS.md. StorePilot pia inakubali faili.md au.txt nyingine wakati maudhui yana kizuizi cha [privacy], funguo za kisheria, au vichwa vinavyotambulika vya uhalalishaji wa duka."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Vifunguo vya msingi"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Vifunguo vya ruhusa vya kawaida"
+  },
+  "privacyDocFutureProof": {
+    "message": "Ikiwa ruhusa haijaorodheshwa hapa, tumia mchoro sawa hata hivyo, kwa mfano permission.bookmarks au permission.system.display. StorePilot inapaswa kuchukulia msimbo wa maelezo yenyewe kama chanzo cha ukweli."
   },
   "projects": {
     "message": "Miradi"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Orodha Zilizoingizwa"
+  },
+  "storeMediaAssets": {
+    "message": "Hifadhi Vipengee vya Midia"
+  },
+  "privacyDocument": {
+    "message": "Hati ya Faragha"
+  },
+  "privacyDocNotScanned": {
+    "message": "Haijachanganuliwa"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Hakuna hati ya faragha inayoweza kutumika iliyopatikana (__wagombea(wa)SPPH0__ waliochanganuliwa). $1"
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Hakuna hati ya faragha inayoweza kutumika iliyopatikana."
+  },
+  "privacyDocSummary": {
+    "message": "$1 sehemu katika $2"
+  },
+  "privacyDocFile": {
+    "message": "Faili"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 uga wa faragha katika $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Hati ya faragha: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Hakuna hati ya faragha iliyoletwa kwa mradi unaotumika."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Ingiza au ulete upya mradi katika chaguzi StorePilot ili kupakia hati ya faragha."
+  },
+  "fillSinglePurpose": {
+    "message": "Jaza kusudi moja"
+  },
+  "fillPrivacy": {
+    "message": "Jaza faragha"
+  },
+  "privacyNoValueForField": {
+    "message": "Hakuna thamani ya hati ya faragha ya $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Haikuweza kupata uga wa faragha: $1."
+  },
+  "privacyFilledField": {
+    "message": "Sehemu ya faragha iliyojazwa: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Imejaza $1 uga wa faragha: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Haikuweza kupata: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Hakuna sehemu za faragha zinazotumika zilizopatikana ili kujaza."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Vitendo vya faragha vinapatikana tu kwenye ukurasa wa Faragha."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Imepata $1 wagombea wa faragha wanaoweza kuhaririwa."
+  },
+  "status": {
+    "message": "Hali"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Wagombea"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Imechanganuliwa: $1; inalingana: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Leta tena folda ya mradi ili kuchanganua hati ya faragha."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Haijachanganuliwa"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Uchunguzi"
   },
   "project": {
     "message": "Mradi"
@@ -60,16 +159,49 @@
     "message": "Lugha"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Jaza lugha ya sasa"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Jaza lugha zote"
+  },
+  "uploadStoreIcon": {
+    "message": "Pakia ikoni ya duka"
+  },
+  "uploadMedia": {
+    "message": "Pakia midia"
+  },
+  "uploadScreenshots": {
+    "message": "Pakia picha za skrini"
+  },
+  "uploadSmallPromo": {
+    "message": "Pakia ofa ndogo"
+  },
+  "uploadMarqueePromo": {
+    "message": "Pakia tangazo la marquee"
+  },
+  "clearScreenshots": {
+    "message": "Futa picha za skrini"
+  },
+  "clearStoreIcon": {
+    "message": "Futa ikoni ya duka"
+  },
+  "clearSmallPromo": {
+    "message": "Futa ofa ndogo"
+  },
+  "clearMarqueePromo": {
+    "message": "Futa tangazo la marquee"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Acha kujaza yote"
+  },
+  "abortOperation": {
+    "message": "Acha operesheni"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Ukurasa wa uchunguzi"
+  },
+  "openPanel": {
+    "message": "Fungua paneli"
   },
   "options": {
     "message": "Chaguo"
@@ -78,330 +210,453 @@
     "message": "Kiswahili"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Jaza lugha ya sasa"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Jaza lugha zote"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Acha kujaza yote"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Ingiza uorodheshaji katika chaguo StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Kamwe"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Mradi huu uliletwa kutoka kwa kiteua faili cha kivinjari. Leta tena folda ya mradi ili kuirejesha."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Ilisasishwa mwisho mnamo $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 lugha imeingizwa"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Hakuna mradi unaoendelea"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(tupu)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "Herufi $1"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 mradi"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Hakuna miradi"
+  },
+  "yes": {
+    "message": "ndio"
+  },
+  "no": {
+    "message": "hapana"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Mradi uliochaguliwa"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Chanzo: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Hakuna folda chanzo"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Ugunduzi: $1 uaminifu"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Onyesha upya: leta tena folda"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Imesasishwa: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 lugha"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Hakuna faili za kuorodhesha eneo zilizochaguliwa."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Imeingizwa $1; imeruka $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Imeruka: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Hakuna folda ya kuorodhesha eneo iliyopatikana kwenye folda iliyochaguliwa."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Imeingiza $1 hadi $2 kutoka $3 ($4 uaminifu); imeruka $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Imepata $1 folda za wagombea."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 picha za skrini, aikoni: $2, tangazo ndogo: $3, tangazo la marquee: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Hakuna vipengee vya media vya duka vilivyopatikana."
+  },
+  "mediaUploadedKind": {
+    "message": "Imepakiwa $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Imefutwa $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 tayari iko wazi."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 tayari ipo au inachakatwa."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Hakuna picha za skrini za kufuta."
+  },
+  "screenshotsLimitReached": {
+    "message": "picha za skrini: CWS kikomo cha $1 tayari kimefikiwa"
+  },
+  "storeIcon": {
+    "message": "Aikoni ya Hifadhi"
+  },
+  "minimizePanel": {
+    "message": "Punguza paneli"
+  },
+  "maximizePanel": {
+    "message": "Ongeza kidirisha"
+  },
+  "closePanel": {
+    "message": "Funga paneli"
+  },
+  "panelOpened": {
+    "message": "Paneli imefunguliwa."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Vitendo vya uorodheshaji na maudhui vinapatikana tu kwenye ukurasa wa programu katika Google Play."
+  },
+  "clearingMedia": {
+    "message": "Inafuta media..."
+  },
+  "mediaClearFailed": {
+    "message": "Imeshindwa kufuta maudhui: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Uendeshaji wa maudhui tayari unaendelea: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Uendeshaji wa vyombo vya habari unaendelea."
+  },
+  "noOperationRunning": {
+    "message": "Hakuna operesheni inayoendeshwa."
+  },
+  "operationStopped": {
+    "message": "Imesimamishwa."
+  },
+  "missing": {
+    "message": "Haipo"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Leta tena folda ya mradi ili kuchanganua vipengee vya media."
+  },
+  "screenshotNumber": {
+    "message": "Picha ya skrini $1"
+  },
+  "smallPromoTile": {
+    "message": "Tile ndogo ya matangazo"
+  },
+  "marqueePromoTile": {
+    "message": "Tile ya matangazo ya Marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "Wagombea"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Aikoni: $1; picha za skrini: $2; ofa ndogo: $3; ofa ya marquee: $4."
+  },
+  "uploadingMedia": {
+    "message": "Inapakia midia..."
+  },
+  "mediaUploaded": {
+    "message": "Midia iliyopakiwa: $1."
+  },
+  "mediaSkipped": {
+    "message": "Imeruka: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Imeshindwa: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Upakiaji wa media haukufaulu: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Uingizaji wa folda umeghairiwa."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Imeshindwa kuleta folda: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "faili zilizochaguliwa"
   },
   "manual": {
-    "message": "manual"
+    "message": "mwongozo"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Imeshindwa kuleta: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Je, ungependa kufuta StorePilot mradi \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Imefutwa $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Je, ungependa kufuta matangazo ya \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Uorodheshaji uliofutwa wa $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 kuorodhesha eneo katika $2. Ilisasishwa mwisho mnamo $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Hakuna miradi bado"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Hakuna maandishi ya tangazo yaliyochaguliwa ili kunakili."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Imenakiliwa $1 kutoka $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Imeingiza $1 hadi $2 ($3 imani)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Hakuna kichupo kinachotumika."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Kichupo kinachotumika si ukurasa wa Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot haikuweza kuunganisha kwenye kichupo hiki cha dashibodi. Fungua Uchunguzi kwa hitilafu kamili."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Uchunguzi umekamilika."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Uchunguzi haujafaulu."
   },
   "done": {
-    "message": "Done."
+    "message": "Imekamilika."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Imeshindwa."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Hakuna faili za kuorodhesha eneo zilizopatikana."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Imeingiza $1 hadi $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Mradi umechaguliwa."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Inajaza lugha zote..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Acha ombi."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Jaza yote haifanyiki."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Haikuweza kuacha kujaza zote."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Uchunguzi haujafaulu: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Mradi haujapatikana."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Leta tena folda ya mradi ili StorePilot iweze kuhifadhi faili za midia kwa ajili ya kupakiwa."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Ruhusa ya folda inahitajika kabla ya kusoma faili za midia."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Hakuna kishiko cha folda kilichohifadhiwa."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Hakuna uorodheshaji uliochaguliwa."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Imenakiliwa $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Hakuna sehemu inayoonekana ya kuhariri iliyopatikana."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Imejazwa $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Haikuweza kupata menyu kunjuzi ya lugha Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Haikuweza kupata $1 katika menyu ya lugha ya dashibodi."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Umebofya $1, lakini dashibodi bado inaonyesha $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "eneo lisilojulikana"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Hakuna maandishi ya kuorodhesha ya $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Haikuweza kupata uga wa maelezo Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Haikuweza kutambua lugha ya sasa ya dashibodi."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Imesimamishwa. Lugha $1 zilizojazwa za dashibodi."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Hakuna uorodheshaji wa mradi ulioletwa."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Hakuna lugha zilizoingizwa zinazolingana na menyu ya lugha ya dashibodi."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Imesimamishwa. Lugha $1 iliyojazwa ya dashibodi; bado inasubiri: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Imerejeshwa $1 baada ya kujaribu tena."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Imejaribu tena $1; hakuna aliyepona."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Lugha $1 iliyojazwa ya dashibodi; imeshindwa $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Lugha $1 zilizojazwa za dashibodi."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Imeingizwa $1; zimelingana $2 lugha za dashibodi."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Imeingizwa $1; $2 lugha za dashibodi zinazolingana; lugha zilizoletwa zisizolinganishwa: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store haikutoa lugha zisizotumika: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Dashibodi haikutoa lugha zilizoletwa zinazotumika: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Achana na ombi. StorePilot itakoma baada ya hatua ya sasa ya dashibodi."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Uchunguzi wa dashibodi umepitishwa."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Uchunguzi wa dashibodi umepata vipengele vya ukurasa ambavyo havipo."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Jaza yote tayari inaendeshwa."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Kujaza kumesimamishwa."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Kujaza"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Inajaribu tena"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Fungua chaguzi StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Inafungua uingizaji wa mradi..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Haijulikani"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Mradi usio na jina"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Mradi ulioingizwa"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Kuagiza kwa mikono"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Orodha zilizoingizwa"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Uingizaji wa faili mwenyewe"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Imechaguliwa $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 lugha katika $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "tayari imeunganishwa"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "imefanikiwa"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "juu"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "kati"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "chini"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Chaguzi"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Ilisasishwa mwisho kwenye Never."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Hakuna tangazo lililoletwa"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Inapakia tangazo..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot itaomba uthibitisho kabla ya kusoma folda ya mradi iliyochaguliwa. Agizo hilo linatarajiwa."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Uingizaji wa folda unashughulikiwa katika kichupo cha chaguo, ambapo kidokezo cha uthibitishaji wa folda kinaweza kukamilika kwa uhakika."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Chagua mzizi wa mradi, folda ya ukurasa wa programu katika Google Play, au folda ya uorodheshaji wa moja kwa moja. StorePilot itakuuliza uthibitishe ufikiaji wa folda."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Umeruka uga wa faragha: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Imeruka $1 uga wa faragha: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Sehemu ya faragha haikukubali thamani: $1."
   }
 }

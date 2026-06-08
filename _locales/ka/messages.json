@@ -1,0 +1,662 @@
+{
+  "extensionName": {
+    "message": "StorePilot: CWS ავტოშევსება"
+  },
+  "extensionDescription": {
+    "message": "ლოკალური ფაილებიდან ავსებს Chrome Web Store-ის ველებს, აღწერებს, ეკრანის სურათებს და კონფიდენციალურობის ფორმებს."
+  },
+  "optionsSubtitle": {
+    "message": "ჩამოიტანეთ ბრტყელი ლოკალური ჩამონათვალის ფაილები და გამოიყენეთ ისინი გაფართოების მაღაზიის საინფორმაციო დაფებში."
+  },
+  "theme": {
+    "message": "თემა"
+  },
+  "themeSystem": {
+    "message": "სისტემა"
+  },
+  "themeLight": {
+    "message": "სინათლე"
+  },
+  "themeDark": {
+    "message": "ბნელი"
+  },
+  "clear": {
+    "message": "წმინდა"
+  },
+  "activeProject": {
+    "message": "აქტიური პროექტი"
+  },
+  "deleteProject": {
+    "message": "პროექტის წაშლა"
+  },
+  "importProjectFolder": {
+    "message": "პროექტის/საქაღალდის იმპორტი"
+  },
+  "importHintFlexible": {
+    "message": "აირჩიეთ პროექტის root, მაღაზიის ჩამონათვალის საქაღალდე ან პირდაპირი ჩამონათვალის საქაღალდე."
+  },
+  "importHintLocaleFiles": {
+    "message": "StorePilot ეძებს ლოკალური დასახელების ჩამონათვალის ფაილებს, როგორიცაა"
+  },
+  "or": {
+    "message": "ან"
+  },
+  "importHintDrag": {
+    "message": "თქვენ ასევე შეგიძლიათ გადმოიტანოთ პირდაპირი ლოკალური ჩამონათვალის ფაილები ამ პანელზე."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "კონფიდენციალურობის ავტომატიზაციის დოკუმენტის მითითება"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot-ს შეუძლია ერთი პროექტის დოკუმენტის სკანირება Chrome Web Store კონფიდენციალურობის ველებისთვის. გამოიყენეთ ეს კანონიკური კლავიშები, რათა სკანერმა შეძლოს ტექსტის მარშრუტი გამოცნობის გარეშე."
+  },
+  "privacyDocPermissionRule": {
+    "message": "ნებართვის დასაბუთებისთვის გამოიყენეთ permission.<manifest permission code>. სუფიქსი უნდა ემთხვეოდეს კოდს თქვენს manifest-ის ნებართვებში, optional_permissions, host_permissions, ან content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "რეკომენდებული ფაილის სახელები: docs/chrome-web-store-privacy-form.md ან STORE_JUSTIFICATIONS.md. StorePilot ასევე იღებს სხვა.md ან.txt ფაილებს, როდესაც შიგთავსი შეიცავს [privacy] ბლოკს, კანონიკურ კლავიშებს ან ცნობად მაღაზიის დასაბუთებას."
+  },
+  "privacyDocCoreKeys": {
+    "message": "ძირითადი გასაღებები"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "საერთო ნებართვის გასაღებები"
+  },
+  "privacyDocFutureProof": {
+    "message": "თუ ნებართვა აქ ჩამოთვლილი არ არის, მაინც გამოიყენეთ იგივე ნიმუში, მაგალითად permission.bookmarks ან permission.system.display. StorePilot უნდა განიხილებოდეს თავად მანიფესტ-კოდს, როგორც სიმართლის წყაროს."
+  },
+  "projects": {
+    "message": "პროექტები"
+  },
+  "importedListings": {
+    "message": "იმპორტირებული განცხადებები"
+  },
+  "storeMediaAssets": {
+    "message": "შეინახეთ მედია აქტივები"
+  },
+  "privacyDocument": {
+    "message": "კონფიდენციალურობის დოკუმენტი"
+  },
+  "privacyDocNotScanned": {
+    "message": "არ არის დასკანირებული"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "გამოყენებადი კონფიდენციალურობის დოკუმენტი ვერ მოიძებნა ($1 კანდიდატ(ები) დასკანირებულია)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "გამოყენებადი კონფიდენციალურობის დოკუმენტი ვერ მოიძებნა."
+  },
+  "privacyDocSummary": {
+    "message": "$1 ველი (ები) $2-ში"
+  },
+  "privacyDocFile": {
+    "message": "ფაილი"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 კონფიდენციალურობის ველ(ებ)ი $2-ში"
+  },
+  "privacyDocFileFound": {
+    "message": "კონფიდენციალურობის დოკუმენტი: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "კონფიდენციალურობის დოკუმენტი არ არის იმპორტირებული აქტიური პროექტისთვის."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "პროექტის იმპორტი ან ხელახალი იმპორტი StorePilot ვარიანტებში კონფიდენციალურობის დოკუმენტის ჩასატვირთად."
+  },
+  "fillSinglePurpose": {
+    "message": "შეავსეთ ერთი დანიშნულება"
+  },
+  "fillPrivacy": {
+    "message": "შეავსეთ კონფიდენციალურობა"
+  },
+  "privacyNoValueForField": {
+    "message": "$1-ისთვის კონფიდენციალურობის დოკუმენტის მნიშვნელობა არ არის."
+  },
+  "privacyFieldNotFound": {
+    "message": "კონფიდენციალურობის ველი ვერ მოიძებნა: $1."
+  },
+  "privacyFilledField": {
+    "message": "შევსებული კონფიდენციალურობის ველი: $1."
+  },
+  "privacyFilledFields": {
+    "message": "შევსებული $1 კონფიდენციალურობის ველი(ები): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "ვერ მოიძებნა: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "კონფიდენციალურობის მხარდაჭერილი ველები არ იყო ხელმისაწვდომი შესავსებად."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "კონფიდენციალურობის მოქმედებები ხელმისაწვდომია მხოლოდ კონფიდენციალურობის გვერდზე."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "ნაპოვნია $1 რედაქტირებადი კონფიდენციალურობის კანდიდატ(ები)."
+  },
+  "status": {
+    "message": "სტატუსი"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "კანდიდატები"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "დასკანირებულია: $1; შეესაბამება: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "ხელახლა შემოიტანეთ პროექტის საქაღალდე კონფიდენციალურობის დოკუმენტის სკანირებისთვის."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "არ არის დასკანირებული"
+  },
+  "diagnostics": {
+    "message": "დიაგნოსტიკა"
+  },
+  "project": {
+    "message": "პროექტი"
+  },
+  "locale": {
+    "message": "ლოკალი"
+  },
+  "fillCurrentLanguage": {
+    "message": "შეავსეთ მიმდინარე ენა"
+  },
+  "fillAllLanguages": {
+    "message": "შეავსეთ ყველა ენა"
+  },
+  "uploadStoreIcon": {
+    "message": "ატვირთეთ მაღაზიის ხატულა"
+  },
+  "uploadMedia": {
+    "message": "ატვირთეთ მედია"
+  },
+  "uploadScreenshots": {
+    "message": "ატვირთეთ ეკრანის ანაბეჭდები"
+  },
+  "uploadSmallPromo": {
+    "message": "ატვირთეთ მცირე პრომო"
+  },
+  "uploadMarqueePromo": {
+    "message": "ატვირთეთ მარკეტის პრომო"
+  },
+  "clearScreenshots": {
+    "message": "ეკრანის ანაბეჭდების გასუფთავება"
+  },
+  "clearStoreIcon": {
+    "message": "მაღაზიის ხატის გასუფთავება"
+  },
+  "clearSmallPromo": {
+    "message": "გაასუფთავეთ მცირე პრომო"
+  },
+  "clearMarqueePromo": {
+    "message": "გასასუფთავებელი მარკეტის პრომო"
+  },
+  "abortFillAll": {
+    "message": "შეწყვიტე შევსება ყველა"
+  },
+  "abortOperation": {
+    "message": "ოპერაციის შეწყვეტა"
+  },
+  "diagnosePage": {
+    "message": "დიაგნოსტიკის გვერდი"
+  },
+  "openPanel": {
+    "message": "გახსენით პანელი"
+  },
+  "options": {
+    "message": "ოფციები"
+  },
+  "localeName": {
+    "message": "ქართული"
+  },
+  "fillCurrent": {
+    "message": "შეავსეთ მიმდინარე ენა"
+  },
+  "fillAll": {
+    "message": "შეავსეთ ყველა ენა"
+  },
+  "abort": {
+    "message": "შეწყვიტე შევსება ყველა"
+  },
+  "importListingsInOptions": {
+    "message": "სიების იმპორტი StorePilot ვარიანტებში"
+  },
+  "never": {
+    "message": "არასოდეს"
+  },
+  "reimportFolderToRefresh": {
+    "message": "ეს პროექტი იმპორტირებულია ბრაუზერის ფაილების ამომრჩევიდან. პროექტის საქაღალდის ხელახლა იმპორტი განახლებისთვის."
+  },
+  "lastUpdatedOn": {
+    "message": "ბოლოს განახლდა $1."
+  },
+  "projectLocalesImported": {
+    "message": "$1: $2 ლოკალ(ები) იმპორტირებულია"
+  },
+  "noActiveProject": {
+    "message": "აქტიური პროექტი არ არის"
+  },
+  "emptyValue": {
+    "message": "(ცარიელი)"
+  },
+  "charCount": {
+    "message": "$1 სიმბოლო"
+  },
+  "projectCount": {
+    "message": "$1 პროექტ(ებ)ი"
+  },
+  "noProjects": {
+    "message": "არანაირი პროექტები"
+  },
+  "yes": {
+    "message": "დიახ"
+  },
+  "no": {
+    "message": "არა"
+  },
+  "selectedProject": {
+    "message": "არჩეული პროექტი"
+  },
+  "sourceLabel": {
+    "message": "წყარო: $1"
+  },
+  "noSourceFolder": {
+    "message": "წყაროს საქაღალდე არ არის"
+  },
+  "detectionConfidence": {
+    "message": "გამოვლენა: $1 ნდობა"
+  },
+  "refreshReimportFolder": {
+    "message": "განახლება: საქაღალდის ხელახალი იმპორტი"
+  },
+  "updatedLabel": {
+    "message": "განახლებულია: $1"
+  },
+  "localesCount": {
+    "message": "$1 ლოკალები"
+  },
+  "noLocaleListingFilesSelected": {
+    "message": "ლოკალური სიის ფაილი არ იყო არჩეული."
+  },
+  "importedSkipped": {
+    "message": "იმპორტირებული $1; გამოტოვებულია $2."
+  },
+  "skippedList": {
+    "message": "გამოტოვებული: $1"
+  },
+  "noLocaleListingFolderFound": {
+    "message": "არჩეულ საქაღალდეში ლოკალური ჩამონათვალის საქაღალდე ვერ მოიძებნა."
+  },
+  "importedIntoFrom": {
+    "message": "იმპორტირებულია $1 $2-ში $3-დან ($4 ნდობა); გამოტოვა $5."
+  },
+  "foundCandidateFolders": {
+    "message": "ნაპოვნია $1 კანდიდატის საქაღალდე."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 სკრინშოტი(ები), ხატულა: $2, მცირე პრომო: $3, სკრინშოტი: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "მაღაზიის მედია აქტივები ვერ მოიძებნა."
+  },
+  "mediaUploadedKind": {
+    "message": "ატვირთული $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "გასუფთავებულია $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 უკვე ნათელია."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 უკვე იმყოფება ან მუშავდება."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "გასასუფთავებელი ეკრანის ანაბეჭდები არ არის."
+  },
+  "screenshotsLimitReached": {
+    "message": "ეკრანის ანაბეჭდები: CWS ლიმიტი $1 უკვე მიღწეულია"
+  },
+  "storeIcon": {
+    "message": "მაღაზიის ხატულა"
+  },
+  "minimizePanel": {
+    "message": "პანელის მინიმიზაცია"
+  },
+  "maximizePanel": {
+    "message": "პანელის მაქსიმიზაცია"
+  },
+  "closePanel": {
+    "message": "პანელის დახურვა"
+  },
+  "panelOpened": {
+    "message": "პანელი გაიხსნა."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "ჩამონათვალი და მედია მოქმედებები ხელმისაწვდომია მხოლოდ მაღაზიის ჩამონათვალის გვერდზე."
+  },
+  "clearingMedia": {
+    "message": "მედიის გასუფთავება..."
+  },
+  "mediaClearFailed": {
+    "message": "მედიის გასუფთავება ვერ მოხერხდა: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "მედია ოპერაცია უკვე მუშაობს: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "მედიის ოპერაცია მიმდინარეობს."
+  },
+  "noOperationRunning": {
+    "message": "არანაირი ოპერაცია არ მიმდინარეობს."
+  },
+  "operationStopped": {
+    "message": "გაჩერდა."
+  },
+  "missing": {
+    "message": "დაკარგული"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "პროექტის საქაღალდის ხელახლა იმპორტი მედია აქტივების სკანირებისთვის."
+  },
+  "screenshotNumber": {
+    "message": "ეკრანის სურათი $1"
+  },
+  "smallPromoTile": {
+    "message": "მცირე პრომო ფილა"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee პრომო ფილა"
+  },
+  "mediaCandidateCounts": {
+    "message": "კანდიდატები"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "ხატულა: $1; ეკრანის ანაბეჭდები: $2; მცირე პრომო: $3; მარკის პრომო: $4."
+  },
+  "uploadingMedia": {
+    "message": "მიმდინარეობს მედიის ატვირთვა..."
+  },
+  "mediaUploaded": {
+    "message": "ატვირთული მედია: $1."
+  },
+  "mediaSkipped": {
+    "message": "გამოტოვებული: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "ვერ მოხერხდა: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "მედიის ატვირთვა ვერ მოხერხდა: $1"
+  },
+  "folderImportCanceled": {
+    "message": "საქაღალდის იმპორტი გაუქმდა."
+  },
+  "folderImportFailed": {
+    "message": "საქაღალდის იმპორტი ვერ მოხერხდა: $1"
+  },
+  "selectedFiles": {
+    "message": "შერჩეული ფაილები"
+  },
+  "manual": {
+    "message": "სახელმძღვანელო"
+  },
+  "importFailed": {
+    "message": "იმპორტი ვერ მოხერხდა: $1"
+  },
+  "deleteProjectConfirm": {
+    "message": "წაშალოთ StorePilot პროექტი \"$1\"?"
+  },
+  "deletedProject": {
+    "message": "წაშლილია $1."
+  },
+  "clearListingsConfirm": {
+    "message": "გსურთ „$1“-ის სიების გასუფთავება?"
+  },
+  "clearedListingsFor": {
+    "message": "გასუფთავდა სიები $1-ისთვის."
+  },
+  "popupSummary": {
+    "message": "$1 ჩამოთვლილია ლოკალ(ებ)ი $2-ში. ბოლოს განახლდა $3."
+  },
+  "noProjectsYet": {
+    "message": "ჯერ პროექტები არ არის"
+  },
+  "noListingTextSelected": {
+    "message": "ასლი ტექსტი არ არის შერჩეული."
+  },
+  "copiedLocaleFromProject": {
+    "message": "კოპირებულია $1 $2-დან."
+  },
+  "importedIntoConfidence": {
+    "message": "იმპორტირებულია $1 $2-ში ($3 ნდობა)."
+  },
+  "noActiveTab": {
+    "message": "აქტიური ჩანართი არ არის."
+  },
+  "notDashboardPage": {
+    "message": "აქტიური ჩანართი არ არის Chrome Web Store Developer Dashboard გვერდი."
+  },
+  "couldNotConnectDashboard": {
+    "message": "StorePilot ვერ დაუკავშირდა ამ საინფორმაციო დაფის ჩანართს. გახსენით დიაგნოსტიკა ზუსტი შეცდომისთვის."
+  },
+  "diagnosticsComplete": {
+    "message": "დიაგნოსტიკა დასრულებულია."
+  },
+  "diagnosticsFailed": {
+    "message": "დიაგნოსტიკა ვერ მოხერხდა."
+  },
+  "done": {
+    "message": "შესრულებულია."
+  },
+  "failed": {
+    "message": "ვერ მოხერხდა."
+  },
+  "noLocaleListingFilesFound": {
+    "message": "ლოკალური ჩამონათვალის ფაილები ვერ მოიძებნა."
+  },
+  "importedInto": {
+    "message": "იმპორტირებულია $1 $2-ში."
+  },
+  "projectSelected": {
+    "message": "პროექტი არჩეულია."
+  },
+  "fillingAllLanguages": {
+    "message": "ყველა ენის შევსება..."
+  },
+  "stopRequested": {
+    "message": "შეჩერება მოითხოვა."
+  },
+  "fillAllNotRunning": {
+    "message": "შევსება ყველა არ მუშაობს."
+  },
+  "couldNotStopFillAll": {
+    "message": "ყველა შევსება ვერ შეჩერდა."
+  },
+  "diagnosticsFailedWithError": {
+    "message": "დიაგნოსტიკა ვერ მოხერხდა: $1"
+  },
+  "projectNotFound": {
+    "message": "პროექტი ვერ მოიძებნა."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "პროექტის საქაღალდის ხელახლა იმპორტი, რათა StorePilot-მა შეძლოს მედია ფაილების ატვირთვის შენახვა."
+  },
+  "folderPermissionNeeded": {
+    "message": "მედია ფაილების წაკითხვამდე საჭიროა საქაღალდის ნებართვა."
+  },
+  "noFolderHandleSaved": {
+    "message": "საქაღალდის სახელური არ არის შენახული."
+  },
+  "noListingSelected": {
+    "message": "სია არჩეული არ არის."
+  },
+  "copiedLocale": {
+    "message": "დაკოპირებულია $1."
+  },
+  "noVisibleEditableField": {
+    "message": "ხილული რედაქტირებადი ველი ვერ მოიძებნა."
+  },
+  "filledLocale": {
+    "message": "შევსებული $1."
+  },
+  "languageDropdownNotFound": {
+    "message": "ვერ მოიძებნა Chrome Web Store ენის ჩამოსაშლელი სია."
+  },
+  "localeNotInDashboardMenu": {
+    "message": "ვერ მოიძებნა $1 დაფის ენის მენიუში."
+  },
+  "clickedButDashboardShows": {
+    "message": "დააწკაპუნეთ $1, მაგრამ საინფორმაციო დაფაზე მაინც ჩანს $2."
+  },
+  "unknownLocale": {
+    "message": "უცნობი ადგილი"
+  },
+  "noListingTextFor": {
+    "message": "$1-ის სიის ტექსტი არ არის."
+  },
+  "descriptionFieldNotFound": {
+    "message": "ვერ მოიძებნა Chrome Web Store აღწერილობის ველი."
+  },
+  "currentDashboardLanguageNotDetected": {
+    "message": "დაფის მიმდინარე ენის აღმოჩენა ვერ მოხერხდა."
+  },
+  "stoppedFilledLanguages": {
+    "message": "გაჩერდა. შევსებული $1 დაფის ენა(ები)."
+  },
+  "noProjectListingsImported": {
+    "message": "პროექტების ჩამონათვალი იმპორტირებული არ არის."
+  },
+  "noImportedLocalesMatchMenu": {
+    "message": "არცერთი იმპორტირებული ლოკალი არ შეესაბამება დაფის ენის მენიუს."
+  },
+  "stoppedFilledLanguagesPending": {
+    "message": "გაჩერდა. შევსებული $1 დაფის ენა(ები); ჯერ კიდევ მომლოდინე: $2."
+  },
+  "recoveredAfterRetry": {
+    "message": "აღდგენილია $1 ხელახალი ცდის შემდეგ."
+  },
+  "retriedNoneRecovered": {
+    "message": "ხელახლა გამოსცადა $1; არცერთი არ გამოჯანმრთელდა."
+  },
+  "filledLanguagesFailed": {
+    "message": "შევსებული $1 დაფის ენა(ები); ვერ მოხერხდა $2: $3."
+  },
+  "filledLanguages": {
+    "message": "შევსებული $1 დაფის ენა(ები)."
+  },
+  "fillAllDashboardSummary": {
+    "message": "იმპორტირებული $1; დაემთხვა $2 დაფის ენა(ებ)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "იმპორტირებული $1; ემთხვევა $2 დაფის ენა(ები); შეუსაბამო იმპორტირებული ლოკალ(ები): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store-მა არ შესთავაზა მხარდაუჭერელი ლოკალ(ები): $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "საინფორმაციო დაფა არ სთავაზობდა მხარდაჭერილ იმპორტირებულ ლოკალ(ებ)ს: $1."
+  },
+  "abortRequestedStopAfterStep": {
+    "message": "შეწყვეტა მოითხოვა. StorePilot შეჩერდება დაფის მიმდინარე ნაბიჯის შემდეგ."
+  },
+  "dashboardDiagnosticsPassed": {
+    "message": "დაფის დიაგნოსტიკა გავიდა."
+  },
+  "dashboardDiagnosticsMissingElements": {
+    "message": "დაფის დიაგნოსტიკამ გვერდის ელემენტები აკლია."
+  },
+  "fillAllAlreadyRunning": {
+    "message": "შევსება ყველა უკვე გაშვებულია."
+  },
+  "fillAllStopped": {
+    "message": "შეავსეთ ყველა შეჩერდა."
+  },
+  "filling": {
+    "message": "შევსება"
+  },
+  "retrying": {
+    "message": "ხელახლა მცდელობა"
+  },
+  "openProjectImport": {
+    "message": "პროექტის იმპორტის მართვა"
+  },
+  "openStorePilotOptions": {
+    "message": "გახსენით StorePilot პარამეტრები"
+  },
+  "openingProjectImport": {
+    "message": "პროექტის იმპორტის გახსნა..."
+  },
+  "unknown": {
+    "message": "უცნობი"
+  },
+  "alphaChannel": {
+    "message": "ალფა"
+  },
+  "untitledProject": {
+    "message": "უსათაურო პროექტი"
+  },
+  "importedProject": {
+    "message": "იმპორტირებული პროექტი"
+  },
+  "manualImport": {
+    "message": "ხელით იმპორტი"
+  },
+  "importedListingsProject": {
+    "message": "იმპორტირებული განცხადებები"
+  },
+  "manualFileImport": {
+    "message": "ფაილის ხელით იმპორტი"
+  },
+  "selectedDashboardLanguage": {
+    "message": "არჩეულია $1."
+  },
+  "miniPanelLocalesInProject": {
+    "message": "$1 ლოკალი $2-ში"
+  },
+  "contentScriptAlreadyConnected": {
+    "message": "უკვე დაკავშირებულია"
+  },
+  "injectionSucceeded": {
+    "message": "მიაღწია წარმატებას"
+  },
+  "confidenceHigh": {
+    "message": "მაღალი"
+  },
+  "confidenceMedium": {
+    "message": "საშუალო"
+  },
+  "confidenceLow": {
+    "message": "დაბალი"
+  },
+  "optionsTitle": {
+    "message": "StorePilot ვარიანტები"
+  },
+  "lastUpdatedInitial": {
+    "message": "ბოლოს განახლდა არასოდეს."
+  },
+  "noListingsImported": {
+    "message": "იმპორტირებული ჩამონათვალი არ არის"
+  },
+  "loadingListings": {
+    "message": "სიების ჩატვირთვა..."
+  },
+  "folderAccessPrompt": {
+    "message": "StorePilot ითხოვს დადასტურებას არჩეული პროექტის საქაღალდის წაკითხვამდე. მოსალოდნელია ეს მოწოდება."
+  },
+  "folderImportHandledInOptions": {
+    "message": "საქაღალდის იმპორტი მუშავდება პარამეტრების ჩანართში, სადაც საქაღალდის დადასტურების მოთხოვნა შეიძლება საიმედოდ დასრულდეს."
+  },
+  "folderImportHintFlexible": {
+    "message": "აირჩიეთ პროექტის root, მაღაზიის ჩამონათვალის საქაღალდე ან პირდაპირი ჩამონათვალის საქაღალდე. StorePilot მოგთხოვთ დაადასტუროთ საქაღალდეზე წვდომა."
+  },
+  "privacySkippedField": {
+    "message": "კონფიდენციალურობის ველი გამოტოვებული: $1."
+  },
+  "privacySkippedFields": {
+    "message": "გამოტოვებული $1 კონფიდენციალურობის ველი(ები): $2."
+  },
+  "privacyFieldDidNotAcceptValue": {
+    "message": "კონფიდენციალურობის ველმა არ მიიღო მნიშვნელობა: $1."
+  }
+}

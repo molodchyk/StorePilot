@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: กรอก CWS อัตโนมัติ"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "กรอกฟิลด์ Chrome Web Store คำอธิบาย ภาพหน้าจอ และแบบฟอร์มความเป็นส่วนตัวจากไฟล์ในเครื่องอัตโนมัติ"
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "นำเข้าไฟล์รายการสถานที่แบบเรียบและใช้ในแดชบอร์ดร้านค้าส่วนขยาย"
   },
   "theme": {
     "message": "ธีม"
@@ -21,37 +21,136 @@
     "message": "มืด"
   },
   "clear": {
-    "message": "Clear"
+    "message": "ชัดเจน"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "โครงการที่ใช้งานอยู่"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "ลบโปรเจ็กต์"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "นำเข้าโครงการ/โฟลเดอร์"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "เลือกรูทโปรเจ็กต์ โฟลเดอร์รายการร้านค้า หรือโฟลเดอร์รายการโดยตรง"
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot ค้นหาไฟล์รายการที่มีชื่อสถานที่ เช่น"
   },
   "or": {
     "message": "หรือ"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "คุณยังสามารถลากไฟล์รายการสถานที่โดยตรงไปยังแผงนี้ได้"
+  },
+  "privacyDocReferenceTitle": {
+    "message": "การอ้างอิงเอกสารอัตโนมัติความเป็นส่วนตัว"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot สามารถสแกนเอกสารโครงการหนึ่งฉบับสำหรับฟิลด์ความเป็นส่วนตัว Chrome Web Store ใช้ปุ่ม Canonical เหล่านี้เพื่อให้เครื่องสแกนสามารถกำหนดเส้นทางข้อความโดยไม่ต้องคาดเดา"
+  },
+  "privacyDocPermissionRule": {
+    "message": "สำหรับเหตุผลในการอนุญาต ให้ใช้ permission.<manifest permission code> ส่วนต่อท้ายควรตรงกับโค้ดในการอนุญาตรายการของคุณ optional_permissions, host_permissions หรือ content_scripts.matches"
+  },
+  "privacyDocNamingGuideline": {
+    "message": "ชื่อไฟล์ที่แนะนำ: docs/chrome-web-store-privacy-form.md หรือ STORE_JUSTIFICATIONS.md StorePilot ยังยอมรับไฟล์.md หรือ.txt อื่นๆ เมื่อเนื้อหามีบล็อก [privacy] คีย์แบบบัญญัติ หรือส่วนหัวเหตุผลในการจัดเก็บที่เป็นที่รู้จัก"
+  },
+  "privacyDocCoreKeys": {
+    "message": "คีย์หลัก"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "คีย์การอนุญาตทั่วไป"
+  },
+  "privacyDocFutureProof": {
+    "message": "หากการอนุญาตไม่อยู่ในรายการที่นี่ ให้ใช้รูปแบบเดียวกัน ตัวอย่างเช่น permission.bookmarks หรือ permission.system.display. StorePilot ควรถือว่าโค้ดรายการนั้นเองเป็นแหล่งที่มาของความจริง"
   },
   "projects": {
     "message": "โปรเจกต์"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "รายการที่นำเข้า"
+  },
+  "storeMediaAssets": {
+    "message": "จัดเก็บทรัพย์สินสื่อ"
+  },
+  "privacyDocument": {
+    "message": "เอกสารความเป็นส่วนตัว"
+  },
+  "privacyDocNotScanned": {
+    "message": "ไม่ได้สแกน"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "ไม่พบเอกสารความเป็นส่วนตัวที่ใช้งานได้ (สแกนผู้สมัคร $1 แล้ว)"
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "ไม่พบเอกสารความเป็นส่วนตัวที่ใช้งานได้"
+  },
+  "privacyDocSummary": {
+    "message": "ฟิลด์ $1 ใน $2"
+  },
+  "privacyDocFile": {
+    "message": "ไฟล์"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 ช่องความเป็นส่วนตัวใน $2"
+  },
+  "privacyDocFileFound": {
+    "message": "เอกสารความเป็นส่วนตัว: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "ไม่มีการนำเข้าเอกสารความเป็นส่วนตัวสำหรับโครงการที่ใช้งานอยู่"
+  },
+  "importPrivacyDocInOptions": {
+    "message": "นำเข้าหรือนำเข้าโครงการอีกครั้งในตัวเลือก StorePilot เพื่อโหลดเอกสารความเป็นส่วนตัว"
+  },
+  "fillSinglePurpose": {
+    "message": "เติมจุดประสงค์เดียว"
+  },
+  "fillPrivacy": {
+    "message": "เติมเต็มความเป็นส่วนตัว"
+  },
+  "privacyNoValueForField": {
+    "message": "ไม่มีค่าเอกสารความเป็นส่วนตัวสำหรับ $1"
+  },
+  "privacyFieldNotFound": {
+    "message": "ไม่พบช่องความเป็นส่วนตัว: $1"
+  },
+  "privacyFilledField": {
+    "message": "กรอกฟิลด์ความเป็นส่วนตัว: $1"
+  },
+  "privacyFilledFields": {
+    "message": "กรอกฟิลด์ความเป็นส่วนตัว $1 แล้ว: $2"
+  },
+  "privacyFieldsNotFound": {
+    "message": "ไม่พบ: $1"
+  },
+  "privacyNoSupportedFields": {
+    "message": "ไม่มีฟิลด์ความเป็นส่วนตัวที่รองรับให้กรอก"
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "การดำเนินการด้านความเป็นส่วนตัวจะมีอยู่ในหน้าความเป็นส่วนตัวเท่านั้น"
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "พบตัวเลือกความเป็นส่วนตัวที่แก้ไขได้ $1"
+  },
+  "status": {
+    "message": "สถานะ"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "ผู้สมัคร"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "สแกนแล้ว: $1; ตรงกัน: $2"
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "นำเข้าโฟลเดอร์โครงการอีกครั้งเพื่อสแกนเอกสารความเป็นส่วนตัว"
+  },
+  "mediaAssetsNotScanned": {
+    "message": "ไม่ได้สแกน"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "การวินิจฉัย"
   },
   "project": {
     "message": "โปรเจกต์"
@@ -60,16 +159,49 @@
     "message": "ภาษา"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "กรอกภาษาปัจจุบัน"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "เติมเต็มทุกภาษา"
+  },
+  "uploadStoreIcon": {
+    "message": "อัพโหลดไอคอนร้านค้า"
+  },
+  "uploadMedia": {
+    "message": "อัพโหลดสื่อ"
+  },
+  "uploadScreenshots": {
+    "message": "อัปโหลดภาพหน้าจอ"
+  },
+  "uploadSmallPromo": {
+    "message": "อัพโหลดโปรโมชั่นเล็กๆ น้อยๆ"
+  },
+  "uploadMarqueePromo": {
+    "message": "อัปโหลดโปรโมชันกระโจม"
+  },
+  "clearScreenshots": {
+    "message": "ล้างภาพหน้าจอ"
+  },
+  "clearStoreIcon": {
+    "message": "ล้างไอคอนร้านค้า"
+  },
+  "clearSmallPromo": {
+    "message": "เคลียร์โปรโมชั่นเล็กๆ"
+  },
+  "clearMarqueePromo": {
+    "message": "โปรโมชั่นกระโจมใส"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "ยกเลิกการเติมทั้งหมด"
+  },
+  "abortOperation": {
+    "message": "ยกเลิกการดำเนินการ"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "หน้าวินิจฉัย"
+  },
+  "openPanel": {
+    "message": "เปิดแผง"
   },
   "options": {
     "message": "ตัวเลือก"
@@ -78,330 +210,453 @@
     "message": "ไทย"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "กรอกภาษาปัจจุบัน"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "เติมเต็มทุกภาษา"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "ยกเลิกการเติมทั้งหมด"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "นำเข้ารายชื่อในตัวเลือก StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "ไม่เคย"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "โปรเจ็กต์นี้นำเข้าจากตัวเลือกไฟล์ของเบราว์เซอร์ นำเข้าโฟลเดอร์โครงการอีกครั้งเพื่อรีเฟรช"
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "อัปเดตล่าสุดเมื่อ $1"
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 นำเข้าสถานที่แล้ว"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "ไม่มีโครงการที่ใช้งานอยู่"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(ว่าง)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 ตัวอักษร"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 โครงการ"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "ไม่มีโครงการ"
+  },
+  "yes": {
+    "message": "ใช่"
+  },
+  "no": {
+    "message": "ไม่"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "โครงการที่เลือก"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "ที่มา: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "ไม่มีโฟลเดอร์ต้นทาง"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "การตรวจจับ: $1 ความมั่นใจ"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "รีเฟรช: นำเข้าโฟลเดอร์อีกครั้ง"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "อัปเดต: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 ตำแหน่งที่ตั้ง"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "ไม่ได้เลือกไฟล์รายการสถานที่"
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "นำเข้า $1; ข้าม $2"
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "ข้าม: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "ไม่พบโฟลเดอร์รายการสถานที่ในโฟลเดอร์ที่เลือก"
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "นำเข้า $1 เข้าสู่ $2 จาก $3 ($4 ความมั่นใจ); ข้าม $5"
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "พบโฟลเดอร์ผู้สมัคร $1"
+  },
+  "mediaAssetsSummary": {
+    "message": "ภาพหน้าจอ $1 ไอคอน: $2 การโปรโมตขนาดเล็ก: $3 การโปรโมตปะรำ: $4"
+  },
+  "mediaAssetsNone": {
+    "message": "ไม่พบเนื้อหาสื่อของร้านค้า"
+  },
+  "mediaUploadedKind": {
+    "message": "อัปโหลด $1: $2"
+  },
+  "mediaClearedKind": {
+    "message": "ล้าง $1: $2 แล้ว"
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 ชัดเจนแล้ว"
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 มีอยู่แล้วหรือกำลังประมวลผล"
+  },
+  "screenshotsAlreadyClear": {
+    "message": "ไม่มีภาพหน้าจอที่จะล้าง"
+  },
+  "screenshotsLimitReached": {
+    "message": "ภาพหน้าจอ: CWS ถึงขีดจำกัด $1 แล้ว"
+  },
+  "storeIcon": {
+    "message": "ไอคอนร้านค้า"
+  },
+  "minimizePanel": {
+    "message": "ย่อแผงให้เล็กสุด"
+  },
+  "maximizePanel": {
+    "message": "ขยายแผงให้ใหญ่สุด"
+  },
+  "closePanel": {
+    "message": "ปิดแผง"
+  },
+  "panelOpened": {
+    "message": "แผงเปิดแล้ว"
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "การดำเนินการกับรายการและสื่อใช้ได้ในหน้ารายการร้านค้าเท่านั้น"
+  },
+  "clearingMedia": {
+    "message": "กำลังล้างสื่อ..."
+  },
+  "mediaClearFailed": {
+    "message": "การล้างสื่อล้มเหลว: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "การดำเนินการสื่อกำลังทำงานอยู่แล้ว: $1"
+  },
+  "mediaOperationInProgress": {
+    "message": "อยู่ระหว่างการดำเนินการด้านสื่อ"
+  },
+  "noOperationRunning": {
+    "message": "ไม่มีการดำเนินการใดๆ กำลังทำงานอยู่"
+  },
+  "operationStopped": {
+    "message": "หยุดแล้ว"
+  },
+  "missing": {
+    "message": "หายไป"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "นำเข้าโฟลเดอร์โครงการอีกครั้งเพื่อสแกนเนื้อหาสื่อ"
+  },
+  "screenshotNumber": {
+    "message": "ภาพหน้าจอ $1"
+  },
+  "smallPromoTile": {
+    "message": "ไทล์ส่งเสริมการขายขนาดเล็ก"
+  },
+  "marqueePromoTile": {
+    "message": "ไทล์ส่งเสริมการขาย Marquee"
+  },
+  "mediaCandidateCounts": {
+    "message": "ผู้สมัคร"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "ไอคอน: $1; ภาพหน้าจอ: $2; โปรโมชั่นเล็กๆ น้อยๆ: $3; โปรโมชั่นกระโจม: $4"
+  },
+  "uploadingMedia": {
+    "message": "กำลังอัปโหลดสื่อ..."
+  },
+  "mediaUploaded": {
+    "message": "สื่อที่อัปโหลด: $1"
+  },
+  "mediaSkipped": {
+    "message": "ข้าม: $1"
+  },
+  "mediaUploadFailures": {
+    "message": "ล้มเหลว: $1"
+  },
+  "mediaUploadFailed": {
+    "message": "การอัปโหลดสื่อล้มเหลว: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "การนำเข้าโฟลเดอร์ถูกยกเลิก"
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "การนำเข้าโฟลเดอร์ล้มเหลว: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "ไฟล์ที่เลือก"
   },
   "manual": {
-    "message": "manual"
+    "message": "คู่มือ"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "การนำเข้าล้มเหลว: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "ลบโปรเจ็กต์ StorePilot \"$1\" หรือไม่"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "ลบ $1 แล้ว"
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "ล้างรายการสำหรับ \"$1\" หรือไม่"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "ล้างรายการสำหรับ $1 แล้ว"
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 แสดงรายการสถานที่ใน $2 อัปเดตล่าสุดเมื่อ $3"
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "ยังไม่มีโครงการ"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "ไม่มีข้อความรายการที่เลือกให้คัดลอก"
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "คัดลอก $1 จาก $2"
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "นำเข้า $1 ไปยัง $2 ($3 ความมั่นใจ)"
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "ไม่มีแท็บที่ใช้งานอยู่"
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "แท็บที่ใช้งานอยู่ไม่ใช่เพจ Chrome Web Store Developer Dashboard"
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot ไม่สามารถเชื่อมต่อกับแท็บแดชบอร์ดนี้ได้ เปิดการวินิจฉัยเพื่อดูข้อผิดพลาดที่แน่นอน"
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "การวินิจฉัยเสร็จสมบูรณ์"
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "การวินิจฉัยล้มเหลว"
   },
   "done": {
-    "message": "Done."
+    "message": "เสร็จแล้ว"
   },
   "failed": {
-    "message": "Failed."
+    "message": "ล้มเหลว"
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "ไม่พบไฟล์รายการสถานที่"
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "นำเข้า $1 ไปยัง $2"
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "เลือกโครงการแล้ว"
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "ครบทุกภาษา..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "หยุดร้องขอแล้ว"
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "เติมทั้งหมดไม่ทำงาน"
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "ไม่สามารถหยุดเติมทั้งหมดได้"
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "การวินิจฉัยล้มเหลว: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "ไม่พบโครงการ"
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "นำเข้าโฟลเดอร์โครงการอีกครั้งเพื่อให้ StorePilot สามารถจัดเก็บไฟล์มีเดียสำหรับการอัปโหลด"
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "จำเป็นต้องได้รับอนุญาตจากโฟลเดอร์ก่อนที่จะอ่านไฟล์มีเดีย"
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "ไม่มีการบันทึกการจัดการโฟลเดอร์"
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "ไม่มีรายการที่เลือก"
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "คัดลอก $1 แล้ว"
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "ไม่พบช่องที่สามารถแก้ไขได้"
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "เติม $1 แล้ว"
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "ไม่พบดรอปดาวน์ภาษา Chrome Web Store"
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "ไม่พบ $1 ในเมนูภาษาของแดชบอร์ด"
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "คลิก $1 แต่แดชบอร์ดยังคงแสดง $2"
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "สถานที่ที่ไม่รู้จัก"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "ไม่มีข้อความรายการสำหรับ $1"
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "ไม่พบฟิลด์คำอธิบาย Chrome Web Store"
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "ตรวจไม่พบภาษาแดชบอร์ดปัจจุบัน"
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "หยุดแล้ว เติมภาษาแดชบอร์ด $1 แล้ว"
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "ไม่มีการนำเข้ารายการโครงการ"
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "ไม่มีสถานที่นำเข้าที่ตรงกับเมนูภาษาของแดชบอร์ด"
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "หยุดแล้ว เติมภาษาแดชบอร์ด $1 แล้ว ยังคงรอดำเนินการ: $2"
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "กู้คืน $1 หลังจากลองอีกครั้ง"
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "ลองใหม่ $1; ไม่มีใครฟื้นตัว"
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "เติมภาษาแดชบอร์ด $1 แล้ว ล้มเหลว $2: $3"
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "เติมภาษาแดชบอร์ด $1 แล้ว"
+  },
+  "fillAllDashboardSummary": {
+    "message": "นำเข้า $1; จับคู่ภาษาแดชบอร์ด $2"
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "นำเข้า $1; จับคู่ภาษาแดชบอร์ด $2; สถานที่นำเข้าที่ไม่ตรงกัน: $3"
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store ไม่ได้เสนอภาษาที่ไม่สนับสนุน: $1"
+  },
+  "unmatchedImportedLocales": {
+    "message": "แดชบอร์ดไม่ได้เสนอสถานที่นำเข้าที่สนับสนุน: $1"
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "ขอยกเลิกแล้ว StorePilot จะหยุดหลังจากขั้นตอนแดชบอร์ดปัจจุบัน"
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "ผ่านการวินิจฉัยแดชบอร์ดแล้ว"
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "การวินิจฉัยแดชบอร์ดพบว่าองค์ประกอบของหน้าหายไป"
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "กรอกทั้งหมดกำลังทำงานอยู่แล้ว"
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "เติมหยุดทั้งหมด"
   },
   "filling": {
-    "message": "Filling"
+    "message": "การกรอก"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "กำลังลองอีกครั้ง"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "เปิดตัวเลือก StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "กำลังเปิดการนำเข้าโครงการ..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "ไม่ทราบ"
+  },
+  "alphaChannel": {
+    "message": "อัลฟ่า"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "โครงการที่ไม่มีชื่อ"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "โครงการนำเข้า"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "การนำเข้าด้วยตนเอง"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "รายการที่นำเข้า"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "การนำเข้าไฟล์ด้วยตนเอง"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "เลือก $1"
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 ตำแหน่งที่ตั้งใน $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "เชื่อมต่อแล้ว"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "ประสบความสำเร็จ"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "สูง"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "ปานกลาง"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "ต่ำ"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot ตัวเลือก"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "อัปเดตล่าสุดเมื่อ ไม่เคย"
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "ไม่มีการนำเข้ารายการ"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "กำลังโหลดรายการ..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot จะขอการยืนยันก่อนอ่านโฟลเดอร์โปรเจ็กต์ที่เลือก คาดว่าจะได้รับพร้อมท์นั้น"
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "การนำเข้าโฟลเดอร์ได้รับการจัดการในแท็บตัวเลือก ซึ่งการแจ้งการยืนยันโฟลเดอร์สามารถดำเนินการได้อย่างน่าเชื่อถือ"
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "เลือกรูทโปรเจ็กต์ โฟลเดอร์รายการร้านค้า หรือโฟลเดอร์รายการโดยตรง StorePilot จะขอให้คุณยืนยันการเข้าถึงโฟลเดอร์"
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "ข้ามช่องความเป็นส่วนตัว: $1"
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "ข้ามฟิลด์ความเป็นส่วนตัว $1: $2"
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "ช่องความเป็นส่วนตัวไม่ยอมรับค่า: $1"
   }
 }

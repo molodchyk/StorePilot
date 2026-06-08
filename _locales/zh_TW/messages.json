@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot：CWS 自動填寫"
   },
   "extensionDescription": {
-    "message": "自動處理瀏覽器擴充套件商店發布中的重複工作。"
+    "message": "從本機檔案自動填寫 Chrome Web Store 上架欄位、本地化說明、截圖和隱私表單。"
   },
   "optionsSubtitle": {
     "message": "匯入扁平的語言 listing 檔案，並在擴充套件商店儀表板中使用。"
@@ -33,22 +33,121 @@
     "message": "匯入專案/資料夾"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "選擇項目根目錄、商店清單資料夾或直接清單資料夾。"
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot 尋找以語言環境命名的清單文件，例如"
   },
   "or": {
     "message": "或"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "您也可以將區域設定清單檔案直接拖曳到此面板上。"
+  },
+  "privacyDocReferenceTitle": {
+    "message": "隱私自動化文件參考"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot 可以掃描一份專案文件中的 Chrome Web Store 隱私權欄位。使用這些規範鍵，以便掃描器可以路由文字而無需猜測。"
+  },
+  "privacyDocPermissionRule": {
+    "message": "對於權限理由，請使用 permission.<manifest permission code>。後綴應與清單權限中的程式碼 optional_permissions、host_permissions 或 content_scripts.matches 相符。"
+  },
+  "privacyDocNamingGuideline": {
+    "message": "建議的檔案名稱：docs/chrome-web-store-privacy-form.md 或 STORE_JUSTIFICATIONS.md。當內容包含 [privacy] 區塊、規範鍵或可識別的儲存調整標題時，StorePilot 也接受其他.md 或.txt 檔案。"
+  },
+  "privacyDocCoreKeys": {
+    "message": "核心關鍵"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "常用權限鍵"
+  },
+  "privacyDocFutureProof": {
+    "message": "如果此處未列出權限，請無論如何使用相同的模式，例如 permission.bookmarks 或 permission.system.display. StorePilot 應將清單代碼本身視為事實來源。"
   },
   "projects": {
     "message": "專案"
   },
   "importedListings": {
     "message": "已匯入的列表"
+  },
+  "storeMediaAssets": {
+    "message": "儲存媒體資產"
+  },
+  "privacyDocument": {
+    "message": "隱私文件"
+  },
+  "privacyDocNotScanned": {
+    "message": "未掃描"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "未找到可用的隱私權文件（已掃描 $1 候選人）。"
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "未找到可用的隱私權文件。"
+  },
+  "privacyDocSummary": {
+    "message": "$2 中的 $1 字段"
+  },
+  "privacyDocFile": {
+    "message": "文件"
+  },
+  "privacyPanelSummary": {
+    "message": "$2 中的 $1 隱私權字段"
+  },
+  "privacyDocFileFound": {
+    "message": "隱私權文件：$1"
+  },
+  "privacyDocNotImported": {
+    "message": "沒有為活動項目匯入隱私文件。"
+  },
+  "importPrivacyDocInOptions": {
+    "message": "在 StorePilot 選項中匯入或重新匯入項目以載入隱私文檔。"
+  },
+  "fillSinglePurpose": {
+    "message": "填寫單一目的"
+  },
+  "fillPrivacy": {
+    "message": "填寫隱私"
+  },
+  "privacyNoValueForField": {
+    "message": "$1 沒有隱私文件價值。"
+  },
+  "privacyFieldNotFound": {
+    "message": "找不到隱私權欄位：$1。"
+  },
+  "privacyFilledField": {
+    "message": "已填入隱私欄位：$1。"
+  },
+  "privacyFilledFields": {
+    "message": "已填寫 $1 隱私權欄位：$2。"
+  },
+  "privacyFieldsNotFound": {
+    "message": "找不到：$1。"
+  },
+  "privacyNoSupportedFields": {
+    "message": "沒有可填寫的受支援的隱私權欄位。"
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "隱私操作僅在隱私頁面上可用。"
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "找到 $1 可編輯隱私候選人。"
+  },
+  "status": {
+    "message": "狀態"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "候選人"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "掃描：$1；匹配：$2。"
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "重新匯入專案資料夾以掃描隱私文件。"
+  },
+  "mediaAssetsNotScanned": {
+    "message": "未掃描"
   },
   "diagnostics": {
     "message": "診斷"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "填入所有語言"
   },
+  "uploadStoreIcon": {
+    "message": "上傳商店圖標"
+  },
+  "uploadMedia": {
+    "message": "上傳媒體"
+  },
+  "uploadScreenshots": {
+    "message": "上傳截圖"
+  },
+  "uploadSmallPromo": {
+    "message": "上傳小促銷"
+  },
+  "uploadMarqueePromo": {
+    "message": "上傳天棚宣傳影片"
+  },
+  "clearScreenshots": {
+    "message": "清晰的截圖"
+  },
+  "clearStoreIcon": {
+    "message": "清除商店圖標"
+  },
+  "clearSmallPromo": {
+    "message": "清除小促銷"
+  },
+  "clearMarqueePromo": {
+    "message": "清晰的字幕宣傳片"
+  },
   "abortFillAll": {
     "message": "中止全部填入"
   },
+  "abortOperation": {
+    "message": "中止操作"
+  },
   "diagnosePage": {
     "message": "診斷頁面"
+  },
+  "openPanel": {
+    "message": "打開面板"
   },
   "options": {
     "message": "選項"
@@ -90,318 +222,441 @@
     "message": "在 StorePilot 選項中匯入列表"
   },
   "never": {
-    "message": "Never"
+    "message": "從來沒有"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "該專案是從瀏覽器文件選擇器匯入的。重新導入專案資料夾以刷新它。"
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "最後更新於 $1。"
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1：導入了 $2 語言環境"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "沒有活躍的項目"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "（空）"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 字符"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 項目"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "沒有項目"
+  },
+  "yes": {
+    "message": "是的"
+  },
+  "no": {
+    "message": "不"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "選定項目"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "來源：$1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "被動資料夾"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "偵測：$1 置信度"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "刷新：重新匯入資料夾"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "更新：$1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 語言環境"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "未選擇任何區域設定清單檔案。"
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "導入$1；跳過$2。"
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "跳過：$1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "在所選資料夾中找不到區域設定清單資料夾。"
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "將 $1 從 $3 匯入到 $2（$4 置信度）；跳過$5。"
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "找到 $1 候選資料夾。"
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 螢幕截圖，圖示：$2，小促銷：$3，字幕促銷：$4。"
+  },
+  "mediaAssetsNone": {
+    "message": "找不到商店媒體資產。"
+  },
+  "mediaUploadedKind": {
+    "message": "已上傳 $1：$2。"
+  },
+  "mediaClearedKind": {
+    "message": "已清除 $1：$2。"
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 已經清楚了。"
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 已存在或正在處理。"
+  },
+  "screenshotsAlreadyClear": {
+    "message": "沒有要清除的螢幕截圖。"
+  },
+  "screenshotsLimitReached": {
+    "message": "螢幕截圖： $1 的 CWS 限制已達到"
+  },
+  "storeIcon": {
+    "message": "商店圖標"
+  },
+  "minimizePanel": {
+    "message": "最小化面板"
+  },
+  "maximizePanel": {
+    "message": "最大化面板"
+  },
+  "closePanel": {
+    "message": "關閉面板"
+  },
+  "panelOpened": {
+    "message": "面板打開。"
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "商品詳情和媒體操作僅在商品詳情頁面上可用。"
+  },
+  "clearingMedia": {
+    "message": "正在清除媒體..."
+  },
+  "mediaClearFailed": {
+    "message": "媒體清除失敗：$1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "媒體操作已在運作：$1。"
+  },
+  "mediaOperationInProgress": {
+    "message": "媒體運作正在進行中。"
+  },
+  "noOperationRunning": {
+    "message": "沒有任何操作正在運行。"
+  },
+  "operationStopped": {
+    "message": "停了。"
+  },
+  "missing": {
+    "message": "失蹤"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "重新匯入專案資料夾以掃描媒體資產。"
+  },
+  "screenshotNumber": {
+    "message": "螢幕截圖$1"
+  },
+  "smallPromoTile": {
+    "message": "小促銷磁磚"
+  },
+  "marqueePromoTile": {
+    "message": "天棚促銷磁磚"
+  },
+  "mediaCandidateCounts": {
+    "message": "候選人"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "圖示：$1；螢幕截圖：$2；小促銷：$3；天棚促銷：$4。"
+  },
+  "uploadingMedia": {
+    "message": "正在上傳媒體..."
+  },
+  "mediaUploaded": {
+    "message": "上傳的媒體：$1。"
+  },
+  "mediaSkipped": {
+    "message": "跳過：$1。"
+  },
+  "mediaUploadFailures": {
+    "message": "失敗：$1。"
+  },
+  "mediaUploadFailed": {
+    "message": "媒體上傳失敗：$1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "資料夾匯入已取消。"
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "資料夾匯入失敗：$1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "選定的文件"
   },
   "manual": {
-    "message": "manual"
+    "message": "手冊"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "導入失敗：$1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "刪除 StorePilot 項目「$1」？"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "已刪除 $1。"
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "清除「$1」的清單嗎？"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "已清除 $1 的清單。"
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 在 $2 中列出語言環境。最後更新於 $3。"
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "還沒有項目"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "沒有選擇要複製的清單文字。"
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "從 $2 複製 $1。"
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "將 $1 導入 $2（$3 置信度）。"
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "沒有活動選項卡。"
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "活動選項卡不是 Chrome Web Store Developer Dashboard 頁面。"
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot 無法連接到此儀表板標籤。打開診斷以查找確切的錯誤。"
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "診斷完成。"
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "診斷失敗。"
   },
   "done": {
-    "message": "Done."
+    "message": "完成。"
   },
   "failed": {
-    "message": "Failed."
+    "message": "失敗了。"
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "未找到區域設定清單檔案。"
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "將 $1 匯入到 $2 中。"
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "項目選定。"
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "填寫所有語言..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "要求停止。"
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "填充全部不運行。"
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "無法停止全部填滿。"
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "診斷失敗：$1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "未找到項目。"
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "重新匯入專案資料夾，以便 StorePilot 可以儲存要上傳的媒體檔案。"
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "讀取媒體檔案之前需要資料夾權限。"
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "未儲存資料夾句柄。"
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "未選擇清單。"
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "複製$1。"
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "找不到可見的可編輯欄位。"
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "填充$1。"
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "找不到 Chrome Web Store 語言下拉清單。"
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "在儀表板語言選單中找不到 $1。"
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "點選$1，但儀表板仍然顯示$2。"
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "未知的語言環境"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "沒有 $1 的清單文字。"
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "找不到 Chrome Web Store 描述欄位。"
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "無法偵測目前儀表板語言。"
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "停了。已填入 $1 儀表板語言。"
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "沒有導入項目清單。"
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "沒有匯入的區域設定與儀表板語言選單相符。"
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "停了。已填入 $1 儀表板語言；仍在等待：$2。"
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "重試後恢復了$1。"
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "重試$1；沒有人康復。"
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "已填入 $1 儀表板語言；失敗 $2：$3。"
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "已填入 $1 儀表板語言。"
+  },
+  "fillAllDashboardSummary": {
+    "message": "導入$1；匹配 $2 儀表板語言。"
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "導入$1；匹配的 $2 儀表板語言；不匹配的導入語言環境：$3。"
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store 未提供不支援的區域設定：$1。"
+  },
+  "unmatchedImportedLocales": {
+    "message": "儀表板未提供支援的導入區域設定：$1。"
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "已請求中止。 StorePilot 將在目前儀表板步驟之後停止。"
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "儀表板診斷已通過。"
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "儀表板診斷發現缺少頁面元素。"
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "填充全部已經在運作。"
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "補全停了。"
   },
   "filling": {
-    "message": "Filling"
+    "message": "灌裝"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "重試"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "開啟 StorePilot 選項"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "開啟專案導入..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "未知"
+  },
+  "alphaChannel": {
+    "message": "阿爾法"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "無標題項目"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "引進項目"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "手動導入"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "導入列表"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "手動文件導入"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "選擇$1。"
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2 中的 $1 語言環境"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "已經連接"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "成功了"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "高"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "中等"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "低"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot 選項"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "最後更新於從不。"
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "沒有導入列表"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "正在加載列表..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot 在讀取所選項目資料夾之前將要求確認。該提示是預期的。"
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "資料夾匯入在選項標籤中處理，其中資料夾確認提示可以可靠地完成。"
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "選擇項目根目錄、商店清單資料夾或直接清單資料夾。 StorePilot 將要求您確認資料夾存取權限。"
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "跳過隱私權欄位：$1。"
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "跳過 $1 隱私權欄位：$2。"
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "隱私權欄位不接受值：$1。"
   }
 }

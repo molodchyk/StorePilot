@@ -58,6 +58,8 @@ p {
 
 h1 {
   font-size: 28px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 h2 {

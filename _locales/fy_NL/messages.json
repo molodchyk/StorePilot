@@ -1,0 +1,662 @@
+{
+  "extensionName": {
+    "message": "StorePilot: CWS automatysk ynfolje"
+  },
+  "extensionDescription": {
+    "message": "Follet Chrome Web Store-fjilden, lokale beskriuwingen, skermôfbylden en privacyformulieren automatysk út lokale bestannen."
+  },
+  "optionsSubtitle": {
+    "message": "Ymportearje platte lokaasje-listingsbestannen en brûk se yn dashboards foar útwreidingswinkels."
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeSystem": {
+    "message": "Systeem"
+  },
+  "themeLight": {
+    "message": "Ljocht"
+  },
+  "themeDark": {
+    "message": "Dûnker"
+  },
+  "clear": {
+    "message": "Dúdlik"
+  },
+  "activeProject": {
+    "message": "Aktyf projekt"
+  },
+  "deleteProject": {
+    "message": "Projekt wiskje"
+  },
+  "importProjectFolder": {
+    "message": "Ymportearje projekt / map"
+  },
+  "importHintFlexible": {
+    "message": "Selektearje in projektroot, in map mei winkellist, of in map mei direkte fermelding."
+  },
+  "importHintLocaleFiles": {
+    "message": "StorePilot siket nei lokaasje-namme list triemmen lykas"
+  },
+  "or": {
+    "message": "of"
+  },
+  "importHintDrag": {
+    "message": "Jo kinne ek slepe direkte locale listing triemmen nei dit paniel."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Privacy automatisearring dokumint referinsje"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot kin ien projektdokumint scannen foar Chrome Web Store privacyfjilden. Brûk dizze kanonike toetsen sadat de scanner tekst kin routerje sûnder te rieden."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Foar tastimming justifications, brûk permission.<manifest permission code>. It efterheaksel moat oerienkomme mei de koade yn jo manifeste tagongsrjochten, optional_permissions, host_permissions, of content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Oanrikkemandearre bestânsnammen: docs/chrome-web-store-privacy-form.md of STORE_JUSTIFICATIONS.md. StorePilot akseptearret ek oare.md of.txt triemmen as de ynhâld befettet in [privacy] blok, kanonike kaaien, of werkenbere winkel-rjochtfeardiging headings."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Kearn toetsen"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Algemiene tastimming kaaien"
+  },
+  "privacyDocFutureProof": {
+    "message": "As in tastimming hjir net stiet, brûk dan dochs itselde patroan, bygelyks permission.bookmarks of permission.system.display. StorePilot moat de manifestkoade sels behannelje as de boarne fan wierheid."
+  },
+  "projects": {
+    "message": "Projekten"
+  },
+  "importedListings": {
+    "message": "Ymportearre Listings"
+  },
+  "storeMediaAssets": {
+    "message": "Winkel Media Assets"
+  },
+  "privacyDocument": {
+    "message": "Privacy dokumint"
+  },
+  "privacyDocNotScanned": {
+    "message": "Net skansearre"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Gjin brûkber privacydokumint fûn ($1 kandidaat(en) skansearre)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Gjin brûkber privacydokumint fûn."
+  },
+  "privacyDocSummary": {
+    "message": "$1 fjild(en) yn $2"
+  },
+  "privacyDocFile": {
+    "message": "Triem"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 privacyfjild(en) yn $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Privacydokumint: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Gjin privacydokumint ymportearre foar it aktive projekt."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Ymportearje of opnij ymportearje it projekt yn StorePilot opsjes foar it laden fan in privacy dokumint."
+  },
+  "fillSinglePurpose": {
+    "message": "Folje ien doel"
+  },
+  "fillPrivacy": {
+    "message": "Folje privacy"
+  },
+  "privacyNoValueForField": {
+    "message": "Gjin privacydokumintwearde foar $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Koe gjin privacyfjild fine: $1."
+  },
+  "privacyFilledField": {
+    "message": "Ynfolle privacy fjild: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Ynfolle $1 privacy fjild(en): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Koe net fine: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Gjin stipe privacyfjilden wiene beskikber om yn te foljen."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Privacyaksjes binne allinich beskikber op 'e Privacy side."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 bewurkbere privacykandidat(en) fûn."
+  },
+  "status": {
+    "message": "Status"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidaten"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Scand: $1; matched: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Ymportearje de projektmap opnij om it privacydokumint te scannen."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Net skansearre"
+  },
+  "diagnostics": {
+    "message": "Diagnostyk"
+  },
+  "project": {
+    "message": "Projekt"
+  },
+  "locale": {
+    "message": "Locale"
+  },
+  "fillCurrentLanguage": {
+    "message": "Folje aktuele taal"
+  },
+  "fillAllLanguages": {
+    "message": "Folje alle talen"
+  },
+  "uploadStoreIcon": {
+    "message": "Upload winkelpictogram"
+  },
+  "uploadMedia": {
+    "message": "Upload media"
+  },
+  "uploadScreenshots": {
+    "message": "Upload skermôfbyldings"
+  },
+  "uploadSmallPromo": {
+    "message": "Upload lytse promo"
+  },
+  "uploadMarqueePromo": {
+    "message": "Upload marquee promo"
+  },
+  "clearScreenshots": {
+    "message": "Dúdlik skermôfbyldings"
+  },
+  "clearStoreIcon": {
+    "message": "Wiskje winkelpictogram"
+  },
+  "clearSmallPromo": {
+    "message": "Dúdlik lytse promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Dúdlik marquee promo"
+  },
+  "abortFillAll": {
+    "message": "Ofbrekke folje alles"
+  },
+  "abortOperation": {
+    "message": "Ofbrekke operaasje"
+  },
+  "diagnosePage": {
+    "message": "Diagnoaze side"
+  },
+  "openPanel": {
+    "message": "Iepenje paniel"
+  },
+  "options": {
+    "message": "Opsjes"
+  },
+  "localeName": {
+    "message": "Frysk"
+  },
+  "fillCurrent": {
+    "message": "Folje aktuele taal"
+  },
+  "fillAll": {
+    "message": "Folje alle talen"
+  },
+  "abort": {
+    "message": "Ofbrekke folje alles"
+  },
+  "importListingsInOptions": {
+    "message": "Ymportearje listings yn StorePilot opsjes"
+  },
+  "never": {
+    "message": "Nea"
+  },
+  "reimportFolderToRefresh": {
+    "message": "Dit projekt is ymportearre út in blêder triemkiezer. Ymportearje de projektmap opnij om it te ferfarskjen."
+  },
+  "lastUpdatedOn": {
+    "message": "Lêst bywurke op $1."
+  },
+  "projectLocalesImported": {
+    "message": "$1: $2 lokaasje(s) ymportearre"
+  },
+  "noActiveProject": {
+    "message": "Gjin aktyf projekt"
+  },
+  "emptyValue": {
+    "message": "(leech)"
+  },
+  "charCount": {
+    "message": "$1 tekens"
+  },
+  "projectCount": {
+    "message": "$1 projekt(en)"
+  },
+  "noProjects": {
+    "message": "Gjin projekten"
+  },
+  "yes": {
+    "message": "ja"
+  },
+  "no": {
+    "message": "nee"
+  },
+  "selectedProject": {
+    "message": "Selektearre projekt"
+  },
+  "sourceLabel": {
+    "message": "Boarne: $1"
+  },
+  "noSourceFolder": {
+    "message": "Gjin boarne map"
+  },
+  "detectionConfidence": {
+    "message": "Detection: $1 fertrouwen"
+  },
+  "refreshReimportFolder": {
+    "message": "Ferfarskje: map opnij ymportearje"
+  },
+  "updatedLabel": {
+    "message": "Bywurke: $1"
+  },
+  "localesCount": {
+    "message": "$1 lokaasjes"
+  },
+  "noLocaleListingFilesSelected": {
+    "message": "Der binne gjin bestannen foar lokaasjelisting selektearre."
+  },
+  "importedSkipped": {
+    "message": "Ymportearre $1; oerslein $2."
+  },
+  "skippedList": {
+    "message": "Oerslein: $1"
+  },
+  "noLocaleListingFolderFound": {
+    "message": "Gjin map foar lokaasjelist is fûn yn de selektearre map."
+  },
+  "importedIntoFrom": {
+    "message": "Ymportearre $1 yn $2 fan $3 ($4 fertrouwen); oerslein $5."
+  },
+  "foundCandidateFolders": {
+    "message": "$1 kandidaat mappen fûn."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 skermprint(en), byldkaike: $2, lytse promo: $3, marquee promo: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Gjin winkel media-aktiva fûn."
+  },
+  "mediaUploadedKind": {
+    "message": "Uploaded $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Wiske $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 al dúdlik."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 al oanwêzich of ferwurke."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Gjin skermôfbyldings om te wiskjen."
+  },
+  "screenshotsLimitReached": {
+    "message": "skermôfbyldings: CWS limyt fan $1 al berikt"
+  },
+  "storeIcon": {
+    "message": "Winkelpictogram"
+  },
+  "minimizePanel": {
+    "message": "Minimalisearje paniel"
+  },
+  "maximizePanel": {
+    "message": "Maksimalisearje paniel"
+  },
+  "closePanel": {
+    "message": "Panel slute"
+  },
+  "panelOpened": {
+    "message": "Paneel iepene."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Listing en media-aksjes binne allinich beskikber op 'e winkellistside."
+  },
+  "clearingMedia": {
+    "message": "Media wiskje..."
+  },
+  "mediaClearFailed": {
+    "message": "Media wiskje mislearre: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Media operaasje rint al: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Media operaasje oan 'e gong."
+  },
+  "noOperationRunning": {
+    "message": "Gjin operaasje rint."
+  },
+  "operationStopped": {
+    "message": "Ophâlden."
+  },
+  "missing": {
+    "message": "Missing"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Ymportearje de projektmap opnij om media-aktiva te scannen."
+  },
+  "screenshotNumber": {
+    "message": "Skermprint $1"
+  },
+  "smallPromoTile": {
+    "message": "Lytse promo tegel"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee promo tegel"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidaten"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikoan: $1; skermôfbyldings: $2; lytse promo: $3; marquee promo: $4."
+  },
+  "uploadingMedia": {
+    "message": "Media uploaden..."
+  },
+  "mediaUploaded": {
+    "message": "Uploaded media: $1."
+  },
+  "mediaSkipped": {
+    "message": "Oerslein: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Mislearre: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Media upload mislearre: $1"
+  },
+  "folderImportCanceled": {
+    "message": "Mapymport annulearre."
+  },
+  "folderImportFailed": {
+    "message": "Mapymport mislearre: $1"
+  },
+  "selectedFiles": {
+    "message": "selektearre triemmen"
+  },
+  "manual": {
+    "message": "hânlieding"
+  },
+  "importFailed": {
+    "message": "Ymport mislearre: $1"
+  },
+  "deleteProjectConfirm": {
+    "message": "StorePilot projekt \"$1\" wiskje?"
+  },
+  "deletedProject": {
+    "message": "$1 wiske."
+  },
+  "clearListingsConfirm": {
+    "message": "Listen wiskje foar \"$1\"?"
+  },
+  "clearedListingsFor": {
+    "message": "Ferljochte listings foar $1."
+  },
+  "popupSummary": {
+    "message": "$1 list fan locale(s) yn $2. Lêst bywurke op $3."
+  },
+  "noProjectsYet": {
+    "message": "Noch gjin projekten"
+  },
+  "noListingTextSelected": {
+    "message": "Gjin fermeldingstekst selektearre om te kopiearjen."
+  },
+  "copiedLocaleFromProject": {
+    "message": "$1 kopiearre fan $2."
+  },
+  "importedIntoConfidence": {
+    "message": "Ymportearre $1 yn $2 ($3 fertrouwen)."
+  },
+  "noActiveTab": {
+    "message": "Gjin aktive ljepper."
+  },
+  "notDashboardPage": {
+    "message": "De aktive ljepper is gjin Chrome Web Store Developer Dashboard side."
+  },
+  "couldNotConnectDashboard": {
+    "message": "StorePilot koe gjin ferbining meitsje mei dit ljepblêd fan it dashboard. Iepenje Diagnostyk foar de krekte flater."
+  },
+  "diagnosticsComplete": {
+    "message": "Diagnostyk kompleet."
+  },
+  "diagnosticsFailed": {
+    "message": "Diagnostyk mislearre."
+  },
+  "done": {
+    "message": "Dien."
+  },
+  "failed": {
+    "message": "Mislearre."
+  },
+  "noLocaleListingFilesFound": {
+    "message": "Der binne gjin bestannen fûn foar lokaasjelist."
+  },
+  "importedInto": {
+    "message": "Ymporteare $1 yn $2."
+  },
+  "projectSelected": {
+    "message": "Projekt selektearre."
+  },
+  "fillingAllLanguages": {
+    "message": "Alle talen ynfolje..."
+  },
+  "stopRequested": {
+    "message": "Stop frege."
+  },
+  "fillAllNotRunning": {
+    "message": "Folje alles rint net."
+  },
+  "couldNotStopFillAll": {
+    "message": "Koe net stopje folje alles."
+  },
+  "diagnosticsFailedWithError": {
+    "message": "Diagnostyk mislearre: $1"
+  },
+  "projectNotFound": {
+    "message": "Projekt net fûn."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Ymportearje de projektmap opnij sadat StorePilot de mediabestannen kin opslaan foar upload."
+  },
+  "folderPermissionNeeded": {
+    "message": "Folsleine tastimming is nedich foar it lêzen fan mediabestannen."
+  },
+  "noFolderHandleSaved": {
+    "message": "Gjin maphantlieding bewarre."
+  },
+  "noListingSelected": {
+    "message": "Gjin fermelding selektearre."
+  },
+  "copiedLocale": {
+    "message": "$1 kopiearre."
+  },
+  "noVisibleEditableField": {
+    "message": "Gjin sichtber bewurkber fjild fûn."
+  },
+  "filledLocale": {
+    "message": "Ynfolle $1."
+  },
+  "languageDropdownNotFound": {
+    "message": "Koe de Chrome Web Store taal dropdown net fine."
+  },
+  "localeNotInDashboardMenu": {
+    "message": "Koe $1 net fine yn it taalmenu fan it dashboard."
+  },
+  "clickedButDashboardShows": {
+    "message": "Klike op $1, mar it dashboard lit noch $2 sjen."
+  },
+  "unknownLocale": {
+    "message": "in ûnbekende lokaasje"
+  },
+  "noListingTextFor": {
+    "message": "Gjin fermeldingstekst foar $1."
+  },
+  "descriptionFieldNotFound": {
+    "message": "Koe it beskriuwingsfjild Chrome Web Store net fine."
+  },
+  "currentDashboardLanguageNotDetected": {
+    "message": "Koe de hjoeddeiske dashboardtaal net ûntdekke."
+  },
+  "stoppedFilledLanguages": {
+    "message": "Ophâlden. Folsleine $1 dashboardtaal(en)."
+  },
+  "noProjectListingsImported": {
+    "message": "Gjin projektlisten ymportearre."
+  },
+  "noImportedLocalesMatchMenu": {
+    "message": "Gjin ymporteare lokaasjes oerienkomme mei it taalmenu fan it dashboard."
+  },
+  "stoppedFilledLanguagesPending": {
+    "message": "Ophâlden. Folsleine $1 dashboardtaal(en); noch yn ôfwachting: $2."
+  },
+  "recoveredAfterRetry": {
+    "message": "$1 weromhelle nei opnij besykjen."
+  },
+  "retriedNoneRecovered": {
+    "message": "Op 'e nij besocht $1; gjinien weromfûn."
+  },
+  "filledLanguagesFailed": {
+    "message": "Folsleine $1 dashboardtaal(en); mislearre $2: $3."
+  },
+  "filledLanguages": {
+    "message": "Folsleine $1 dashboardtaal(en)."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Ymportearre $1; matched $2 dashboard taal(en)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Ymportearre $1; oerienkommende $2 dashboardtaal(en); ongeëvenaarde ymporteare lokaasje(s): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store hat gjin net-stipe lokaasje(s) oanbean: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Dashboard hat gjin stipe ymporteare lokaasje(s) oanbean: $1."
+  },
+  "abortRequestedStopAfterStep": {
+    "message": "Ofbrekke frege. StorePilot sil stopje nei de aktive dashboardstap."
+  },
+  "dashboardDiagnosticsPassed": {
+    "message": "Dashboard diagnoaze trochjûn."
+  },
+  "dashboardDiagnosticsMissingElements": {
+    "message": "Dashboarddiagnostik fûn ûntbrekkende side-eleminten."
+  },
+  "fillAllAlreadyRunning": {
+    "message": "Folje alles rint al."
+  },
+  "fillAllStopped": {
+    "message": "Folje alles stoppe."
+  },
+  "filling": {
+    "message": "Ynfoljen"
+  },
+  "retrying": {
+    "message": "Opnij besykjen"
+  },
+  "openProjectImport": {
+    "message": "Beheare projekt ymport"
+  },
+  "openStorePilotOptions": {
+    "message": "Iepenje StorePilot opsjes"
+  },
+  "openingProjectImport": {
+    "message": "Projektymport iepenje..."
+  },
+  "unknown": {
+    "message": "Unbekend"
+  },
+  "alphaChannel": {
+    "message": "alpha"
+  },
+  "untitledProject": {
+    "message": "Untitled projekt"
+  },
+  "importedProject": {
+    "message": "Ymportearre projekt"
+  },
+  "manualImport": {
+    "message": "Hânlieding ymportearje"
+  },
+  "importedListingsProject": {
+    "message": "Ymportearre listings"
+  },
+  "manualFileImport": {
+    "message": "Hânlieding triem ymportearje"
+  },
+  "selectedDashboardLanguage": {
+    "message": "Selektearre $1."
+  },
+  "miniPanelLocalesInProject": {
+    "message": "$1 lokaasjes yn $2"
+  },
+  "contentScriptAlreadyConnected": {
+    "message": "al ferbûn"
+  },
+  "injectionSucceeded": {
+    "message": "slagge"
+  },
+  "confidenceHigh": {
+    "message": "heech"
+  },
+  "confidenceMedium": {
+    "message": "medium"
+  },
+  "confidenceLow": {
+    "message": "leech"
+  },
+  "optionsTitle": {
+    "message": "StorePilot Opsjes"
+  },
+  "lastUpdatedInitial": {
+    "message": "Lêst bywurke op Never."
+  },
+  "noListingsImported": {
+    "message": "Gjin listings ymportearre"
+  },
+  "loadingListings": {
+    "message": "Listings laden..."
+  },
+  "folderAccessPrompt": {
+    "message": "StorePilot sil freegje om befêstiging foar it lêzen fan de selektearre projekt map. Dy prompt wurdt ferwachte."
+  },
+  "folderImportHandledInOptions": {
+    "message": "Folderymport wurdt behannele yn it ljepblêd Opsjes, wêr't de prompt foar mapbefêstiging betrouber kin foltôgje."
+  },
+  "folderImportHintFlexible": {
+    "message": "Selektearje in projektroot, in map mei winkellist, of in map mei direkte fermelding. StorePilot sil jo freegje om maptagong te befêstigjen."
+  },
+  "privacySkippedField": {
+    "message": "Privacyfjild oerslein: $1."
+  },
+  "privacySkippedFields": {
+    "message": "Oerslein $1 privacyfjild(en): $2."
+  },
+  "privacyFieldDidNotAcceptValue": {
+    "message": "Privacy fjild akseptearre gjin wearde: $1."
+  }
+}

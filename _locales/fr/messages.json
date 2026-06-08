@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot : remplissage CWS"
   },
   "extensionDescription": {
-    "message": "Automatise les tâches répétitives de publication d’extensions de navigateur."
+    "message": "Remplit les champs Chrome Web Store, descriptions localisées, captures et formulaires de confidentialité depuis des fichiers locaux."
   },
   "optionsSubtitle": {
     "message": "Importez des fichiers plats de fiches localisées et utilisez-les dans les tableaux de bord des boutiques d’extensions."
@@ -44,14 +44,113 @@
   "importHintDrag": {
     "message": "Vous pouvez aussi déposer des fichiers de fiches localisées directement sur ce panneau."
   },
+  "privacyDocReferenceTitle": {
+    "message": "Référence du document d'automatisation de la confidentialité"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot peut numériser un document de projet pour les champs de confidentialité Chrome Web Store. Utilisez ces clés canoniques pour que le scanner puisse acheminer le texte sans deviner."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Pour les justifications d’autorisation, utilisez permission.<manifest permission code>. Le suffixe doit correspondre au code dans vos autorisations de manifeste, optional_permissions, host_permissions ou content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Noms de fichiers recommandés: docs/chrome-web-store-privacy-form.md ou STORE_JUSTIFICATIONS.md. StorePilot accepte également d'autres fichiers.md ou.txt lorsque le contenu contient un bloc [privacy], des clés canoniques ou des en-têtes de justification de magasin reconnaissables."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Clés de base"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Clés d'autorisation communes"
+  },
+  "privacyDocFutureProof": {
+    "message": "Si une autorisation n'est pas répertoriée ici, utilisez quand même le même modèle, par exemple permission.bookmarks ou permission.system.display. StorePilot devrait traiter le code manifeste lui-même comme la source de vérité."
+  },
   "projects": {
     "message": "Projets"
   },
   "importedListings": {
     "message": "Fiches importées"
   },
+  "storeMediaAssets": {
+    "message": "Stocker les ressources multimédias"
+  },
+  "privacyDocument": {
+    "message": "Document de confidentialité"
+  },
+  "privacyDocNotScanned": {
+    "message": "Non analysé"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Aucun document de confidentialité utilisable n'a été trouvé (candidats $1 numérisés)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Aucun document de confidentialité utilisable n'a été trouvé."
+  },
+  "privacyDocSummary": {
+    "message": "Champ(s) $1 dans $2"
+  },
+  "privacyDocFile": {
+    "message": "Fichier"
+  },
+  "privacyPanelSummary": {
+    "message": "Champ(s) de confidentialité $1 dans $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Document de confidentialité: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Aucun document de confidentialité importé pour le projet actif."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importez ou réimportez le projet dans les options StorePilot pour charger un document de confidentialité."
+  },
+  "fillSinglePurpose": {
+    "message": "Remplir un seul objectif"
+  },
+  "fillPrivacy": {
+    "message": "Remplir la confidentialité"
+  },
+  "privacyNoValueForField": {
+    "message": "Aucune valeur de document de confidentialité pour $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Impossible de trouver le champ de confidentialité: $1."
+  },
+  "privacyFilledField": {
+    "message": "Champ de confidentialité rempli: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Champ(s) de confidentialité $1 rempli(s): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Impossible de trouver: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Aucun champ de confidentialité pris en charge n'était disponible à remplir."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Les actions de confidentialité ne sont disponibles que sur la page Confidentialité."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 candidat(s) modifiable(s) pour la confidentialité a été trouvé."
+  },
+  "status": {
+    "message": "Statut"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Candidats"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Numérisé: $1; correspondant: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Réimportez le dossier du projet pour numériser le document de confidentialité."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Non analysé"
+  },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Diagnostic"
   },
   "project": {
     "message": "Projet"
@@ -65,14 +164,47 @@
   "fillAllLanguages": {
     "message": "Remplir toutes les langues"
   },
+  "uploadStoreIcon": {
+    "message": "Icône de magasin de téléchargement"
+  },
+  "uploadMedia": {
+    "message": "Télécharger des médias"
+  },
+  "uploadScreenshots": {
+    "message": "Télécharger des captures d'écran"
+  },
+  "uploadSmallPromo": {
+    "message": "Télécharger une petite promotion"
+  },
+  "uploadMarqueePromo": {
+    "message": "Télécharger une promotion de marque"
+  },
+  "clearScreenshots": {
+    "message": "Effacer les captures d'écran"
+  },
+  "clearStoreIcon": {
+    "message": "Effacer l'icône du magasin"
+  },
+  "clearSmallPromo": {
+    "message": "Effacer la petite promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Effacer la promotion du chapiteau"
+  },
   "abortFillAll": {
     "message": "Arrêter le remplissage"
+  },
+  "abortOperation": {
+    "message": "Abandonner l'opération"
   },
   "diagnosePage": {
     "message": "Diagnostiquer la page"
   },
+  "openPanel": {
+    "message": "Panneau ouvert"
+  },
   "options": {
-    "message": "Options"
+    "message": "Possibilités"
   },
   "localeName": {
     "message": "Français"
@@ -90,318 +222,441 @@
     "message": "Importez des fiches dans les options StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "Jamais"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Ce projet a été importé à partir d'un sélecteur de fichiers de navigateur. Réimportez le dossier du projet pour l'actualiser."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Dernière mise à jour le $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 paramètres régionaux importés"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Aucun projet actif"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(vide)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 caractères"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projet(s)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Aucun projet"
+  },
+  "yes": {
+    "message": "oui"
+  },
+  "no": {
+    "message": "non"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Projet sélectionné"
   },
   "sourceLabel": {
     "message": "Source: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Aucun dossier source"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Détection: confiance $1"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Actualiser: réimporter le dossier"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Mise à jour: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "paramètres régionaux $1"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Aucun fichier de liste de paramètres régionaux n'a été sélectionné."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Importé $1; ignoré $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Ignoré: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Aucun dossier de liste de paramètres régionaux n'a été trouvé dans le dossier sélectionné."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Importé $1 dans $2 à partir de $3 (confiance $4); sauté $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 dossiers de candidats trouvés."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 capture(s) d'écran, icône: $2, petite promotion: $3, promotion de marque: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Aucun élément multimédia du magasin n'a été trouvé."
+  },
+  "mediaUploadedKind": {
+    "message": "$1 téléchargé: $2."
+  },
+  "mediaClearedKind": {
+    "message": "$1 effacé: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 est déjà clair."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 déjà présent ou en cours de traitement."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Aucune capture d'écran à effacer."
+  },
+  "screenshotsLimitReached": {
+    "message": "captures d'écran: limite CWS de $1 déjà atteinte"
+  },
+  "storeIcon": {
+    "message": "Icône de magasin"
+  },
+  "minimizePanel": {
+    "message": "Réduire le panneau"
+  },
+  "maximizePanel": {
+    "message": "Agrandir le panneau"
+  },
+  "closePanel": {
+    "message": "Fermer le panneau"
+  },
+  "panelOpened": {
+    "message": "Panneau ouvert."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Les actions de référencement et médias ne sont disponibles que sur la page de référencement du Store."
+  },
+  "clearingMedia": {
+    "message": "Effacement des médias..."
+  },
+  "mediaClearFailed": {
+    "message": "Échec de l'effacement du support: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Opération multimédia déjà en cours: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Opération média en cours."
+  },
+  "noOperationRunning": {
+    "message": "Aucune opération n'est en cours."
+  },
+  "operationStopped": {
+    "message": "Arrêté."
+  },
+  "missing": {
+    "message": "Manquant"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Réimportez le dossier du projet pour analyser les ressources multimédias."
+  },
+  "screenshotNumber": {
+    "message": "Capture d'écran $1"
+  },
+  "smallPromoTile": {
+    "message": "Petite tuile promotionnelle"
+  },
+  "marqueePromoTile": {
+    "message": "Tuile promotionnelle de chapiteau"
+  },
+  "mediaCandidateCounts": {
+    "message": "Candidats"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Icône: $1; captures d'écran: $2; petite promo: $3; promo chapiteau: $4."
+  },
+  "uploadingMedia": {
+    "message": "Téléchargement de médias..."
+  },
+  "mediaUploaded": {
+    "message": "Médias téléchargés: $1."
+  },
+  "mediaSkipped": {
+    "message": "Ignoré: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Échec: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Échec du téléchargement du média: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Importation du dossier annulée."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Échec de l'importation du dossier: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "fichiers sélectionnés"
   },
   "manual": {
-    "message": "manual"
+    "message": "manuel"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Échec de l'importation: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Supprimer le projet StorePilot \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1 supprimé."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Effacer les listes pour \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Annonces effacées pour $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 répertoriant les paramètres régionaux dans $2. Dernière mise à jour le $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Aucun projet pour l'instant"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Aucun texte de liste sélectionné à copier."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Copié $1 à partir de $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Importé $1 dans $2 (confiance $3)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Aucun onglet actif."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "L'onglet actif n'est pas une page Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot n'a pas pu se connecter à cet onglet du tableau de bord. Ouvrez Diagnostics pour l'erreur exacte."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostic terminé."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Le diagnostic a échoué."
   },
   "done": {
-    "message": "Done."
+    "message": "Terminé."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Échec."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Aucun fichier de liste de paramètres régionaux n'a été trouvé."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Importé $1 dans $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projet sélectionné."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Remplir toutes les langues..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Arrêt demandé."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Tout remplir ne fonctionne pas."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Je ne pouvais pas arrêter de tout remplir."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Échec du diagnostic: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projet introuvable."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Réimportez le dossier du projet afin que StorePilot puisse stocker les fichiers multimédias à télécharger."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "L'autorisation du dossier est nécessaire avant de lire des fichiers multimédias."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Aucun descripteur de dossier enregistré."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Aucune annonce sélectionnée."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Copié $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Aucun champ modifiable visible trouvé."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Rempli $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Impossible de trouver la liste déroulante des langues Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Impossible de trouver $1 dans le menu de langue du tableau de bord."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Vous avez cliqué sur $1, mais le tableau de bord affiche toujours $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "un lieu inconnu"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Aucun texte de liste pour $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Impossible de trouver le champ de description Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Impossible de détecter la langue actuelle du tableau de bord."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Arrêté. Langue(s) du tableau de bord $1 renseignée(s)."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Aucune liste de projets importée."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Aucun paramètre régional importé ne correspond au menu de langue du tableau de bord."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Arrêté. Langue(s) du tableau de bord $1 renseignée(s); toujours en attente: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "$1 récupéré après une nouvelle tentative."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Nouvelle tentative $1; aucun n’a récupéré."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Langue(s) du tableau de bord $1 renseignée(s); échec $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Langue(s) du tableau de bord $1 renseignée(s)."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importé $1; langue(s) du tableau de bord $2 correspondante(s)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importé $1; langue(s) du tableau de bord $2 correspondante(s); paramètres régionaux importés sans correspondance: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store n'offrait pas de paramètres régionaux non pris en charge: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Le tableau de bord n'offrait pas de paramètres régionaux importés pris en charge: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Abandon demandé. StorePilot s'arrêtera après l'étape actuelle du tableau de bord."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Diagnostics du tableau de bord réussis."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Les diagnostics du tableau de bord ont détecté des éléments de page manquants."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Tout remplir est déjà en cours d'exécution."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Remplissez tout arrêté."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Remplissage"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Réessayer"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Ouvrir les options StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Ouverture de l'importation de projet..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Inconnu"
+  },
+  "alphaChannel": {
+    "message": "alpha"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Projet sans titre"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Projet importé"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Importation manuelle"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Annonces importées"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Importation manuelle de fichiers"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1 sélectionné."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "Paramètres régionaux $1 dans $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "déjà connecté"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "réussi"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "haut"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "moyen"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "faible"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "Options StorePilot"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Dernière mise à jour le Jamais."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Aucune annonce importée"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Chargement des annonces..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot demandera une confirmation avant de lire le dossier du projet sélectionné. Cette invite est attendue."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "L'importation de dossiers est gérée dans l'onglet Options, où l'invite de confirmation du dossier peut se terminer de manière fiable."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Sélectionnez une racine de projet, un dossier de liste Play Store ou un dossier de liste directe. StorePilot vous demandera de confirmer l'accès au dossier."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Champ de confidentialité ignoré: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Champ(s) de confidentialité $1 ignoré(s): $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Le champ de confidentialité n'a pas accepté la valeur: $1."
   }
 }

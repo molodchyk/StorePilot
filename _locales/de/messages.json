@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: Chrome Web Store Autofill"
   },
   "extensionDescription": {
-    "message": "Automatisiert wiederkehrende Veröffentlichungsarbeit für Browsererweiterungen."
+    "message": "Füllt Chrome Web Store-Felder, Beschreibungen, Screenshots und Datenschutzformulare aus lokalen Dateien automatisch aus."
   },
   "optionsSubtitle": {
     "message": "Importiere flache Locale-Listing-Dateien und nutze sie in Erweiterungs-Store-Dashboards."
@@ -44,11 +44,110 @@
   "importHintDrag": {
     "message": "Du kannst direkte Locale-Listing-Dateien auch auf dieses Feld ziehen."
   },
+  "privacyDocReferenceTitle": {
+    "message": "Referenzdokument zur Datenschutzautomatisierung"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot kann ein Projektdokument nach Chrome Web Store Datenschutzfeldern durchsuchen. Verwenden Sie diese kanonischen Tasten, damit der Scanner Text ohne Raten weiterleiten kann."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Verwenden Sie für Berechtigungsbegründungen permission.<manifest permission code>. Das Suffix sollte mit dem Code in Ihren Manifestberechtigungen übereinstimmen, optional_permissions, host_permissions oder content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Empfohlene Dateinamen: docs/chrome-web-store-privacy-form.md oder STORE_JUSTIFICATIONS.md. StorePilot akzeptiert auch andere.md- oder.txt-Dateien, wenn der Inhalt einen [privacy]-Block, kanonische Schlüssel oder erkennbare Überschriften zur Geschäftsbegründung enthält."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Kernschlüssel"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Allgemeine Berechtigungsschlüssel"
+  },
+  "privacyDocFutureProof": {
+    "message": "Wenn eine Berechtigung hier nicht aufgeführt ist, verwenden Sie trotzdem dasselbe Muster, zum Beispiel permission.bookmarks oder permission.system.display. StorePilot sollte den Manifestcode selbst als Quelle der Wahrheit behandeln."
+  },
   "projects": {
     "message": "Projekte"
   },
   "importedListings": {
     "message": "Importierte Listings"
+  },
+  "storeMediaAssets": {
+    "message": "Speichern Sie Medienressourcen"
+  },
+  "privacyDocument": {
+    "message": "Datenschutzdokument"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nicht gescannt"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Kein verwendbares Datenschutzdokument gefunden ($1 Kandidat(en) gescannt)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Kein verwendbares Datenschutzdokument gefunden."
+  },
+  "privacyDocSummary": {
+    "message": "$1 Feld(er) in $2"
+  },
+  "privacyDocFile": {
+    "message": "Datei"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 Datenschutzfeld(er) in $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Datenschutzdokument: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Für das aktive Projekt wurde kein Datenschutzdokument importiert."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importieren oder importieren Sie das Projekt erneut in den StorePilot-Optionen, um ein Datenschutzdokument zu laden."
+  },
+  "fillSinglePurpose": {
+    "message": "Erfüllen Sie einen einzigen Zweck"
+  },
+  "fillPrivacy": {
+    "message": "Privatsphäre füllen"
+  },
+  "privacyNoValueForField": {
+    "message": "Kein Datenschutzdokumentwert für $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Datenschutzfeld konnte nicht gefunden werden: $1."
+  },
+  "privacyFilledField": {
+    "message": "Ausgefülltes Datenschutzfeld: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Ausgefüllte $1 Datenschutzfelder: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Konnte nicht finden: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Es standen keine unterstützten Datenschutzfelder zum Ausfüllen zur Verfügung."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Datenschutzaktionen sind nur auf der Datenschutzseite verfügbar."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Es wurden $1 bearbeitbare Datenschutzkandidaten gefunden."
+  },
+  "status": {
+    "message": "Status"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidaten"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Gescannt: $1; Übereinstimmung: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Importieren Sie den Projektordner erneut, um das Datenschutzdokument zu scannen."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nicht gescannt"
   },
   "diagnostics": {
     "message": "Diagnose"
@@ -57,7 +156,7 @@
     "message": "Projekt"
   },
   "locale": {
-    "message": "Locale"
+    "message": "Gebietsschema"
   },
   "fillCurrentLanguage": {
     "message": "Aktuelle Sprache ausfüllen"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "Alle Sprachen ausfüllen"
   },
+  "uploadStoreIcon": {
+    "message": "Shop-Symbol hochladen"
+  },
+  "uploadMedia": {
+    "message": "Medien hochladen"
+  },
+  "uploadScreenshots": {
+    "message": "Laden Sie Screenshots hoch"
+  },
+  "uploadSmallPromo": {
+    "message": "Laden Sie eine kleine Promo hoch"
+  },
+  "uploadMarqueePromo": {
+    "message": "Laden Sie die Festzelt-Promo hoch"
+  },
+  "clearScreenshots": {
+    "message": "Klare Screenshots"
+  },
+  "clearStoreIcon": {
+    "message": "Store-Symbol löschen"
+  },
+  "clearSmallPromo": {
+    "message": "Klare kleine Promo"
+  },
+  "clearMarqueePromo": {
+    "message": "Klare Festzelt-Promo"
+  },
   "abortFillAll": {
     "message": "Alles ausfüllen abbrechen"
   },
+  "abortOperation": {
+    "message": "Vorgang abbrechen"
+  },
   "diagnosePage": {
     "message": "Seite diagnostizieren"
+  },
+  "openPanel": {
+    "message": "Panel öffnen"
   },
   "options": {
     "message": "Optionen"
@@ -116,6 +248,12 @@
   "noProjects": {
     "message": "Keine Projekte"
   },
+  "yes": {
+    "message": "ja"
+  },
+  "no": {
+    "message": "Nein"
+  },
   "selectedProject": {
     "message": "Ausgewähltes Projekt"
   },
@@ -154,6 +292,102 @@
   },
   "foundCandidateFolders": {
     "message": "$1 mögliche Ordner gefunden."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 Screenshot(s), Symbol: $2, kleine Promo: $3, Festzelt-Promo: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Keine Store-Medien-Assets gefunden."
+  },
+  "mediaUploadedKind": {
+    "message": "Hochgeladen $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Gelöscht $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 bereits klar."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 bereits vorhanden oder in Bearbeitung."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Keine Screenshots zum Löschen."
+  },
+  "screenshotsLimitReached": {
+    "message": "Screenshots: CWS-Limit von $1 bereits erreicht"
+  },
+  "storeIcon": {
+    "message": "Store-Symbol"
+  },
+  "minimizePanel": {
+    "message": "Panel minimieren"
+  },
+  "maximizePanel": {
+    "message": "Panel maximieren"
+  },
+  "closePanel": {
+    "message": "Panel schließen"
+  },
+  "panelOpened": {
+    "message": "Panel geöffnet."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Eintrags- und Medienaktionen sind nur auf der Store-Eintragsseite verfügbar."
+  },
+  "clearingMedia": {
+    "message": "Medien löschen..."
+  },
+  "mediaClearFailed": {
+    "message": "Medienlöschung fehlgeschlagen: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Medienvorgang läuft bereits: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Medienvorgang läuft."
+  },
+  "noOperationRunning": {
+    "message": "Es läuft kein Vorgang."
+  },
+  "operationStopped": {
+    "message": "Angehalten."
+  },
+  "missing": {
+    "message": "Fehlt"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Importieren Sie den Projektordner erneut, um Medienressourcen zu scannen."
+  },
+  "screenshotNumber": {
+    "message": "Screenshot $1"
+  },
+  "smallPromoTile": {
+    "message": "Kleine Promo-Kachel"
+  },
+  "marqueePromoTile": {
+    "message": "Festzelt-Promoplättchen"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidaten"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Symbol: $1; Screenshots: $2; kleine Promo: $3; Festzelt-Promo: $4."
+  },
+  "uploadingMedia": {
+    "message": "Medien werden hochgeladen..."
+  },
+  "mediaUploaded": {
+    "message": "Hochgeladene Medien: $1."
+  },
+  "mediaSkipped": {
+    "message": "Übersprungen: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Fehlgeschlagen: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Medien-Upload fehlgeschlagen: $1"
   },
   "folderImportCanceled": {
     "message": "Ordnerimport abgebrochen."
@@ -204,7 +438,7 @@
     "message": "Der aktive Tab ist keine Chrome Web Store Developer Dashboard-Seite."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot konnte keine Verbindung zu dieser Dashboard-Registerkarte herstellen. Öffnen Sie die Diagnose für den genauen Fehler."
   },
   "diagnosticsComplete": {
     "message": "Diagnose abgeschlossen."
@@ -245,8 +479,11 @@
   "projectNotFound": {
     "message": "Projekt nicht gefunden."
   },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Importieren Sie den Projektordner erneut, damit StorePilot die Mediendateien zum Hochladen speichern kann."
+  },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Vor dem Lesen von Mediendateien ist eine Ordnerberechtigung erforderlich."
   },
   "noFolderHandleSaved": {
     "message": "Keine Ordnerberechtigung gespeichert."
@@ -308,6 +545,18 @@
   "filledLanguages": {
     "message": "$1 Dashboard-Sprache(n) ausgefüllt."
   },
+  "fillAllDashboardSummary": {
+    "message": "Importiert $1; übereinstimmende(n) $2 Dashboard-Sprache(n)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importiert $1; passende $2 Dashboard-Sprache(n); nicht übereinstimmende importierte Gebietsschema(s): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store hat keine nicht unterstützten Gebietsschema(s) angeboten: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Das Dashboard bot keine unterstützten importierten Gebietsschema(s) an: $1."
+  },
   "abortRequestedStopAfterStep": {
     "message": "Abbruch angefordert. StorePilot stoppt nach dem aktuellen Dashboard-Schritt."
   },
@@ -332,11 +581,17 @@
   "openProjectImport": {
     "message": "Projektimport in Optionen öffnen"
   },
+  "openStorePilotOptions": {
+    "message": "Öffnen Sie die StorePilot-Optionen"
+  },
   "openingProjectImport": {
     "message": "Projektimport wird geöffnet..."
   },
   "unknown": {
     "message": "Unbekannt"
+  },
+  "alphaChannel": {
+    "message": "Alpha"
   },
   "untitledProject": {
     "message": "Unbenanntes Projekt"
@@ -387,21 +642,21 @@
     "message": "Listings werden geladen..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot fragt vor dem Lesen des ausgewählten Projektordners nach einer Bestätigung. Diese Aufforderung wird erwartet."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Der Ordnerimport erfolgt auf der Registerkarte „Optionen“, wo die Ordnerbestätigungsaufforderung zuverlässig abgeschlossen werden kann."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Wählen Sie einen Projektstamm, einen Store-Listing-Ordner oder einen Direct-Listing-Ordner aus. StorePilot fordert Sie auf, den Ordnerzugriff zu bestätigen."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Übersprungenes Datenschutzfeld: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Übersprungene $1 Datenschutzfelder: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Das Datenschutzfeld hat den Wert nicht akzeptiert: $1."
   }
 }

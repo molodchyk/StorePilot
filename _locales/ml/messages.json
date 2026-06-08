@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS ഓട്ടോഫിൽ"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "പ്രാദേശിക ഫയലുകളിൽ നിന്ന് Chrome Web Store ഫീൽഡുകൾ, വിവരണങ്ങൾ, സ്ക്രീൻഷോട്ടുകൾ, സ്വകാര്യത ഫോമുകൾ ഓട്ടോഫിൽ ചെയ്യുക."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "ഫ്ലാറ്റ് ലോക്കൽ ലിസ്റ്റിംഗ് ഫയലുകൾ ഇമ്പോർട്ടുചെയ്ത് അവ എക്സ്റ്റൻഷൻ സ്റ്റോർ ഡാഷ്ബോർഡുകളിൽ ഉപയോഗിക്കുക."
   },
   "theme": {
     "message": "തീം"
@@ -21,37 +21,136 @@
     "message": "ഡാർക്ക്"
   },
   "clear": {
-    "message": "Clear"
+    "message": "ക്ലിയർ"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "സജീവ പദ്ധതി"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "പദ്ധതി ഇല്ലാതാക്കുക"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "പ്രോജക്റ്റ്/ഫോൾഡർ ഇറക്കുമതി ചെയ്യുക"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "ഒരു പ്രോജക്റ്റ് റൂട്ട്, ഒരു സ്റ്റോർ-ലിസ്റ്റിംഗ് ഫോൾഡർ അല്ലെങ്കിൽ നേരിട്ടുള്ള ലിസ്റ്റിംഗ് ഫോൾഡർ തിരഞ്ഞെടുക്കുക."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot പോലുള്ള പ്രാദേശിക നാമമുള്ള ലിസ്റ്റിംഗ് ഫയലുകൾക്കായി തിരയുന്നു"
   },
   "or": {
     "message": "അല്ലെങ്കിൽ"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "നിങ്ങൾക്ക് ഈ പാനലിലേക്ക് നേരിട്ടുള്ള പ്രാദേശിക ലിസ്റ്റിംഗ് ഫയലുകൾ വലിച്ചിടാനും കഴിയും."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "സ്വകാര്യത ഓട്ടോമേഷൻ പ്രമാണ റഫറൻസ്"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot എന്നതിന് Chrome Web Store സ്വകാര്യതാ ഫീൽഡുകൾക്കായി ഒരു പ്രോജക്റ്റ് ഡോക്യുമെൻ്റ് സ്കാൻ ചെയ്യാൻ കഴിയും. ഈ കാനോനിക്കൽ കീകൾ ഉപയോഗിക്കുക, അങ്ങനെ സ്കാനറിന് ഊഹിക്കാതെ തന്നെ ടെക്സ്റ്റ് റൂട്ട് ചെയ്യാൻ കഴിയും."
+  },
+  "privacyDocPermissionRule": {
+    "message": "അനുമതി ന്യായീകരണങ്ങൾക്കായി, permission.<manifest permission code> ഉപയോഗിക്കുക. നിങ്ങളുടെ മാനിഫെസ്റ്റ് അനുമതികളിലെ കോഡുമായി സഫിക്സ് പൊരുത്തപ്പെടണം, optional_permissions, host_permissions, അല്ലെങ്കിൽ content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "ശുപാർശ ചെയ്യുന്ന ഫയൽനാമങ്ങൾ: docs/chrome-web-store-privacy-form.md അല്ലെങ്കിൽ STORE_JUSTIFICATIONS.md. ഉള്ളടക്കത്തിൽ [privacy] ബ്ലോക്ക്, കാനോനിക്കൽ കീകൾ അല്ലെങ്കിൽ തിരിച്ചറിയാവുന്ന സ്റ്റോർ-ന്യായീകരണ തലക്കെട്ടുകൾ എന്നിവ അടങ്ങിയിരിക്കുമ്പോൾ StorePilot മറ്റ്.md അല്ലെങ്കിൽ.txt ഫയലുകളും സ്വീകരിക്കുന്നു."
+  },
+  "privacyDocCoreKeys": {
+    "message": "കോർ കീകൾ"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "സാധാരണ അനുമതി കീകൾ"
+  },
+  "privacyDocFutureProof": {
+    "message": "ഒരു അനുമതി ഇവിടെ ലിസ്റ്റുചെയ്തിട്ടില്ലെങ്കിൽ, എന്തായാലും അതേ പാറ്റേൺ ഉപയോഗിക്കുക, ഉദാഹരണത്തിന് permission.bookmarks അല്ലെങ്കിൽ permission.system.display. StorePilot മാനിഫെസ്റ്റ് കോഡ് തന്നെ സത്യത്തിൻ്റെ ഉറവിടമായി കണക്കാക്കണം."
   },
   "projects": {
     "message": "പ്രോജക്റ്റുകൾ"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "ഇറക്കുമതി ചെയ്ത ലിസ്റ്റിംഗുകൾ"
+  },
+  "storeMediaAssets": {
+    "message": "മീഡിയ അസറ്റുകൾ സംഭരിക്കുക"
+  },
+  "privacyDocument": {
+    "message": "സ്വകാര്യത പ്രമാണം"
+  },
+  "privacyDocNotScanned": {
+    "message": "സ്കാൻ ചെയ്തിട്ടില്ല"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "ഉപയോഗിക്കാവുന്ന സ്വകാര്യത പ്രമാണങ്ങളൊന്നും കണ്ടെത്തിയില്ല ($1 കാൻഡിഡേറ്റ്(കൾ) സ്കാൻ ചെയ്തു)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "ഉപയോഗിക്കാവുന്ന സ്വകാര്യത പ്രമാണങ്ങളൊന്നും കണ്ടെത്തിയില്ല."
+  },
+  "privacyDocSummary": {
+    "message": "$2 എന്നതിലെ $1 ഫീൽഡ്(കൾ)"
+  },
+  "privacyDocFile": {
+    "message": "ഫയൽ"
+  },
+  "privacyPanelSummary": {
+    "message": "$2 എന്നതിലെ $1 സ്വകാര്യതാ ഫീൽഡ്(കൾ)"
+  },
+  "privacyDocFileFound": {
+    "message": "സ്വകാര്യത പ്രമാണം: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "സജീവ പ്രോജക്റ്റിനായി സ്വകാര്യതാ രേഖയൊന്നും ഇറക്കുമതി ചെയ്തിട്ടില്ല."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "ഒരു സ്വകാര്യത പ്രമാണം ലോഡുചെയ്യുന്നതിന് StorePilot ഓപ്ഷനുകളിൽ പ്രൊജക്റ്റ് ഇറക്കുമതി ചെയ്യുക അല്ലെങ്കിൽ വീണ്ടും ഇറക്കുമതി ചെയ്യുക."
+  },
+  "fillSinglePurpose": {
+    "message": "ഒരൊറ്റ ഉദ്ദേശ്യം പൂരിപ്പിക്കുക"
+  },
+  "fillPrivacy": {
+    "message": "സ്വകാര്യത പൂരിപ്പിക്കുക"
+  },
+  "privacyNoValueForField": {
+    "message": "$1 എന്നതിന് സ്വകാര്യത പ്രമാണ മൂല്യമില്ല."
+  },
+  "privacyFieldNotFound": {
+    "message": "സ്വകാര്യതാ ഫീൽഡ് കണ്ടെത്താൻ കഴിഞ്ഞില്ല: $1."
+  },
+  "privacyFilledField": {
+    "message": "പൂരിപ്പിച്ച സ്വകാര്യതാ ഫീൽഡ്: $1."
+  },
+  "privacyFilledFields": {
+    "message": "പൂരിപ്പിച്ച $1 സ്വകാര്യതാ ഫീൽഡ്(കൾ): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "കണ്ടെത്താനായില്ല: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "പൂരിപ്പിക്കുന്നതിന് പിന്തുണയ്ക്കുന്ന സ്വകാര്യതാ ഫീൽഡുകളൊന്നും ലഭ്യമല്ല."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "സ്വകാര്യതാ പ്രവർത്തനങ്ങൾ സ്വകാര്യതാ പേജിൽ മാത്രമേ ലഭ്യമാകൂ."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 എഡിറ്റ് ചെയ്യാവുന്ന സ്വകാര്യത കാൻഡിഡേറ്റ്(കൾ) കണ്ടെത്തി."
+  },
+  "status": {
+    "message": "നില"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "സ്ഥാനാർത്ഥികൾ"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "സ്കാൻ ചെയ്തു: $1; പൊരുത്തപ്പെട്ടു: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "സ്വകാര്യത പ്രമാണം സ്കാൻ ചെയ്യാൻ പ്രോജക്റ്റ് ഫോൾഡർ വീണ്ടും ഇറക്കുമതി ചെയ്യുക."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "സ്കാൻ ചെയ്തിട്ടില്ല"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "ഡയഗ്നോസ്റ്റിക്സ്"
   },
   "project": {
     "message": "പ്രോജക്റ്റ്"
@@ -60,16 +159,49 @@
     "message": "ലോക്കേൽ"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "നിലവിലെ ഭാഷ പൂരിപ്പിക്കുക"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "എല്ലാ ഭാഷകളും പൂരിപ്പിക്കുക"
+  },
+  "uploadStoreIcon": {
+    "message": "സ്റ്റോർ ഐക്കൺ അപ്ലോഡ് ചെയ്യുക"
+  },
+  "uploadMedia": {
+    "message": "മീഡിയ അപ്ലോഡ് ചെയ്യുക"
+  },
+  "uploadScreenshots": {
+    "message": "സ്ക്രീൻഷോട്ടുകൾ അപ്ലോഡ് ചെയ്യുക"
+  },
+  "uploadSmallPromo": {
+    "message": "ചെറിയ പ്രൊമോ അപ്ലോഡ് ചെയ്യുക"
+  },
+  "uploadMarqueePromo": {
+    "message": "മാർക്യൂ പ്രൊമോ അപ്ലോഡ് ചെയ്യുക"
+  },
+  "clearScreenshots": {
+    "message": "സ്ക്രീൻഷോട്ടുകൾ മായ്ക്കുക"
+  },
+  "clearStoreIcon": {
+    "message": "സ്റ്റോർ ഐക്കൺ മായ്ക്കുക"
+  },
+  "clearSmallPromo": {
+    "message": "ചെറിയ പ്രമോ മായ്ക്കുക"
+  },
+  "clearMarqueePromo": {
+    "message": "ക്ലിയർ മാർക്യൂ പ്രൊമോ"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "എല്ലാം നിറയ്ക്കുക"
+  },
+  "abortOperation": {
+    "message": "ഓപ്പറേഷൻ നിർത്തലാക്കുക"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "ഡയഗ്നോസ് പേജ്"
+  },
+  "openPanel": {
+    "message": "പാനൽ തുറക്കുക"
   },
   "options": {
     "message": "ഓപ്ഷനുകൾ"
@@ -78,330 +210,453 @@
     "message": "മലയാളം"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "നിലവിലെ ഭാഷ പൂരിപ്പിക്കുക"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "എല്ലാ ഭാഷകളും പൂരിപ്പിക്കുക"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "എല്ലാം നിറയ്ക്കുക"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "StorePilot ഓപ്ഷനുകളിൽ ലിസ്റ്റിംഗുകൾ ഇറക്കുമതി ചെയ്യുക"
   },
   "never": {
-    "message": "Never"
+    "message": "ഒരിക്കലും"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "ഈ പ്രോജക്റ്റ് ഒരു ബ്രൗസർ ഫയൽ പിക്കറിൽ നിന്ന് ഇറക്കുമതി ചെയ്തതാണ്. പുതുക്കാൻ പ്രോജക്റ്റ് ഫോൾഡർ വീണ്ടും ഇറക്കുമതി ചെയ്യുക."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "അവസാനമായി അപ്ഡേറ്റ് ചെയ്തത് $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 ലൊക്കേൽ(കൾ) ഇറക്കുമതി ചെയ്തു"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "സജീവമായ പ്രോജക്റ്റ് ഒന്നുമില്ല"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(ശൂന്യം)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 പ്രതീകങ്ങൾ"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 പദ്ധതി(കൾ)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "പദ്ധതികളൊന്നുമില്ല"
+  },
+  "yes": {
+    "message": "അതെ"
+  },
+  "no": {
+    "message": "ഇല്ല"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "തിരഞ്ഞെടുത്ത പ്രോജക്റ്റ്"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "ഉറവിടം: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "ഉറവിട ഫോൾഡറൊന്നുമില്ല"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "കണ്ടെത്തൽ: $1 ആത്മവിശ്വാസം"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "പുതുക്കിയെടുക്കുക: ഫോൾഡർ വീണ്ടും ഇറക്കുമതി ചെയ്യുക"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "അപ്ഡേറ്റ് ചെയ്തത്: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 ലൊക്കേലുകൾ"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "പ്രാദേശിക ലിസ്റ്റിംഗ് ഫയലുകളൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "ഇറക്കുമതി ചെയ്തത് $1; $2 ഒഴിവാക്കി."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "ഒഴിവാക്കി: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "തിരഞ്ഞെടുത്ത ഫോൾഡറിൽ ലൊക്കേൽ ലിസ്റ്റിംഗ് ഫോൾഡറൊന്നും കണ്ടെത്തിയില്ല."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$3 ($4 ആത്മവിശ്വാസം) എന്നതിൽ നിന്ന് $2-ലേക്ക് $1 ഇമ്പോർട്ടുചെയ്തു; $5 ഒഴിവാക്കി."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 കാൻഡിഡേറ്റ് ഫോൾഡറുകൾ കണ്ടെത്തി."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 സ്ക്രീൻഷോട്ട്(കൾ), ഐക്കൺ: $2, ചെറിയ പ്രൊമോ: $3, മാർക്യൂ പ്രൊമോ: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "സ്റ്റോർ മീഡിയ അസറ്റുകളൊന്നും കണ്ടെത്തിയില്ല."
+  },
+  "mediaUploadedKind": {
+    "message": "അപ്ലോഡ് ചെയ്തത് $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "മായ്ച്ചു $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 ഇതിനകം വ്യക്തമായിരിക്കുന്നു."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 ഇതിനകം നിലവിലുണ്ട് അല്ലെങ്കിൽ പ്രോസസ്സ് ചെയ്യുന്നു."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "മായ്ക്കാൻ സ്ക്രീൻഷോട്ടുകളൊന്നുമില്ല."
+  },
+  "screenshotsLimitReached": {
+    "message": "സ്ക്രീൻഷോട്ടുകൾ: CWS പരിധി $1 ഇതിനകം എത്തിയിരിക്കുന്നു"
+  },
+  "storeIcon": {
+    "message": "സ്റ്റോർ ഐക്കൺ"
+  },
+  "minimizePanel": {
+    "message": "പാനൽ ചെറുതാക്കുക"
+  },
+  "maximizePanel": {
+    "message": "പാനൽ പരമാവധിയാക്കുക"
+  },
+  "closePanel": {
+    "message": "പാനൽ അടയ്ക്കുക"
+  },
+  "panelOpened": {
+    "message": "പാനൽ തുറന്നു."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "ലിസ്റ്റിംഗും മീഡിയ പ്രവർത്തനങ്ങളും സ്റ്റോർ ലിസ്റ്റിംഗ് പേജിൽ മാത്രമേ ലഭ്യമാകൂ."
+  },
+  "clearingMedia": {
+    "message": "മാധ്യമങ്ങൾ മായ്ക്കുന്നു..."
+  },
+  "mediaClearFailed": {
+    "message": "മീഡിയ ക്ലിയർ പരാജയപ്പെട്ടു: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "മീഡിയ പ്രവർത്തനം ഇതിനകം പ്രവർത്തിക്കുന്നു: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "മാധ്യമ പ്രവർത്തനം പുരോഗമിക്കുന്നു."
+  },
+  "noOperationRunning": {
+    "message": "ഒരു പ്രവർത്തനവും നടക്കുന്നില്ല."
+  },
+  "operationStopped": {
+    "message": "നിർത്തി."
+  },
+  "missing": {
+    "message": "കാണുന്നില്ല"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "മീഡിയ അസറ്റുകൾ സ്കാൻ ചെയ്യുന്നതിന് പ്രോജക്റ്റ് ഫോൾഡർ വീണ്ടും ഇറക്കുമതി ചെയ്യുക."
+  },
+  "screenshotNumber": {
+    "message": "സ്ക്രീൻഷോട്ട് $1"
+  },
+  "smallPromoTile": {
+    "message": "ചെറിയ പ്രൊമോ ടൈൽ"
+  },
+  "marqueePromoTile": {
+    "message": "മാർക്വീ പ്രൊമോ ടൈൽ"
+  },
+  "mediaCandidateCounts": {
+    "message": "സ്ഥാനാർത്ഥികൾ"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "ഐക്കൺ: $1; സ്ക്രീൻഷോട്ടുകൾ: $2; ചെറിയ പ്രൊമോ: $3; മാർക്യൂ പ്രൊമോ: $4."
+  },
+  "uploadingMedia": {
+    "message": "മീഡിയ അപ്ലോഡ് ചെയ്യുന്നു..."
+  },
+  "mediaUploaded": {
+    "message": "അപ്ലോഡ് ചെയ്ത മീഡിയ: $1."
+  },
+  "mediaSkipped": {
+    "message": "ഒഴിവാക്കി: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "പരാജയപ്പെട്ടു: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "മീഡിയ അപ്ലോഡ് പരാജയപ്പെട്ടു: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "ഫോൾഡർ ഇറക്കുമതി റദ്ദാക്കി."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "ഫോൾഡർ ഇറക്കുമതി പരാജയപ്പെട്ടു: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "തിരഞ്ഞെടുത്ത ഫയലുകൾ"
   },
   "manual": {
-    "message": "manual"
+    "message": "മാനുവൽ"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "ഇറക്കുമതി പരാജയപ്പെട്ടു: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot പ്രോജക്റ്റ് \"$1\" ഇല്ലാതാക്കണോ?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "ഇല്ലാതാക്കി $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "\"$1\" എന്നതിനായുള്ള ലിസ്റ്റിംഗുകൾ മായ്ക്കണോ?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "$1 എന്നതിനായുള്ള ലിസ്റ്റിംഗുകൾ മായ്ച്ചു."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 $2 എന്നതിലെ ലൊക്കേൽ(കൾ) പട്ടികപ്പെടുത്തുന്നു. അവസാനം അപ്ഡേറ്റ് ചെയ്തത് $3-ന്."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "ഇതുവരെ പദ്ധതികളൊന്നുമില്ല"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "പകർത്താൻ ലിസ്റ്റിംഗ് ടെക്സ്റ്റൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$2 ൽ നിന്ന് $1 പകർത്തി."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 $2 ($3 ആത്മവിശ്വാസം) എന്നതിലേക്ക് ഇമ്പോർട്ട് ചെയ്തു."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "സജീവ ടാബ് ഇല്ല."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "സജീവമായ ടാബ് Chrome Web Store Developer Dashboard പേജല്ല."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot ഈ ഡാഷ്ബോർഡ് ടാബിലേക്ക് കണക്റ്റുചെയ്യാനായില്ല. കൃത്യമായ പിശകിന് ഡയഗ്നോസ്റ്റിക്സ് തുറക്കുക."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "ഡയഗ്നോസ്റ്റിക്സ് പൂർത്തിയായി."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "ഡയഗ്നോസ്റ്റിക്സ് പരാജയപ്പെട്ടു."
   },
   "done": {
-    "message": "Done."
+    "message": "ചെയ്തു."
   },
   "failed": {
-    "message": "Failed."
+    "message": "പരാജയപ്പെട്ടു."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "പ്രാദേശിക ലിസ്റ്റിംഗ് ഫയലുകളൊന്നും കണ്ടെത്തിയില്ല."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$2 എന്നതിലേക്ക് $1 ഇറക്കുമതി ചെയ്തു."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "പദ്ധതി തിരഞ്ഞെടുത്തു."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "എല്ലാ ഭാഷകളും നിറയുന്നു..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "നിർത്താൻ അഭ്യർത്ഥിച്ചു."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "ഫിൽ എല്ലാം പ്രവർത്തിക്കുന്നില്ല."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "എല്ലാം നിറയ്ക്കുന്നത് നിർത്താൻ കഴിഞ്ഞില്ല."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "ഡയഗ്നോസ്റ്റിക്സ് പരാജയപ്പെട്ടു: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "പ്രോജക്റ്റ് കണ്ടെത്തിയില്ല."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "പ്രൊജക്റ്റ് ഫോൾഡർ വീണ്ടും ഇറക്കുമതി ചെയ്യുക, അതുവഴി StorePilot ന് അപ്ലോഡിനായി മീഡിയ ഫയലുകൾ സംഭരിക്കാൻ കഴിയും."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "മീഡിയ ഫയലുകൾ വായിക്കുന്നതിന് മുമ്പ് ഫോൾഡർ അനുമതി ആവശ്യമാണ്."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "ഫോൾഡർ ഹാൻഡിൽ സംരക്ഷിച്ചിട്ടില്ല."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "ലിസ്റ്റിംഗൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "$1 പകർത്തി."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "ദൃശ്യമായ എഡിറ്റ് ചെയ്യാവുന്ന ഫീൽഡ് കണ്ടെത്തിയില്ല."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "$1 നിറഞ്ഞു."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Chrome Web Store ഭാഷാ ഡ്രോപ്പ്ഡൗൺ കണ്ടെത്താൻ കഴിഞ്ഞില്ല."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "ഡാഷ്ബോർഡ് ഭാഷാ മെനുവിൽ $1 കണ്ടെത്താനായില്ല."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "$1 ക്ലിക്ക് ചെയ്തു, പക്ഷേ ഡാഷ്ബോർഡ് ഇപ്പോഴും $2 കാണിക്കുന്നു."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "ഒരു അജ്ഞാത പ്രദേശം"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "$1 എന്നതിന് ലിസ്റ്റിംഗ് ടെക്സ്റ്റൊന്നുമില്ല."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Chrome Web Store വിവരണ ഫീൽഡ് കണ്ടെത്താൻ കഴിഞ്ഞില്ല."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "നിലവിലെ ഡാഷ്ബോർഡ് ഭാഷ കണ്ടെത്താനായില്ല."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "നിർത്തി. $1 ഡാഷ്ബോർഡ് ഭാഷ(കൾ) നിറഞ്ഞു."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "പ്രോജക്റ്റ് ലിസ്റ്റിംഗുകളൊന്നും ഇറക്കുമതി ചെയ്തിട്ടില്ല."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "ഇറക്കുമതി ചെയ്ത ഭാഷകളൊന്നും ഡാഷ്ബോർഡ് ഭാഷാ മെനുവുമായി പൊരുത്തപ്പെടുന്നില്ല."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "നിർത്തി. നിറഞ്ഞു $1 ഡാഷ്ബോർഡ് ഭാഷ(കൾ); ഇപ്പോഴും തീർച്ചപ്പെടുത്തിയിട്ടില്ല: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "വീണ്ടും ശ്രമിച്ചതിന് ശേഷം $1 വീണ്ടെടുത്തു."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "വീണ്ടും ശ്രമിച്ചു $1; ആരും വീണ്ടെടുത്തില്ല."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "നിറഞ്ഞു $1 ഡാഷ്ബോർഡ് ഭാഷ(കൾ); പരാജയപ്പെട്ടു $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 ഡാഷ്ബോർഡ് ഭാഷ(കൾ) നിറഞ്ഞു."
+  },
+  "fillAllDashboardSummary": {
+    "message": "ഇറക്കുമതി ചെയ്തത് $1; പൊരുത്തപ്പെട്ടു $2 ഡാഷ്ബോർഡ് ഭാഷ(കൾ)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "ഇറക്കുമതി ചെയ്തത് $1; പൊരുത്തപ്പെടുന്ന $2 ഡാഷ്ബോർഡ് ഭാഷ(കൾ); സമാനതകളില്ലാത്ത ഇറക്കുമതി ചെയ്ത ലൊക്കേൽ(കൾ): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store പിന്തുണയ്ക്കാത്ത ലൊക്കേൽ(കൾ) വാഗ്ദാനം ചെയ്തില്ല: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "പിന്തുണയ്ക്കുന്ന ഇറക്കുമതി ചെയ്ത ലൊക്കേൽ(കൾ) ഡാഷ്ബോർഡ് വാഗ്ദാനം ചെയ്യുന്നില്ല: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "അലസിപ്പിക്കാൻ അഭ്യർത്ഥിച്ചു. നിലവിലെ ഡാഷ്ബോർഡ് ഘട്ടത്തിന് ശേഷം StorePilot നിർത്തും."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "ഡാഷ്ബോർഡ് ഡയഗ്നോസ്റ്റിക്സ് പാസ്സായി."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "ഡാഷ്ബോർഡ് ഡയഗ്നോസ്റ്റിക്സ് പേജ് ഘടകങ്ങൾ വിട്ടുപോയതായി കണ്ടെത്തി."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "എല്ലാം പൂരിപ്പിക്കുക ഇതിനകം പ്രവർത്തിക്കുന്നു."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "നിറയ്ക്കുക എല്ലാം നിർത്തി."
   },
   "filling": {
-    "message": "Filling"
+    "message": "പൂരിപ്പിക്കൽ"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "വീണ്ടും ശ്രമിക്കുന്നു"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "StorePilot ഓപ്ഷനുകൾ തുറക്കുക"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "പ്രോജക്റ്റ് ഇറക്കുമതി തുറക്കുന്നു..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "അജ്ഞാതം"
+  },
+  "alphaChannel": {
+    "message": "ആൽഫ"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "പേരിടാത്ത പദ്ധതി"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "ഇറക്കുമതി ചെയ്ത പദ്ധതി"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "മാനുവൽ ഇറക്കുമതി"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "ഇറക്കുമതി ചെയ്ത ലിസ്റ്റിംഗുകൾ"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "മാനുവൽ ഫയൽ ഇറക്കുമതി"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1 തിരഞ്ഞെടുത്തു."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2 എന്നതിലെ $1 ലൊക്കേലുകൾ"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "ഇതിനകം ബന്ധിപ്പിച്ചിരിക്കുന്നു"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "വിജയിച്ചു"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "ഉയർന്നത്"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "ഇടത്തരം"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "താഴ്ന്ന"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot ഓപ്ഷനുകൾ"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "അവസാനം അപ്ഡേറ്റ് ചെയ്തത് ഒരിക്കലും."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "ലിസ്റ്റിംഗുകളൊന്നും ഇറക്കുമതി ചെയ്തിട്ടില്ല"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "ലിസ്റ്റിംഗുകൾ ലോഡ് ചെയ്യുന്നു..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "തിരഞ്ഞെടുത്ത പ്രോജക്റ്റ് ഫോൾഡർ വായിക്കുന്നതിന് മുമ്പ് StorePilot സ്ഥിരീകരണത്തിനായി ആവശ്യപ്പെടും. ആ പ്രോംപ്റ്റ് പ്രതീക്ഷിക്കുന്നു."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "ഫോൾഡർ ഇംപോർട്ട് കൈകാര്യം ചെയ്യുന്നത് ഓപ്ഷനുകൾ ടാബിലാണ്, അവിടെ ഫോൾഡർ സ്ഥിരീകരണ പ്രോംപ്റ്റിന് വിശ്വസനീയമായി പൂർത്തിയാക്കാനാകും."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "ഒരു പ്രോജക്റ്റ് റൂട്ട്, ഒരു സ്റ്റോർ-ലിസ്റ്റിംഗ് ഫോൾഡർ അല്ലെങ്കിൽ നേരിട്ടുള്ള ലിസ്റ്റിംഗ് ഫോൾഡർ തിരഞ്ഞെടുക്കുക. ഫോൾഡർ ആക്സസ് സ്ഥിരീകരിക്കാൻ StorePilot നിങ്ങളോട് ആവശ്യപ്പെടും."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "ഒഴിവാക്കിയ സ്വകാര്യതാ ഫീൽഡ്: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "ഒഴിവാക്കി $1 സ്വകാര്യതാ ഫീൽഡ്(കൾ): $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "സ്വകാര്യതാ ഫീൽഡ് മൂല്യം സ്വീകരിച്ചില്ല: $1."
   }
 }

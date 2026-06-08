@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS automātiskā aizpilde"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Automātiski aizpilda Chrome Web Store laukus, lokalizētus aprakstus, ekrānattēlus un privātuma veidlapas no vietējiem failiem."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Importējiet vienotas lokalizācijas sarakstu failus un izmantojiet tos paplašinājumu veikala informācijas paneļos."
   },
   "theme": {
     "message": "Motīvs"
@@ -21,37 +21,136 @@
     "message": "Tumšs"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Skaidrs"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Aktīvs projekts"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Dzēst projektu"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Importēt projektu/mapi"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Atlasiet projekta sakni, veikala ieraksta mapi vai tiešā saraksta mapi."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot meklē sarakstu failus ar lokalizāciju, piemēram,"
   },
   "or": {
     "message": "vai"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Varat arī vilkt uz šo paneli tiešās lokalizācijas saraksta failus."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Privātuma automatizācijas dokumenta atsauce"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot var skenēt vienu projekta dokumentu Chrome Web Store privātuma laukiem. Izmantojiet šos kanoniskos taustiņus, lai skeneris varētu maršrutēt tekstu bez minējumiem."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Atļauju pamatojumam izmantojiet permission.<manifest permission code>. Sufiksam ir jāatbilst kodam jūsu manifesta atļaujās — optional_permissions, host_permissions vai content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Ieteicamie failu nosaukumi: docs/chrome-web-store-privacy-form.md vai STORE_JUSTIFICATIONS.md. StorePilot pieņem arī citus.md vai.txt failus, ja saturā ir [privacy] bloks, kanoniskās atslēgas vai atpazīstami veikala pamatojuma virsraksti."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Galvenās atslēgas"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Kopējās atļauju atslēgas"
+  },
+  "privacyDocFutureProof": {
+    "message": "Ja atļauja šeit nav norādīta, jebkurā gadījumā izmantojiet to pašu modeli, piemēram, permission.bookmarks vai permission.system.display. StorePilot pats manifesta kods ir jāuzskata par patiesības avotu."
   },
   "projects": {
     "message": "Projekti"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Importētie saraksti"
+  },
+  "storeMediaAssets": {
+    "message": "Uzglabāt multivides līdzekļus"
+  },
+  "privacyDocument": {
+    "message": "Privātuma dokuments"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nav skenēts"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Netika atrasts neviens izmantojams konfidencialitātes dokuments (skenēti $1 kandidāti)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nav atrasts neviens izmantojams konfidencialitātes dokuments."
+  },
+  "privacyDocSummary": {
+    "message": "$1 lauks(-i) $2"
+  },
+  "privacyDocFile": {
+    "message": "Fails"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 konfidencialitātes lauks(-i) $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Privātuma dokuments: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Aktīvajam projektam nav importēts neviens konfidencialitātes dokuments."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importējiet vai atkārtoti importējiet projektu StorePilot opcijās, lai ielādētu konfidencialitātes dokumentu."
+  },
+  "fillSinglePurpose": {
+    "message": "Aizpildiet vienu mērķi"
+  },
+  "fillPrivacy": {
+    "message": "Aizpildiet privātumu"
+  },
+  "privacyNoValueForField": {
+    "message": "Nav konfidencialitātes dokumenta vērtības $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "Nevarēja atrast konfidencialitātes lauku: $1."
+  },
+  "privacyFilledField": {
+    "message": "Aizpildīts privātuma lauks: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Aizpildīts $1 konfidencialitātes lauks(-i): $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Nevarēja atrast: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Aizpildīšanai nebija pieejams neviens atbalstīts privātuma lauks."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Konfidencialitātes darbības ir pieejamas tikai lapā Privātums."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Atrasts $1 rediģējams(-i) privātuma kandidāts(-i)."
+  },
+  "status": {
+    "message": "Statuss"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidāti"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Skenēts: $1; atbilst: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Atkārtoti importējiet projekta mapi, lai skenētu konfidencialitātes dokumentu."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nav skenēts"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Diagnostika"
   },
   "project": {
     "message": "Projekts"
@@ -60,16 +159,49 @@
     "message": "Lokalizācija"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Aizpildiet pašreizējo valodu"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Aizpildiet visas valodas"
+  },
+  "uploadStoreIcon": {
+    "message": "Augšupielādēt veikala ikonu"
+  },
+  "uploadMedia": {
+    "message": "Augšupielādējiet multividi"
+  },
+  "uploadScreenshots": {
+    "message": "Augšupielādējiet ekrānuzņēmumus"
+  },
+  "uploadSmallPromo": {
+    "message": "Augšupielādējiet nelielu reklāmu"
+  },
+  "uploadMarqueePromo": {
+    "message": "Augšupielādējiet telts reklāmu"
+  },
+  "clearScreenshots": {
+    "message": "Notīrīt ekrānuzņēmumus"
+  },
+  "clearStoreIcon": {
+    "message": "Notīrīt veikala ikonu"
+  },
+  "clearSmallPromo": {
+    "message": "Skaidrs mazs piedāvājums"
+  },
+  "clearMarqueePromo": {
+    "message": "Skaidra telts reklāma"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Pārtraukt aizpildiet visu"
+  },
+  "abortOperation": {
+    "message": "Pārtraukt darbību"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Diagnostikas lapa"
+  },
+  "openPanel": {
+    "message": "Atvērt paneli"
   },
   "options": {
     "message": "Opcijas"
@@ -78,330 +210,453 @@
     "message": "Latviešu"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Aizpildiet pašreizējo valodu"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Aizpildiet visas valodas"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Pārtraukt aizpildiet visu"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Importējiet sarakstus StorePilot opcijās"
   },
   "never": {
-    "message": "Never"
+    "message": "Nekad"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Šis projekts tika importēts no pārlūkprogrammas failu atlasītāja. Atkārtoti importējiet projekta mapi, lai to atsvaidzinātu."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Pēdējo reizi atjaunināts $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: importēta(-as) $2 lokalizācija(-as)."
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Nav aktīva projekta"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(tukšs)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 rakstzīmes"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projekts(-i)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Nav projektu"
+  },
+  "yes": {
+    "message": "jā"
+  },
+  "no": {
+    "message": "nē"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Izvēlētais projekts"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Avots: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Nav avota mapes"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Atklāšana: $1 pārliecība"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Atsvaidzināt: atkārtoti importējiet mapi"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Atjaunināts: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 lokalizācijas"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Netika atlasīts neviens lokalizācijas saraksta fails."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Importēts $1; izlaists $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Izlaists: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Atlasītajā mapē netika atrasta neviena lokalizācijas saraksta mape."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Importēts $1 uz $2 no $3 ($4 uzticamība); izlaists $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Atrastas $1 kandidātu mapes."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 ekrānuzņēmums(-i), ikona: $2, maza reklāma: $3, telts reklāma: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Nav atrasts neviens veikala multivides īpašums."
+  },
+  "mediaUploadedKind": {
+    "message": "Augšupielādēts $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Notīrīts $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 jau ir skaidrs."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 jau ir vai tiek apstrādāts."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Nav ekrānuzņēmumu, ko notīrīt."
+  },
+  "screenshotsLimitReached": {
+    "message": "ekrānuzņēmumi: jau sasniegts CWS ierobežojums no $1"
+  },
+  "storeIcon": {
+    "message": "Veikala ikona"
+  },
+  "minimizePanel": {
+    "message": "Minimizēt paneli"
+  },
+  "maximizePanel": {
+    "message": "Maksimizēt paneli"
+  },
+  "closePanel": {
+    "message": "Aizvērt paneli"
+  },
+  "panelOpened": {
+    "message": "Panelis atvērts."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Ieraksta un multivides darbības ir pieejamas tikai veikala ieraksta lapā."
+  },
+  "clearingMedia": {
+    "message": "Notiek multivides dzēšana..."
+  },
+  "mediaClearFailed": {
+    "message": "Multivides dzēšana neizdevās: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Multivides darbība jau darbojas: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Notiek multivides darbība."
+  },
+  "noOperationRunning": {
+    "message": "Netiek veikta operācija."
+  },
+  "operationStopped": {
+    "message": "Apstājās."
+  },
+  "missing": {
+    "message": "Trūkst"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Atkārtoti importējiet projekta mapi, lai skenētu multivides līdzekļus."
+  },
+  "screenshotNumber": {
+    "message": "Ekrānuzņēmums $1"
+  },
+  "smallPromoTile": {
+    "message": "Maza reklāmas flīze"
+  },
+  "marqueePromoTile": {
+    "message": "Telšu reklāmas flīze"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidāti"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Ikona: $1; ekrānšāviņi: $2; mazs piedāvājums: $3; telts reklāma: $4."
+  },
+  "uploadingMedia": {
+    "message": "Notiek multivides augšupielāde..."
+  },
+  "mediaUploaded": {
+    "message": "Augšupielādētais multivides saturs: $1."
+  },
+  "mediaSkipped": {
+    "message": "Izlaists: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Neizdevās: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Multivides augšupielāde neizdevās: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Mapes importēšana ir atcelta."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Mapes importēšana neizdevās: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "atlasītos failus"
   },
   "manual": {
-    "message": "manual"
+    "message": "rokasgrāmata"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Importēšana neizdevās: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Vai dzēst StorePilot projektu \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Izdzēsts $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Vai dzēst \"$1\" sarakstus?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Notīrīti saraksti par $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 uzskaitot lokalizāciju(-as) $2. Pēdējo reizi atjaunināts $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Vēl nav projektu"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Kopējam nav atlasīts neviens ieraksta teksts."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Kopēts $1 no $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Importēts $1 mapē $2 ($3 uzticamība)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Nav aktīvas cilnes."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Aktīvā cilne nav Chrome Web Store Developer Dashboard lapa."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot nevarēja izveidot savienojumu ar šo informācijas paneļa cilni. Lai uzzinātu precīzu kļūdu, atveriet sadaļu Diagnostika."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostika pabeigta."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnostika neizdevās."
   },
   "done": {
-    "message": "Done."
+    "message": "Gatavs."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Neizdevās."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Netika atrasts neviens lokalizācijas saraksta fails."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Importēts $1 mapē $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Projekts atlasīts."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Aizpilda visas valodas..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Pieprasīta apstāšanās."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Aizpildiet visu nedarbojas."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Nevarēja beigt aizpildīt visu."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnostika neizdevās: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projekts nav atrasts."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Atkārtoti importējiet projekta mapi, lai StorePilot varētu saglabāt multivides failus augšupielādei."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Pirms multivides failu lasīšanas ir nepieciešama mapes atļauja."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Nav saglabāts neviens mapes rokturis."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Nav atlasīts neviens ieraksts."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Kopēts $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Nav atrasts neviens redzams rediģējams lauks."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Aizpildīts $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Nevarēja atrast Chrome Web Store valodas nolaižamo izvēlni."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Nevarēja atrast $1 informācijas paneļa valodas izvēlnē."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Noklikšķināts uz $1, bet informācijas panelī joprojām tiek rādīts $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "nezināma lokalizācija"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Nav saraksta teksta $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Nevarēja atrast Chrome Web Store apraksta lauku."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Nevarēja noteikt pašreizējo informācijas paneļa valodu."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Apstājās. Aizpildītas $1 informācijas paneļa valoda(-as)."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Nav importēts neviens projektu saraksts."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Neviena importētā lokalizācija neatbilst informācijas paneļa valodas izvēlnei."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Apstājās. Aizpildītas $1 informācijas paneļa valoda(-as); joprojām gaida: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Atkopts $1 pēc atkārtota mēģinājuma."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Atkārtoti mēģināts $1; neviens neatguvās."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Aizpildītas $1 informācijas paneļa valoda(-as); neizdevās $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Aizpildītas $1 informācijas paneļa valoda(-as)."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importēts $1; atbilst $2 informācijas paneļa valodai(-ām)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importēts $1; atbilst $2 informācijas paneļa valoda(-as); nesaskaņotās importētās lokalizācijas: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store nepiedāvāja neatbalstītu(-as) lokalizāciju(-as): $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Informācijas panelis nepiedāvāja atbalstīto importēto lokalizāciju(-as): $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Pieprasīts pārtraukt. StorePilot apstāsies pēc pašreizējās informācijas paneļa darbības."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Informācijas paneļa diagnostika ir izturēta."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Informācijas paneļa diagnostika atklāja trūkstošus lapas elementus."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Aizpildiet visu jau darbojas."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Aizpildiet visu apturēto."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Pildījums"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Notiek atkārtots mēģinājums"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Atveriet StorePilot opcijas"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Notiek projekta importēšanas atvēršana..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Nezināms"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Projekts bez nosaukuma"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Importēts projekts"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Manuāla importēšana"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Importētie saraksti"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Manuāla failu importēšana"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Atlasīts $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 lokalizācijas $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "jau ir savienots"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "izdevās"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "augsts"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "vidējs"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "zems"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Opcijas"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Pēdējo reizi atjaunināts Nekad."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Nav importētu ierakstu"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Notiek sarakstu ielāde..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot lūgs apstiprinājumu pirms atlasītās projekta mapes lasīšanas. Tāda uzvedne ir gaidāma."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Mapju importēšana tiek apstrādāta opciju cilnē, kur var droši pabeigt mapes apstiprinājuma uzvedni."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Atlasiet projekta sakni, veikala ieraksta mapi vai tiešā saraksta mapi. StorePilot lūgs apstiprināt piekļuvi mapei."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Izlaists konfidencialitātes lauks: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Izlaisti $1 konfidencialitātes lauki: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Konfidencialitātes lauks nepieņēma vērtību: $1."
   }
 }

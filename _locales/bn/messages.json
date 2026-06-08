@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS অটোফিল"
   },
   "extensionDescription": {
-    "message": "ব্রাউজার এক্সটেনশন স্টোর প্রকাশনার পুনরাবৃত্ত কাজ স্বয়ংক্রিয় করুন।"
+    "message": "স্থানীয় ফাইল থেকে Chrome Web Store তালিকা ক্ষেত্র, অনূদিত বিবরণ, স্ক্রিনশট ও গোপনীয়তা ফর্ম অটোফিল করুন।"
   },
   "optionsSubtitle": {
     "message": "ফ্ল্যাট লোকেল তালিকা ফাইল আমদানি করুন এবং এক্সটেনশন স্টোর ড্যাশবোর্ডে ব্যবহার করুন।"
@@ -33,22 +33,121 @@
     "message": "প্রকল্প/ফোল্ডার আমদানি"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "একটি প্রজেক্ট রুট, একটি স্টোর-লিস্টিং ফোল্ডার বা সরাসরি তালিকা ফোল্ডার নির্বাচন করুন।"
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot লোকেল-নামকৃত তালিকা ফাইলের সন্ধান করে যেমন"
   },
   "or": {
     "message": "অথবা"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "আপনি এই প্যানেলে সরাসরি লোকেল তালিকা ফাইলগুলিও টেনে আনতে পারেন।"
+  },
+  "privacyDocReferenceTitle": {
+    "message": "গোপনীয়তা অটোমেশন নথি রেফারেন্স"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot Chrome Web Store গোপনীয়তা ক্ষেত্রগুলির জন্য একটি প্রকল্প নথি স্ক্যান করতে পারে৷ এই ক্যানোনিকাল কীগুলি ব্যবহার করুন যাতে স্ক্যানার অনুমান না করে পাঠ্যকে রুট করতে পারে৷"
+  },
+  "privacyDocPermissionRule": {
+    "message": "অনুমতির ন্যায্যতার জন্য, permission.<manifest permission code> ব্যবহার করুন। প্রত্যয়টি আপনার ম্যানিফেস্ট অনুমতি, optional_permissions, host_permissions, বা content_scripts.matches-এর কোডের সাথে মেলে।"
+  },
+  "privacyDocNamingGuideline": {
+    "message": "প্রস্তাবিত ফাইলের নাম: docs/chrome-web-store-privacy-form.md বা STORE_JUSTIFICATIONS.md। StorePilot অন্যান্য.md বা.txt ফাইল গ্রহণ করে যখন বিষয়বস্তুতে একটি [privacy] ব্লক, ক্যানোনিকাল কী, অথবা শনাক্তযোগ্য স্টোর-জাস্টিফিকেশন শিরোনাম থাকে।"
+  },
+  "privacyDocCoreKeys": {
+    "message": "মূল কী"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "সাধারণ অনুমতি কী"
+  },
+  "privacyDocFutureProof": {
+    "message": "যদি একটি অনুমতি এখানে তালিকাভুক্ত না থাকে, তবে একই প্যাটার্ন ব্যবহার করুন, উদাহরণস্বরূপ permission.bookmarks বা permission.system.display. StorePilot এর ম্যানিফেস্ট কোডকেই সত্যের উৎস হিসাবে বিবেচনা করা উচিত।"
   },
   "projects": {
     "message": "প্রকল্পসমূহ"
   },
   "importedListings": {
     "message": "আমদানি করা তালিকা"
+  },
+  "storeMediaAssets": {
+    "message": "মিডিয়া সম্পদ সংরক্ষণ করুন"
+  },
+  "privacyDocument": {
+    "message": "গোপনীয়তা নথি"
+  },
+  "privacyDocNotScanned": {
+    "message": "স্ক্যান করা হয়নি"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "কোনো ব্যবহারযোগ্য গোপনীয়তা নথি পাওয়া যায়নি ($1 প্রার্থী(দের) স্ক্যান করা হয়েছে)।"
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "কোন ব্যবহারযোগ্য গোপনীয়তা নথি পাওয়া যায়নি."
+  },
+  "privacyDocSummary": {
+    "message": "$2 এ $1 ক্ষেত্র(গুলি)"
+  },
+  "privacyDocFile": {
+    "message": "ফাইল"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 গোপনীয়তা ক্ষেত্র(গুলি) $2 এ"
+  },
+  "privacyDocFileFound": {
+    "message": "গোপনীয়তা নথি: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "সক্রিয় প্রকল্পের জন্য কোনো গোপনীয়তা নথি আমদানি করা হয়নি।"
+  },
+  "importPrivacyDocInOptions": {
+    "message": "একটি গোপনীয়তা নথি লোড করতে StorePilot বিকল্পগুলিতে প্রকল্পটি আমদানি বা পুনরায় আমদানি করুন৷"
+  },
+  "fillSinglePurpose": {
+    "message": "একক উদ্দেশ্য পূরণ করুন"
+  },
+  "fillPrivacy": {
+    "message": "গোপনীয়তা পূরণ করুন"
+  },
+  "privacyNoValueForField": {
+    "message": "$1 এর জন্য কোনো গোপনীয়তা নথির মান নেই।"
+  },
+  "privacyFieldNotFound": {
+    "message": "গোপনীয়তা ক্ষেত্র খুঁজে পাওয়া যায়নি: $1."
+  },
+  "privacyFilledField": {
+    "message": "পূর্ণ গোপনীয়তা ক্ষেত্র: $1।"
+  },
+  "privacyFilledFields": {
+    "message": "ভরা $1 গোপনীয়তা ক্ষেত্র(গুলি): $2।"
+  },
+  "privacyFieldsNotFound": {
+    "message": "খুঁজে পাওয়া যায়নি: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "কোনো সমর্থিত গোপনীয়তা ক্ষেত্র পূরণ করার জন্য উপলব্ধ ছিল না."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "গোপনীয়তা কর্ম শুধুমাত্র গোপনীয়তা পৃষ্ঠায় উপলব্ধ."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 সম্পাদনাযোগ্য গোপনীয়তা প্রার্থী(দের) পাওয়া গেছে।"
+  },
+  "status": {
+    "message": "স্ট্যাটাস"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "প্রার্থীরা"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "স্ক্যান করা হয়েছে: $1; মিলেছে: $2।"
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "গোপনীয়তা নথি স্ক্যান করতে প্রকল্প ফোল্ডার পুনরায় আমদানি করুন."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "স্ক্যান করা হয়নি"
   },
   "diagnostics": {
     "message": "ডায়াগনস্টিকস"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "সব ভাষা পূরণ করুন"
   },
+  "uploadStoreIcon": {
+    "message": "আপলোড স্টোর আইকন"
+  },
+  "uploadMedia": {
+    "message": "মিডিয়া আপলোড করুন"
+  },
+  "uploadScreenshots": {
+    "message": "স্ক্রিনশট আপলোড করুন"
+  },
+  "uploadSmallPromo": {
+    "message": "ছোট প্রোমো আপলোড করুন"
+  },
+  "uploadMarqueePromo": {
+    "message": "মার্কি প্রোমো আপলোড করুন"
+  },
+  "clearScreenshots": {
+    "message": "স্ক্রিনশট সাফ করুন"
+  },
+  "clearStoreIcon": {
+    "message": "স্টোর আইকন সাফ করুন"
+  },
+  "clearSmallPromo": {
+    "message": "সাফ ছোট প্রচার"
+  },
+  "clearMarqueePromo": {
+    "message": "সাফ মার্কি প্রচার"
+  },
   "abortFillAll": {
     "message": "সব পূরণ বন্ধ করুন"
   },
+  "abortOperation": {
+    "message": "গর্ভপাত অপারেশন"
+  },
   "diagnosePage": {
     "message": "পৃষ্ঠা পরীক্ষা"
+  },
+  "openPanel": {
+    "message": "প্যানেল খুলুন"
   },
   "options": {
     "message": "বিকল্প"
@@ -90,318 +222,441 @@
     "message": "StorePilot বিকল্পে তালিকা আমদানি করুন"
   },
   "never": {
-    "message": "Never"
+    "message": "কখনই না"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "এই প্রকল্পটি একটি ব্রাউজার ফাইল পিকার থেকে আমদানি করা হয়েছে৷ প্রোজেক্ট ফোল্ডারটি রিফ্রেশ করতে পুনরায় আমদানি করুন।"
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "$1 এ সর্বশেষ আপডেট করা হয়েছে।"
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 লোকেল(গুলি) আমদানি করা হয়েছে৷"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "কোনো সক্রিয় প্রকল্প নেই"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(খালি)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 অক্ষর"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 প্রকল্প(গুলি)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "কোনো প্রকল্প নেই"
+  },
+  "yes": {
+    "message": "হ্যাঁ"
+  },
+  "no": {
+    "message": "না"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "নির্বাচিত প্রকল্প"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "সূত্র: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "কোন উৎস ফোল্ডার নেই"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "সনাক্তকরণ: $1 আত্মবিশ্বাস"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "রিফ্রেশ: ফোল্ডার পুনরায় আমদানি করুন"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "আপডেট করা হয়েছে: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 লোকেল"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "কোন লোকেল তালিকা ফাইল নির্বাচন করা হয়নি."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "আমদানি করা $1; $2 এড়িয়ে গেছে।"
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "এড়িয়ে গেছে: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "নির্বাচিত ফোল্ডারে কোনো লোকেল তালিকা ফোল্ডার পাওয়া যায়নি।"
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$3 থেকে $1 $2 এ আমদানি করা হয়েছে ($4 আত্মবিশ্বাস); $5 এড়িয়ে গেছে।"
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 প্রার্থী ফোল্ডার পাওয়া গেছে।"
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 স্ক্রিনশট(গুলি), আইকন: $2, ছোট প্রচার: $3, মার্কি প্রচার: $4।"
+  },
+  "mediaAssetsNone": {
+    "message": "কোনো স্টোর মিডিয়া সম্পদ পাওয়া যায়নি."
+  },
+  "mediaUploadedKind": {
+    "message": "আপলোড করা হয়েছে $1: $2।"
+  },
+  "mediaClearedKind": {
+    "message": "সাফ করা হয়েছে $1: $2।"
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 ইতিমধ্যে পরিষ্কার।"
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 ইতিমধ্যে উপস্থিত বা প্রক্রিয়া করা হচ্ছে৷"
+  },
+  "screenshotsAlreadyClear": {
+    "message": "পরিষ্কার করার জন্য কোন স্ক্রিনশট নেই।"
+  },
+  "screenshotsLimitReached": {
+    "message": "স্ক্রিনশট: CWS $1 এর সীমা ইতিমধ্যেই পৌঁছে গেছে"
+  },
+  "storeIcon": {
+    "message": "স্টোর আইকন"
+  },
+  "minimizePanel": {
+    "message": "প্যানেল ছোট করুন"
+  },
+  "maximizePanel": {
+    "message": "প্যানেল সর্বাধিক করুন"
+  },
+  "closePanel": {
+    "message": "প্যানেল বন্ধ করুন"
+  },
+  "panelOpened": {
+    "message": "প্যানেল খোলা হয়েছে।"
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "তালিকা এবং মিডিয়া অ্যাকশনগুলি শুধুমাত্র স্টোর তালিকা পৃষ্ঠায় উপলব্ধ।"
+  },
+  "clearingMedia": {
+    "message": "মিডিয়া সাফ করা হচ্ছে..."
+  },
+  "mediaClearFailed": {
+    "message": "মিডিয়া পরিষ্কার ব্যর্থ হয়েছে: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "মিডিয়া অপারেশন ইতিমধ্যেই চলছে: $1৷"
+  },
+  "mediaOperationInProgress": {
+    "message": "মিডিয়া অপারেশন চলছে।"
+  },
+  "noOperationRunning": {
+    "message": "কোনো অপারেশন চলছে না।"
+  },
+  "operationStopped": {
+    "message": "থেমে গেল।"
+  },
+  "missing": {
+    "message": "অনুপস্থিত"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "মিডিয়া সম্পদ স্ক্যান করতে প্রকল্প ফোল্ডার পুনরায় আমদানি করুন."
+  },
+  "screenshotNumber": {
+    "message": "স্ক্রিনশট $1"
+  },
+  "smallPromoTile": {
+    "message": "ছোট প্রচার টাইল"
+  },
+  "marqueePromoTile": {
+    "message": "মার্কি প্রচার টাইল"
+  },
+  "mediaCandidateCounts": {
+    "message": "প্রার্থীরা"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "আইকন: $1; স্ক্রিনশট: $2; ছোট প্রচার: $3; মার্কি প্রচার: $4।"
+  },
+  "uploadingMedia": {
+    "message": "মিডিয়া আপলোড হচ্ছে..."
+  },
+  "mediaUploaded": {
+    "message": "আপলোড করা মিডিয়া: $1।"
+  },
+  "mediaSkipped": {
+    "message": "বাদ দেওয়া হয়েছে: $1।"
+  },
+  "mediaUploadFailures": {
+    "message": "ব্যর্থ হয়েছে: $1৷"
+  },
+  "mediaUploadFailed": {
+    "message": "মিডিয়া আপলোড ব্যর্থ হয়েছে: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "ফোল্ডার আমদানি বাতিল করা হয়েছে৷"
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "ফোল্ডার আমদানি ব্যর্থ হয়েছে: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "নির্বাচিত ফাইল"
   },
   "manual": {
-    "message": "manual"
+    "message": "ম্যানুয়াল"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "আমদানি ব্যর্থ হয়েছে: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot প্রকল্প \"$1\" মুছবেন?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1 মুছে ফেলা হয়েছে।"
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "\"$1\" এর জন্য তালিকা সাফ করবেন?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "$1 এর জন্য তালিকা সাফ করা হয়েছে।"
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$2 এ $1 তালিকাভুক্ত লোকেল(গুলি)। $3 এ সর্বশেষ আপডেট করা হয়েছে।"
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "এখনও কোন প্রকল্প"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "অনুলিপি করার জন্য কোনো তালিকার পাঠ্য নির্বাচন করা হয়নি৷"
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$2 থেকে $1 কপি করা হয়েছে।"
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 $2 ($3 আত্মবিশ্বাস) এ আমদানি করা হয়েছে।"
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "কোনো সক্রিয় ট্যাব নেই।"
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "সক্রিয় ট্যাবটি একটি Chrome Web Store Developer Dashboard পৃষ্ঠা নয়।"
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot এই ড্যাশবোর্ড ট্যাবে সংযোগ করতে পারেনি৷ সঠিক ত্রুটির জন্য ডায়াগনস্টিক খুলুন।"
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "ডায়াগনস্টিকস সম্পূর্ণ।"
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "ডায়াগনস্টিক ব্যর্থ হয়েছে।"
   },
   "done": {
-    "message": "Done."
+    "message": "সম্পন্ন"
   },
   "failed": {
-    "message": "Failed."
+    "message": "ব্যর্থ হয়েছে।"
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "কোন লোকেল তালিকা ফাইল পাওয়া যায়নি."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1 $2 এ আমদানি করা হয়েছে।"
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "প্রকল্প নির্বাচন করা হয়েছে."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "সমস্ত ভাষা পূরণ করা হচ্ছে..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "থামার অনুরোধ করা হলো।"
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "ভরাট সব চলছে না।"
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "সব পূরণ বন্ধ করা যায়নি."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "ডায়াগনস্টিক ব্যর্থ হয়েছে: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "প্রকল্প পাওয়া যায়নি."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "প্রকল্প ফোল্ডার পুনরায় আমদানি করুন যাতে StorePilot আপলোডের জন্য মিডিয়া ফাইল সংরক্ষণ করতে পারে৷"
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "মিডিয়া ফাইল পড়ার আগে ফোল্ডারের অনুমতি প্রয়োজন।"
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "কোনো ফোল্ডার হ্যান্ডেল সংরক্ষণ করা হয়নি৷"
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "কোন তালিকা নির্বাচন করা হয়নি."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "অনুলিপি করা হয়েছে $1৷"
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "কোনো দৃশ্যমান সম্পাদনাযোগ্য ক্ষেত্র পাওয়া যায়নি।"
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "$1 ভরা।"
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Chrome Web Store ভাষা ড্রপডাউন খুঁজে পাওয়া যায়নি।"
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "ড্যাশবোর্ড ভাষা মেনুতে $1 খুঁজে পাওয়া যায়নি।"
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "$1 ক্লিক করা হয়েছে, কিন্তু ড্যাশবোর্ড এখনও $2 দেখায়।"
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "একটি অজানা লোকেল"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "$1-এর জন্য কোনো তালিকা পাঠ্য নেই৷"
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Chrome Web Store বর্ণনা ক্ষেত্র খুঁজে পাওয়া যায়নি।"
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "বর্তমান ড্যাশবোর্ড ভাষা সনাক্ত করা যায়নি."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "থেমে গেল। ভরা $1 ড্যাশবোর্ড ভাষা(গুলি)।"
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "কোনো প্রকল্প তালিকা আমদানি করা হয়নি।"
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "কোনো আমদানি করা লোকেল ড্যাশবোর্ড ভাষা মেনুর সাথে মেলে না।"
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "থেমে গেল। ভরা $1 ড্যাশবোর্ড ভাষা(গুলি); এখনও মুলতুবি: $2।"
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "পুনরুদ্ধার করা হয়েছে $1 পুনরায় চেষ্টা করার পর।"
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "পুনরায় চেষ্টা করা হয়েছে $1; কেউ উদ্ধার হয়নি।"
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "ভরা $1 ড্যাশবোর্ড ভাষা(গুলি); ব্যর্থ হয়েছে $2: $3।"
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "ভরা $1 ড্যাশবোর্ড ভাষা(গুলি)।"
+  },
+  "fillAllDashboardSummary": {
+    "message": "আমদানি করা $1; মিলেছে $2 ড্যাশবোর্ড ভাষা(গুলি)।"
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "আমদানি করা $1; মিলেছে $2 ড্যাশবোর্ড ভাষা(গুলি); অতুলনীয় আমদানি করা লোকেল(গুলি): $3।"
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store অসমর্থিত লোকেল(গুলি) অফার করেনি: $1৷"
+  },
+  "unmatchedImportedLocales": {
+    "message": "ড্যাশবোর্ড সমর্থিত আমদানি করা লোকেল(গুলি) অফার করেনি: $1৷"
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "গর্ভপাত অনুরোধ করা হয়েছে. বর্তমান ড্যাশবোর্ড ধাপের পরে StorePilot বন্ধ হয়ে যাবে।"
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "ড্যাশবোর্ড ডায়াগনস্টিক পাস হয়েছে।"
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "ড্যাশবোর্ড ডায়াগনস্টিক পৃষ্ঠা উপাদান অনুপস্থিত পাওয়া গেছে."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "ফিল সব ইতিমধ্যেই চলছে।"
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "ভরাট সব বন্ধ."
   },
   "filling": {
-    "message": "Filling"
+    "message": "ফিলিং"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "পুনরায় চেষ্টা করা হচ্ছে"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "StorePilot বিকল্প খুলুন"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "প্রকল্প আমদানি খোলা হচ্ছে..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "অজানা"
+  },
+  "alphaChannel": {
+    "message": "আলফা"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "শিরোনামহীন প্রকল্প"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "আমদানিকৃত প্রকল্প"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "ম্যানুয়াল আমদানি"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "আমদানি করা তালিকা"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "ম্যানুয়াল ফাইল আমদানি"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "নির্বাচিত $1।"
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$2 এ $1 লোকেল"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "ইতিমধ্যে সংযুক্ত"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "সফল"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "উচ্চ"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "মাঝারি"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "কম"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot বিকল্প"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Never এ সর্বশেষ আপডেট করা হয়েছে।"
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "কোনো তালিকা আমদানি করা হয়নি"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "তালিকা লোড হচ্ছে..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot নির্বাচিত প্রকল্প ফোল্ডার পড়ার আগে নিশ্চিতকরণের জন্য জিজ্ঞাসা করবে। যে প্রম্পট প্রত্যাশিত."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "ফোল্ডার আমদানি বিকল্প ট্যাবে পরিচালনা করা হয়, যেখানে ফোল্ডার নিশ্চিতকরণ প্রম্পট নির্ভরযোগ্যভাবে সম্পূর্ণ করতে পারে।"
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "একটি প্রজেক্ট রুট, একটি স্টোর-লিস্টিং ফোল্ডার বা সরাসরি তালিকা ফোল্ডার নির্বাচন করুন। StorePilot আপনাকে ফোল্ডার অ্যাক্সেস নিশ্চিত করতে বলবে।"
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "এড়িয়ে যাওয়া গোপনীয়তা ক্ষেত্র: $1।"
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "এড়িয়ে যাওয়া $1 গোপনীয়তা ক্ষেত্র(গুলি): $2৷"
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "গোপনীয়তা ক্ষেত্র মান গ্রহণ করেনি: $1।"
   }
 }

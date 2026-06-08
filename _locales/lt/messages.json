@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS automatinis pildymas"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Automatiškai užpildo Chrome Web Store laukus, lokalizuotus aprašus, ekrano kopijas ir privatumo formas iš vietinių failų."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Importuokite vienodų lokalių sąrašo failus ir naudokite juos plėtinių parduotuvės prietaisų skydeliuose."
   },
   "theme": {
     "message": "Tema"
@@ -21,37 +21,136 @@
     "message": "Tamsi"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Aišku"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Aktyvus projektas"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Ištrinti projektą"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Importuoti projektą/aplanką"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Pasirinkite projekto šaknį, parduotuvės sąrašo aplanką arba tiesioginio sąrašo aplanką."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot ieško sąrašo failų su lokale, pvz.,"
   },
   "or": {
     "message": "arba"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Taip pat galite vilkti tiesioginių lokalių sąrašo failus į šį skydelį."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Privatumo automatizavimo dokumento nuoroda"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot gali nuskaityti vieną projekto dokumentą Chrome Web Store privatumo laukams. Naudokite šiuos kanoninius klavišus, kad skaitytuvas galėtų nukreipti tekstą neatspėdamas."
+  },
+  "privacyDocPermissionRule": {
+    "message": "Leidimų pagrindimui naudokite permission.<manifest permission code>. Priesaga turi atitikti aprašo leidimų kodą optional_permissions, host_permissions arba content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Rekomenduojami failų pavadinimai: docs/chrome-web-store-privacy-form.md arba STORE_JUSTIFICATIONS.md. StorePilot taip pat priima kitus.md arba.txt failus, kai turinyje yra [privacy] blokas, kanoniniai raktai arba atpažįstamos parduotuvės pagrindimo antraštės."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Pagrindiniai raktai"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Bendrieji leidimo raktai"
+  },
+  "privacyDocFutureProof": {
+    "message": "Jei leidimas čia nenurodytas, vis tiek naudokite tą patį šabloną, pavyzdžiui, permission.bookmarks arba permission.system.display. StorePilot turėtų patį manifesto kodą laikyti tiesos šaltiniu."
   },
   "projects": {
     "message": "Projektai"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Importuoti sąrašai"
+  },
+  "storeMediaAssets": {
+    "message": "Laikykite medijos išteklius"
+  },
+  "privacyDocument": {
+    "message": "Privatumo dokumentas"
+  },
+  "privacyDocNotScanned": {
+    "message": "Nenuskaityta"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Nerasta jokių tinkamų privatumo dokumentų (nuskaityti $1 kandidatai)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Nerasta tinkamų privatumo dokumentų."
+  },
+  "privacyDocSummary": {
+    "message": "$1 laukas (-iai) $2"
+  },
+  "privacyDocFile": {
+    "message": "Failas"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 privatumo laukas (-ai) $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Privatumo dokumentas: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Neimportuotas joks aktyvaus projekto privatumo dokumentas."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Importuokite arba iš naujo importuokite projektą naudodami StorePilot parinktis, kad įkeltumėte privatumo dokumentą."
+  },
+  "fillSinglePurpose": {
+    "message": "Užpildykite vieną tikslą"
+  },
+  "fillPrivacy": {
+    "message": "Užpildykite privatumą"
+  },
+  "privacyNoValueForField": {
+    "message": "Nėra $1 privatumo dokumento vertės."
+  },
+  "privacyFieldNotFound": {
+    "message": "Nepavyko rasti privatumo lauko: $1."
+  },
+  "privacyFilledField": {
+    "message": "Užpildytas privatumo laukas: $1."
+  },
+  "privacyFilledFields": {
+    "message": "Užpildyti $1 privatumo laukai: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "Nepavyko rasti: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "Nebuvo galima užpildyti palaikomų privatumo laukų."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Privatumo veiksmai pasiekiami tik privatumo puslapyje."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Rasta $1 redaguojamų privatumo kandidatų."
+  },
+  "status": {
+    "message": "Būsena"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Kandidatai"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Nuskaityta: $1; atitiko: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Iš naujo importuokite projekto aplanką, kad nuskaitytumėte privatumo dokumentą."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Nenuskaityta"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Diagnostika"
   },
   "project": {
     "message": "Projektas"
@@ -60,16 +159,49 @@
     "message": "Lokalė"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Užpildykite dabartinę kalbą"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Užpildykite visas kalbas"
+  },
+  "uploadStoreIcon": {
+    "message": "Įkelti parduotuvės piktogramą"
+  },
+  "uploadMedia": {
+    "message": "Įkelti mediją"
+  },
+  "uploadScreenshots": {
+    "message": "Įkelti ekrano kopijas"
+  },
+  "uploadSmallPromo": {
+    "message": "Įkelkite mažą reklamą"
+  },
+  "uploadMarqueePromo": {
+    "message": "Įkelti palapinės reklamą"
+  },
+  "clearScreenshots": {
+    "message": "Išvalykite ekrano kopijas"
+  },
+  "clearStoreIcon": {
+    "message": "Išvalyti parduotuvės piktogramą"
+  },
+  "clearSmallPromo": {
+    "message": "Aišku maža reklama"
+  },
+  "clearMarqueePromo": {
+    "message": "Aiškios palapinės reklama"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Nutraukti užpildyti viską"
+  },
+  "abortOperation": {
+    "message": "Nutraukti operaciją"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Diagnozės puslapis"
+  },
+  "openPanel": {
+    "message": "Atidarykite skydelį"
   },
   "options": {
     "message": "Parinktys"
@@ -78,330 +210,453 @@
     "message": "Lietuvių"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Užpildykite dabartinę kalbą"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Užpildykite visas kalbas"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Nutraukti užpildyti viską"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Importuokite sąrašus naudodami StorePilot parinktis"
   },
   "never": {
-    "message": "Never"
+    "message": "Niekada"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Šis projektas buvo importuotas iš naršyklės failų rinkiklio. Iš naujo importuokite projekto aplanką, kad jį atnaujintumėte."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Paskutinį kartą atnaujinta $1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: importuota $2 lokalė (-ės)."
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Nėra aktyvaus projekto"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(tuščia)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 simbolių"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 projektas (-ai)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Jokių projektų"
+  },
+  "yes": {
+    "message": "taip"
+  },
+  "no": {
+    "message": "ne"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Pasirinktas projektas"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Šaltinis: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Nėra šaltinio aplanko"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Aptikimas: $1 pasitikėjimas"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Atnaujinti: iš naujo importuokite aplanką"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Atnaujinta: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 lokalės"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Lokalių sąrašo failai nepasirinkti."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Importuota $1; praleistas $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Praleista: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "Pasirinktame aplanke nerasta lokalių sąrašo aplanko."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Importuotas $1 į $2 iš $3 ($4 pasitikėjimas); praleistas $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Rasta $1 kandidatų aplankų."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 ekrano kopija (-os), piktograma: $2, maža reklama: $3, palapinės reklama: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "Parduotuvės medijos išteklių nerasta."
+  },
+  "mediaUploadedKind": {
+    "message": "Įkelta $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "Išvalyta $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 jau aišku."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 jau yra arba apdorojamas."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Nėra ekrano kopijų, kurias būtų galima išvalyti."
+  },
+  "screenshotsLimitReached": {
+    "message": "ekrano kopijos: jau pasiektas CWS limitas iš $1"
+  },
+  "storeIcon": {
+    "message": "Parduotuvės piktograma"
+  },
+  "minimizePanel": {
+    "message": "Sumažinti skydelį"
+  },
+  "maximizePanel": {
+    "message": "Padidinti skydelį"
+  },
+  "closePanel": {
+    "message": "Uždaryti skydelį"
+  },
+  "panelOpened": {
+    "message": "Skydas atidarytas."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Įrašas ir medijos veiksmai pasiekiami tik parduotuvės įrašo puslapyje."
+  },
+  "clearingMedia": {
+    "message": "Valoma laikmena..."
+  },
+  "mediaClearFailed": {
+    "message": "Nepavyko išvalyti laikmenos: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Medijos operacija jau vykdoma: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "Vykdoma medijos operacija."
+  },
+  "noOperationRunning": {
+    "message": "Jokia operacija nevyksta."
+  },
+  "operationStopped": {
+    "message": "Sustojo."
+  },
+  "missing": {
+    "message": "Trūksta"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Iš naujo importuokite projekto aplanką, kad nuskaitytumėte medijos išteklius."
+  },
+  "screenshotNumber": {
+    "message": "Ekrano kopija $1"
+  },
+  "smallPromoTile": {
+    "message": "Maža reklaminė plytelė"
+  },
+  "marqueePromoTile": {
+    "message": "Marquee reklaminė plytelė"
+  },
+  "mediaCandidateCounts": {
+    "message": "Kandidatai"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Piktograma: $1; ekrano kopijos: $2; maža reklama: $3; palapinės reklama: $4."
+  },
+  "uploadingMedia": {
+    "message": "Įkeliama medija..."
+  },
+  "mediaUploaded": {
+    "message": "Įkelta medija: $1."
+  },
+  "mediaSkipped": {
+    "message": "Praleista: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "Nepavyko: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "Medijos įkėlimas nepavyko: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Aplanko importavimas atšauktas."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Nepavyko importuoti aplanko: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "pasirinktus failus"
   },
   "manual": {
-    "message": "manual"
+    "message": "vadovas"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Importuoti nepavyko: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Ištrinti StorePilot projektą \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Ištrinta $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Išvalyti „$1“ sąrašus?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Išvalyti $1 sąrašai."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 išvardija lokalę (-es) $2. Paskutinį kartą atnaujinta $3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Dar nėra projektų"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Kopijuoti nepasirinktas joks sąrašo tekstas."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Nukopijuota $1 iš $2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Importuotas $1 į $2 ($3 pasitikėjimas)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Nėra aktyvaus skirtuko."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Aktyvus skirtukas nėra Chrome Web Store Developer Dashboard puslapis."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot nepavyko prisijungti prie šio prietaisų skydelio skirtuko. Norėdami sužinoti tikslią klaidą, atidarykite diagnostiką."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Diagnostika baigta."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Diagnostika nepavyko."
   },
   "done": {
-    "message": "Done."
+    "message": "Atlikta."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Nepavyko."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Nerasta lokalių sąrašo failų."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Importuota $1 į $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Pasirinktas projektas."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Pildomos visos kalbos..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Prašyta sustabdyti."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Užpildykite viską neveikia."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Nepavyko sustoti užpildyti visų."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Diagnostika nepavyko: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Projektas nerastas."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Iš naujo importuokite projekto aplanką, kad StorePilot galėtų saugoti medijos failus, kad juos būtų galima įkelti."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Prieš skaitant medijos failus, reikalingas aplanko leidimas."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Aplanko rankena neišsaugota."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Nepasirinktas joks įrašas."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Nukopijuota $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Nerasta jokio matomo redaguojamo lauko."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Užpildyta $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Nepavyko rasti išskleidžiamojo Chrome Web Store kalbos meniu."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Nepavyko rasti $1 informacijos suvestinės kalbos meniu."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Paspaudėte $1, bet prietaisų skydelyje vis tiek rodomas $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "nežinoma lokalė"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Nėra $1 sąrašo teksto."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Nepavyko rasti Chrome Web Store aprašo lauko."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Nepavyko aptikti dabartinės informacijos suvestinės kalbos."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Sustojo. Užpildyta $1 informacijos suvestinės kalba (-os)."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Projektų sąrašai neimportuoti."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Nė viena importuota lokalė neatitinka informacijos suvestinės kalbos meniu."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Sustojo. Užpildyta $1 prietaisų skydelio kalba (-os); vis dar laukiama: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Atkurta $1 po pakartotinio bandymo."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Bandyta dar kartą $1; nė vienas neatsigavo."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Užpildyta $1 prietaisų skydelio kalba (-os); nepavyko $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Užpildyta $1 informacijos suvestinės kalba (-os)."
+  },
+  "fillAllDashboardSummary": {
+    "message": "Importuota $1; atitiko $2 prietaisų skydelio kalbą (-as)."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Importuota $1; atitiko $2 prietaisų skydelio kalbą (-as); nesuderinama (-os) importuota (-os) lokalė (-ės): $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store nepasiūlė nepalaikomos lokalės (-ių): $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "Prietaisų skydelis nepateikė palaikomų importuotų lokalių: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Paprašyta nutraukti. StorePilot sustos po dabartinio prietaisų skydelio veiksmo."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Prietaisų skydelio diagnostika praėjo."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Prietaisų skydelio diagnostika nustatė, kad trūksta puslapio elementų."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Užpildykite viską jau veikia."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Užpildykite visus sustojusius."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Užpildymas"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Bandoma dar kartą"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Atidarykite StorePilot parinktis"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Atidaromas projekto importavimas..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Nežinoma"
+  },
+  "alphaChannel": {
+    "message": "alfa"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Projektas be pavadinimo"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Importuotas projektas"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Rankinis importas"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Importuoti sąrašai"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Rankinis failų importavimas"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Pasirinkta $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 lokalės $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "jau prijungtas"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "pavyko"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "aukštas"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "vidutinis"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "žemas"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot Parinktys"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Paskutinį kartą atnaujinta Niekada."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Neimportuota jokių įrašų"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Įkeliami sąrašai..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot paprašys patvirtinimo prieš skaitydamas pasirinktą projekto aplanką. To raginimo tikimasi."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Aplanko importavimas tvarkomas parinkčių skirtuke, kur aplanko patvirtinimo raginimas gali būti patikimai užbaigtas."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Pasirinkite projekto šaknį, parduotuvės sąrašo aplanką arba tiesioginio sąrašo aplanką. StorePilot paprašys patvirtinti prieigą prie aplanko."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Praleistas privatumo laukas: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Praleisti $1 privatumo laukai: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Privatumo laukas nepriėmė vertės: $1."
   }
 }

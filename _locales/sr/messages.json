@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: аутоматско попуњавање CWS"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "Аутоматски попуњава поља Chrome Web Store, локализоване описе, снимке екрана и обрасце приватности из локалних датотека."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "Увезите равне датотеке са листингом локала и користите их у контролним таблама продавнице екстензија."
   },
   "theme": {
     "message": "Тема"
@@ -21,37 +21,136 @@
     "message": "Тамно"
   },
   "clear": {
-    "message": "Clear"
+    "message": "Јасно"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "Активан пројекат"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "Избриши пројекат"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "Увезите пројекат/директоријум"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "Изаберите корен пројекта, фасциклу са листом у продавници или фасциклу са директним уносом."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "__СППХ0__ тражи датотеке са листингом са називом локала, као што је"
   },
   "or": {
     "message": "или"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "Такође можете превући директне датотеке са листингом језика на овај панел."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "Референца документа о аутоматизацији приватности"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "__СППХ0__ може да скенира један документ пројекта за __СППХ1__ поља приватности. Користите ове канонске кључеве како би скенер могао да усмерава текст без нагађања."
+  },
+  "privacyDocPermissionRule": {
+    "message": "За оправдање дозволе користите __СППХ0__. Суфикс треба да се подудара са кодом у вашим дозволама манифеста, __СППХ2__, __СППХ3__ или __СППХ1__."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "Препоручени називи датотека: __СППХ1__ или __СППХ2__. __СППХ0__ такође прихвата друге __СППХ5__ или __СППХ4__ датотеке када садржај садржи __СППХ3__ блок, канонске кључеве или препознатљиве наслове за оправдање продавнице."
+  },
+  "privacyDocCoreKeys": {
+    "message": "Кључни кључеви"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "Уобичајени кључеви дозвола"
+  },
+  "privacyDocFutureProof": {
+    "message": "Ако дозвола није наведена овде, свеједно користите исти образац, на пример __СППХ1__ или __СППХ2__ __СППХ0__ треба да третирају сам манифест манифеста као извор истине."
   },
   "projects": {
     "message": "Пројекти"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "Увезени огласи"
+  },
+  "storeMediaAssets": {
+    "message": "Чувајте медијску имовину"
+  },
+  "privacyDocument": {
+    "message": "Документ о приватности"
+  },
+  "privacyDocNotScanned": {
+    "message": "Није скенирано"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "Није пронађен ниједан употребљив документ о приватности (__СППХ0__ кандидат(и) скенирани). $1"
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "Није пронађен ниједан употребљив документ о приватности."
+  },
+  "privacyDocSummary": {
+    "message": "__СППХ0__ поља у __СППХ1__. $1. $2"
+  },
+  "privacyDocFile": {
+    "message": "Филе"
+  },
+  "privacyPanelSummary": {
+    "message": "__СППХ0__ поља за приватност у __СППХ1__. $1. $2"
+  },
+  "privacyDocFileFound": {
+    "message": "Документ о приватности: __СППХ0__. $1"
+  },
+  "privacyDocNotImported": {
+    "message": "Ниједан документ о приватности није увезен за активни пројекат."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "Увезите или поново увезите пројекат у __СППХ0__ опцијама да бисте учитали документ о приватности."
+  },
+  "fillSinglePurpose": {
+    "message": "Испуните једну сврху"
+  },
+  "fillPrivacy": {
+    "message": "Испуните приватност"
+  },
+  "privacyNoValueForField": {
+    "message": "Нема вредности документа о приватности за __СППХ0__. $1"
+  },
+  "privacyFieldNotFound": {
+    "message": "Није могуће пронаћи поље за приватност: __СППХ0__. $1"
+  },
+  "privacyFilledField": {
+    "message": "Попуњено поље за приватност: __СППХ0__. $1"
+  },
+  "privacyFilledFields": {
+    "message": "Попуњено __СППХ0__ поља за приватност: __СППХ1__. $1. $2"
+  },
+  "privacyFieldsNotFound": {
+    "message": "Није могуће пронаћи: __СППХ0__. $1"
+  },
+  "privacyNoSupportedFields": {
+    "message": "Нема подржаних поља приватности за попуњавање."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "Акције приватности доступне су само на страници Приватност."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "Пронађено је __СППХ0__ кандидата за приватност који се могу уређивати. $1"
+  },
+  "status": {
+    "message": "Статус"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "Кандидати"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "Скенирано: __СППХ0__; подудара се: __СППХ1__. $1. $2"
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "Поново увезите фасциклу пројекта да бисте скенирали документ о приватности."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "Није скенирано"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "Дијагностика"
   },
   "project": {
     "message": "Пројекат"
@@ -60,16 +159,49 @@
     "message": "Локал"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "Попуните тренутни језик"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Попуните све језике"
+  },
+  "uploadStoreIcon": {
+    "message": "Отпремање иконе продавнице"
+  },
+  "uploadMedia": {
+    "message": "Отпремите медије"
+  },
+  "uploadScreenshots": {
+    "message": "Отпремите снимке екрана"
+  },
+  "uploadSmallPromo": {
+    "message": "Отпремите малу промоцију"
+  },
+  "uploadMarqueePromo": {
+    "message": "Отпремите промотивну траку"
+  },
+  "clearScreenshots": {
+    "message": "Обришите снимке екрана"
+  },
+  "clearStoreIcon": {
+    "message": "Обриши икону продавнице"
+  },
+  "clearSmallPromo": {
+    "message": "Јасна мала промоција"
+  },
+  "clearMarqueePromo": {
+    "message": "Цлеар маркуее промо"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Прекини попуњавање свих"
+  },
+  "abortOperation": {
+    "message": "Прекини операцију"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "Страница за дијагностику"
+  },
+  "openPanel": {
+    "message": "Отворите панел"
   },
   "options": {
     "message": "Опције"
@@ -78,330 +210,453 @@
     "message": "Српски"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "Попуните тренутни језик"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Попуните све језике"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Прекини попуњавање свих"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "Увезите уносе у __СППХ0__ опцијама"
   },
   "never": {
-    "message": "Never"
+    "message": "Никада"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "Овај пројекат је увезен из бирача датотека претраживача. Поново увезите фасциклу пројекта да бисте је освежили."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "Последњи пут ажурирано __СППХ0__. $1"
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "__СППХ0__: __СППХ1__ језик(е) увезено. $1. $2"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "Нема активног пројекта"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(празно)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "__СППХ0__ знакова. $1"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "__СППХ0__ пројекат(и). $1"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "Нема пројеката"
+  },
+  "yes": {
+    "message": "да"
+  },
+  "no": {
+    "message": "бр"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "Одабрани пројекат"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "Извор: __СППХ0__. $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "Нема изворне фасцикле"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "Откривање: __СППХ0__ поверење. $1"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "Освежи: поново увези фасциклу"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "Ажурирано: __СППХ0__. $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "__СППХ0__ локалитета. $1"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "Није изабрана ниједна датотека са листингом језика."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "Увезено __СППХ0__; прескочио __СППХ1__. $1. $2"
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "Прескочено: __СППХ0__. $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "У изабраној фасцикли није пронађена ниједна фасцикла са листом језика."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "Увезено __СППХ0__ у __СППХ1__ из __СППХ2__ (__СППХ3__ поверење); прескочио __СППХ4__. $1. $2. $3. $4. $5"
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "Пронађено је __СППХ0__ директоријума кандидата. $1"
+  },
+  "mediaAssetsSummary": {
+    "message": "__СППХ0__ снимци екрана, икона: __СППХ1__, мала промоција: __СППХ2__, промотивни оквир: __СППХ3__. $1. $2. $3. $4"
+  },
+  "mediaAssetsNone": {
+    "message": "Није пронађен ниједан медијски материјал продавнице."
+  },
+  "mediaUploadedKind": {
+    "message": "Отпремљено __СППХ0__: __СППХ1__. $1. $2"
+  },
+  "mediaClearedKind": {
+    "message": "Очишћено __СППХ0__: __СППХ1__. $1. $2"
+  },
+  "mediaAlreadyClearKind": {
+    "message": "__СППХ0__ је већ јасно. $1"
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "__СППХ0__ већ постоји или се обрађује. $1"
+  },
+  "screenshotsAlreadyClear": {
+    "message": "Нема снимака екрана за брисање."
+  },
+  "screenshotsLimitReached": {
+    "message": "снимци екрана: __СППХ1__ ограничење од __СППХ0__ је већ достигнуто. $1"
+  },
+  "storeIcon": {
+    "message": "Икона продавнице"
+  },
+  "minimizePanel": {
+    "message": "Минимизирајте панел"
+  },
+  "maximizePanel": {
+    "message": "Увећај панел"
+  },
+  "closePanel": {
+    "message": "Затворите панел"
+  },
+  "panelOpened": {
+    "message": "Панел је отворен."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "Акције уноса и медија су доступне само на страници са уносом у продавници."
+  },
+  "clearingMedia": {
+    "message": "Брисање медија..."
+  },
+  "mediaClearFailed": {
+    "message": "Брисање медија није успело: __СППХ0__. $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "Операција медија је већ покренута: __СППХ0__. $1"
+  },
+  "mediaOperationInProgress": {
+    "message": "Медијска операција је у току."
+  },
+  "noOperationRunning": {
+    "message": "Ниједна операција није покренута."
+  },
+  "operationStopped": {
+    "message": "Заустављено."
+  },
+  "missing": {
+    "message": "Недостаје"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "Поново увезите фасциклу пројекта да бисте скенирали медијску имовину."
+  },
+  "screenshotNumber": {
+    "message": "Снимак екрана __СППХ0__. $1"
+  },
+  "smallPromoTile": {
+    "message": "Мала промо плочица"
+  },
+  "marqueePromoTile": {
+    "message": "Маркуее промо плочица"
+  },
+  "mediaCandidateCounts": {
+    "message": "Кандидати"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "Икона: __СППХ0__; снимци екрана: __СППХ1__; мала промоција: __СППХ2__; промотивни шотор: __СППХ3__. $1. $2. $3. $4"
+  },
+  "uploadingMedia": {
+    "message": "Отпремање медија..."
+  },
+  "mediaUploaded": {
+    "message": "Отпремљени медији: __СППХ0__. $1"
+  },
+  "mediaSkipped": {
+    "message": "Прескочено: __СППХ0__. $1"
+  },
+  "mediaUploadFailures": {
+    "message": "Неуспешно: __СППХ0__. $1"
+  },
+  "mediaUploadFailed": {
+    "message": "Отпремање медија није успело: __СППХ0__. $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "Увоз директоријума је отказан."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "Увоз директоријума није успео: __СППХ0__. $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "изабране датотеке"
   },
   "manual": {
-    "message": "manual"
+    "message": "приручник"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "Увоз није успео: __СППХ0__. $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "Избрисати __СППХ1__ пројекат „__СППХ0__“?. $1"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "Избрисано __СППХ0__. $1"
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "Желите ли да обришете листе за „__СППХ0__“?. $1"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "Обрисане листе за __СППХ0__. $1"
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "__СППХ0__ наводи језик(е) у __СППХ1__. Последњи пут ажурирано __СППХ2__. $1. $2. $3"
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "Још нема пројеката"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "Није изабран текст листе за копирање."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "Копирано __СППХ0__ са __СППХ1__. $1. $2"
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "Увезено __СППХ0__ у __СППХ1__ (__СППХ2__ поузданост). $1. $2. $3"
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "Нема активне картице."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "Активна картица није __СППХ0__ __СППХ1__ страница."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "__СППХ0__ није могао да се повеже са овом картицом на контролној табли. Отворите Дијагностику за тачну грешку."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "Дијагностика је завршена."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "Дијагностика није успела."
   },
   "done": {
-    "message": "Done."
+    "message": "Готово."
   },
   "failed": {
-    "message": "Failed."
+    "message": "Није успело."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "Нису пронађене датотеке са листингом језика."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "Увезено __СППХ0__ у __СППХ1__. $1. $2"
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "Одабран пројекат."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Попуњавање свих језика..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "Захтјев за заустављање."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Попуни све не ради."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Није могуће зауставити попуњавање свих."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "Дијагностика није успела: __СППХ0__. $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "Пројекат није пронађен."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "Поново увезите фасциклу пројекта тако да __СППХ0__ може да складишти медијске датотеке за отпремање."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "Дозвола фасцикле је потребна пре читања медијских датотека."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "Није сачувана ручица фасцикле."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "Није изабрана листа."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "Копирано __СППХ0__. $1"
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "Није пронађено видљиво поље за уређивање."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "Попуњено __СППХ0__. $1"
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Није могуће пронаћи падајући мени __СППХ0__ језика."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "Није могуће пронаћи __СППХ0__ у менију језика контролне табле. $1"
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "Кликнули сте на __СППХ0__, али контролна табла и даље приказује __СППХ1__. $1. $2"
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "непознато место"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "Нема текста на листи за __СППХ0__. $1"
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Није могуће пронаћи поље за опис __СППХ0__."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "Није могуће открити тренутни језик контролне табле."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "Заустављено. Попуњено __СППХ0__ језика(а) контролне табле. $1"
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "Нема увезених уноса пројеката."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "Ниједан увезени локалитет не одговара менију језика контролне табле."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "Заустављено. Попуњен __СППХ0__ језик(и) контролне табле; још увек на чекању: __СППХ1__. $1. $2"
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "Опорављено __СППХ0__ након поновног покушаја. $1"
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "Поновљено __СППХ0__; ниједан се није опоравио. $1"
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "Попуњен __СППХ0__ језик(и) контролне табле; неуспешно __СППХ1__: __СППХ2__. $1. $2. $3"
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "Попуњено __СППХ0__ језика(а) контролне табле. $1"
+  },
+  "fillAllDashboardSummary": {
+    "message": "Увезено __СППХ0__; подудара се са __СППХ1__ језиком(овима) контролне табле. $1. $2"
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "Увезено __СППХ0__; подударају се __СППХ1__ језик(е) контролне табле; неусклађени увезени локал(и): __СППХ2__. $1. $2. $3"
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "__СППХ1__ није понудио неподржане језике: __СППХ0__. $1"
+  },
+  "unmatchedImportedLocales": {
+    "message": "Контролна табла није понудила подржане увезене језике: __СППХ0__. $1"
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "Затражено је прекид. __СППХ0__ ће се зауставити након тренутног корака на контролној табли."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "Дијагностика контролне табле је прошла."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "Дијагностика контролне табле пронашла је елементе странице који недостају."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Филл алл је већ покренут."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Попунити све заустављено."
   },
   "filling": {
-    "message": "Filling"
+    "message": "Пуњење"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "Поновни покушај"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "Отворите __СППХ0__ опције"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "Отварање увоза пројекта..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Непознато"
+  },
+  "alphaChannel": {
+    "message": "алфа"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "Унтитлед пројецт"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "Увезени пројекат"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "Ручни увоз"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "Увезени огласи"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "Ручни увоз датотека"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "Изабрано __СППХ0__. $1"
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "__СППХ0__ локалитети у __СППХ1__. $1. $2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "већ повезан"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "успео"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "висока"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "средње"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "ниско"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "__СППХ0__ Опције"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Последњи пут ажурирано на Никад."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "Нема увезених уноса"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "Учитавање листе..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "__СППХ0__ ће тражити потврду пре читања изабране фасцикле пројекта. Тај позив је очекиван."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "Увозом фасцикле се управља на картици са опцијама, где се упит за потврду фасцикле може поуздано завршити."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "Изаберите корен пројекта, фасциклу са листом у продавници или фасциклу са директним уносом. __СППХ0__ ће од вас тражити да потврдите приступ фасцикли."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "Прескочено поље за приватност: __СППХ0__. $1"
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "Прескочено __СППХ0__ поља за приватност: __СППХ1__. $1. $2"
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "Поље за приватност није прихватило вредност: __СППХ0__. $1"
   }
 }

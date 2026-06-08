@@ -1,12 +1,12 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: מילוי אוטומטי CWS"
   },
   "extensionDescription": {
-    "message": "Automate repetitive browser extension store publishing work."
+    "message": "ממלא אוטומטית שדות Chrome Web Store, תיאורים מקומיים, צילומי מסך וטפסי פרטיות מקבצים מקומיים."
   },
   "optionsSubtitle": {
-    "message": "Import flat locale listing files and use them in extension store dashboards."
+    "message": "ייבא קובצי רישום מקומיים שטוחים והשתמש בהם במרכזי המחוונים של חנות ההרחבות."
   },
   "theme": {
     "message": "ערכת נושא"
@@ -21,37 +21,136 @@
     "message": "כהה"
   },
   "clear": {
-    "message": "Clear"
+    "message": "ברור"
   },
   "activeProject": {
-    "message": "Active project"
+    "message": "פרויקט פעיל"
   },
   "deleteProject": {
-    "message": "Delete project"
+    "message": "מחק את הפרויקט"
   },
   "importProjectFolder": {
-    "message": "Import project/folder"
+    "message": "ייבוא פרויקט/תיקיה"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "בחר שורש פרויקט, תיקיית רישום בחנות או תיקיית רישום ישיר."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot מחפש קבצי רישום עם שם מקומי כגון"
   },
   "or": {
     "message": "או"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "אתה יכול גם לגרור קובצי רישום מקומיים ישירים לחלונית זו."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "הפניה למסמך אוטומציה של פרטיות"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot יכול לסרוק מסמך פרויקט אחד עבור Chrome Web Store שדות פרטיות. השתמש במפתחות קנוניים אלה כדי שהסורק יוכל לנתב טקסט מבלי לנחש."
+  },
+  "privacyDocPermissionRule": {
+    "message": "להצדקות הרשאות, השתמש ב-permission.<manifest permission code>. הסיומת צריכה להתאים לקוד בהרשאות המניפסט שלך, optional_permissions, host_permissions או content_scripts.matches."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "שמות קבצים מומלצים: docs/chrome-web-store-privacy-form.md או STORE_JUSTIFICATIONS.md. StorePilot מקבל גם קבצי.md או.txt אחרים כאשר התוכן מכיל בלוק [privacy], מפתחות קנוניים או כותרות הצדקה לחנות הניתנות לזיהוי."
+  },
+  "privacyDocCoreKeys": {
+    "message": "מפתחות ליבה"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "מפתחות הרשאה נפוצים"
+  },
+  "privacyDocFutureProof": {
+    "message": "אם הרשאה לא רשומה כאן, השתמש באותו דפוס בכל מקרה, למשל permission.bookmarks או permission.system.display. StorePilot צריכים להתייחס לקוד המניפסט עצמו כמקור האמת."
   },
   "projects": {
     "message": "פרויקטים"
   },
   "importedListings": {
-    "message": "Imported Listings"
+    "message": "רישומים מיובאים"
+  },
+  "storeMediaAssets": {
+    "message": "חנות נכסי מדיה"
+  },
+  "privacyDocument": {
+    "message": "מסמך פרטיות"
+  },
+  "privacyDocNotScanned": {
+    "message": "לא נסרק"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "לא נמצא מסמך פרטיות שמיש ($1 מועמדים נסרקו)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "לא נמצא מסמך פרטיות שמיש."
+  },
+  "privacyDocSummary": {
+    "message": "$1 שדות ב-$2"
+  },
+  "privacyDocFile": {
+    "message": "קובץ"
+  },
+  "privacyPanelSummary": {
+    "message": "$1 שדות פרטיות ב-$2"
+  },
+  "privacyDocFileFound": {
+    "message": "מסמך פרטיות: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "לא יובא מסמך פרטיות עבור הפרויקט הפעיל."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "ייבא או ייבא מחדש את הפרויקט באפשרויות StorePilot כדי לטעון מסמך פרטיות."
+  },
+  "fillSinglePurpose": {
+    "message": "מלא מטרה אחת"
+  },
+  "fillPrivacy": {
+    "message": "מלא פרטיות"
+  },
+  "privacyNoValueForField": {
+    "message": "אין ערך של מסמך פרטיות עבור $1."
+  },
+  "privacyFieldNotFound": {
+    "message": "לא ניתן למצוא את שדה הפרטיות: $1."
+  },
+  "privacyFilledField": {
+    "message": "מילא שדה פרטיות: $1."
+  },
+  "privacyFilledFields": {
+    "message": "$1 שדות פרטיות מלאים: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "לא ניתן למצוא: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "לא היו שדות פרטיות נתמכים זמינים למילוי."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "פעולות פרטיות זמינות רק בדף הפרטיות."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "נמצאו $1 מועמדים הניתנים לעריכה לפרטיות."
+  },
+  "status": {
+    "message": "סטטוס"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "מועמדים"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "סרוק: $1; תואם: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "ייבא מחדש את תיקיית הפרויקט כדי לסרוק את מסמך הפרטיות."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "לא נסרק"
   },
   "diagnostics": {
-    "message": "Diagnostics"
+    "message": "אבחון"
   },
   "project": {
     "message": "פרויקט"
@@ -60,16 +159,49 @@
     "message": "אזור"
   },
   "fillCurrentLanguage": {
-    "message": "Fill current language"
+    "message": "מלא את השפה הנוכחית"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "מלא את כל השפות"
+  },
+  "uploadStoreIcon": {
+    "message": "העלאת סמל חנות"
+  },
+  "uploadMedia": {
+    "message": "העלה מדיה"
+  },
+  "uploadScreenshots": {
+    "message": "העלה צילומי מסך"
+  },
+  "uploadSmallPromo": {
+    "message": "העלה פרומו קטן"
+  },
+  "uploadMarqueePromo": {
+    "message": "העלה קידום מכירות"
+  },
+  "clearScreenshots": {
+    "message": "נקה צילומי מסך"
+  },
+  "clearStoreIcon": {
+    "message": "סמל חנות נקה"
+  },
+  "clearSmallPromo": {
+    "message": "פרומו קטן ברור"
+  },
+  "clearMarqueePromo": {
+    "message": "פרומו מרקיזה ברור"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "הפסק למלא הכל"
+  },
+  "abortOperation": {
+    "message": "הפסק את הפעולה"
   },
   "diagnosePage": {
-    "message": "Diagnose page"
+    "message": "דף אבחון"
+  },
+  "openPanel": {
+    "message": "פתח את הלוח"
   },
   "options": {
     "message": "אפשרויות"
@@ -78,330 +210,453 @@
     "message": "עברית"
   },
   "fillCurrent": {
-    "message": "Fill current language"
+    "message": "מלא את השפה הנוכחית"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "מלא את כל השפות"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "הפסק למלא הכל"
   },
   "importListingsInOptions": {
-    "message": "Import listings in StorePilot options"
+    "message": "ייבא רישומים באפשרויות StorePilot"
   },
   "never": {
-    "message": "Never"
+    "message": "לעולם לא"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "פרויקט זה יובא מבורר קבצים בדפדפן. ייבא מחדש את תיקיית הפרויקט כדי לרענן אותה."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "עודכן לאחרונה ב-$1."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 אזורים יובאו"
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "אין פרויקט פעיל"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(ריק)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 תווים"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 פרויקט(ים)"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "אין פרויקטים"
+  },
+  "yes": {
+    "message": "כן"
+  },
+  "no": {
+    "message": "לא"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "פרויקט נבחר"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "מקור: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "אין תיקיית מקור"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "זיהוי: ביטחון $1"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "רענון: ייבא מחדש תיקייה"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "עודכן: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 מקומות"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "לא נבחרו קובצי רישום מקומיים."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "$1 מיובא; דילג על $2."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "דילוג: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "לא נמצאה תיקיית רישום מקומי בתיקייה שנבחרה."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$1 יבוא אל $2 מ$3 ($4 ביטחון); דילג על $5."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "נמצאו $1 תיקיות מועמדות."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 צילומי מסך, סמל: $2, פרומו קטן: $3, פרומו של מרקיזה: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "לא נמצאו נכסי מדיה בחנות."
+  },
+  "mediaUploadedKind": {
+    "message": "הועלה $1: $2."
+  },
+  "mediaClearedKind": {
+    "message": "ניקה את $1: $2."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1 כבר ברור."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1 כבר קיים או בעיבוד."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "אין צילומי מסך לנקות."
+  },
+  "screenshotsLimitReached": {
+    "message": "צילומי מסך: הגבלה של CWS של $1 כבר הגיעה"
+  },
+  "storeIcon": {
+    "message": "סמל החנות"
+  },
+  "minimizePanel": {
+    "message": "מזעור פאנל"
+  },
+  "maximizePanel": {
+    "message": "הגדל את הפאנל"
+  },
+  "closePanel": {
+    "message": "סגור לוח"
+  },
+  "panelOpened": {
+    "message": "הפנל נפתח."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "רישום ופעולות מדיה זמינות רק בדף הרישום בחנות."
+  },
+  "clearingMedia": {
+    "message": "מנקה מדיה..."
+  },
+  "mediaClearFailed": {
+    "message": "ניקוי המדיה נכשל: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "פעולת המדיה כבר פועלת: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "פעולת מדיה בעיצומה."
+  },
+  "noOperationRunning": {
+    "message": "שום פעולה לא פועלת."
+  },
+  "operationStopped": {
+    "message": "נעצר."
+  },
+  "missing": {
+    "message": "חסר"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "ייבא מחדש את תיקיית הפרויקט כדי לסרוק נכסי מדיה."
+  },
+  "screenshotNumber": {
+    "message": "צילום מסך $1"
+  },
+  "smallPromoTile": {
+    "message": "אריח פרומו קטן"
+  },
+  "marqueePromoTile": {
+    "message": "אריח פרומו של מרקיזה"
+  },
+  "mediaCandidateCounts": {
+    "message": "מועמדים"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "סמל: $1; צילומי מסך: $2; פרומו קטן: $3; פרומו של מרקיזה: $4."
+  },
+  "uploadingMedia": {
+    "message": "מעלה מדיה..."
+  },
+  "mediaUploaded": {
+    "message": "מדיה שהועלתה: $1."
+  },
+  "mediaSkipped": {
+    "message": "דילוג: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "נכשל: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "העלאת מדיה נכשלה: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "ייבוא התיקיות בוטל."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "ייבוא התיקייה נכשל: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "קבצים שנבחרו"
   },
   "manual": {
-    "message": "manual"
+    "message": "ידני"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "הייבוא נכשל: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "למחוק את פרויקט StorePilot \"$1\"?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "נמחק $1."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "לנקות רישומים עבור \"$1\"?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "רישומים נמחקו עבור $1."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1 רישום אזורים ב-$2. עודכן לאחרונה ב-$3."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "עדיין אין פרויקטים"
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "לא נבחר טקסט רישום להעתקה."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "הועתק $1 מ$2."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1 יובא ל-$2 ($3 ביטחון)."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "אין כרטיסייה פעילה."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "הכרטיסייה הפעילה אינה עמוד Chrome Web Store Developer Dashboard."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot לא הצליח להתחבר ללשונית לוח המחוונים הזו. פתח את אבחון עבור השגיאה המדויקת."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "האבחון הושלם."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "האבחון נכשל."
   },
   "done": {
-    "message": "Done."
+    "message": "בוצע."
   },
   "failed": {
-    "message": "Failed."
+    "message": "נכשל."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "לא נמצאו קבצי רישום מקומיים."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1 יובא לתוך $2."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "הפרויקט נבחר."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "ממלא את כל השפות..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "התבקשה להפסיק."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "מילוי הכל לא פועל."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "לא ניתן להפסיק למלא הכל."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "האבחון נכשל: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "הפרויקט לא נמצא."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "ייבא מחדש את תיקיית הפרויקט כדי ש-StorePilot יוכל לאחסן את קבצי המדיה להעלאה."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "יש צורך בהרשאת תיקיה לפני קריאת קובצי מדיה."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "לא נשמרה ידית תיקייה."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "לא נבחר רישום."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "הועתק $1."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "לא נמצא שדה גלוי שניתן לעריכה."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "מילא $1."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "לא ניתן היה למצוא את התפריט הנפתח של שפת Chrome Web Store."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "לא ניתן היה למצוא את $1 בתפריט שפת לוח המחוונים."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "לחצו על $1, אבל לוח המחוונים עדיין מציג $2."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "מקום לא ידוע"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "אין טקסט רישום עבור $1."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "לא ניתן היה למצוא את שדה התיאור Chrome Web Store."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "לא ניתן לזהות את שפת לוח המחוונים הנוכחית."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "נעצר. $1 שפות לוח מחוונים מלאות."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "לא יובאו רישומי פרויקטים."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "אין מקומות מיובאים שתואמים לתפריט שפת לוח המחוונים."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "נעצר. שפות לוח המחוונים $1 מלאות; עדיין בהמתנה: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "שוחזר $1 לאחר ניסיון חוזר."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "ניסו שוב $1; אף אחד לא התאושש."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "שפות לוח המחוונים $1 מלאות; נכשל $2: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 שפות לוח מחוונים מלאות."
+  },
+  "fillAllDashboardSummary": {
+    "message": "$1 מיובא; תואמו לשפות של לוח המחוונים $2."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "$1 מיובא; שפות לוח מחוונים תואמות $2; אזורים מיובאים ללא התאמה: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store לא הציע אזורים לא נתמכים: $1."
+  },
+  "unmatchedImportedLocales": {
+    "message": "לוח המחוונים לא הציע אזורים מיובאים נתמכים: $1."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "התבקשה הפסקה. StorePilot יפסיק לאחר השלב הנוכחי של לוח המחוונים."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "אבחון לוח המחוונים עבר."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "אבחון לוח המחוונים מצא רכיבי דף חסרים."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "מילוי הכל כבר פועל."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "מילוי הכל נעצר."
   },
   "filling": {
-    "message": "Filling"
+    "message": "מילוי"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "מנסה שוב"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "פתח את אפשרויות StorePilot"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "פותח ייבוא פרויקט..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "לא ידוע"
+  },
+  "alphaChannel": {
+    "message": "אלפא"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "פרוייקט ללא כותרת"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "פרויקט מיובא"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "ייבוא ידני"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "רישומים מיובאים"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "ייבוא קבצים ידני"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "נבחר $1."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 מקומות ב-$2"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "כבר מחובר"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "הצליח"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "גבוה"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "בינוני"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "נמוך"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot אפשרויות"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "עודכן לאחרונה ב- Never."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "לא יובאו רישומים"
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "טוען רישומים..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot יבקש אישור לפני קריאת תיקיית הפרויקט שנבחרה. הנחיה זו צפויה."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "ייבוא התיקיות מטופל בלשונית האפשרויות, שם בקשת אישור התיקיה יכולה להשלים בצורה מהימנה."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "בחר שורש פרויקט, תיקיית רישום בחנות או תיקיית רישום ישיר. StorePilot יבקש ממך לאשר גישה לתיקייה."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "שדה פרטיות שדילג עליו: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "דילוג על $1 שדות פרטיות: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "שדה הפרטיות לא קיבל את הערך: $1."
   }
 }

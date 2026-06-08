@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot"
+    "message": "StorePilot: CWS 자동 입력"
   },
   "extensionDescription": {
-    "message": "브라우저 확장 스토어 게시 작업의 반복 업무를 자동화합니다."
+    "message": "로컬 파일에서 Chrome Web Store 등록 필드, 현지화된 설명, 스크린샷, 개인정보 양식을 자동 입력합니다."
   },
   "optionsSubtitle": {
     "message": "평면 로캘 listing 파일을 가져와 확장 스토어 대시보드에서 사용합니다."
@@ -33,22 +33,121 @@
     "message": "프로젝트/폴더 가져오기"
   },
   "importHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder."
+    "message": "프로젝트 루트, 스토어 목록 폴더 또는 직접 목록 폴더를 선택합니다."
   },
   "importHintLocaleFiles": {
-    "message": "StorePilot looks for locale-named listing files such as"
+    "message": "StorePilot은 다음과 같은 로케일 이름의 목록 파일을 찾습니다."
   },
   "or": {
     "message": "또는"
   },
   "importHintDrag": {
-    "message": "You can also drag direct locale listing files onto this panel."
+    "message": "직접 로캘 목록 파일을 이 패널로 끌어서 놓을 수도 있습니다."
+  },
+  "privacyDocReferenceTitle": {
+    "message": "개인 정보 보호 자동화 문서 참조"
+  },
+  "privacyDocReferenceIntro": {
+    "message": "StorePilot은(는) 하나의 프로젝트 문서에서 Chrome Web Store 개인 정보 보호 필드를 스캔할 수 있습니다. 스캐너가 추측하지 않고 텍스트를 라우팅할 수 있도록 이러한 표준 키를 사용하십시오."
+  },
+  "privacyDocPermissionRule": {
+    "message": "권한 근거를 보려면 permission.<manifest permission code>을 사용하세요. 접미사는 매니페스트 권한(optional_permissions, host_permissions 또는 content_scripts.matches)의 코드와 일치해야 합니다."
+  },
+  "privacyDocNamingGuideline": {
+    "message": "권장 파일 이름: docs/chrome-web-store-privacy-form.md 또는 STORE_JUSTIFICATIONS.md. StorePilot은(는) 콘텐츠에 [privacy] 블록, 정식 키 또는 인식 가능한 저장소 정렬 제목이 포함된 경우 다른.md 또는.txt 파일도 허용합니다."
+  },
+  "privacyDocCoreKeys": {
+    "message": "핵심 키"
+  },
+  "privacyDocCommonPermissions": {
+    "message": "공통 권한 키"
+  },
+  "privacyDocFutureProof": {
+    "message": "권한이 여기에 나열되지 않은 경우 어쨌든 동일한 패턴을 사용하십시오. 예를 들어 permission.bookmarks 또는 permission.system.display. StorePilot은 매니페스트 코드 자체를 정보 소스로 처리해야 합니다."
   },
   "projects": {
     "message": "프로젝트"
   },
   "importedListings": {
     "message": "가져온 목록"
+  },
+  "storeMediaAssets": {
+    "message": "미디어 자산 저장"
+  },
+  "privacyDocument": {
+    "message": "개인정보 보호 문서"
+  },
+  "privacyDocNotScanned": {
+    "message": "스캔되지 않음"
+  },
+  "privacyDocNoUsableFile": {
+    "message": "사용 가능한 개인 정보 보호 문서를 찾을 수 없습니다($1 후보자가 스캔됨)."
+  },
+  "privacyDocNoUsableFileShort": {
+    "message": "사용 가능한 개인정보 보호 문서가 없습니다."
+  },
+  "privacyDocSummary": {
+    "message": "$2의 $1 필드"
+  },
+  "privacyDocFile": {
+    "message": "파일"
+  },
+  "privacyPanelSummary": {
+    "message": "$2의 $1 개인 정보 보호 필드"
+  },
+  "privacyDocFileFound": {
+    "message": "개인정보 보호 문서: $1"
+  },
+  "privacyDocNotImported": {
+    "message": "활성 프로젝트에 대해 가져온 개인정보 보호 문서가 없습니다."
+  },
+  "importPrivacyDocInOptions": {
+    "message": "개인정보 보호 문서를 로드하려면 StorePilot 옵션에서 프로젝트를 가져오거나 다시 가져오세요."
+  },
+  "fillSinglePurpose": {
+    "message": "단일 목적 채우기"
+  },
+  "fillPrivacy": {
+    "message": "프라이버시 채우기"
+  },
+  "privacyNoValueForField": {
+    "message": "$1에 대한 개인정보 보호 문서 값이 없습니다."
+  },
+  "privacyFieldNotFound": {
+    "message": "개인 정보 보호 필드를 찾을 수 없습니다: $1."
+  },
+  "privacyFilledField": {
+    "message": "채워진 개인 정보 필드: $1."
+  },
+  "privacyFilledFields": {
+    "message": "$1 개인 정보 보호 필드를 채웠습니다: $2."
+  },
+  "privacyFieldsNotFound": {
+    "message": "찾을 수 없습니다: $1."
+  },
+  "privacyNoSupportedFields": {
+    "message": "채울 수 있는 지원되는 개인 정보 보호 필드가 없습니다."
+  },
+  "privacyActionsOnlyOnPrivacyPage": {
+    "message": "개인정보 보호 조치는 개인정보 보호 페이지에서만 사용할 수 있습니다."
+  },
+  "privacyDiagnosticsSummary": {
+    "message": "$1 편집 가능한 개인 정보 보호 후보를 찾았습니다."
+  },
+  "status": {
+    "message": "상태"
+  },
+  "privacyDocCandidateCounts": {
+    "message": "후보자"
+  },
+  "privacyDocCandidateCountsValue": {
+    "message": "스캔됨: $1; 일치: $2."
+  },
+  "reimportFolderToScanPrivacyDoc": {
+    "message": "개인정보 보호 문서를 스캔하려면 프로젝트 폴더를 다시 가져오세요."
+  },
+  "mediaAssetsNotScanned": {
+    "message": "스캔되지 않음"
   },
   "diagnostics": {
     "message": "진단"
@@ -65,11 +164,44 @@
   "fillAllLanguages": {
     "message": "모든 언어 채우기"
   },
+  "uploadStoreIcon": {
+    "message": "매장 아이콘 업로드"
+  },
+  "uploadMedia": {
+    "message": "미디어 업로드"
+  },
+  "uploadScreenshots": {
+    "message": "스크린샷 업로드"
+  },
+  "uploadSmallPromo": {
+    "message": "작은 프로모션 업로드"
+  },
+  "uploadMarqueePromo": {
+    "message": "마퀴 프로모션 업로드"
+  },
+  "clearScreenshots": {
+    "message": "스크린샷 지우기"
+  },
+  "clearStoreIcon": {
+    "message": "매장 아이콘 지우기"
+  },
+  "clearSmallPromo": {
+    "message": "작은 프로모션 지우기"
+  },
+  "clearMarqueePromo": {
+    "message": "명확한 천막 프로모션"
+  },
   "abortFillAll": {
     "message": "전체 채우기 중단"
   },
+  "abortOperation": {
+    "message": "작업 중단"
+  },
   "diagnosePage": {
     "message": "페이지 진단"
+  },
+  "openPanel": {
+    "message": "패널 열기"
   },
   "options": {
     "message": "옵션"
@@ -90,318 +222,441 @@
     "message": "StorePilot 옵션에서 목록 가져오기"
   },
   "never": {
-    "message": "Never"
+    "message": "절대로"
   },
   "reimportFolderToRefresh": {
-    "message": "This project was imported from a browser file picker. Re-import the project folder to refresh it."
+    "message": "이 프로젝트는 브라우저 파일 선택기에서 가져왔습니다. 새로 고치려면 프로젝트 폴더를 다시 가져오세요."
   },
   "lastUpdatedOn": {
-    "message": "Last updated on $1."
+    "message": "$1에 마지막으로 업데이트되었습니다."
   },
   "projectLocalesImported": {
-    "message": "$1: $2 locale(s) imported"
+    "message": "$1: $2 로캘을 가져왔습니다."
   },
   "noActiveProject": {
-    "message": "No active project"
+    "message": "활성 프로젝트 없음"
   },
   "emptyValue": {
-    "message": "(empty)"
+    "message": "(비어 있음)"
   },
   "charCount": {
-    "message": "$1 chars"
+    "message": "$1 문자"
   },
   "projectCount": {
-    "message": "$1 project(s)"
+    "message": "$1 프로젝트"
   },
   "noProjects": {
-    "message": "No projects"
+    "message": "프로젝트 없음"
+  },
+  "yes": {
+    "message": "응"
+  },
+  "no": {
+    "message": "아니"
   },
   "selectedProject": {
-    "message": "Selected project"
+    "message": "선택한 프로젝트"
   },
   "sourceLabel": {
-    "message": "Source: $1"
+    "message": "출처: $1"
   },
   "noSourceFolder": {
-    "message": "No source folder"
+    "message": "소스 폴더 없음"
   },
   "detectionConfidence": {
-    "message": "Detection: $1 confidence"
+    "message": "탐지: $1 신뢰도"
   },
   "refreshReimportFolder": {
-    "message": "Refresh: re-import folder"
+    "message": "새로 고침: 폴더 다시 가져오기"
   },
   "updatedLabel": {
-    "message": "Updated: $1"
+    "message": "업데이트됨: $1"
   },
   "localesCount": {
-    "message": "$1 locales"
+    "message": "$1 로케일"
   },
   "noLocaleListingFilesSelected": {
-    "message": "No locale listing files were selected."
+    "message": "로케일 목록 파일이 선택되지 않았습니다."
   },
   "importedSkipped": {
-    "message": "Imported $1; skipped $2."
+    "message": "가져온 $1; $2을(를) 건너뛰었습니다."
   },
   "skippedList": {
-    "message": "Skipped: $1"
+    "message": "건너뛴 항목: $1"
   },
   "noLocaleListingFolderFound": {
-    "message": "No locale listing folder was found in the selected folder."
+    "message": "선택한 폴더에서 로케일 목록 폴더를 찾을 수 없습니다."
   },
   "importedIntoFrom": {
-    "message": "Imported $1 into $2 from $3 ($4 confidence); skipped $5."
+    "message": "$1을 $3에서 $2로 가져왔습니다($4 신뢰도). $5을 건너뛰었습니다."
   },
   "foundCandidateFolders": {
-    "message": "Found $1 candidate folders."
+    "message": "$1 후보 폴더를 찾았습니다."
+  },
+  "mediaAssetsSummary": {
+    "message": "$1 스크린샷, 아이콘: $2, 작은 프로모션: $3, 움직이는 프로모션: $4."
+  },
+  "mediaAssetsNone": {
+    "message": "매장 미디어 자산을 찾을 수 없습니다."
+  },
+  "mediaUploadedKind": {
+    "message": "$1: $2을(를) 업로드했습니다."
+  },
+  "mediaClearedKind": {
+    "message": "$1: $2을(를) 지웠습니다."
+  },
+  "mediaAlreadyClearKind": {
+    "message": "$1은(는) 이미 지워졌습니다."
+  },
+  "mediaAlreadyPresentOrProcessing": {
+    "message": "$1이(가) 이미 존재하거나 처리 중입니다."
+  },
+  "screenshotsAlreadyClear": {
+    "message": "지울 스크린샷이 없습니다."
+  },
+  "screenshotsLimitReached": {
+    "message": "스크린샷: CWS 제한인 $1이(가) 이미 도달했습니다."
+  },
+  "storeIcon": {
+    "message": "매장 아이콘"
+  },
+  "minimizePanel": {
+    "message": "패널 최소화"
+  },
+  "maximizePanel": {
+    "message": "패널 최대화"
+  },
+  "closePanel": {
+    "message": "패널 닫기"
+  },
+  "panelOpened": {
+    "message": "패널이 열렸습니다."
+  },
+  "listingActionsOnlyOnListingPage": {
+    "message": "목록 및 미디어 작업은 스토어 목록 페이지에서만 사용할 수 있습니다."
+  },
+  "clearingMedia": {
+    "message": "미디어 지우는 중..."
+  },
+  "mediaClearFailed": {
+    "message": "미디어 지우기 실패: $1"
+  },
+  "mediaOperationAlreadyRunning": {
+    "message": "미디어 작업이 이미 실행 중입니다: $1."
+  },
+  "mediaOperationInProgress": {
+    "message": "미디어 작업이 진행 중입니다."
+  },
+  "noOperationRunning": {
+    "message": "실행 중인 작업이 없습니다."
+  },
+  "operationStopped": {
+    "message": "중지되었습니다."
+  },
+  "missing": {
+    "message": "누락"
+  },
+  "reimportFolderToScanMediaAssets": {
+    "message": "미디어 자산을 스캔하려면 프로젝트 폴더를 다시 가져오세요."
+  },
+  "screenshotNumber": {
+    "message": "스크린샷 $1"
+  },
+  "smallPromoTile": {
+    "message": "작은 프로모션 타일"
+  },
+  "marqueePromoTile": {
+    "message": "마키 프로모션 타일"
+  },
+  "mediaCandidateCounts": {
+    "message": "후보자"
+  },
+  "mediaCandidateCountsValue": {
+    "message": "아이콘: $1; 스크린샷: $2; 작은 프로모션: $3; 천막 프로모션: $4."
+  },
+  "uploadingMedia": {
+    "message": "미디어 업로드 중..."
+  },
+  "mediaUploaded": {
+    "message": "업로드된 미디어: $1."
+  },
+  "mediaSkipped": {
+    "message": "건너뛴 항목: $1."
+  },
+  "mediaUploadFailures": {
+    "message": "실패: $1."
+  },
+  "mediaUploadFailed": {
+    "message": "미디어 업로드 실패: $1"
   },
   "folderImportCanceled": {
-    "message": "Folder import canceled."
+    "message": "폴더 가져오기가 취소되었습니다."
   },
   "folderImportFailed": {
-    "message": "Folder import failed: $1"
+    "message": "폴더 가져오기 실패: $1"
   },
   "selectedFiles": {
-    "message": "selected files"
+    "message": "선택한 파일"
   },
   "manual": {
-    "message": "manual"
+    "message": "매뉴얼"
   },
   "importFailed": {
-    "message": "Import failed: $1"
+    "message": "가져오기 실패: $1"
   },
   "deleteProjectConfirm": {
-    "message": "Delete StorePilot project \"$1\"?"
+    "message": "StorePilot 프로젝트 '$1'을 삭제하시겠습니까?"
   },
   "deletedProject": {
-    "message": "Deleted $1."
+    "message": "$1을(를) 삭제했습니다."
   },
   "clearListingsConfirm": {
-    "message": "Clear listings for \"$1\"?"
+    "message": "\"$1\" 목록을 지우시겠습니까?"
   },
   "clearedListingsFor": {
-    "message": "Cleared listings for $1."
+    "message": "$1 목록을 삭제했습니다."
   },
   "popupSummary": {
-    "message": "$1 listing locale(s) in $2. Last updated on $3."
+    "message": "$1은 $2의 로케일을 나열합니다. $3에 마지막으로 업데이트되었습니다."
   },
   "noProjectsYet": {
-    "message": "No projects yet"
+    "message": "아직 프로젝트가 없습니다."
   },
   "noListingTextSelected": {
-    "message": "No listing text selected to copy."
+    "message": "복사하기 위해 선택한 목록 텍스트가 없습니다."
   },
   "copiedLocaleFromProject": {
-    "message": "Copied $1 from $2."
+    "message": "$2에서 $1을(를) 복사했습니다."
   },
   "importedIntoConfidence": {
-    "message": "Imported $1 into $2 ($3 confidence)."
+    "message": "$1을(를) $2($3 신뢰도)로 가져왔습니다."
   },
   "noActiveTab": {
-    "message": "No active tab."
+    "message": "활성 탭이 없습니다."
   },
   "notDashboardPage": {
-    "message": "The active tab is not a Chrome Web Store Developer Dashboard page."
+    "message": "활성 탭은 Chrome Web Store Developer Dashboard 페이지가 아닙니다."
   },
   "couldNotConnectDashboard": {
-    "message": "StorePilot could not connect to this dashboard tab. Open Diagnostics for the exact error."
+    "message": "StorePilot은(는) 이 대시보드 탭에 연결할 수 없습니다. 정확한 오류를 확인하려면 진단을 엽니다."
   },
   "diagnosticsComplete": {
-    "message": "Diagnostics complete."
+    "message": "진단이 완료되었습니다."
   },
   "diagnosticsFailed": {
-    "message": "Diagnostics failed."
+    "message": "진단에 실패했습니다."
   },
   "done": {
-    "message": "Done."
+    "message": "완료."
   },
   "failed": {
-    "message": "Failed."
+    "message": "실패했습니다."
   },
   "noLocaleListingFilesFound": {
-    "message": "No locale listing files were found."
+    "message": "로케일 목록 파일을 찾을 수 없습니다."
   },
   "importedInto": {
-    "message": "Imported $1 into $2."
+    "message": "$1을(를) $2(으)로 가져왔습니다."
   },
   "projectSelected": {
-    "message": "Project selected."
+    "message": "프로젝트가 선택되었습니다."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "모든 언어를 채우는 중..."
   },
   "stopRequested": {
-    "message": "Stop requested."
+    "message": "중지를 요청했습니다."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "모두 채우기가 실행되지 않습니다."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "모두 채우기를 중지할 수 없습니다."
   },
   "diagnosticsFailedWithError": {
-    "message": "Diagnostics failed: $1"
+    "message": "진단 실패: $1"
   },
   "projectNotFound": {
-    "message": "Project not found."
+    "message": "프로젝트를 찾을 수 없습니다."
+  },
+  "reimportProjectFolderForMediaUpload": {
+    "message": "StorePilot이 업로드할 미디어 파일을 저장할 수 있도록 프로젝트 폴더를 다시 가져옵니다."
   },
   "folderPermissionNeeded": {
-    "message": "Folder permission is needed before reading media files."
+    "message": "미디어 파일을 읽기 전에 폴더 권한이 필요합니다."
   },
   "noFolderHandleSaved": {
-    "message": "No folder handle saved."
+    "message": "저장된 폴더 핸들이 없습니다."
   },
   "noListingSelected": {
-    "message": "No listing selected."
+    "message": "선택된 목록이 없습니다."
   },
   "copiedLocale": {
-    "message": "Copied $1."
+    "message": "$1을(를) 복사했습니다."
   },
   "noVisibleEditableField": {
-    "message": "No visible editable field found."
+    "message": "보이는 수정 가능한 필드가 없습니다."
   },
   "filledLocale": {
-    "message": "Filled $1."
+    "message": "$1이(가) 채워졌습니다."
   },
   "languageDropdownNotFound": {
-    "message": "Could not find the Chrome Web Store language dropdown."
+    "message": "Chrome Web Store 언어 드롭다운을 찾을 수 없습니다."
   },
   "localeNotInDashboardMenu": {
-    "message": "Could not find $1 in the dashboard language menu."
+    "message": "대시보드 언어 메뉴에서 $1을(를) 찾을 수 없습니다."
   },
   "clickedButDashboardShows": {
-    "message": "Clicked $1, but the dashboard still shows $2."
+    "message": "$1을 클릭했지만 대시보드에는 여전히 $2이 표시됩니다."
   },
   "unknownLocale": {
-    "message": "an unknown locale"
+    "message": "알 수 없는 지역"
   },
   "noListingTextFor": {
-    "message": "No listing text for $1."
+    "message": "$1에 대한 목록 텍스트가 없습니다."
   },
   "descriptionFieldNotFound": {
-    "message": "Could not find the Chrome Web Store description field."
+    "message": "Chrome Web Store 설명 필드를 찾을 수 없습니다."
   },
   "currentDashboardLanguageNotDetected": {
-    "message": "Could not detect the current dashboard language."
+    "message": "현재 대시보드 언어를 감지할 수 없습니다."
   },
   "stoppedFilledLanguages": {
-    "message": "Stopped. Filled $1 dashboard language(s)."
+    "message": "중지되었습니다. $1 대시보드 언어가 채워졌습니다."
   },
   "noProjectListingsImported": {
-    "message": "No project listings imported."
+    "message": "가져온 프로젝트 목록이 없습니다."
   },
   "noImportedLocalesMatchMenu": {
-    "message": "No imported locales match the dashboard language menu."
+    "message": "가져온 로캘이 대시보드 언어 메뉴와 일치하지 않습니다."
   },
   "stoppedFilledLanguagesPending": {
-    "message": "Stopped. Filled $1 dashboard language(s); still pending: $2."
+    "message": "중지되었습니다. $1 대시보드 언어가 채워졌습니다. 아직 보류 중: $2."
   },
   "recoveredAfterRetry": {
-    "message": "Recovered $1 after retry."
+    "message": "재시도 후 $1을(를) 복구했습니다."
   },
   "retriedNoneRecovered": {
-    "message": "Retried $1; none recovered."
+    "message": "$1을(를) 다시 시도했습니다. 아무도 회복되지 않았습니다."
   },
   "filledLanguagesFailed": {
-    "message": "Filled $1 dashboard language(s); failed $2: $3."
+    "message": "$1 대시보드 언어가 채워졌습니다. $2 실패: $3."
   },
   "filledLanguages": {
-    "message": "Filled $1 dashboard language(s)."
+    "message": "$1 대시보드 언어가 채워졌습니다."
+  },
+  "fillAllDashboardSummary": {
+    "message": "가져온 $1; $2 대시보드 언어와 일치합니다."
+  },
+  "fillAllDashboardSummaryWithUnmatched": {
+    "message": "가져온 $1; $2 대시보드 언어와 일치합니다. 일치하지 않는 가져온 로케일: $3."
+  },
+  "unsupportedChromeWebStoreLocales": {
+    "message": "Chrome Web Store은(는) 지원되지 않는 로캘($1)을 제공하지 않았습니다."
+  },
+  "unmatchedImportedLocales": {
+    "message": "대시보드는 지원되는 가져온 로캘($1)을 제공하지 않았습니다."
   },
   "abortRequestedStopAfterStep": {
-    "message": "Abort requested. StorePilot will stop after the current dashboard step."
+    "message": "중단을 요청했습니다. StorePilot은 현재 대시보드 단계 후에 중지됩니다."
   },
   "dashboardDiagnosticsPassed": {
-    "message": "Dashboard diagnostics passed."
+    "message": "대시보드 진단이 통과되었습니다."
   },
   "dashboardDiagnosticsMissingElements": {
-    "message": "Dashboard diagnostics found missing page elements."
+    "message": "대시보드 진단에서 누락된 페이지 요소가 발견되었습니다."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "모두 채우기가 이미 실행 중입니다."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "채우기가 모두 중지되었습니다."
   },
   "filling": {
-    "message": "Filling"
+    "message": "충전물"
   },
   "retrying": {
-    "message": "Retrying"
+    "message": "재시도 중"
   },
   "openProjectImport": {
     "message": "Open project import"
   },
+  "openStorePilotOptions": {
+    "message": "StorePilot 옵션 열기"
+  },
   "openingProjectImport": {
-    "message": "Opening project import..."
+    "message": "프로젝트 가져오기 여는 중..."
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "알 수 없음"
+  },
+  "alphaChannel": {
+    "message": "알파"
   },
   "untitledProject": {
-    "message": "Untitled project"
+    "message": "제목 없는 프로젝트"
   },
   "importedProject": {
-    "message": "Imported project"
+    "message": "가져온 프로젝트"
   },
   "manualImport": {
-    "message": "Manual import"
+    "message": "수동 가져오기"
   },
   "importedListingsProject": {
-    "message": "Imported listings"
+    "message": "가져온 목록"
   },
   "manualFileImport": {
-    "message": "Manual file import"
+    "message": "수동 파일 가져오기"
   },
   "selectedDashboardLanguage": {
-    "message": "Selected $1."
+    "message": "$1을(를) 선택했습니다."
   },
   "miniPanelLocalesInProject": {
-    "message": "$1 locales in $2"
+    "message": "$1 $2의 로케일"
   },
   "contentScriptAlreadyConnected": {
-    "message": "already connected"
+    "message": "이미 연결됨"
   },
   "injectionSucceeded": {
-    "message": "succeeded"
+    "message": "성공했다"
   },
   "confidenceHigh": {
-    "message": "high"
+    "message": "높은"
   },
   "confidenceMedium": {
-    "message": "medium"
+    "message": "중간"
   },
   "confidenceLow": {
-    "message": "low"
+    "message": "낮음"
   },
   "optionsTitle": {
-    "message": "StorePilot Options"
+    "message": "StorePilot 옵션"
   },
   "lastUpdatedInitial": {
-    "message": "Last updated on Never."
+    "message": "Never에 마지막으로 업데이트되었습니다."
   },
   "noListingsImported": {
-    "message": "No listings imported"
+    "message": "가져온 목록이 없습니다."
   },
   "loadingListings": {
-    "message": "Loading listings..."
+    "message": "목록 로드 중..."
   },
   "folderAccessPrompt": {
-    "message": "StorePilot will ask for confirmation before reading the selected project folder. That prompt is expected."
+    "message": "StorePilot은 선택한 프로젝트 폴더를 읽기 전에 확인을 요청합니다. 그 프롬프트가 예상됩니다."
   },
   "folderImportHandledInOptions": {
-    "message": "Folder import is handled in the options tab, where the folder confirmation prompt can complete reliably."
+    "message": "폴더 가져오기는 폴더 확인 프롬프트가 안정적으로 완료될 수 있는 옵션 탭에서 처리됩니다."
   },
   "folderImportHintFlexible": {
-    "message": "Select a project root, a store-listing folder, or a direct listing folder. StorePilot will ask you to confirm folder access."
+    "message": "프로젝트 루트, 스토어 목록 폴더 또는 직접 목록 폴더를 선택합니다. StorePilot은(는) 폴더 액세스를 확인하라는 메시지를 표시합니다."
   },
   "privacySkippedField": {
-    "message": "Skipped privacy field: $1."
+    "message": "건너뛴 개인정보 보호 필드: $1."
   },
   "privacySkippedFields": {
-    "message": "Skipped $1 privacy field(s): $2."
+    "message": "건너뛴 $1 개인정보 보호 필드: $2."
   },
   "privacyFieldDidNotAcceptValue": {
-    "message": "Privacy field did not accept value: $1."
+    "message": "개인 정보 필드에 $1 값이 허용되지 않았습니다."
   }
 }
