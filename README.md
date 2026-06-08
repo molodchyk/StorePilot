@@ -1,6 +1,6 @@
-# StorePilot: Chrome Web Store Listing Autofill
+# StorePilot: Chrome Web Store Automation
 
-StorePilot is a local-first Firefox extension for autofilling Chrome Web Store listing fields, localized descriptions, screenshots, and privacy forms from local project files.
+StorePilot is a local-first Firefox extension for automating Chrome extension store listings by autofilling Chrome Web Store fields, descriptions, screenshots, and privacy forms from local project files.
 
 ## What It Does
 
@@ -31,7 +31,7 @@ Load it temporarily:
 The build also creates:
 
 ```text
-artifacts/storepilot-1.1.1.zip
+artifacts/storepilot-1.1.2.zip
 ```
 
 AMO source-code upload package:
@@ -43,7 +43,7 @@ AMO source-code upload package:
 This creates:
 
 ```text
-artifacts/source/storepilot-source-1.1.1.zip
+artifacts/source/storepilot-source-1.1.2.zip
 ```
 
 ## Current Workflow

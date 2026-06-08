@@ -1,9 +1,9 @@
 {
   "extensionName": {
-    "message": "StorePilot: Chrome Web Store Listing Autofill"
+    "message": "StorePilot: Chrome Web Store Automation"
   },
   "extensionDescription": {
-    "message": "Autofill Chrome Web Store listing fields, localized descriptions, screenshots, and privacy forms from local files."
+    "message": "Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, screenshots, and privacy forms."
   },
   "optionsSubtitle": {
     "message": "Import flat locale listing files and use them in extension store dashboards."
