@@ -148,6 +148,15 @@ function storePilotIsPrivacyDocKey(key) {
   );
 }
 
+function storePilotIsPrivacyDocBoundaryKey(label) {
+  const raw = String(label || "").trim();
+  const normalized = storePilotNormalizePrivacyKey(raw);
+
+  return storePilotIsPrivacyDocKey(normalized) ||
+    normalized === "data_usage" ||
+    /^certification_\d+$/.test(normalized);
+}
+
 function storePilotReadPrivacyDocText(file) {
   if (file && typeof file.text === "function") {
     return file.text();
@@ -269,6 +278,9 @@ function storePilotParsePrivacyDoc(text) {
       if (currentKey) {
         flushCurrent();
       }
+      if (order.length) {
+        break;
+      }
       continue;
     }
 
@@ -282,6 +294,10 @@ function storePilotParsePrivacyDoc(text) {
         flushCurrent();
         currentKey = key;
         currentLines = keyMatch[2] ? [keyMatch[2]] : [];
+        continue;
+      }
+      if (currentKey && storePilotIsPrivacyDocBoundaryKey(keyMatch[1])) {
+        flushCurrent();
         continue;
       }
     }

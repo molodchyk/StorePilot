@@ -823,9 +823,24 @@ function normalizeFilledPrivacyValue(value) {
     .trim();
 }
 
+function getPrivacyFieldFillValue(key, value) {
+  if (key !== "privacy_policy_url") return value;
+
+  const raw = String(value || "").trim();
+  const firstUrl = raw.match(/https?:\/\/\S+/i);
+  let url = firstUrl ? firstUrl[0] : raw.split(/\r?\n/).map(line => line.trim()).find(Boolean) || "";
+  const markerIndex = url.search(/(?:data_usage|certification_\d+|single_purpose|host_permission|remote_code|privacy_policy_url|permission\.[A-Za-z0-9_.-]+)\s*:/i);
+
+  if (markerIndex > 0) {
+    url = url.slice(0, markerIndex);
+  }
+
+  return url.replace(/[),;]+$/g, "").trim();
+}
+
 function fillPrivacyField(key) {
   const fields = getActivePrivacyFields();
-  const value = fields[key];
+  const value = getPrivacyFieldFillValue(key, fields[key]);
 
   if (!value) {
     return { ok: false, message: localize("privacyNoValueForField", "No privacy document value for $1.", [key]) };

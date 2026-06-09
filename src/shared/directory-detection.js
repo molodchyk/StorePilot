@@ -109,6 +109,7 @@ function storePilotScoreDirectory(pathParts, files, childDirectoryNames = []) {
   const localeFiles = files.filter(file => storePilotGetLocaleFromFileName(file.name));
   const localeCount = localeFiles.length;
   const listingLikeCount = localeFiles.filter(file => storePilotLooksLikeListingText(file.sample || "")).length;
+  const storeDraftCount = files.filter(file => file.listingKind === "storeDraft").length;
 
   if (!localeCount) return 0;
 
@@ -117,8 +118,10 @@ function storePilotScoreDirectory(pathParts, files, childDirectoryNames = []) {
   if (localeCount >= 40) score += 90;
   else if (localeCount >= 10) score += 50;
   else if (localeCount >= 3) score += 20;
+  else if (localeCount === 1 && listingLikeCount === 1) score += 55;
 
   score += listingLikeCount * 12;
+  score += storeDraftCount * 110;
 
   if (files.some(file => storePilotGetLocaleFromFileName(file.name) === "en")) score += 35;
   if (files.some(file => storePilotGetLocaleFromFileName(file.name) === "de")) score += 10;
@@ -186,19 +189,31 @@ async function storePilotCollectCandidateDirectories(directoryHandle) {
 
       fileNames.push(entry.name);
       const file = await entry.getFile();
+      const filePathParts = [...pathParts, entry.name];
+      const isLocaleListing = storePilotIsPotentialListingFile(file, { allowUnknownText: false });
+      const isStoreDraft = typeof storePilotIsPotentialStoreListingDraftPath === "function" &&
+        storePilotIsPotentialStoreListingDraftPath(filePathParts);
 
-      if (!storePilotIsPotentialListingFile(file, { allowUnknownText: false })) {
+      if (!isLocaleListing && !isStoreDraft) {
         continue;
       }
 
       const sample = await file.text();
-      textFiles.push({
-        name: entry.name,
-        sample: sample.slice(0, 4000),
-        async text() {
-          return sample;
-        }
-      });
+      const storeDraft = typeof storePilotCreateStoreListingDraftCandidate === "function"
+        ? storePilotCreateStoreListingDraftCandidate(file, filePathParts, sample)
+        : null;
+
+      if (isLocaleListing) {
+        textFiles.push({
+          name: entry.name,
+          sample: sample.slice(0, 4000),
+          async text() {
+            return sample;
+          }
+        });
+      } else if (storeDraft) {
+        textFiles.push(storeDraft);
+      }
     }
 
     directoryMetadata.set(storePilotNormalizePath(pathParts), {

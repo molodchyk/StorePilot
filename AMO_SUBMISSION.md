@@ -2,17 +2,18 @@
 
 Use this file when submitting StorePilot to Firefox Add-ons.
 
-## Version 1.1.2 Fields
+## Version 1.1.3 Fields
 
 Release Notes:
 
 ```text
-StorePilot 1.1.2 improves Firefox Add-ons search matching for broader Chrome extension store automation queries.
+StorePilot 1.1.3 is a small reliability release for project import and Chrome Web Store privacy automation.
 
 What's changed:
-- Renamed the English public add-on title to "StorePilot: Chrome Web Store Automation".
-- Rewrote the English manifest summary around "automate Chrome extension store listings" and "autofill Chrome Web Store" search intent.
-- Updated AMO page copy guidance to include broader automation, extension store, autofill, listing, screenshots, and privacy-form terms.
+- One-language project imports now recognize focused Chrome Web Store draft documents such as docs/chrome-web-store.md and import them as the English listing.
+- Folder imports through browser file pickers can pass image files through for media-asset scanning.
+- Privacy automation now keeps privacy_policy_url isolated from following key/value lines such as data_usage and certification fields.
+- Privacy form filling now extracts only the URL for the privacy policy URL field, even if an older import stored extra text.
 - No permissions, data collection behavior, host permissions, or automatic submit/review behavior changed.
 ```
 
@@ -21,11 +22,11 @@ Notes to Reviewer:
 ```text
 StorePilot is a local-first extension for browser extension publishers. It imports localized listing text, store media references, and privacy-form text from user-selected local files/folders, then helps fill Chrome Web Store Developer Dashboard fields at the user's request.
 
-Version 1.1.2 changes:
-- The English public manifest name is now "StorePilot: Chrome Web Store Automation".
-- The English manifest summary now says "Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, screenshots, and privacy forms."
-- AMO page copy should be updated to include "automate Chrome extension store listings" in the first sentence.
-- AMO tags must be updated manually in Developer Hub because the live API after 1.1.1 still showed old tags: google, translate, user scripts.
+Version 1.1.3 changes:
+- StorePilot can import a small one-language project when its Chrome Web Store listing draft is a single document such as docs/chrome-web-store.md.
+- The fallback folder picker accepts PNG/JPEG files so media assets remain available when the browser exposes folder contents as a FileList.
+- Chrome Web Store privacy-form parsing now stops privacy_policy_url before unrelated key/value lines such as data_usage and certification_1.
+- The privacy dashboard filler also extracts only the URL before writing to the privacy policy URL field.
 - No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed.
 
 Privacy/data:
@@ -40,13 +41,14 @@ Build:
 - Source is not bundled, minified, transpiled, or obfuscated.
 - The submitted zip is built from this repository with:
   powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-- The build copies source files, locales, icons, and manifest into dist, then writes artifacts/storepilot-1.1.2.zip.
+- The build copies source files, locales, icons, and manifest into dist, then writes artifacts/storepilot-1.1.3.zip.
 - The build script uses System.IO.Compression.ZipArchive instead of PowerShell Compress-Archive so zip entries use forward slashes, which AMO validation requires.
 
 Source package:
-- If source code is requested, upload artifacts/source/storepilot-source-1.1.2.zip.
+- If source code is requested, upload artifacts/source/storepilot-source-1.1.3.zip.
 - It was generated with:
   powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
+- The source package includes tracked repository files only, so unrelated local untracked files are not bundled.
 ```
 
 ## Add-on Page Fields
@@ -84,7 +86,7 @@ StorePilot never clicks final submit, publish, or review actions automatically.
 Search/SEO notes:
 
 ```text
-AMO API checks after 1.1.1 showed StorePilot ranked #1 for "chrome web store listing autofill" but did not appear for "chrome extension store automate". The 1.1.2 English title and summary now include broader exact-intent phrases: Chrome Web Store, automate, Chrome extension store listings, autofill, descriptions, screenshots, privacy forms, and Developer Dashboard.
+AMO API checks after 1.1.1 showed StorePilot ranked #1 for "chrome web store listing autofill" but did not appear for "chrome extension store automate". The current English title and summary include broader exact-intent phrases: Chrome Web Store, automate, Chrome extension store listings, autofill, descriptions, screenshots, privacy forms, and Developer Dashboard.
 
 Live AMO tags after 1.1.1 were still google, translate, user scripts. Update the Tags field manually before or after upload.
 
@@ -215,7 +217,7 @@ automation
 
 Do not use unrelated tags such as ad blocker, privacy, security, vpn, shopping, or video downloader. StorePilot is a publishing/localization workflow tool, and AMO only allows up to 10 tags.
 
-After uploading 1.1.2, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
+After uploading 1.1.3, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
 
 ## Language Coverage Notes
 
@@ -288,7 +290,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 Expected output:
 
 ```text
-artifacts/storepilot-1.1.2.zip
+artifacts/storepilot-1.1.3.zip
 ```
 
 ## Source Code Upload
@@ -296,7 +298,7 @@ artifacts/storepilot-1.1.2.zip
 Upload this source package when AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.1.2.zip
+artifacts/source/storepilot-source-1.1.3.zip
 ```
 
 Create it with:
@@ -315,12 +317,12 @@ Required programs: PowerShell and Git.
 Node.js/npm: not required to build the submitted extension package.
 External dependencies: none.
 Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-Expected output: artifacts/storepilot-1.1.2.zip
+Expected output: artifacts/storepilot-1.1.3.zip
 ```
 
 ## Validation Requirements Learned
 
-- Submit `artifacts/storepilot-1.1.2.zip`.
+- Submit `artifacts/storepilot-1.1.3.zip`.
 - AMO rejects zip entries with Windows backslashes. The build script must preserve forward-slash archive names such as `src/background.js`.
 - The manifest declares:
 
@@ -364,7 +366,7 @@ Expected output: artifacts/storepilot-1.1.2.zip
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.1.2.zip))
+$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.1.3.zip))
 $entries = $zip.Entries | Select-Object -ExpandProperty FullName
 if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash paths' }
 $zip.Dispose()
@@ -373,11 +375,11 @@ $zip.Dispose()
 4. Upload extension package:
 
 ```text
-artifacts/storepilot-1.1.2.zip
+artifacts/storepilot-1.1.3.zip
 ```
 
 5. Upload source package if AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.1.2.zip
+artifacts/source/storepilot-source-1.1.3.zip
 ```

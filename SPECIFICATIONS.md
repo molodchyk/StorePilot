@@ -3,8 +3,8 @@
 ## Repository Layout
 
 - `manifest.json`: extension manifest and only manifest source.
-- `scripts/build.ps1`: builds `dist` and `artifacts/storepilot-1.1.2.zip`.
-- `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-1.1.2.zip` for AMO source-code upload.
+- `scripts/build.ps1`: builds `dist` and `artifacts/storepilot-1.1.3.zip`.
+- `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-1.1.3.zip` for AMO source-code upload.
 - `src/background.js`: action click behavior and options-page opening.
 - `src/import-ui.js`: folder-import UI guidance and options-page import helpers.
 - `src/project-overrides.js`: project identity canonicalization and duplicate import merging.
@@ -35,7 +35,7 @@ The script:
 
 1. Creates `dist-next`.
 2. Copies `src`, `_locales`, and `manifest.json` into `dist-next`.
-3. Creates `artifacts/storepilot-1.1.2.zip` with forward-slash archive entry names for AMO validation.
+3. Creates `artifacts/storepilot-1.1.3.zip` with forward-slash archive entry names for AMO validation.
 4. Replaces `dist`.
 
 The packaging step intentionally uses `System.IO.Compression.ZipArchive` instead of PowerShell `Compress-Archive`, because AMO rejects Windows-style backslashes in zip entry names. It also computes staged-relative paths with a substring rather than `System.IO.Path.GetRelativePath` so the build works on older Windows PowerShell/.NET hosts.
@@ -48,7 +48,7 @@ Run:
 .\scripts\build-amo-source.ps1
 ```
 
-The script uses `git ls-files` and writes `artifacts/source/storepilot-source-1.1.2.zip`. This source zip is intended for AMO's source-code upload step when the submission form asks whether any tool copies/processes/generates files included in the extension.
+The script uses tracked `git ls-files` paths and writes `artifacts/source/storepilot-source-1.1.3.zip`. This source zip is intended for AMO's source-code upload step when the submission form asks whether any tool copies/processes/generates files included in the extension.
 
 The source package intentionally excludes ignored/generated output such as `dist/`, `dist-next/`, `artifacts/`, `.git/`, and local dependencies.
 
@@ -91,12 +91,14 @@ Valid user selections include:
 - `store-listing`
 - `store-listing/chrome-web-store`
 - `store-listing/chrome-web-store/listing`
+- a one-language project with a single store draft, for example `docs/chrome-web-store.md`
 - direct listing files
 
 Import detection:
 
 - Walks folders.
 - Finds locale-named text files.
+- Treats a Chrome Web Store draft document as the English listing when the project only has one listing language.
 - Scores candidate directories using locale count, listing-like text, English presence, known folder names, and skipped folders.
 - Carries project-root evidence from ancestor directories into listing-folder candidates. Evidence includes common root markers such as `.git`, `README`, extension manifests, package/build config files, `src`, `_locales`, `store-listing`, privacy/license/release notes, and assets folders.
 - Uses `listingSignature` to merge duplicate projects when path identity is incomplete.

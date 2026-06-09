@@ -15,7 +15,10 @@ async function storePilotImportListingFiles(files) {
   const activeProject = await storePilotGetActiveProject();
   const project = activeProject || storePilotCreateProject(storePilotText("manualImport", "Manual import"));
   const nextListings = { ...(project.listings || {}) };
-  const textFiles = Array.from(files).filter(storePilotIsPotentialListingFile);
+  const textFiles = Array.from(files).filter(file => file && (
+    file.listingLocale ||
+    storePilotIsPotentialListingFile(file)
+  ));
   const scannedPrivacyDoc = typeof storePilotDiscoverPrivacyDocFromFileList === "function"
     ? await storePilotDiscoverPrivacyDocFromFileList(files)
     : project.privacyDoc || null;
@@ -26,7 +29,7 @@ async function storePilotImportListingFiles(files) {
   let imported = 0;
 
   for (const file of textFiles) {
-    const locale = storePilotGetLocaleFromFileName(file.name);
+    const locale = file.listingLocale || storePilotGetLocaleFromFileName(file.name);
     if (!locale) {
       skipped.push(file.name);
       continue;
@@ -92,23 +95,38 @@ async function storePilotCollectCandidateDirectoriesFromFileList(files) {
     filesInDirectory.add(fileName);
     directoryFiles.set(directoryPath, filesInDirectory);
 
-    if (!storePilotIsPotentialListingFile(file, { allowUnknownText: false })) {
+    const isLocaleListing = storePilotIsPotentialListingFile(file, { allowUnknownText: false });
+    const isStoreDraft = typeof storePilotIsPotentialStoreListingDraftPath === "function" &&
+      storePilotIsPotentialStoreListingDraftPath(pathParts);
+
+    if (!isLocaleListing && !isStoreDraft) {
       continue;
     }
 
     const sample = await storePilotReadTextFile(file);
+    const storeDraft = typeof storePilotCreateStoreListingDraftCandidate === "function"
+      ? storePilotCreateStoreListingDraftCandidate(file, pathParts, sample)
+      : null;
+    const listingFile = isLocaleListing
+      ? {
+        name: fileName,
+        sample: sample.slice(0, 4000),
+        async text() {
+          return sample;
+        }
+      }
+      : storeDraft;
+
+    if (!listingFile) {
+      continue;
+    }
+
     const candidate = candidateMap.get(directoryPath) || {
       pathParts: directoryParts,
       files: []
     };
 
-    candidate.files.push({
-      name: fileName,
-      sample: sample.slice(0, 4000),
-      async text() {
-        return sample;
-      }
-    });
+    candidate.files.push(listingFile);
     candidateMap.set(directoryPath, candidate);
   }
 
@@ -272,13 +290,16 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
 }
 
 async function storePilotReadListingFiles(files) {
-  const textFiles = Array.from(files).filter(storePilotIsPotentialListingFile);
+  const textFiles = Array.from(files).filter(file => file && (
+    file.listingLocale ||
+    storePilotIsPotentialListingFile(file)
+  ));
   const listings = {};
   const skipped = [];
   let imported = 0;
 
   for (const file of textFiles) {
-    const locale = storePilotGetLocaleFromFileName(file.name);
+    const locale = file.listingLocale || storePilotGetLocaleFromFileName(file.name);
     if (!locale) {
       skipped.push(file.name);
       continue;

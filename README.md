@@ -31,7 +31,7 @@ Load it temporarily:
 The build also creates:
 
 ```text
-artifacts/storepilot-1.1.2.zip
+artifacts/storepilot-1.1.3.zip
 ```
 
 AMO source-code upload package:
@@ -43,7 +43,7 @@ AMO source-code upload package:
 This creates:
 
 ```text
-artifacts/source/storepilot-source-1.1.2.zip
+artifacts/source/storepilot-source-1.1.3.zip
 ```
 
 ## Current Workflow

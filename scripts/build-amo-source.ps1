@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root "artifacts\source"
-$zip = Join-Path $artifacts "storepilot-source-1.1.2.zip"
+$zip = Join-Path $artifacts "storepilot-source-1.1.3.zip"
 
 if (Test-Path -LiteralPath $zip) {
   Remove-Item -LiteralPath $zip -Force
@@ -15,7 +15,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $zipArchive = [System.IO.Compression.ZipFile]::Open($zip, [System.IO.Compression.ZipArchiveMode]::Create)
 try {
-  $files = & git -C $root ls-files --cached --others --exclude-standard
+  $files = & git -C $root ls-files --cached
   if ($LASTEXITCODE -ne 0) {
     throw "git ls-files failed."
   }
