@@ -20,7 +20,8 @@ Runtime entry and surface files inspected:
 
 | File | Current role | Audit result |
 | --- | --- | --- |
-| `src/background.js` | Background message handling, media upload orchestration, action-click behavior | Slightly over the entry-file budget and still owns browser API orchestration directly. |
+| `src/background.js` | Thin background message/action wiring for options opening, popup opening, and media upload delegation | Under the entry-file budget after media file resolution and dashboard upload orchestration moved to `src/background/media.js`. Keep new background responsibilities out of this entry file. |
+| `src/background/media.js` | Background-owned media file-handle resolution and dashboard upload delegation | Acceptable focused background helper. Keep project media file resolution and active dashboard upload dispatch here. |
 | `src/content/dashboard-helper.js` | Dashboard section detection, active-project resolution, settings load, abort handling, diagnostics, message routing, and startup orchestration | Under the file-size budget after focused content splits. This remains the dashboard orchestration entry and should stay thin: selector, fill, panel, and media behavior belong in the focused modules below. |
 | `src/content/dashboard-dom.js` | Focused content-script DOM visibility, text, form-fill, click activation, and timing helpers loaded before feature modules | Acceptable focused content utility module. Keep generic content DOM/form mechanics here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/language/locale.js` | Focused locale normalization, CWS locale alias matching, and visible-language text matching helpers | Acceptable focused language helper. Keep locale-code and language-label matching here so CWS and future AMO language flows share the same assumptions. |
@@ -58,6 +59,7 @@ Feature and shared modules already present:
 - `src/shared/store-docs/privacy-doc.js`
 - `src/shared/projects.js`
 - `src/shared/storage.js`
+- `src/background/media.js`
 - `src/content/dashboard-dom.js`
 - `src/content/language/locale.js`
 - `src/content/language/picker.js`
@@ -81,6 +83,7 @@ Browser/platform boundary inspected:
 - StorePilot uses Firefox's `browser.*` API through the global `STOREPILOT_API`.
 - `src/platform/webextension.js` now owns direct WebExtension API calls for storage, runtime, tabs, scripting, action, i18n, and extension URL helpers.
 - Existing runtime files now use the platform wrapper for new WebExtension API access.
+- Background media file resolution now lives in `src/background/media.js`, leaving `src/background.js` as a thin listener/action entry.
 - The dashboard content script now loads shared category and privacy document modules before the main helper so imported metadata constants are not duplicated across options, popup, and content surfaces.
 - Dashboard project binding and project-title resolution now reuse `src/shared/storage.js`, keeping the popup and content script on the same tested project-resolution behavior.
 - Dashboard URL detection and extension-id extraction now live in `src/shared/dashboard-url.js`, keeping popup, content, and project-resolution tests on one dashboard URL contract.
@@ -122,6 +125,7 @@ Test coverage inspected:
 
 4. `Introduce WebExtension platform wrappers`
    - First slice done in this pass: `src/platform/webextension.js` centralizes direct WebExtension API access. Later split it into narrower platform modules when the source tree moves toward bundled or ES-module runtime entries.
+   - Background entry split done in this pass: `src/background/media.js` owns media file-handle traversal and dashboard upload delegation, while `src/background.js` only wires runtime messages and action-click behavior.
 
 5. `Document storage key ownership`
    - Done in this pass: `docs/storage-ownership.md`.

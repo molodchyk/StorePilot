@@ -159,6 +159,7 @@ $requiredFiles = @(
   "src\shared\store-docs\privacy-doc.js",
   "src\shared\store-docs\category-doc.js",
   "src\shared\store-docs\additional-fields-doc.js",
+  "src\background\media.js",
   "src\content\dashboard-dom.js",
   "src\content\language\locale.js",
   "src\content\dashboard-category.js",
@@ -519,6 +520,7 @@ Assert-ZipEntries $extensionZip @(
   "src/popup/dashboard-page.js",
   "src/popup/settings.js",
   "src/popup/popup.html",
+  "src/background/media.js",
   "src/background.js",
   "_locales/en/messages.json"
 )
@@ -559,6 +561,7 @@ Assert-ZipEntries $sourceZip @(
   "src/content/dashboard-panel-styles.js",
   "src/popup/dashboard-page.js",
   "src/popup/settings.js",
+  "src/background/media.js",
   "docs/firefox-extension-modularization-playbook.md",
   "docs/firefox-modularization-audit.md",
   "docs/firefox-localization.md",

@@ -5,7 +5,8 @@
 - `manifest.json`: extension manifest and only manifest source.
 - `scripts/build.ps1`: builds `dist` and `artifacts/storepilot-<manifest version>.zip`.
 - `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-<manifest version>.zip` for AMO source-code upload.
-- `src/background.js`: action click behavior and options-page opening.
+- `src/background.js`: thin background message/action entry.
+- `src/background/media.js`: background media file-handle resolution and dashboard upload delegation.
 - `src/import-ui.js`: folder-import UI guidance and options-page import helpers.
 - `src/project-overrides.js`: project identity canonicalization and duplicate import merging.
 - `assets/icons/*`: extension icons referenced by the manifest.
@@ -473,6 +474,7 @@ After changes, run the narrow checks that match the touched files:
 .\scripts\test-amo-submission.ps1
 .\scripts\test-reference-sync.ps1
 node --check src\background.js
+node --check src\background\media.js
 node --check src\import-ui.js
 node --check src\project-overrides.js
 node --check src\content\dashboard-helper.js
@@ -496,6 +498,7 @@ Check the generated package:
 
 ```powershell
 node --check dist\src\content\dashboard-helper.js
+node --check dist\src\background\media.js
 node --check dist\src\popup\popup.js
 node --check dist\src\options\options.js
 node -e "JSON.parse(require('fs').readFileSync('dist/manifest.json','utf8')); console.log('dist manifest ok')"

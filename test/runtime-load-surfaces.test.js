@@ -34,9 +34,18 @@ function extractPopupHtmlScripts() {
 }
 
 const manifest = JSON.parse(readText("manifest.json"));
+const backgroundFiles = manifest.background.scripts || [];
 const contentFiles = manifest.content_scripts.flatMap(contentScript => contentScript.js || []);
 const injectionFiles = extractPopupInjectionFiles();
 const popupHtmlFiles = extractPopupHtmlScripts();
+
+for (const required of [
+  "src/background/media.js",
+  "src/background.js"
+]) {
+  assert.ok(backgroundFiles.includes(required), `manifest background scripts are missing ${required}`);
+}
+assertBefore(backgroundFiles, "src/background/media.js", "src/background.js", "manifest background scripts");
 
 for (const [label, files] of [
   ["manifest content scripts", contentFiles],
