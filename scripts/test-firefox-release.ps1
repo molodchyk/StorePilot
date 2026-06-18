@@ -196,11 +196,19 @@ foreach ($needle in @(
   "store-listing/amo",
   "Reset local data",
   "https://github.com/molodchyk/StorePilot",
+  "Buy Me a Coffee",
+  "Patreon",
   "PRIVACY.md",
   "LICENSE"
 )) {
   Assert-TextContains "README.md" $readme $needle
 }
+
+$privacyIndex = $readme.IndexOf("## Privacy", [System.StringComparison]::Ordinal)
+$licenseIndex = $readme.IndexOf("## License", [System.StringComparison]::Ordinal)
+$supportIndex = $readme.IndexOf("## Support", [System.StringComparison]::Ordinal)
+Assert-True ($privacyIndex -ge 0 -and $licenseIndex -ge 0 -and $supportIndex -ge 0) "README.md must include Privacy, License, and Support sections."
+Assert-True ($privacyIndex -lt $licenseIndex -and $licenseIndex -lt $supportIndex) "README.md Support block should appear after privacy and license/source information."
 
 $releaseHygiene = Read-Text "docs\release-hygiene.md"
 foreach ($needle in @(
