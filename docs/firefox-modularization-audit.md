@@ -19,9 +19,10 @@ Runtime entry and surface files inspected:
 | File | Current role | Audit result |
 | --- | --- | --- |
 | `src/background.js` | Background message handling, media upload orchestration, action-click behavior | Slightly over the entry-file budget and still owns browser API orchestration directly. |
-| `src/content/dashboard-helper.js` | Dashboard detection, panel UI behavior, selector strategy, description fill, Additional fields, privacy, Data usage, and media upload coordination | Major architecture debt. This is the main content-script runtime and still owns multiple feature behaviors that should move into feature modules. First content split done: injected panel CSS moved out to `src/content/dashboard-panel-styles.js`. Second content split done: category and privacy disclosure constants now come from shared modules instead of being duplicated in this helper. Third content split done: dashboard project-resolution logic now delegates to the tested shared storage module. Fourth content split done: generic content DOM/form helpers moved to `src/content/dashboard-dom.js`. Fifth content split done: category dropdown detection and selection moved to `src/content/dashboard-category.js`. |
+| `src/content/dashboard-helper.js` | Dashboard detection, panel UI behavior, selector strategy, description fill, privacy, Data usage, and media upload coordination | Major architecture debt. This is the main content-script runtime and still owns multiple feature behaviors that should move into feature modules. First content split done: injected panel CSS moved out to `src/content/dashboard-panel-styles.js`. Second content split done: category and privacy disclosure constants now come from shared modules instead of being duplicated in this helper. Third content split done: dashboard project-resolution logic now delegates to the tested shared storage module. Fourth content split done: generic content DOM/form helpers moved to `src/content/dashboard-dom.js`. Fifth content split done: category dropdown detection and selection moved to `src/content/dashboard-category.js`. Sixth content split done: Additional fields detection and filling moved to `src/content/dashboard-additional-fields.js`. |
 | `src/content/dashboard-dom.js` | Focused content-script DOM visibility, text, form-fill, and timing helpers loaded before the main content helper | Acceptable focused content utility module. Keep generic content DOM/form mechanics here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-category.js` | Focused Chrome Web Store category dropdown matching and selection behavior | Acceptable focused dashboard-fill content helper. Keep category selector changes here instead of growing `src/content/dashboard-helper.js`. |
+| `src/content/dashboard-additional-fields.js` | Focused Chrome Web Store Additional fields matching and filling behavior | Acceptable focused dashboard-fill content helper. Keep Official URL, Homepage URL, Support URL, and Mature content fill changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-panel-styles.js` | Focused dashboard panel CSS injector loaded before the main content helper | Acceptable focused content UI helper. Keep panel styling changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/media-upload-main-world.js` | Narrow page-world upload bridge | Acceptable as a focused page bridge. |
 | `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | First split done. This file is now under the preferred UI-module budget after dashboard page detection, project-context resolution, active-tab messaging, panel state, and popup media dashboard state moved to `src/popup/dashboard-page.js`. |
@@ -47,6 +48,7 @@ Feature and shared modules already present:
 - `src/shared/storage.js`
 - `src/content/dashboard-dom.js`
 - `src/content/dashboard-category.js`
+- `src/content/dashboard-additional-fields.js`
 - `src/content/dashboard-panel-styles.js`
 - `src/popup/dashboard-page.js`
 
@@ -81,7 +83,8 @@ Test coverage inspected:
    - Third content split done in this pass: dashboard project binding and title matching now delegate to `src/shared/storage.js`, which is covered by `test/project-resolution.test.js`.
    - Fourth content split done in this pass: generic content DOM/form helpers now live in `src/content/dashboard-dom.js`.
    - Fifth content split done in this pass: category dropdown detection and selection now live in `src/content/dashboard-category.js`.
-   - Remaining work: move description fill, Additional fields fill, privacy fill, Data Usage fill, selector diagnostics, and dashboard panel rendering behavior out of `src/content/dashboard-helper.js` into feature-owned content/core modules.
+   - Sixth content split done in this pass: Additional fields detection and filling now live in `src/content/dashboard-additional-fields.js`.
+   - Remaining work: move description fill, privacy fill, Data Usage fill, selector diagnostics, and dashboard panel rendering behavior out of `src/content/dashboard-helper.js` into feature-owned content/core modules.
 
 2. `Extract options project review modules`
    - First slice done in this pass: Graphic Assets rendering lives in `src/options/options-media.js`; Privacy Document, Data Usage, Additional Fields, Product Details category, and language diagnostics live in `src/options/options-review-tables.js`; `src/options/options.js` is back under the file-size budget.

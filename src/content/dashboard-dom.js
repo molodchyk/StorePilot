@@ -48,6 +48,22 @@ function fillElement(element, value) {
   return false;
 }
 
+function getEditableElementValue(element) {
+  if (!element) return "";
+  if (element.isContentEditable) return element.textContent || "";
+  if ("value" in element) return element.value || "";
+  return "";
+}
+
+function normalizeFilledFormValue(value) {
+  return String(value || "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .trim();
+}
+
 function getVisibleText(element) {
   return (element && element.textContent || "").replace(/\s+/g, " ").trim();
 }
