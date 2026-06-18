@@ -43,10 +43,6 @@ let mediaOperationState = {
   abortRequested: false
 };
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function localize(key, fallback, substitutions) {
   const message = storePilotI18nGetMessage(key, substitutions);
   const values = substitutions ? (Array.isArray(substitutions) ? substitutions : [substitutions]) : [];
@@ -78,52 +74,6 @@ function createWrongDashboardSectionResult() {
     ok: false,
     message: localize("listingActionsOnlyOnListingPage", "Listing and media actions are only available on the Store listing page.")
   };
-}
-
-function isVisible(element) {
-  if (!element) return false;
-  const rect = element.getBoundingClientRect();
-  const style = window.getComputedStyle(element);
-  return rect.width > 0 &&
-    rect.height > 0 &&
-    style.visibility !== "hidden" &&
-    style.display !== "none";
-}
-
-function setNativeValue(element, value) {
-  const prototype = Object.getPrototypeOf(element);
-  const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
-
-  if (descriptor && descriptor.set) {
-    descriptor.set.call(element, value);
-  } else {
-    element.value = value;
-  }
-}
-
-function dispatchInputEvents(element) {
-  element.dispatchEvent(new Event("input", { bubbles: true }));
-  element.dispatchEvent(new Event("change", { bubbles: true }));
-}
-
-function fillElement(element, value) {
-  if (!element) return false;
-
-  element.focus();
-
-  if (element.isContentEditable) {
-    element.textContent = value;
-    dispatchInputEvents(element);
-    return true;
-  }
-
-  if ("value" in element) {
-    setNativeValue(element, value);
-    dispatchInputEvents(element);
-    return true;
-  }
-
-  return false;
 }
 
 function formatDisplayTimestamp(value) {
@@ -2164,20 +2114,6 @@ function normalizeLanguageText(text) {
     .replace(/\s+/g, " ");
 }
 
-function getElementsByIdList(idList) {
-  return String(idList || "")
-    .split(/\s+/)
-    .map(id => id && document.getElementById(id))
-    .filter(Boolean);
-}
-
-function getReferencedText(element, attribute) {
-  return getElementsByIdList(element && element.getAttribute(attribute))
-    .map(getVisibleText)
-    .filter(Boolean)
-    .join(" ");
-}
-
 function normalizePotentialLocaleCode(value) {
   const normalized = normalizeLocale(value);
   return /^[a-z]{2,3}(?:_[a-z0-9]{2,4})?$/.test(normalized) ? normalized : "";
@@ -2249,10 +2185,6 @@ function getLocaleFromText(text, localeKeys = Object.keys(listings)) {
   }
 
   return "";
-}
-
-function getVisibleText(element) {
-  return (element && element.textContent || "").replace(/\s+/g, " ").trim();
 }
 
 function isLikelyLanguageText(text) {
@@ -2357,19 +2289,6 @@ function getLanguageDropdownLocale(dropdown) {
   return getElementLocale(dropdown) ||
     getLocaleFromText(getLanguageDropdownSelectedText(dropdown)) ||
     getLocaleFromText(getReferencedText(dropdown, "aria-labelledby"));
-}
-
-function getElementTop(element) {
-  return element && element.getBoundingClientRect ? element.getBoundingClientRect().top : Number.POSITIVE_INFINITY;
-}
-
-function findVisibleTextElement(pattern) {
-  return Array.from(document.querySelectorAll("h1, h2, h3, h4, span, div, label"))
-    .filter(isVisible)
-    .find(element => {
-      const text = getVisibleText(element);
-      return text.length > 0 && text.length <= 140 && pattern.test(text);
-    });
 }
 
 function getDropdownLocalContext(dropdown) {
