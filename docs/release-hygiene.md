@@ -23,7 +23,7 @@ The `artifacts/` folder is ignored and can be regenerated. Before release, keep 
 
 - `artifacts/storepilot-<current version>.zip`
 - `artifacts/source/storepilot-source-<current version>.zip`
-- current screenshot artifacts referenced by `AMO_SUBMISSION.md` and `store-listing/amo/media/screenshots.md`
+- current screenshot artifacts referenced by `docs/amo-submission.md` and `store-listing/amo/media/screenshots.md`
 
 Delete old version zips. They make the workspace harder to review and increase the risk of uploading the wrong package.
 

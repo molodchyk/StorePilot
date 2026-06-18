@@ -7,6 +7,10 @@ This folder contains StorePilot-specific references plus reusable Firefox add-on
 - [StorePilot Project Reference](reference.md): Chrome Web Store project-file structure and automation keys that StorePilot scans.
 - [Storage Ownership](storage-ownership.md): storage keys, owners, migration notes, retention, quota risk, and privacy classification.
 - [Release Hygiene](release-hygiene.md): GitHub release, artifact, license, and generated-file cleanliness rules.
+- [AMO Submission Notes](amo-submission.md): Firefox Add-ons submission fields, reviewer notes, source-package answers, validation notes, and upload checklist.
+- [Project Scope and Philosophy](project-scope-and-philosophy.md): product boundaries, design intent, and safety principles.
+- [Specifications](specifications.md): implementation details, data model, build flow, dashboard automation, and future-Codex context.
+- [Roadmap](roadmap.md): future automation ideas and prioritization notes.
 
 ## Firefox References
 

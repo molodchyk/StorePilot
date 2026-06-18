@@ -3,12 +3,12 @@
 ## Repository Layout
 
 - `manifest.json`: extension manifest and only manifest source.
-- `scripts/build.ps1`: builds `dist` and `artifacts/storepilot-1.3.0.1.zip`.
-- `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-1.3.0.1.zip` for AMO source-code upload.
+- `scripts/build.ps1`: builds `dist` and `artifacts/storepilot-<manifest version>.zip`.
+- `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-<manifest version>.zip` for AMO source-code upload.
 - `src/background.js`: action click behavior and options-page opening.
 - `src/import-ui.js`: folder-import UI guidance and options-page import helpers.
 - `src/project-overrides.js`: project identity canonicalization and duplicate import merging.
-- `src/icons/*`: extension icons referenced by the manifest.
+- `assets/icons/*`: extension icons referenced by the manifest.
 - `src/options/*`: options page UI, import controls, project list, media preview, privacy document preview, listing preview.
 - `src/popup/*`: popup UI, project picker, dashboard commands, panel reopen control.
 - `src/content/dashboard-helper.js`: content script for dashboard detection, fill automation, media automation, privacy automation, and the dashboard panel.
@@ -37,7 +37,7 @@ The script:
 
 1. Creates `dist-next`.
 2. Copies `src`, `_locales`, and `manifest.json` into `dist-next`.
-3. Creates `artifacts/storepilot-1.3.0.1.zip` with forward-slash archive entry names for AMO validation.
+3. Creates `artifacts/storepilot-<manifest version>.zip` with forward-slash archive entry names for AMO validation.
 4. Replaces `dist`.
 
 The packaging step intentionally uses `System.IO.Compression.ZipArchive` instead of PowerShell `Compress-Archive`, because AMO rejects Windows-style backslashes in zip entry names. It also computes staged-relative paths with a substring rather than `System.IO.Path.GetRelativePath` so the build works on older Windows PowerShell/.NET hosts.
@@ -50,11 +50,11 @@ Run:
 .\scripts\build-amo-source.ps1
 ```
 
-The script uses tracked `git ls-files` paths and writes `artifacts/source/storepilot-source-1.3.0.1.zip`. This source zip is intended for AMO's source-code upload step when the submission form asks whether any tool copies/processes/generates files included in the extension.
+The script uses tracked `git ls-files` paths and writes `artifacts/source/storepilot-source-<manifest version>.zip`. This source zip is intended for AMO's source-code upload step when the submission form asks whether any tool copies/processes/generates files included in the extension.
 
 The source package intentionally excludes ignored/generated output such as `dist/`, `dist-next/`, `artifacts/`, `.git/`, and local dependencies.
 
-AMO submission field notes, reviewer notes, privacy text, and validation lessons are tracked in `AMO_SUBMISSION.md`.
+AMO submission field notes, reviewer notes, privacy text, and validation lessons are tracked in `docs/amo-submission.md`.
 
 ## Data Model
 
@@ -455,7 +455,7 @@ Safety behavior:
 
 ## Icons
 
-Icon assets live in `src/icons`:
+Icon assets live in `assets/icons`:
 
 - `icon16.png`
 - `icon32.png`
@@ -503,7 +503,7 @@ node -e "JSON.parse(require('fs').readFileSync('dist/manifest.json','utf8')); co
 
 ## Future Work
 
-- See `ROADMAP.md` for prioritized future automation notes.
+- See `docs/roadmap.md` for prioritized future automation notes.
 - Store-specific adapters for AMO and Edge Add-ons.
 - Package zip upload workflows.
 - Store API integration where safer than UI automation.

@@ -15,4 +15,4 @@ AMO listing text is not the same contract as Chrome Web Store listing text.
 - The description can use bullets, links, bold, italic, blockquotes, and fenced code.
 - AMO uses one shared screenshot set, although screenshot descriptions can be localized.
 
-Use `AMO_SUBMISSION.md` for reviewer notes, release notes, validation notes, source-package answers, and other submission workflow details.
+Use `docs/amo-submission.md` for reviewer notes, release notes, validation notes, source-package answers, and other submission workflow details.

@@ -58,7 +58,10 @@ $requiredFiles = @(
   "LICENSE",
   "PRIVACY.md",
   "manifest.json",
-  "AMO_SUBMISSION.md",
+  "docs\amo-submission.md",
+  "docs\project-scope-and-philosophy.md",
+  "docs\specifications.md",
+  "docs\roadmap.md",
   "assets\icons\icon16.png",
   "assets\icons\icon32.png",
   "assets\icons\icon48.png",
@@ -104,7 +107,8 @@ $requiredFiles = @(
   "scripts\test-amo-submission.ps1",
   "scripts\test-reference-sync.ps1",
   "scripts\test-firefox-temporary-load.ps1",
-  "test\project-resolution.test.js"
+  "test\project-resolution.test.js",
+  "test\runtime-load-surfaces.test.js"
 )
 
 foreach ($file in $requiredFiles) {
@@ -117,6 +121,15 @@ Assert-Directory (Join-Path $root "assets") "assets/ is missing."
 Assert-Directory (Join-Path $root "_locales") "_locales/ is missing."
 Assert-Directory (Join-Path $root "store-listing") "store-listing/ is missing."
 Assert-True (-not (Test-Path -LiteralPath (Join-Path $root "LICENSE.txt"))) "Duplicate LICENSE.txt should not exist; keep one canonical LICENSE file."
+foreach ($oldRootDoc in @(
+  "AMO_SUBMISSION.md",
+  "PROJECT_SCOPE_AND_PHILOSOPHY.md",
+  "ROADMAP.md",
+  "SPEC.md",
+  "SPECIFICATIONS.md"
+)) {
+  Assert-True (-not (Test-Path -LiteralPath (Join-Path $root $oldRootDoc))) "Root documentation clutter should stay in docs/: $oldRootDoc"
+}
 
 $manifest = Read-Text "manifest.json" | ConvertFrom-Json
 $version = [string]$manifest.version
@@ -246,7 +259,7 @@ foreach ($needle in @(
   Assert-TextContains "src/options/options.js" $optionsJs $needle
 }
 
-$amo = Read-Text "AMO_SUBMISSION.md"
+$amo = Read-Text "docs\amo-submission.md"
 foreach ($needle in @(
   "Open source under the [GPL-3.0-or-later license](https://github.com/molodchyk/StorePilot).",
   "https://github.com/molodchyk/StorePilot",
@@ -256,7 +269,7 @@ foreach ($needle in @(
   "artifacts/storepilot-$version.zip",
   "artifacts/source/storepilot-source-$version.zip"
 )) {
-  Assert-TextContains "AMO_SUBMISSION.md" $amo $needle
+  Assert-TextContains "docs/amo-submission.md" $amo $needle
 }
 
 $modularizationAudit = Read-Text "docs\firefox-modularization-audit.md"
@@ -319,7 +332,7 @@ foreach ($match in $mediaScreenshotMatches) {
 
 $screenshotPattern = '(?m)^\d+\.\s+`(?<path>artifacts/screenshots/[^`]+)`'
 $screenshotMatches = [regex]::Matches($amo, $screenshotPattern)
-Assert-True ($screenshotMatches.Count -ge 1) "AMO_SUBMISSION.md does not list screenshot artifact paths."
+Assert-True ($screenshotMatches.Count -ge 1) "docs/amo-submission.md does not list screenshot artifact paths."
 foreach ($match in $screenshotMatches) {
   $relativePath = $match.Groups["path"].Value -replace "/", [System.IO.Path]::DirectorySeparatorChar
   Assert-File (Join-Path $root $relativePath) "AMO screenshot artifact is missing: $($match.Groups["path"].Value)"
@@ -395,7 +408,10 @@ Assert-ZipEntries $sourceZip @(
   "README.md",
   "LICENSE",
   "PRIVACY.md",
-  "AMO_SUBMISSION.md",
+  "docs/amo-submission.md",
+  "docs/project-scope-and-philosophy.md",
+  "docs/specifications.md",
+  "docs/roadmap.md",
   "assets/icons/icon128.png",
   "src/platform/webextension.js",
   "src/options/options-reference.css",
@@ -425,16 +441,21 @@ Assert-ZipEntries $sourceZip @(
   "docs/firefox-modularization-audit.md",
   "docs/firefox-localization.md",
   "docs/release-hygiene.md",
+  "docs/reference.md",
   "docs/storage-ownership.md",
   "store-listing/amo/README.md",
   "store-listing/amo/listing/en-US.md",
   "store-listing/amo/media/screenshots.md",
   "scripts/build.ps1",
+  "scripts/build-amo-source.ps1",
   "scripts/test-modularization.ps1",
   "scripts/test-unit.ps1",
+  "scripts/test-amo-submission.ps1",
+  "scripts/test-reference-sync.ps1",
   "scripts/test-firefox-release.ps1",
   "scripts/test-firefox-temporary-load.ps1",
-  "test/project-resolution.test.js"
+  "test/project-resolution.test.js",
+  "test/runtime-load-surfaces.test.js"
 )
 
 $allowedArtifactZips = @(

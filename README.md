@@ -179,11 +179,11 @@ For Data usage checkboxes, answer the exact Chrome Web Store public disclosure q
 - [docs/firefox-modularization-audit.md](docs/firefox-modularization-audit.md): current Firefox modularization gate result and named architecture follow-ups.
 - [docs/storage-ownership.md](docs/storage-ownership.md): storage keys, owners, migration notes, retention, quota risk, and privacy classification.
 - [docs/release-hygiene.md](docs/release-hygiene.md): GitHub release, artifact, license, and generated-file cleanliness rules.
-- [PROJECT_SCOPE_AND_PHILOSOPHY.md](PROJECT_SCOPE_AND_PHILOSOPHY.md): product boundaries, design intent, and safety principles.
-- [SPECIFICATIONS.md](SPECIFICATIONS.md): implementation details, data model, build flow, dashboard automation, and future-Codex context.
+- [docs/project-scope-and-philosophy.md](docs/project-scope-and-philosophy.md): product boundaries, design intent, and safety principles.
+- [docs/specifications.md](docs/specifications.md): implementation details, data model, build flow, dashboard automation, and future-Codex context.
 - [CHANGELOG.md](CHANGELOG.md): release history.
-- [ROADMAP.md](ROADMAP.md): future automation ideas and prioritization notes.
-- [AMO_SUBMISSION.md](AMO_SUBMISSION.md): Firefox Add-ons submission fields, reviewer notes, and validation gotchas.
+- [docs/roadmap.md](docs/roadmap.md): future automation ideas and prioritization notes.
+- [docs/amo-submission.md](docs/amo-submission.md): Firefox Add-ons submission fields, reviewer notes, and validation gotchas.
 - [store-listing/amo](store-listing/amo): AMO listing copy, screenshot order, and captions.
 
 ## Privacy
