@@ -16,3 +16,8 @@ if ($LASTEXITCODE -ne 0) {
 if ($LASTEXITCODE -ne 0) {
   throw "Unit tests failed."
 }
+
+& $node.Source (Join-Path $root "test\privacy-doc.test.js")
+if ($LASTEXITCODE -ne 0) {
+  throw "Unit tests failed."
+}

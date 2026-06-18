@@ -49,11 +49,14 @@ Runtime entry and surface files inspected:
 | `src/options/options-reference.css` | Options-page media review modal and Reference tab styles | Acceptable focused stylesheet. |
 | `src/options/options-responsive.css` | Options-page responsive layout rules | Acceptable focused stylesheet. |
 | `src/options/options-theme.css` | Options-page system, dark, and light theme overrides | Acceptable focused stylesheet. |
+| `src/shared/store-docs/privacy-schema.js` | Privacy document canonical keys, label/key normalization, remote-code display decision, and display-field ordering | Acceptable focused store-document schema helper. Keep privacy key definitions and label routing here instead of growing `src/shared/store-docs/privacy-doc.js`. |
+| `src/shared/store-docs/privacy-doc.js` | Privacy document file eligibility, scoring, parsing, summary formatting, and discovery | Under the pure-module budget after privacy schema/key normalization moved to `src/shared/store-docs/privacy-schema.js`. Keep file and candidate discovery here. |
 
 Feature and shared modules already present:
 
 - `src/shared/store-docs/additional-fields-doc.js`
 - `src/shared/store-docs/category-doc.js`
+- `src/shared/store-docs/privacy-schema.js`
 - `src/shared/dashboard-url.js`
 - `src/shared/directory-detection.js`
 - `src/shared/importers.js`
@@ -101,6 +104,7 @@ Storage and migration ownership inspected:
 Test coverage inspected:
 
 - `test/project-resolution.test.js` covers dashboard project-id resolution and binding selection.
+- `test/privacy-doc.test.js` covers privacy schema routing for remote-code yes/no behavior, Data Usage separation, permission-heading parsing, and candidate summary counts.
 - Release scripts validate manifest paths, locale shape, privacy/AMO text, packaging, zip paths, remote-code-like patterns, source upload contents, reference sync, and Firefox temporary load.
 - There is not yet enough feature-owned coverage to safely convert the classic global-script runtime into ES modules and generated Firefox output in one broad refactor.
 
@@ -108,7 +112,7 @@ Test coverage inspected:
 
 1. `Split dashboard fill feature modules`
    - First content split done in this pass: dashboard panel CSS injection now lives in `src/content/dashboard-panel-styles.js`.
-   - Second content split done in this pass: `src/content/dashboard-helper.js` reuses `src/shared/store-docs/category-doc.js` and `src/shared/store-docs/privacy-doc.js` constants for category options, Data Usage keys, and certification keys.
+   - Second content split done in this pass: `src/content/dashboard-helper.js` reuses `src/shared/store-docs/category-doc.js` and `src/shared/store-docs/privacy-schema.js` constants for category options, Data Usage keys, and certification keys.
    - Third content split done in this pass: dashboard project binding and title matching now delegate to `src/shared/storage.js`, which is covered by `test/project-resolution.test.js`.
    - Fourth content split done in this pass: generic content DOM/form helpers now live in `src/content/dashboard-dom.js`.
    - Fifth content split done in this pass: category dropdown detection and selection now live in `src/content/dashboard-category.js`.
@@ -119,6 +123,9 @@ Test coverage inspected:
    - Tenth content split done in this pass: dashboard panel state, viewport clamping, media button state, media-operation locking, and listing/privacy panel rendering now live in `src/content/panel/state.js` and `src/content/panel/render.js`.
    - Eleventh content split done in this pass: dashboard extension-id detection, item-title cleanup, and dashboard-project binding resolution now live in `src/content/dashboard-project-context.js`.
    - Remaining work: move selector diagnostics and message routing into narrower modules if those surfaces grow again. `src/content/dashboard-helper.js` is now under the current file-size budget.
+
+1a. `Split store document parser modules`
+   - First slice done in this pass: privacy canonical keys, label/key normalization, remote-code display decision, and display-field ordering now live in `src/shared/store-docs/privacy-schema.js`; privacy file discovery and parsing remain in `src/shared/store-docs/privacy-doc.js`; `test/privacy-doc.test.js` covers the split's important routing behavior.
 
 2. `Extract options project review modules`
    - First slice done in this pass: Graphic Assets rendering lives in `src/options/options-media.js`; Privacy Document, Data Usage, Additional Fields, Product Details category, and language diagnostics live in `src/options/options-review-tables.js`; `src/options/options.js` is back under the file-size budget.

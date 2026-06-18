@@ -90,6 +90,7 @@ for (const [label, files] of [
     "src/shared/projects.js",
     "src/shared/dashboard-url.js",
     "src/shared/storage.js",
+    "src/shared/store-docs/privacy-schema.js",
     "src/content/dashboard-dom.js",
     "src/content/dashboard-project-context.js",
     "src/content/dashboard-helper.js"
@@ -101,6 +102,7 @@ for (const [label, files] of [
   assertBefore(files, "src/shared/i18n.js", "src/shared/storage.js", label);
   assertBefore(files, "src/shared/projects.js", "src/shared/storage.js", label);
   assertBefore(files, "src/shared/dashboard-url.js", "src/shared/storage.js", label);
+  assertBefore(files, "src/shared/store-docs/privacy-schema.js", "src/shared/store-docs/privacy-doc.js", label);
   assertBefore(files, "src/content/dashboard-dom.js", "src/content/dashboard-project-context.js", label);
   assertBefore(files, "src/content/dashboard-project-context.js", "src/content/dashboard-helper.js", label);
   assertBefore(files, "src/shared/storage.js", "src/content/dashboard-helper.js", label);
@@ -108,6 +110,8 @@ for (const [label, files] of [
 
 assert.deepEqual(injectionFiles, contentFiles, "Popup fallback injection should match manifest content script order.");
 for (const required of [
+  "src/shared/store-docs/privacy-schema.js",
+  "src/shared/store-docs/privacy-doc.js",
   "src/popup/dashboard-page.js",
   "src/popup/settings.js",
   "src/popup/popup.js"
@@ -115,8 +119,11 @@ for (const required of [
   assert.ok(popupHtmlFiles.includes(required), `popup.html is missing ${required}`);
 }
 assertPlatformFiles(popupHtmlFiles, "popup HTML scripts");
+assertBefore(popupHtmlFiles, "src/shared/store-docs/privacy-schema.js", "src/shared/store-docs/privacy-doc.js", "popup HTML scripts");
 assertBefore(popupHtmlFiles, "src/popup/settings.js", "src/popup/popup.js", "popup HTML scripts");
 for (const required of [
+  "src/shared/store-docs/privacy-schema.js",
+  "src/shared/store-docs/privacy-doc.js",
   "src/options/options-media.js",
   "src/options/options-review-tables.js",
   "src/options/options-settings.js",
@@ -125,6 +132,7 @@ for (const required of [
   assert.ok(optionsHtmlFiles.includes(required), `options.html is missing ${required}`);
 }
 assertPlatformFiles(optionsHtmlFiles, "options HTML scripts");
+assertBefore(optionsHtmlFiles, "src/shared/store-docs/privacy-schema.js", "src/shared/store-docs/privacy-doc.js", "options HTML scripts");
 assertBefore(optionsHtmlFiles, "src/options/options-settings.js", "src/options/options.js", "options HTML scripts");
 
 console.log("Runtime load surface tests passed.");

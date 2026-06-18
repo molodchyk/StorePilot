@@ -21,7 +21,8 @@
 - `src/shared/directory-detection.js`: listing-folder detection and scoring.
 - `src/shared/importers.js`: project/listing import flows.
 - `src/shared/media-assets.js`: media asset discovery and scoring.
-- `src/shared/store-docs/privacy-doc.js`: privacy document discovery and parsing.
+- `src/shared/store-docs/privacy-schema.js`: privacy document canonical keys, label normalization, remote-code display decision, and display-field ordering.
+- `src/shared/store-docs/privacy-doc.js`: privacy document discovery, scoring, parsing, and summary formatting.
 - `src/shared/store-docs/category-doc.js`: Chrome Web Store category document discovery and parsing.
 - `src/shared/store-docs/additional-fields-doc.js`: Chrome Web Store Additional fields document discovery and parsing.
 - `src/shared/projects.js`: project creation, naming, identity helpers.
@@ -493,6 +494,7 @@ node --check src\popup\popup.js
 node --check src\options\options.js
 node --check src\options\options-settings.js
 node --check src\shared\media-assets.js
+node --check src\shared\store-docs\privacy-schema.js
 node --check src\shared\store-docs\privacy-doc.js
 node --check src\shared\store-docs\category-doc.js
 node --check src\shared\store-docs\additional-fields-doc.js
@@ -521,6 +523,8 @@ node --check dist\src\platform\webextension\i18n.js
 node --check dist\src\popup\popup.js
 node --check dist\src\options\options.js
 node --check dist\src\options\options-settings.js
+node --check dist\src\shared\store-docs\privacy-schema.js
+node --check dist\src\shared\store-docs\privacy-doc.js
 node -e "JSON.parse(require('fs').readFileSync('dist/manifest.json','utf8')); console.log('dist manifest ok')"
 ```
 
