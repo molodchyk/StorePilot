@@ -66,6 +66,39 @@ function getReferencedText(element, attribute) {
     .join(" ");
 }
 
+function getElementLabelText(element) {
+  const parts = [];
+  const ariaLabel = element.getAttribute("aria-label");
+  const ariaLabelledBy = element.getAttribute("aria-labelledby");
+  const id = element.id;
+
+  if (ariaLabel) parts.push(ariaLabel);
+
+  if (ariaLabelledBy) {
+    ariaLabelledBy.split(/\s+/).forEach(labelId => {
+      const label = document.getElementById(labelId);
+      if (label) parts.push(getVisibleText(label));
+    });
+  }
+
+  if (id) {
+    document.querySelectorAll(`label[for='${CSS.escape(id)}']`).forEach(label => {
+      parts.push(getVisibleText(label));
+    });
+  }
+
+  const closestLabel = element.closest("label");
+  if (closestLabel) {
+    const clone = closestLabel.cloneNode(true);
+    clone.querySelectorAll("textarea,input,[role='textbox']").forEach(control => {
+      control.remove();
+    });
+    parts.push(getVisibleText(clone));
+  }
+
+  return parts.filter(Boolean).join(" ");
+}
+
 function getElementTop(element) {
   return element && element.getBoundingClientRect ? element.getBoundingClientRect().top : Number.POSITIVE_INFINITY;
 }
