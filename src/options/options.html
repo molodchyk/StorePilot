@@ -14,13 +14,6 @@
           <p data-i18n="optionsSubtitle">Import flat locale listing files and use them in extension store dashboards.</p>
           <p id="lastUpdatedStatus" class="status compact-status" data-i18n="lastUpdatedInitial">Last updated on Never.</p>
         </div>
-        <div class="header-actions">
-          <div class="theme-control" aria-label="Theme" data-i18n-aria-label="theme">
-            <button type="button" data-theme-choice="system" data-i18n="themeSystem">System</button>
-            <button type="button" data-theme-choice="light" data-i18n="themeLight">Light</button>
-            <button type="button" data-theme-choice="dark" data-i18n="themeDark">Dark</button>
-          </div>
-        </div>
       </header>
 
       <section class="project-panel" aria-label="Project">
@@ -36,61 +29,59 @@
         <p id="importStatus" class="status project-status" role="status"></p>
       </section>
 
-      <section class="settings-panel" aria-label="Preferences" data-i18n-aria-label="preferences">
-        <div>
-          <h2 data-i18n="preferences">Preferences</h2>
-          <p class="hint" id="showAdvancedFillActionsHint" data-i18n="showAdvancedFillActionsHint">Shows Fill current language in the popup and dashboard panel for debugging or one-off manual fills.</p>
-        </div>
-        <label class="checkbox-setting" for="showAdvancedFillActions">
-          <input id="showAdvancedFillActions" type="checkbox" aria-describedby="showAdvancedFillActionsHint">
-          <span data-i18n="showAdvancedFillActions">Show advanced fill actions</span>
-        </label>
-      </section>
+      <div class="workspace-shell">
+        <aside class="section-sidebar" aria-label="Project status">
+          <section class="status-cards" aria-label="Project status">
+            <button id="listingsCard" class="status-card" type="button" data-detail-tab-target="locales">
+              <span class="card-label" data-i18n="productDetails">Product Details</span>
+              <strong id="listingsCardValue">0</strong>
+              <span id="listingsCardMeta">No listings imported</span>
+            </button>
+            <button id="mediaCard" class="status-card" type="button" data-detail-tab-target="media">
+              <span class="card-label" data-i18n="storeMediaAssets">Graphic Assets</span>
+              <strong id="mediaCardValue">Not scanned</strong>
+              <span id="mediaCardMeta">Re-import the project folder to scan graphic assets.</span>
+            </button>
+            <button id="additionalFieldsCard" class="status-card" type="button" data-detail-tab-target="additional">
+              <span class="card-label" data-i18n="additionalFields">Additional Fields</span>
+              <strong id="additionalFieldsCardValue">Not scanned</strong>
+              <span id="additionalFieldsCardMeta">Re-import the project folder to scan additional fields.</span>
+            </button>
+            <button id="privacyCard" class="status-card" type="button" data-detail-tab-target="privacy">
+              <span class="card-label" data-i18n="privacyDocument">Privacy Document</span>
+              <strong id="privacyCardValue">Not scanned</strong>
+              <span id="privacyCardMeta">Re-import the project folder to scan the privacy document.</span>
+            </button>
+            <button id="dataUsageCard" class="status-card" type="button" data-detail-tab-target="dataUsage">
+              <span class="card-label" data-i18n="dataUsage">Data Usage</span>
+              <strong id="dataUsageCardValue">Not scanned</strong>
+              <span id="dataUsageCardMeta">Re-import the project folder to scan data usage disclosures.</span>
+            </button>
+            <button id="sourceCard" class="status-card" type="button" data-detail-tab-target="projects">
+              <span class="card-label">Project Source</span>
+              <strong id="sourceCardValue">No active project</strong>
+              <span id="sourceCardMeta">Import a project folder to begin.</span>
+            </button>
+          </section>
+        </aside>
 
-      <section class="status-cards" aria-label="Project status">
-        <button id="listingsCard" class="status-card" type="button" data-detail-tab-target="locales">
-          <span class="card-label" data-i18n="productDetails">Product Details</span>
-          <strong id="listingsCardValue">0</strong>
-          <span id="listingsCardMeta">No listings imported</span>
-        </button>
-        <button id="mediaCard" class="status-card" type="button" data-detail-tab-target="media">
-          <span class="card-label" data-i18n="storeMediaAssets">Graphic Assets</span>
-          <strong id="mediaCardValue">Not scanned</strong>
-          <span id="mediaCardMeta">Re-import the project folder to scan graphic assets.</span>
-        </button>
-        <button id="additionalFieldsCard" class="status-card" type="button" data-detail-tab-target="additional">
-          <span class="card-label" data-i18n="additionalFields">Additional Fields</span>
-          <strong id="additionalFieldsCardValue">Not scanned</strong>
-          <span id="additionalFieldsCardMeta">Re-import the project folder to scan additional fields.</span>
-        </button>
-        <button id="privacyCard" class="status-card" type="button" data-detail-tab-target="privacy">
-          <span class="card-label" data-i18n="privacyDocument">Privacy Document</span>
-          <strong id="privacyCardValue">Not scanned</strong>
-          <span id="privacyCardMeta">Re-import the project folder to scan the privacy document.</span>
-        </button>
-        <button id="dataUsageCard" class="status-card" type="button" data-detail-tab-target="dataUsage">
-          <span class="card-label" data-i18n="dataUsage">Data Usage</span>
-          <strong id="dataUsageCardValue">Not scanned</strong>
-          <span id="dataUsageCardMeta">Re-import the project folder to scan data usage disclosures.</span>
-        </button>
-        <button id="sourceCard" class="status-card" type="button" data-detail-tab-target="projects">
-          <span class="card-label">Project Source</span>
-          <strong id="sourceCardValue">No active project</strong>
-          <span id="sourceCardMeta">Import a project folder to begin.</span>
-        </button>
-      </section>
+        <section class="details-workspace" aria-label="Project details">
+          <div class="tab-toolbar">
+            <nav class="detail-tabs primary-tabs" aria-label="Imported data details">
+              <button type="button" data-detail-tab="locales" aria-selected="true" data-i18n="productDetails">Product Details</button>
+              <button type="button" data-detail-tab="media" data-i18n="storeMediaAssets">Graphic Assets</button>
+              <button type="button" data-detail-tab="additional" data-i18n="additionalFields">Additional Fields</button>
+              <button type="button" data-detail-tab="privacy" data-i18n="privacyDocument">Privacy Document</button>
+              <button type="button" data-detail-tab="dataUsage" data-i18n="dataUsage">Data Usage</button>
+              <button type="button" data-detail-tab="projects" data-i18n="projects">Projects</button>
+            </nav>
+            <nav class="detail-tabs utility-tabs" aria-label="Options and reference">
+              <button type="button" data-detail-tab="preferences" data-i18n="preferences">Preferences</button>
+              <button type="button" data-detail-tab="reference" data-i18n="reference">Reference</button>
+            </nav>
+          </div>
 
-      <nav class="detail-tabs" aria-label="Details">
-        <button type="button" data-detail-tab="locales" aria-selected="true" data-i18n="productDetails">Product Details</button>
-        <button type="button" data-detail-tab="media" data-i18n="storeMediaAssets">Graphic Assets</button>
-        <button type="button" data-detail-tab="additional" data-i18n="additionalFields">Additional Fields</button>
-        <button type="button" data-detail-tab="privacy" data-i18n="privacyDocument">Privacy Document</button>
-        <button type="button" data-detail-tab="dataUsage" data-i18n="dataUsage">Data Usage</button>
-        <button type="button" data-detail-tab="projects" data-i18n="projects">Projects</button>
-        <button type="button" data-detail-tab="reference">Reference</button>
-      </nav>
-
-      <section id="localesPanel" class="detail-panel" data-detail-panel="locales">
+          <section id="localesPanel" class="detail-panel" data-detail-panel="locales">
         <div class="section-heading">
           <h2 data-i18n="productDetails">Product Details</h2>
           <span id="summary" data-i18n="noListingsImported">No listings imported</span>
@@ -98,52 +89,84 @@
         <div id="listingTable" class="listing-table" aria-live="polite"></div>
         <div id="languageDiagnosticsTable" class="language-diagnostics-table" aria-live="polite"></div>
         <div id="productDetailsCategoryTable" class="category-table product-details-category-table" aria-live="polite"></div>
-      </section>
+          </section>
 
-      <section id="mediaPanel" class="detail-panel" data-detail-panel="media" hidden>
+          <section id="mediaPanel" class="detail-panel" data-detail-panel="media" hidden>
         <div class="section-heading">
           <h2 data-i18n="storeMediaAssets">Graphic Assets</h2>
           <span id="mediaSummary" data-i18n="mediaAssetsNotScanned">Not scanned</span>
         </div>
         <div id="mediaTable" class="media-table" aria-live="polite"></div>
-      </section>
+          </section>
 
-      <section id="additionalFieldsPanel" class="detail-panel" data-detail-panel="additional" hidden>
+          <section id="additionalFieldsPanel" class="detail-panel" data-detail-panel="additional" hidden>
         <div class="section-heading">
           <h2 data-i18n="additionalFields">Additional Fields</h2>
           <span id="additionalFieldsSummary" data-i18n="additionalFieldsDocNotScanned">Not scanned</span>
         </div>
         <div id="additionalFieldsTable" class="additional-fields-table" aria-live="polite"></div>
-      </section>
+          </section>
 
-      <section id="privacyPanel" class="detail-panel" data-detail-panel="privacy" hidden>
+          <section id="privacyPanel" class="detail-panel" data-detail-panel="privacy" hidden>
         <div class="section-heading">
           <h2 data-i18n="privacyDocument">Privacy Document</h2>
           <span id="privacySummary" data-i18n="privacyDocNotScanned">Not scanned</span>
         </div>
         <div id="privacyTable" class="privacy-table" aria-live="polite"></div>
-      </section>
+          </section>
 
-      <section id="dataUsagePanel" class="detail-panel" data-detail-panel="dataUsage" hidden>
+          <section id="dataUsagePanel" class="detail-panel" data-detail-panel="dataUsage" hidden>
         <div class="section-heading">
           <h2 data-i18n="dataUsage">Data Usage</h2>
           <span id="dataUsageSummary" data-i18n="privacyDocNotScanned">Not scanned</span>
         </div>
         <div id="dataUsageTable" class="privacy-table" aria-live="polite"></div>
         <p class="hint" data-i18n="privacyDocDataUsageRule">For data usage checkboxes, answer the exact Chrome Web Store public disclosure question: what user data do you plan to collect from users now or in the future? Treat collect as data that leaves local-only browser/device processing and is received, uploaded, logged, reviewed, or otherwise made available to the developer, a product backend, analytics, support, or a third-party service. These keys are not permission justifications and are not a list of data the extension can access or store locally. Use yes only for those developer or third-party collection cases. For local-only features where data stays on the user's device, use no; for example, a local history vault can need permission.history while still using data_usage.web_history: no. StorePilot applies explicit yes/no values: yes checks a box, no unchecks it; none, blank, or omitted leaves it unchanged.</p>
-      </section>
+          </section>
 
-      <section id="projectsPanel" class="detail-panel" data-detail-panel="projects" hidden>
+          <section id="projectsPanel" class="detail-panel" data-detail-panel="projects" hidden>
         <div class="section-heading">
           <h2 data-i18n="projects">Projects</h2>
           <span id="projectSummary" data-i18n="noProjects">No projects</span>
         </div>
         <div id="projectTable" class="project-table" aria-live="polite"></div>
-      </section>
+          </section>
 
-      <section id="referencePanel" class="detail-panel reference-panel" data-detail-panel="reference" hidden>
+          <section id="preferencesPanel" class="detail-panel" data-detail-panel="preferences" hidden>
         <div class="section-heading">
-          <h2>Reference</h2>
+          <h2 data-i18n="preferences">Preferences</h2>
+        </div>
+        <div class="preferences-grid">
+          <section class="preference-section" aria-label="Theme" data-i18n-aria-label="theme">
+            <h3 data-i18n="theme">Theme</h3>
+            <div class="theme-control" aria-label="Theme" data-i18n-aria-label="theme">
+              <button type="button" data-theme-choice="system" data-i18n="themeSystem">System</button>
+              <button type="button" data-theme-choice="light" data-i18n="themeLight">Light</button>
+              <button type="button" data-theme-choice="dark" data-i18n="themeDark">Dark</button>
+            </div>
+          </section>
+          <section class="preference-section">
+            <div>
+              <p class="hint" id="showAdvancedFillActionsHint" data-i18n="showAdvancedFillActionsHint">Shows Fill current language in the popup and dashboard panel for debugging or one-off manual fills.</p>
+            </div>
+            <label class="checkbox-setting" for="showAdvancedFillActions">
+              <input id="showAdvancedFillActions" type="checkbox" aria-describedby="showAdvancedFillActionsHint">
+              <span data-i18n="showAdvancedFillActions">Show advanced fill actions</span>
+            </label>
+          </section>
+          <section class="preference-section">
+            <div>
+              <h3 data-i18n="localData">Local data</h3>
+              <p class="hint" id="resetLocalDataHint" data-i18n="resetLocalDataHint">Deletes imported projects, preferences, dashboard bindings, folder permissions, and media file handles from this browser.</p>
+            </div>
+            <button id="resetLocalData" class="danger-button" type="button" aria-describedby="resetLocalDataHint" data-i18n="resetLocalData">Reset local data</button>
+          </section>
+        </div>
+          </section>
+
+          <section id="referencePanel" class="detail-panel reference-panel" data-detail-panel="reference" hidden>
+        <div class="section-heading">
+          <h2 data-i18n="reference">Reference</h2>
           <span data-i18n="projectReferenceTitle">Project import reference</span>
         </div>
         <div class="reference-content">
@@ -378,7 +401,9 @@ yes</code></pre>
           </section>
           <p class="hint" data-i18n="privacyDocFutureProof">If a permission is not listed here, use the same pattern anyway, for example permission.bookmarks or permission.system.display. StorePilot should treat the manifest code itself as the source of truth.</p>
         </div>
-      </section>
+          </section>
+        </section>
+      </div>
     </main>
 
     <script src="../shared/constants.js"></script>

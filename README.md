@@ -49,6 +49,23 @@ This creates:
 artifacts/source/storepilot-source-1.3.0.1.zip
 ```
 
+Run release-facing checks:
+
+```powershell
+.\scripts\test-unit.ps1
+.\scripts\test-reference-sync.ps1
+.\scripts\test-amo-submission.ps1
+.\scripts\test-firefox-release.ps1
+```
+
+After building `dist`, run the Firefox temporary-load check:
+
+```powershell
+.\scripts\test-firefox-temporary-load.ps1
+```
+
+This runs `web-ext lint` against `dist` and temporarily loads the add-on into Firefox through an isolated temporary profile. Node.js/npm are required only for test scripts that run JavaScript or `web-ext`; building the submitted extension package does not require Node.js.
+
 ## Current Workflow
 
 1. Build and load StorePilot.
@@ -59,6 +76,8 @@ artifacts/source/storepilot-source-1.3.0.1.zip
 6. Use the dashboard panel or popup to fill listing fields, select category, fill additional fields, upload media, clear media, fill privacy fields, or fill Data usage disclosures.
 
 StorePilot never clicks final submit, publish, or review actions automatically.
+
+To remove StorePilot's local project data before uninstalling, open **Options > Preferences > Reset local data**.
 
 ## Project File Reference
 
@@ -161,10 +180,13 @@ For Data usage checkboxes, answer the exact Chrome Web Store public disclosure q
 - [CHANGELOG.md](CHANGELOG.md): release history.
 - [ROADMAP.md](ROADMAP.md): future automation ideas and prioritization notes.
 - [AMO_SUBMISSION.md](AMO_SUBMISSION.md): Firefox Add-ons submission fields, reviewer notes, and validation gotchas.
+- [store-listing/amo](store-listing/amo): AMO listing copy, screenshot order, and captions.
 
 ## Privacy
 
 StorePilot does not collect or transmit data off your device. It has no analytics, no tracking, and no remote server; imported listings are stored only in local browser extension storage.
+
+Use **Options > Preferences > Reset local data** to delete imported projects, preferences, dashboard bindings, folder permissions, and media file handles from this browser.
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy policy.
 
@@ -177,4 +199,10 @@ If this extension saves you time and you want to support its development:
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 or later. See [LICENSE.txt](LICENSE.txt) for details.
+This project is licensed under the GNU General Public License v3.0 or later. See [LICENSE](LICENSE) for details.
+
+Source code:
+
+```text
+https://github.com/molodchyk/StorePilot
+```

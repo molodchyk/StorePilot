@@ -231,3 +231,8 @@ async function storePilotDeleteProject(projectId) {
   await STOREPILOT_API.storage.local.set({ [STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]: nextBindings });
   await storePilotSetProjectsState({ projects, activeProjectId });
 }
+
+async function storePilotResetLocalData() {
+  await storePilotClearStoredHandles();
+  await STOREPILOT_API.storage.local.clear();
+}

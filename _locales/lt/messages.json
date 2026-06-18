@@ -68,6 +68,9 @@
   "projects": {
     "message": "Projektai"
   },
+  "reference": {
+    "message": "Reference"
+  },
   "importedListings": {
     "message": "Importuoti sąrašai"
   },
@@ -751,6 +754,24 @@
   },
   "showAdvancedFillActionsHint": {
     "message": "Shows Fill current language in the popup and dashboard panel for debugging or one-off manual fills."
+  },
+  "resetLocalDataFailed": {
+    "message": "Reset failed: $1"
+  },
+  "resetLocalDataDone": {
+    "message": "Reset StorePilot local data."
+  },
+  "resetLocalDataConfirm": {
+    "message": "Delete all StorePilot local projects, preferences, dashboard bindings, folder permissions, and media file handles from this browser?"
+  },
+  "resetLocalDataHint": {
+    "message": "Deletes imported projects, preferences, dashboard bindings, folder permissions, and media file handles from this browser."
+  },
+  "resetLocalData": {
+    "message": "Reset local data"
+  },
+  "localData": {
+    "message": "Local data"
   },
   "dataUsage": {
     "message": "Data Usage"

@@ -40,11 +40,9 @@ header,
   gap: 16px;
 }
 
-.header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: flex-end;
+header > div:first-child,
+.section-heading > * {
+  min-width: 0;
 }
 
 .theme-control {
@@ -148,16 +146,29 @@ button:disabled {
   margin-top: 0;
 }
 
-.settings-panel {
+.preferences-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.preference-section {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.45fr) minmax(0, 1fr);
   gap: 14px;
   align-items: center;
-  margin-top: 14px;
   padding: 14px 16px;
   border: 1px solid #d9dee7;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.preference-section .theme-control {
+  justify-self: start;
+}
+
+.preference-section > button {
+  justify-self: start;
 }
 
 .checkbox-setting {
@@ -211,19 +222,35 @@ select {
   color: #b42318;
 }
 
+.workspace-shell {
+  display: grid;
+  grid-template-columns: minmax(230px, 285px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.section-sidebar {
+  min-width: 0;
+}
+
+.details-workspace {
+  min-width: 0;
+}
+
 .status-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 12px;
-  margin: 18px 0 16px;
+  gap: 8px;
+  margin: 0;
 }
 
 .status-card {
   display: grid;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 10px;
   align-content: start;
-  min-height: 118px;
-  padding: 14px;
+  min-height: 0;
+  padding: 12px;
   text-align: left;
 }
 
@@ -233,11 +260,13 @@ select {
 }
 
 .status-card strong {
-  font-size: 21px;
+  font-size: 18px;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .card-label {
+  grid-column: 1 / -1;
   color: #5d6472;
   font-size: 12px;
   font-weight: 750;
@@ -245,17 +274,39 @@ select {
 }
 
 .status-card span:last-child {
+  grid-column: 1 / -1;
   color: #5d6472;
   font-size: 12px;
   line-height: 1.35;
+}
+
+.tab-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-width: 0;
+  border-bottom: 1px solid #d9dee7;
 }
 
 .detail-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin-top: 4px;
-  border-bottom: 1px solid #d9dee7;
+  min-width: 0;
+  overflow: visible;
+  scrollbar-width: thin;
+}
+
+.primary-tabs {
+  flex: 1 1 560px;
+  min-width: 0;
+}
+
+.utility-tabs {
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .detail-tabs button {
@@ -299,6 +350,7 @@ select {
 .additional-fields-row,
 .project-row {
   display: grid;
+  box-sizing: border-box;
   grid-template-columns: 130px 1fr 110px;
   gap: 12px;
   align-items: center;
@@ -323,7 +375,6 @@ select {
 }
 
 .project-row {
-  width: 100%;
   grid-template-columns: 190px 1fr 120px;
   border-right: 0;
   border-bottom: 0;
@@ -348,6 +399,16 @@ select {
 .additional-fields-row:first-child,
 .project-row:first-child {
   border-top: 0;
+}
+
+.listing-row > *,
+.language-diagnostics-row > *,
+.category-row > *,
+.privacy-row > *,
+.additional-fields-row > *,
+.project-row > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .locale,
@@ -622,34 +683,24 @@ select {
   font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
-@media (min-width: 1180px) {
-  .status-cards {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 900px) {
+  .workspace-shell {
+    grid-template-columns: 1fr;
+  }
+
   .status-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   main {
-    padding: 22px 14px;
+    padding: 24px 18px;
   }
 
   header,
   .section-heading,
-  .project-panel,
-  .settings-panel,
-  .listing-row,
-  .language-diagnostics-row,
-  .category-row,
-  .privacy-row,
-  .additional-fields-row,
-  .project-row,
-  .reference-grid {
+  .project-panel {
     grid-template-columns: 1fr;
   }
 
@@ -659,15 +710,62 @@ select {
     flex-direction: column;
   }
 
-  .status-cards {
-    grid-template-columns: 1fr;
-  }
-
   .project-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     justify-content: stretch;
   }
 
+  .tab-toolbar {
+    display: grid;
+    gap: 8px;
+    border-bottom: 0;
+  }
+
+  .detail-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible;
+    border-bottom: 0;
+  }
+
+  .detail-tabs button {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 10px;
+    border-bottom-color: #c8ced8;
+    border-radius: 6px;
+    white-space: normal;
+  }
+
+  .primary-tabs,
+  .utility-tabs {
+    flex-basis: auto;
+  }
+
+  .utility-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  main {
+    padding: 22px 14px;
+  }
+
+  .listing-row,
+  .language-diagnostics-row,
+  .category-row,
+  .privacy-row,
+  .additional-fields-row,
+  .project-row,
+  .preference-section,
+  .reference-grid {
+    grid-template-columns: 1fr;
+  }
+
   .project-actions button,
+  .preference-section > button,
   .theme-control button {
     width: 100%;
   }
@@ -675,6 +773,14 @@ select {
   .theme-control {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     width: 100%;
+  }
+
+  .detail-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .status-card {
+    padding: 11px 12px;
   }
 
   .media-dimensions,
@@ -705,6 +811,35 @@ select {
   }
 }
 
+@media (max-width: 460px) {
+  .status-cards,
+  .project-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .section-heading,
+  .listing-row,
+  .language-diagnostics-row,
+  .category-row,
+  .privacy-row,
+  .additional-fields-row,
+  .project-row,
+  .reference-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    gap: 8px;
+  }
+
+  .detail-tabs button {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     background: #111318;
@@ -728,7 +863,7 @@ select {
   select,
   .file-button,
   .project-panel,
-  .settings-panel,
+  .preference-section,
   .status-card,
   .listing-table,
   .language-diagnostics-table,
@@ -755,6 +890,10 @@ select {
   }
 
   .detail-tabs {
+    border-bottom-color: #323846;
+  }
+
+  .tab-toolbar {
     border-bottom-color: #323846;
   }
 
@@ -831,7 +970,7 @@ select {
 :root[data-theme="dark"] select,
 :root[data-theme="dark"] .file-button,
 :root[data-theme="dark"] .project-panel,
-:root[data-theme="dark"] .settings-panel,
+:root[data-theme="dark"] .preference-section,
 :root[data-theme="dark"] .status-card,
 :root[data-theme="dark"] .listing-table,
 :root[data-theme="dark"] .language-diagnostics-table,
@@ -858,6 +997,10 @@ select {
 }
 
 :root[data-theme="dark"] .detail-tabs {
+  border-bottom-color: #323846;
+}
+
+:root[data-theme="dark"] .tab-toolbar {
   border-bottom-color: #323846;
 }
 
@@ -927,7 +1070,7 @@ select {
 :root[data-theme="light"] select,
 :root[data-theme="light"] .file-button,
 :root[data-theme="light"] .project-panel,
-:root[data-theme="light"] .settings-panel,
+:root[data-theme="light"] .preference-section,
 :root[data-theme="light"] .status-card,
 :root[data-theme="light"] .listing-table,
 :root[data-theme="light"] .language-diagnostics-table,
@@ -981,6 +1124,10 @@ select {
 :root[data-theme="light"] .project-row[aria-pressed="true"],
 :root[data-theme="light"] .detail-tabs button[aria-selected="true"] {
   background: #eef5ff;
+}
+
+:root[data-theme="light"] .tab-toolbar {
+  border-bottom-color: #d9dee7;
 }
 
 :root[data-theme="light"] .status {

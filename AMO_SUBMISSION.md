@@ -52,6 +52,7 @@ Build/source:
 - Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 - Expected extension package: artifacts/storepilot-1.3.0.1.zip
 - The build copies source, locales, icons, and manifest into dist, then creates the zip with forward-slash archive entries for AMO validation.
+- Node.js is used only for tests, not to build the submitted extension package.
 - If source code is requested, upload artifacts/source/storepilot-source-1.3.0.1.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
 - Source package uses git ls-files, so generated/untracked local files are excluded.
 ```
@@ -86,6 +87,9 @@ Import an extension project root, a store-listing folder, or a direct listing fo
 On the Chrome Web Store Developer Dashboard, StorePilot can fill matching detailed description fields with progress and abort support, select the imported category, upload screenshots and other reviewable graphic assets, clear uploaded assets, fill Additional fields, and fill privacy fields from the imported project document. A hidden-by-default advanced preference can expose the current-language filler for debugging or one-off manual fills.
 
 StorePilot never clicks final submit, publish, or review actions automatically.
+
+Open source under the GPL-3.0-or-later license:
+https://github.com/molodchyk/StorePilot
 ```
 
 Search/SEO notes:
@@ -149,6 +153,8 @@ Privacy Policy:
 StorePilot does not collect or transmit data off your device.
 
 StorePilot has no analytics, no tracking, no telemetry, and no remote server. Imported listing text, category decisions, Additional fields values, media references, privacy-form text, project metadata, preferences, and folder permissions are stored only in the browser's local extension storage on your device.
+
+You can delete StorePilot's stored local data from Options > Preferences > Reset local data. This removes imported projects, preferences, dashboard bindings, folder permissions, and media file handles from this browser.
 
 StorePilot only uses its requested permissions to:
 
@@ -357,7 +363,10 @@ Expected output: artifacts/storepilot-1.3.0.1.zip
 1. Run:
 
 ```powershell
+.\scripts\test-unit.ps1
+.\scripts\test-reference-sync.ps1
 .\scripts\test-amo-submission.ps1
+.\scripts\test-firefox-release.ps1
 ```
 
 2. Build:
@@ -372,7 +381,22 @@ Expected output: artifacts/storepilot-1.3.0.1.zip
 .\scripts\build-amo-source.ps1
 ```
 
-4. Verify the extension artifact:
+4. Temporarily load the built extension in Firefox:
+
+```powershell
+.\scripts\test-firefox-temporary-load.ps1
+```
+
+Manual fallback:
+
+```text
+Open about:debugging#/runtime/this-firefox
+Choose Load Temporary Add-on
+Select dist/manifest.json
+Open StorePilot options and smoke-check project import, the popup, and one Chrome Web Store dashboard page if available.
+```
+
+5. Verify the extension artifact:
 
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
@@ -383,13 +407,13 @@ if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash 
 $zip.Dispose()
 ```
 
-5. Upload extension package:
+6. Upload extension package:
 
 ```text
 artifacts/storepilot-1.3.0.1.zip
 ```
 
-6. Upload source package if AMO asks for source code:
+7. Upload source package if AMO asks for source code:
 
 ```text
 artifacts/source/storepilot-source-1.3.0.1.zip

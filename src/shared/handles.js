@@ -159,6 +159,33 @@ async function storePilotDeleteProjectMediaFiles(projectId) {
   await storePilotWithMediaFileStore("readwrite", store => store.delete(projectId));
 }
 
+async function storePilotClearStoredHandles() {
+  const db = await storePilotOpenHandleDb();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([
+      STOREPILOT_HANDLE_STORE_NAME,
+      STOREPILOT_MEDIA_FILE_STORE_NAME
+    ], "readwrite");
+
+    transaction.objectStore(STOREPILOT_HANDLE_STORE_NAME).clear();
+    transaction.objectStore(STOREPILOT_MEDIA_FILE_STORE_NAME).clear();
+
+    transaction.addEventListener("complete", () => {
+      db.close();
+      resolve();
+    });
+    transaction.addEventListener("error", () => {
+      db.close();
+      reject(transaction.error);
+    });
+    transaction.addEventListener("abort", () => {
+      db.close();
+      reject(transaction.error);
+    });
+  });
+}
+
 async function storePilotSaveProjectMediaFilesFromFileList(projectId, mediaAssets, files) {
   const entries = storePilotGetMediaAssetEntries(mediaAssets);
   if (!entries.length) return;

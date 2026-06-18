@@ -1,0 +1,13 @@
+$ErrorActionPreference = "Stop"
+
+$root = Split-Path -Parent $PSScriptRoot
+$node = Get-Command node -ErrorAction SilentlyContinue
+
+if (-not $node) {
+  throw "Node.js is required to run unit tests. The extension package build does not require Node.js."
+}
+
+& $node.Source (Join-Path $root "test\project-resolution.test.js")
+if ($LASTEXITCODE -ne 0) {
+  throw "Unit tests failed."
+}

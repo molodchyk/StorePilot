@@ -17,6 +17,9 @@ if (Test-Path -LiteralPath $zip) {
 New-Item -ItemType Directory -Path $stagedDist | Out-Null
 New-Item -ItemType Directory -Path $artifacts -Force | Out-Null
 Copy-Item -Path (Join-Path $root "src") -Destination (Join-Path $stagedDist "src") -Recurse
+if (Test-Path -LiteralPath (Join-Path $root "assets")) {
+  Copy-Item -Path (Join-Path $root "assets") -Destination (Join-Path $stagedDist "assets") -Recurse
+}
 if (Test-Path -LiteralPath (Join-Path $root "_locales")) {
   Copy-Item -Path (Join-Path $root "_locales") -Destination (Join-Path $stagedDist "_locales") -Recurse
 }

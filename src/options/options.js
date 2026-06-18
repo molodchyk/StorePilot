@@ -43,7 +43,8 @@ const elements = {
   detailPanels: Array.from(document.querySelectorAll("[data-detail-panel]")),
   statusCards: Array.from(document.querySelectorAll("[data-detail-tab-target]")),
   themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]")),
-  showAdvancedFillActions: document.getElementById("showAdvancedFillActions")
+  showAdvancedFillActions: document.getElementById("showAdvancedFillActions"),
+  resetLocalData: document.getElementById("resetLocalData")
 };
 
 let mediaPreviewUrls = [];
@@ -1256,6 +1257,25 @@ elements.themeChoices.forEach(button => {
 elements.showAdvancedFillActions.addEventListener("change", async event => {
   const settings = await updateSettings({ showAdvancedFillActions: event.target.checked });
   applySettings(settings);
+});
+
+elements.resetLocalData.addEventListener("click", async () => {
+  if (!window.confirm(t(
+    "resetLocalDataConfirm",
+    "Delete all StorePilot local projects, preferences, dashboard bindings, folder permissions, and media file handles from this browser?"
+  ))) {
+    return;
+  }
+
+  try {
+    await storePilotResetLocalData();
+    applySettings(await getSettings());
+    await renderAll();
+    setStatus(t("resetLocalDataDone", "Reset StorePilot local data."));
+  } catch (error) {
+    console.error(error);
+    setStatus(t("resetLocalDataFailed", "Reset failed: $1", [error.message]), true);
+  }
 });
 
 STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
