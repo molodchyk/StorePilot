@@ -16,6 +16,7 @@ async function injectContentScript(tabId) {
       "src/shared/store-docs/privacy-doc.js",
       "src/shared/store-docs/category-doc.js",
       "src/content/dashboard-dom.js",
+      "src/content/dashboard-project-context.js",
       "src/content/language/locale.js",
       "src/content/dashboard-category.js",
       "src/content/language/picker.js",

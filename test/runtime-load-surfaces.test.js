@@ -57,6 +57,8 @@ for (const [label, files] of [
     "src/shared/projects.js",
     "src/shared/dashboard-url.js",
     "src/shared/storage.js",
+    "src/content/dashboard-dom.js",
+    "src/content/dashboard-project-context.js",
     "src/content/dashboard-helper.js"
   ]) {
     assert.ok(files.includes(required), `${label} is missing ${required}`);
@@ -66,6 +68,8 @@ for (const [label, files] of [
   assertBefore(files, "src/shared/i18n.js", "src/shared/storage.js", label);
   assertBefore(files, "src/shared/projects.js", "src/shared/storage.js", label);
   assertBefore(files, "src/shared/dashboard-url.js", "src/shared/storage.js", label);
+  assertBefore(files, "src/content/dashboard-dom.js", "src/content/dashboard-project-context.js", label);
+  assertBefore(files, "src/content/dashboard-project-context.js", "src/content/dashboard-helper.js", label);
   assertBefore(files, "src/shared/storage.js", "src/content/dashboard-helper.js", label);
 }
 

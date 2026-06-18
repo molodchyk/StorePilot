@@ -22,8 +22,9 @@ Runtime entry and surface files inspected:
 | --- | --- | --- |
 | `src/background.js` | Thin background message/action wiring for options opening, popup opening, and media upload delegation | Under the entry-file budget after media file resolution and dashboard upload orchestration moved to `src/background/media.js`. Keep new background responsibilities out of this entry file. |
 | `src/background/media.js` | Background-owned media file-handle resolution and dashboard upload delegation | Acceptable focused background helper. Keep project media file resolution and active dashboard upload dispatch here. |
-| `src/content/dashboard-helper.js` | Dashboard section detection, active-project resolution, settings load, abort handling, diagnostics, message routing, and startup orchestration | Under the file-size budget after focused content splits. This remains the dashboard orchestration entry and should stay thin: selector, fill, panel, and media behavior belong in the focused modules below. |
+| `src/content/dashboard-helper.js` | Dashboard section detection, settings load, abort handling, diagnostics, message routing, and startup orchestration | Under the file-size budget after focused content splits. This remains the dashboard orchestration entry and should stay thin: selector, project-context, fill, panel, and media behavior belong in focused modules. |
 | `src/content/dashboard-dom.js` | Focused content-script DOM visibility, text, form-fill, click activation, and timing helpers loaded before feature modules | Acceptable focused content utility module. Keep generic content DOM/form mechanics here instead of growing `src/content/dashboard-helper.js`. |
+| `src/content/dashboard-project-context.js` | Focused Chrome Web Store dashboard extension-id detection, item-title cleanup, and dashboard-project binding resolution | Acceptable focused content helper. Keep dashboard identity and project-binding changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/language/locale.js` | Focused locale normalization, CWS locale alias matching, and visible-language text matching helpers | Acceptable focused language helper. Keep locale-code and language-label matching here so CWS and future AMO language flows share the same assumptions. |
 | `src/content/language/picker.js` | Focused Chrome Web Store language dropdown discovery, two-mode picker detection, option enumeration, and option activation | Acceptable focused language-picker helper. It preserves the separate multi-locale top-picker and one-language Product Details picker modes. |
 | `src/content/language/description-fill.js` | Focused Chrome Web Store listing description fill flow, fill-progress status, and current/all-language fill actions | Acceptable focused dashboard-fill helper. Keep description-fill status and selection flow here instead of growing `src/content/dashboard-helper.js`. |
@@ -61,6 +62,7 @@ Feature and shared modules already present:
 - `src/shared/storage.js`
 - `src/background/media.js`
 - `src/content/dashboard-dom.js`
+- `src/content/dashboard-project-context.js`
 - `src/content/language/locale.js`
 - `src/content/language/picker.js`
 - `src/content/language/description-fill.js`
@@ -85,7 +87,7 @@ Browser/platform boundary inspected:
 - Existing runtime files now use the platform wrapper for new WebExtension API access.
 - Background media file resolution now lives in `src/background/media.js`, leaving `src/background.js` as a thin listener/action entry.
 - The dashboard content script now loads shared category and privacy document modules before the main helper so imported metadata constants are not duplicated across options, popup, and content surfaces.
-- Dashboard project binding and project-title resolution now reuse `src/shared/storage.js`, keeping the popup and content script on the same tested project-resolution behavior.
+- Dashboard project binding and project-title resolution now reuse `src/shared/storage.js` and `src/content/dashboard-project-context.js`, keeping the popup and content script on one project-resolution contract.
 - Dashboard URL detection and extension-id extraction now live in `src/shared/dashboard-url.js`, keeping popup, content, and project-resolution tests on one dashboard URL contract.
 - Future migration should split the single platform wrapper into narrower `src/platform/webextension/*` modules once the build/runtime loading shape supports that cleanly.
 
@@ -113,6 +115,7 @@ Test coverage inspected:
    - Eighth content split done in this pass: Graphic Assets upload, clear, diagnostics, and page-bridge coordination now live in `src/content/dashboard-media.js`.
    - Ninth content split done in this pass: locale normalization, two-mode language picker detection, option activation, description-field detection, and Fill descriptions progress handling now live in `src/content/language/locale.js`, `src/content/language/picker.js`, and `src/content/language/description-fill.js`.
    - Tenth content split done in this pass: dashboard panel state, viewport clamping, media button state, media-operation locking, and listing/privacy panel rendering now live in `src/content/panel/state.js` and `src/content/panel/render.js`.
+   - Eleventh content split done in this pass: dashboard extension-id detection, item-title cleanup, and dashboard-project binding resolution now live in `src/content/dashboard-project-context.js`.
    - Remaining work: move selector diagnostics and message routing into narrower modules if those surfaces grow again. `src/content/dashboard-helper.js` is now under the current file-size budget.
 
 2. `Extract options project review modules`

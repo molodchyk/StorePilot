@@ -11,6 +11,7 @@
 - Added explicit English fallback strings for newly added runtime locale keys and tightened release checks so locale files must match the default key set and placeholder names.
 - Split popup settings and theme handling into a focused popup helper, with runtime-load checks covering the new script order.
 - Split background media upload orchestration into a focused helper, leaving the background entry as thin message/action wiring.
+- Split dashboard project-context detection and binding resolution into a focused content helper loaded before the dashboard entry.
 
 ## 1.3.1 - 2026-06-18
 

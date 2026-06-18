@@ -12,7 +12,8 @@
 - `assets/icons/*`: extension icons referenced by the manifest.
 - `src/options/*`: options page UI, import controls, project list, media preview, privacy document preview, listing preview.
 - `src/popup/*`: popup UI, project picker, dashboard commands, panel reopen control.
-- `src/content/dashboard-helper.js`: content script for dashboard detection, fill automation, media automation, privacy automation, and the dashboard panel.
+- `src/content/dashboard-helper.js`: content-script message routing, diagnostics, and dashboard panel startup.
+- `src/content/dashboard-project-context.js`: dashboard extension-id, item-title, and project-binding resolution.
 - `src/content/media-upload-main-world.js`: page-world bridge for dashboard media upload.
 - `src/shared/constants.js`: storage keys, file extension allow/block lists, skipped directories.
 - `src/shared/files.js`: locale filename and file/path helpers.
@@ -478,6 +479,7 @@ node --check src\background\media.js
 node --check src\import-ui.js
 node --check src\project-overrides.js
 node --check src\content\dashboard-helper.js
+node --check src\content\dashboard-project-context.js
 node --check src\content\media-upload-main-world.js
 node --check src\popup\popup.js
 node --check src\options\options.js
@@ -498,6 +500,7 @@ Check the generated package:
 
 ```powershell
 node --check dist\src\content\dashboard-helper.js
+node --check dist\src\content\dashboard-project-context.js
 node --check dist\src\background\media.js
 node --check dist\src\popup\popup.js
 node --check dist\src\options\options.js
