@@ -85,13 +85,13 @@ These modules are useful migration footholds, but they are still broad shared mo
 Browser/platform boundary inspected:
 
 - StorePilot uses Firefox's `browser.*` API through the global `STOREPILOT_API`.
-- `src/platform/webextension.js` now owns direct WebExtension API calls for storage, runtime, tabs, scripting, action, i18n, and extension URL helpers.
+- Focused classic-script wrappers under `src/platform/webextension/` now own direct WebExtension API calls for storage, runtime, tabs, scripting, action, i18n, and extension URL helpers.
 - Existing runtime files now use the platform wrapper for new WebExtension API access.
 - Background media file resolution now lives in `src/background/media.js`, leaving `src/background.js` as a thin listener/action entry.
 - The dashboard content script now loads shared category and privacy document modules before the main helper so imported metadata constants are not duplicated across options, popup, and content surfaces.
 - Dashboard project binding and project-title resolution now reuse `src/shared/storage.js` and `src/content/dashboard-project-context.js`, keeping the popup and content script on one project-resolution contract.
 - Dashboard URL detection and extension-id extraction now live in `src/shared/dashboard-url.js`, keeping popup, content, and project-resolution tests on one dashboard URL contract.
-- Future migration should split the single platform wrapper into narrower `src/platform/webextension/*` modules once the build/runtime loading shape supports that cleanly.
+- Future migration should convert these classic-script platform wrappers into imported ES modules once the build/runtime loading shape supports that cleanly.
 
 Storage and migration ownership inspected:
 
@@ -130,7 +130,7 @@ Test coverage inspected:
    - Second slice done in this pass: `src/popup/settings.js` owns popup settings persistence, theme button state, and advanced fill action visibility. Runtime load tests now require it to load before `src/popup/popup.js`.
 
 4. `Introduce WebExtension platform wrappers`
-   - First slice done in this pass: `src/platform/webextension.js` centralizes direct WebExtension API access. Later split it into narrower platform modules when the source tree moves toward bundled or ES-module runtime entries.
+   - First slice done in this pass: direct WebExtension API access moved behind focused classic-script wrappers under `src/platform/webextension/`, split by core promise normalization, storage, runtime, tabs, scripting, action, and i18n. Later convert these wrappers into imported platform modules when the source tree moves toward bundled or ES-module runtime entries.
    - Background entry split done in this pass: `src/background/media.js` owns media file-handle traversal and dashboard upload delegation, while `src/background.js` only wires runtime messages and action-click behavior.
 
 5. `Document storage key ownership`

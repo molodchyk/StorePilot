@@ -36,7 +36,13 @@
   },
   "background": {
     "scripts": [
-      "src/platform/webextension.js",
+      "src/platform/webextension/core.js",
+      "src/platform/webextension/storage.js",
+      "src/platform/webextension/tabs.js",
+      "src/platform/webextension/runtime.js",
+      "src/platform/webextension/scripting.js",
+      "src/platform/webextension/action.js",
+      "src/platform/webextension/i18n.js",
       "src/shared/constants.js",
       "src/shared/i18n.js",
       "src/shared/files.js",
@@ -55,7 +61,13 @@
         "https://chromewebstore.google.com/devconsole/*"
       ],
       "js": [
-        "src/platform/webextension.js",
+        "src/platform/webextension/core.js",
+        "src/platform/webextension/storage.js",
+        "src/platform/webextension/tabs.js",
+        "src/platform/webextension/runtime.js",
+        "src/platform/webextension/scripting.js",
+        "src/platform/webextension/action.js",
+        "src/platform/webextension/i18n.js",
         "src/shared/constants.js",
         "src/shared/i18n.js",
         "src/shared/projects.js",

@@ -7,6 +7,7 @@
 - `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-<manifest version>.zip` for AMO source-code upload.
 - `src/background.js`: thin background message/action entry.
 - `src/background/media.js`: background media file-handle resolution and dashboard upload delegation.
+- `src/platform/webextension/*`: focused WebExtension API wrappers for core promise normalization, storage, runtime, tabs, scripting, action, and i18n.
 - `src/import-ui.js`: folder-import UI guidance and options-page import helpers.
 - `src/project-overrides.js`: project identity canonicalization and duplicate import merging.
 - `assets/icons/*`: extension icons referenced by the manifest.
@@ -476,6 +477,13 @@ After changes, run the narrow checks that match the touched files:
 .\scripts\test-reference-sync.ps1
 node --check src\background.js
 node --check src\background\media.js
+node --check src\platform\webextension\core.js
+node --check src\platform\webextension\storage.js
+node --check src\platform\webextension\tabs.js
+node --check src\platform\webextension\runtime.js
+node --check src\platform\webextension\scripting.js
+node --check src\platform\webextension\action.js
+node --check src\platform\webextension\i18n.js
 node --check src\import-ui.js
 node --check src\project-overrides.js
 node --check src\content\dashboard-helper.js
@@ -503,6 +511,13 @@ Check the generated package:
 node --check dist\src\content\dashboard-helper.js
 node --check dist\src\content\dashboard-project-context.js
 node --check dist\src\background\media.js
+node --check dist\src\platform\webextension\core.js
+node --check dist\src\platform\webextension\storage.js
+node --check dist\src\platform\webextension\tabs.js
+node --check dist\src\platform\webextension\runtime.js
+node --check dist\src\platform\webextension\scripting.js
+node --check dist\src\platform\webextension\action.js
+node --check dist\src\platform\webextension\i18n.js
 node --check dist\src\popup\popup.js
 node --check dist\src\options\options.js
 node --check dist\src\options\options-settings.js

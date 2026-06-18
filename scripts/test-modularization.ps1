@@ -66,7 +66,7 @@ foreach ($file in $sourceFiles) {
 
 $rawApiPattern = '\b(?:STOREPILOT_API|browser)\.(?:storage|runtime|tabs|scripting|i18n|action)\b|\bchrome\.(?:storage|runtime|tabs|scripting|i18n|action)\b'
 $allowedRawApiFiles = @(
-  "src/platform/webextension.js"
+  "src/platform/webextension/core.js"
 )
 
 $rawApiFiles = $sourceFiles |

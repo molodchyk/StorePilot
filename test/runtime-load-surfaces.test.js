@@ -48,6 +48,27 @@ const contentFiles = manifest.content_scripts.flatMap(contentScript => contentSc
 const injectionFiles = extractPopupInjectionFiles();
 const popupHtmlFiles = extractPopupHtmlScripts();
 const optionsHtmlFiles = extractOptionsHtmlScripts();
+const platformFiles = [
+  "src/platform/webextension/core.js",
+  "src/platform/webextension/storage.js",
+  "src/platform/webextension/tabs.js",
+  "src/platform/webextension/runtime.js",
+  "src/platform/webextension/scripting.js",
+  "src/platform/webextension/action.js",
+  "src/platform/webextension/i18n.js"
+];
+
+function assertPlatformFiles(files, label) {
+  for (const required of platformFiles) {
+    assert.ok(files.includes(required), `${label} is missing ${required}`);
+  }
+
+  for (let index = 1; index < platformFiles.length; index += 1) {
+    assertBefore(files, platformFiles[index - 1], platformFiles[index], label);
+  }
+}
+
+assertPlatformFiles(backgroundFiles, "manifest background scripts");
 
 for (const required of [
   "src/background/media.js",
@@ -61,6 +82,8 @@ for (const [label, files] of [
   ["manifest content scripts", contentFiles],
   ["popup fallback injection", injectionFiles]
 ]) {
+  assertPlatformFiles(files, label);
+
   for (const required of [
     "src/shared/constants.js",
     "src/shared/i18n.js",
@@ -91,6 +114,7 @@ for (const required of [
 ]) {
   assert.ok(popupHtmlFiles.includes(required), `popup.html is missing ${required}`);
 }
+assertPlatformFiles(popupHtmlFiles, "popup HTML scripts");
 assertBefore(popupHtmlFiles, "src/popup/settings.js", "src/popup/popup.js", "popup HTML scripts");
 for (const required of [
   "src/options/options-media.js",
@@ -100,6 +124,7 @@ for (const required of [
 ]) {
   assert.ok(optionsHtmlFiles.includes(required), `options.html is missing ${required}`);
 }
+assertPlatformFiles(optionsHtmlFiles, "options HTML scripts");
 assertBefore(optionsHtmlFiles, "src/options/options-settings.js", "src/options/options.js", "options HTML scripts");
 
 console.log("Runtime load surface tests passed.");
