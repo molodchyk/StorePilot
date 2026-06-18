@@ -566,19 +566,11 @@ function findLikelyListingField() {
 }
 
 function normalizeDashboardExtensionId(value) {
-  const normalized = String(value || "").trim().toLowerCase();
-  return /^[a-p]{32}$/.test(normalized) ? normalized : "";
+  return storePilotNormalizeDashboardExtensionId(value);
 }
 
 function getDashboardExtensionIdFromUrl(url = window.location.href) {
-  try {
-    const { pathname } = new URL(url);
-    const parts = pathname.split("/").filter(Boolean);
-    const consoleIndex = parts.findIndex(part => part === "devconsole");
-    return normalizeDashboardExtensionId(consoleIndex >= 0 ? parts[consoleIndex + 2] : "");
-  } catch (_error) {
-    return "";
-  }
+  return storePilotGetDashboardExtensionIdFromUrl(url);
 }
 
 function findDashboardIdElement() {
@@ -628,94 +620,28 @@ function getDashboardItemTitle() {
   return candidates[0] || "";
 }
 
-function normalizeDashboardProjectText(value) {
-  return String(value || "")
-    .toLowerCase()
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9]+/g, "");
-}
-
-function getDashboardProjectBinding(bindings, extensionId) {
-  const normalizedExtensionId = normalizeDashboardExtensionId(extensionId);
-  if (!normalizedExtensionId || !bindings) return null;
-
-  const binding = bindings[normalizedExtensionId];
-  if (!binding) return null;
-  if (typeof binding === "string") return { projectId: binding };
-  if (typeof binding === "object") return binding;
-  return null;
-}
-
-function findProjectByDashboardTitle(projects, title) {
-  const normalizedTitle = normalizeDashboardProjectText(title);
-  if (!normalizedTitle) return null;
-
-  const matches = projects
-    .map(project => {
-      const normalizedName = normalizeDashboardProjectText(project.name);
-      if (!normalizedName) return null;
-
-      const containsName = normalizedTitle.includes(normalizedName);
-      const containsTitle = normalizedName.includes(normalizedTitle);
-      if (!containsName && !containsTitle) return null;
-
-      return {
-        project,
-        score: containsName ? normalizedName.length : Math.max(1, normalizedTitle.length - 5)
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.score - a.score);
-
-  if (!matches.length) return null;
-  if (matches[1] && matches[1].score === matches[0].score) return null;
-  return matches[0].project;
-}
-
 async function saveDashboardProjectBinding(extensionId, project, source = "title") {
-  const normalizedExtensionId = normalizeDashboardExtensionId(extensionId);
-  if (!normalizedExtensionId || !project || !project.id) return;
+  if (!project || !project.id) return;
 
-  const stored = await storePilotStorageLocalGet([DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]);
-  const bindings = stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] && typeof stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] === "object"
-    ? stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]
-    : {};
-  const existing = getDashboardProjectBinding(bindings, normalizedExtensionId) || {};
-
-  await storePilotStorageLocalSet({
-    [DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]: {
-      ...bindings,
-      [normalizedExtensionId]: {
-        ...existing,
-        extensionId: normalizedExtensionId,
-        projectId: project.id,
-        dashboardItemTitle: activeDashboardItemTitle || getDashboardItemTitle(),
-        source,
-        updatedAt: new Date().toISOString()
-      }
-    }
+  await storePilotBindDashboardProject(extensionId, project.id, {
+    dashboardItemTitle: activeDashboardItemTitle || getDashboardItemTitle(),
+    source
   });
 }
 
 function resolveDashboardProject(projects, activeStoredProjectId, bindings) {
-  const activeProject = projects.find(project => project.id === activeStoredProjectId) || projects[0] || null;
   const extensionId = getDashboardExtensionId();
   const dashboardTitle = getDashboardItemTitle();
-  const binding = getDashboardProjectBinding(bindings, extensionId);
+  const resolved = storePilotResolveDashboardProjectFromState(
+    { projects, activeProjectId: activeStoredProjectId },
+    bindings,
+    { extensionId, title: dashboardTitle }
+  );
 
-  if (binding && binding.projectId) {
-    const project = projects.find(candidate => candidate.id === binding.projectId);
-    if (project) {
-      return { project, extensionId, dashboardTitle, source: "binding" };
-    }
-  }
-
-  const titleProject = findProjectByDashboardTitle(projects, dashboardTitle);
-  if (titleProject) {
-    return { project: titleProject, extensionId, dashboardTitle, source: "title" };
-  }
-
-  return { project: activeProject, extensionId, dashboardTitle, source: activeProject ? "active" : "none" };
+  return {
+    ...resolved,
+    dashboardTitle
+  };
 }
 
 async function loadListings() {
