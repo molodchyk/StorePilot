@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Moved release and project maintenance documents under `docs/` to keep the repository root focused on package identity and primary policy files.
+- Added release checks that reject old root documentation stubs and verify the moved docs are included in AMO source packages.
+- Moved the README Support block after privacy, license, and source information, then added a release check for that section order.
+- Documented manifest-derived package artifact names in README and added release-check coverage for that convention.
+
 ## 1.3.1 - 2026-06-18
 
 - Fixed dashboard content-script load order after the modularization split so the popup and dashboard panel can resolve active projects again.

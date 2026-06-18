@@ -212,6 +212,10 @@ $supportIndex = $readme.IndexOf("## Support", [System.StringComparison]::Ordinal
 Assert-True ($privacyIndex -ge 0 -and $licenseIndex -ge 0 -and $supportIndex -ge 0) "README.md must include Privacy, License, and Support sections."
 Assert-True ($privacyIndex -lt $licenseIndex -and $licenseIndex -lt $supportIndex) "README.md Support block should appear after privacy and license/source information."
 
+$changelog = Read-Text "CHANGELOG.md"
+Assert-TextContains "CHANGELOG.md" $changelog "## Unreleased"
+Assert-True ([regex]::IsMatch($changelog, "(?m)^##\s+$([regex]::Escape($version))\b")) "CHANGELOG.md is missing an entry for manifest version $version."
+
 $releaseHygiene = Read-Text "docs\release-hygiene.md"
 foreach ($needle in @(
   'v<manifest version>',
