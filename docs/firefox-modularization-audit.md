@@ -23,7 +23,9 @@ Runtime entry and surface files inspected:
 | `src/content/media-upload-main-world.js` | Narrow page-world upload bridge | Acceptable as a focused page bridge. |
 | `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | First split done. This file is now under the preferred UI-module budget after dashboard page detection, project-context resolution, active-tab messaging, panel state, and popup media dashboard state moved to `src/popup/dashboard-page.js`. |
 | `src/popup/dashboard-page.js` | Popup-owned Chrome Web Store dashboard URL checks, active-tab messaging, dashboard project binding resolution, panel visibility, and media action state | Acceptable focused popup helper. Keep this separate from content-script selector and fill logic. |
-| `src/options/options.js` | Options-page import flow, project views, previews, reset, preferences, and rendering | Major architecture debt. It still owns too much UI rendering and state coordination for one surface file. |
+| `src/options/options.js` | Options-page state coordination, import flow, project cards, preferences, reset, and event wiring | First split done. This file is now under the preferred UI-module budget after media preview/rendering moved to `src/options/options-media.js` and privacy/category/additional/data-usage review tables moved to `src/options/options-review-tables.js`. |
+| `src/options/options-media.js` | Options-page Graphic Assets preview overlay, media cards, media summaries, and media file handle previews | Acceptable focused options helper. |
+| `src/options/options-review-tables.js` | Options-page Privacy Document, Data Usage, Additional Fields, Product Details category, and language-diagnostic review tables | Acceptable focused options helper. |
 | `src/options/options.css` | Options-page layout and component styling | Major architecture debt. It should be split into surface layout plus feature/component styles. |
 
 Feature and shared modules already present:
@@ -64,7 +66,7 @@ Test coverage inspected:
    - Move description fill, category fill, Additional fields fill, privacy fill, Data Usage fill, selector diagnostics, and dashboard panel rendering out of `src/content/dashboard-helper.js` into feature-owned content/core modules.
 
 2. `Extract options project review modules`
-   - Move options-page project cards, Product Details, Graphic Assets, Additional Fields, Privacy Document, Data Usage, Projects, Reference, and Preferences rendering into smaller feature-owned modules and split `src/options/options.css` by surface/component.
+   - First slice done in this pass: Graphic Assets rendering lives in `src/options/options-media.js`; Privacy Document, Data Usage, Additional Fields, Product Details category, and language diagnostics live in `src/options/options-review-tables.js`; `src/options/options.js` is back under the file-size budget. Remaining work: split project cards, reference content, preferences, and `src/options/options.css` by surface/component.
 
 3. `Continue popup module ownership`
    - First slice done in this pass: `src/popup/dashboard-page.js` owns popup dashboard URL checks, active-tab messaging, dashboard project resolution, panel state, and media action state. Keep future popup features in focused popup-owned helpers instead of growing `src/popup/popup.js` again.
