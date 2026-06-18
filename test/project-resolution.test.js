@@ -20,6 +20,7 @@ const context = vm.createContext({
 
 for (const relativePath of [
   "src/shared/constants.js",
+  "src/shared/dashboard-url.js",
   "src/shared/storage.js"
 ]) {
   const filePath = path.join(root, relativePath);
@@ -45,6 +46,24 @@ assert.equal(
   context.storePilotGetDashboardExtensionIdFromUrl(`https://chrome.google.com/webstore/devconsole/3f375c03-c756-4a15-90e6-4876d2227d99/${defenseExtensionId}/edit/listing`),
   defenseExtensionId,
   "CWS extension id should be read from listing URLs"
+);
+
+assert.equal(
+  context.storePilotGetDashboardSectionFromUrl(`https://chromewebstore.google.com/devconsole/3f375c03-c756-4a15-90e6-4876d2227d99/${browseVaultExtensionId}/edit/privacy`),
+  "privacy",
+  "privacy URLs should resolve to the privacy dashboard section"
+);
+
+assert.equal(
+  context.storePilotIsListingDashboardUrl(`https://chrome.google.com/webstore/devconsole/3f375c03-c756-4a15-90e6-4876d2227d99/${browseVaultExtensionId}/edit/listing`),
+  true,
+  "listing URLs should be recognized as listing dashboard URLs"
+);
+
+assert.equal(
+  context.storePilotIsPanelDashboardUrl(`https://example.com/not-dashboard`),
+  false,
+  "non-dashboard URLs should not be treated as panel dashboard URLs"
 );
 
 assert.equal(

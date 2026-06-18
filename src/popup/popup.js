@@ -10,7 +10,7 @@ if (STOREPILOT_API) {
   storePilotTabsQuery({ active: true, currentWindow: true }).then(([tab]) => {
     const ownOrigin = new URL(storePilotRuntimeGetUrl("")).origin;
     const url = tab && tab.url ? tab.url : "";
-    if (!isDeveloperDashboardUrl(url) || url.startsWith(ownOrigin)) {
+    if (!storePilotIsDeveloperDashboardUrl(url) || url.startsWith(ownOrigin)) {
       window.close();
     }
   }).catch(() => {});

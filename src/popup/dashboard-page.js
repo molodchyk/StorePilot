@@ -1,29 +1,3 @@
-function isDeveloperDashboardUrl(url = "") {
-  return /^https:\/\/(chrome\.google\.com\/webstore\/devconsole|chromewebstore\.google\.com\/devconsole)\//.test(url);
-}
-
-function getDashboardSectionFromUrl(url = "") {
-  try {
-    const { pathname } = new URL(url);
-    if (/\/edit\/privacy\/?$/.test(pathname)) return "privacy";
-    if (/\/edit(?:\/listing)?\/?$/.test(pathname)) return "listing";
-  } catch (_error) {
-    // Unknown URLs are handled as non-listing pages.
-  }
-
-  return "other";
-}
-
-function isListingDashboardUrl(url = "") {
-  return isDeveloperDashboardUrl(url) && getDashboardSectionFromUrl(url) === "listing";
-}
-
-function isPanelDashboardUrl(url = "") {
-  if (!isDeveloperDashboardUrl(url)) return false;
-  const section = getDashboardSectionFromUrl(url);
-  return section === "listing" || section === "privacy";
-}
-
 async function getActiveTab() {
   const [tab] = await storePilotTabsQuery({ active: true, currentWindow: true });
   return tab;
@@ -33,6 +7,7 @@ async function injectContentScript(tabId) {
   await storePilotScriptingExecuteScript({
     target: { tabId },
     files: [
+      "src/shared/dashboard-url.js",
       "src/shared/privacy-doc.js",
       "src/shared/category-doc.js",
       "src/content/dashboard-panel-styles.js",
@@ -53,7 +28,7 @@ async function sendToActiveTab(typeOrMessage) {
     action: type,
     tabId: tab.id,
     url: tab.url || "",
-    expectedDashboardUrl: isDeveloperDashboardUrl(tab.url || "")
+    expectedDashboardUrl: storePilotIsDeveloperDashboardUrl(tab.url || "")
   };
 
   if (!diagnostics.expectedDashboardUrl) {
@@ -114,7 +89,7 @@ async function getDashboardProjectContext(tab) {
 async function resolvePopupProject() {
   const { projects, activeProjectId } = await storePilotGetProjectsState();
   const tab = await getActiveTab().catch(() => null);
-  const context = tab && isDeveloperDashboardUrl(tab.url || "")
+  const context = tab && storePilotIsDeveloperDashboardUrl(tab.url || "")
     ? await getDashboardProjectContext(tab)
     : { url: tab && tab.url || "", extensionId: "", title: "" };
   const bindings = typeof storePilotGetDashboardProjectBindings === "function"
@@ -145,8 +120,8 @@ async function resolvePopupProject() {
 
 async function updateDashboardSectionUi() {
   const tab = await getActiveTab();
-  const section = tab && isDeveloperDashboardUrl(tab.url || "")
-    ? getDashboardSectionFromUrl(tab.url || "")
+  const section = tab && storePilotIsDeveloperDashboardUrl(tab.url || "")
+    ? storePilotGetDashboardSectionFromUrl(tab.url || "")
     : "other";
   const isListing = section === "listing";
   const isPrivacy = section === "privacy";
@@ -154,7 +129,7 @@ async function updateDashboardSectionUi() {
   setPopupListingActionsVisible(isListing);
   setPopupPrivacyActionsVisible(isPrivacy);
 
-  if (!isPanelDashboardUrl(tab && tab.url || "")) {
+  if (!storePilotIsPanelDashboardUrl(tab && tab.url || "")) {
     elements.openPanel.hidden = true;
     getPopupMediaButtons().forEach(button => {
       button.disabled = true;
@@ -177,7 +152,7 @@ async function uploadMediaFromPopup(kind) {
 
 async function updateMediaActionState() {
   const tab = await getActiveTab();
-  if (!tab || !isListingDashboardUrl(tab.url || "")) {
+  if (!tab || !storePilotIsListingDashboardUrl(tab.url || "")) {
     getPopupMediaButtons().forEach(button => {
       button.disabled = true;
       button.title = t("listingActionsOnlyOnListingPage", "Listing and media actions are only available on the Store listing page.");
@@ -241,7 +216,7 @@ async function updateMediaActionState() {
 
 async function updateOpenPanelButtonState() {
   const tab = await getActiveTab();
-  if (!tab || !isPanelDashboardUrl(tab.url || "")) {
+  if (!tab || !storePilotIsPanelDashboardUrl(tab.url || "")) {
     elements.openPanel.hidden = true;
     syncUtilityActionsVisibility();
     return;

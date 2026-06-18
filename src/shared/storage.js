@@ -49,23 +49,6 @@ async function storePilotGetProjectsState() {
   return { projects, activeProjectId };
 }
 
-function storePilotNormalizeDashboardExtensionId(value) {
-  const normalized = String(value || "").trim().toLowerCase();
-  return /^[a-p]{32}$/.test(normalized) ? normalized : "";
-}
-
-function storePilotGetDashboardExtensionIdFromUrl(url = "") {
-  try {
-    const { pathname } = new URL(url);
-    const parts = pathname.split("/").filter(Boolean);
-    const consoleIndex = parts.findIndex(part => part === "devconsole");
-    const candidate = consoleIndex >= 0 ? parts[consoleIndex + 2] : "";
-    return storePilotNormalizeDashboardExtensionId(candidate);
-  } catch (_error) {
-    return "";
-  }
-}
-
 function storePilotNormalizeDashboardProjectText(value) {
   return String(value || "")
     .toLowerCase()

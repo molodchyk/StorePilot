@@ -57,15 +57,7 @@ function localize(key, fallback, substitutions) {
 }
 
 function getDashboardSectionFromUrl(url = window.location.href) {
-  try {
-    const { pathname } = new URL(url);
-    if (/\/edit\/privacy\/?$/.test(pathname)) return "privacy";
-    if (/\/edit(?:\/listing)?\/?$/.test(pathname)) return "listing";
-  } catch (_error) {
-    // Fall through to unknown; URL parsing is only used to gate UI actions.
-  }
-
-  return "other";
+  return storePilotGetDashboardSectionFromUrl(url);
 }
 
 function isListingDashboardSection() {

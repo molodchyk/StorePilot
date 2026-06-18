@@ -42,6 +42,7 @@
       "src/shared/files.js",
       "src/shared/projects.js",
       "src/shared/handles.js",
+      "src/shared/dashboard-url.js",
       "src/shared/storage.js",
       "src/background.js"
     ]
@@ -54,6 +55,7 @@
       ],
       "js": [
         "src/platform/webextension.js",
+        "src/shared/dashboard-url.js",
         "src/shared/privacy-doc.js",
         "src/shared/category-doc.js",
         "src/content/dashboard-panel-styles.js",
