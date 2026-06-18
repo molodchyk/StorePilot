@@ -231,7 +231,7 @@ foreach ($needle in @(
 
 $amo = Read-Text "AMO_SUBMISSION.md"
 foreach ($needle in @(
-  "Open source under the GPL-3.0-or-later license:",
+  "Open source under the [GPL-3.0-or-later license](https://github.com/molodchyk/StorePilot).",
   "https://github.com/molodchyk/StorePilot",
   "Reset local data",
   "browser_specific_settings.gecko.data_collection_permissions.required = [""none""]",
@@ -272,7 +272,7 @@ foreach ($needle in @(
   "StorePilot: Chrome Web Store Automation",
   "Automate Chrome extension store listings",
   "StorePilot never clicks final submit, publish, or review actions automatically.",
-  "Open source under the GPL-3.0-or-later license:",
+  "Open source under the [GPL-3.0-or-later license](https://github.com/molodchyk/StorePilot).",
   "https://github.com/molodchyk/StorePilot",
   "Web Development",
   "Language Support",

@@ -80,16 +80,21 @@ Automate Chrome extension store listings: autofill Chrome Web Store fields, desc
 Description:
 
 ```text
-StorePilot: Chrome Web Store Automation helps browser extension developers automate Chrome extension store listings by autofilling Chrome Web Store Developer Dashboard fields from local project files instead of copy-pasting every locale by hand.
+**StorePilot: Chrome Web Store Automation** helps browser extension developers automate Chrome extension store listings by autofilling Chrome Web Store Developer Dashboard fields from local project files instead of copy-pasting every locale by hand.
 
-Import an extension project root, a store-listing folder, or a direct listing folder containing locale-named listing text files such as en, de, or pt_BR. StorePilot keeps each extension as its own local project, detects localized descriptions, category decisions, Additional fields values, screenshots, icons, promo tiles, and privacy-form text, and stores imported data only in local browser extension storage.
+Import an extension project root, a store-listing folder, or a direct listing folder containing locale-named listing text files such as en, de, or pt_BR. StorePilot keeps each extension as its own local project and stores imported data only in local browser extension storage.
 
-On the Chrome Web Store Developer Dashboard, StorePilot can fill matching detailed description fields with progress and abort support, select the imported category, upload screenshots and other reviewable graphic assets, clear uploaded assets, fill Additional fields, and fill privacy fields from the imported project document. A hidden-by-default advanced preference can expose the current-language filler for debugging or one-off manual fills.
+StorePilot can help with:
+
+- Filling matching Chrome Web Store detailed description fields with progress and abort support.
+- Selecting an imported category decision.
+- Uploading screenshots, icons, and promo tiles, then clearing uploaded assets when needed.
+- Filling Additional fields, privacy fields, remote-code choices, and Data usage disclosures from project documents.
+- Reviewing imported Product Details, Graphic Assets, Additional Fields, Privacy Document, and Data Usage values before filling the dashboard.
 
 StorePilot never clicks final submit, publish, or review actions automatically.
 
-Open source under the GPL-3.0-or-later license:
-https://github.com/molodchyk/StorePilot
+Open source under the [GPL-3.0-or-later license](https://github.com/molodchyk/StorePilot).
 ```
 
 Search/SEO notes:
