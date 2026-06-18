@@ -16,6 +16,9 @@ if (Test-Path -LiteralPath $zip) {
 
 New-Item -ItemType Directory -Path $stagedDist | Out-Null
 New-Item -ItemType Directory -Path $artifacts -Force | Out-Null
+Get-ChildItem -LiteralPath $artifacts -File -Filter "storepilot-*.zip" -ErrorAction SilentlyContinue |
+  Where-Object { $_.FullName -ne $zip } |
+  Remove-Item -Force
 Copy-Item -Path (Join-Path $root "src") -Destination (Join-Path $stagedDist "src") -Recurse
 if (Test-Path -LiteralPath (Join-Path $root "assets")) {
   Copy-Item -Path (Join-Path $root "assets") -Destination (Join-Path $stagedDist "assets") -Recurse

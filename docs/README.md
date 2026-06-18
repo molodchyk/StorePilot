@@ -6,6 +6,7 @@ This folder contains StorePilot-specific references plus reusable Firefox add-on
 
 - [StorePilot Project Reference](reference.md): Chrome Web Store project-file structure and automation keys that StorePilot scans.
 - [Storage Ownership](storage-ownership.md): storage keys, owners, migration notes, retention, quota risk, and privacy classification.
+- [Release Hygiene](release-hygiene.md): GitHub release, artifact, license, and generated-file cleanliness rules.
 
 ## Firefox References
 

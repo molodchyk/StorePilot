@@ -23,7 +23,7 @@ async function storePilotSetListings(listings) {
 }
 
 async function storePilotGetProjectsState() {
-  const stored = await STOREPILOT_API.storage.local.get([
+  const stored = await storePilotStorageLocalGet([
     STOREPILOT_PROJECTS_STORAGE_KEY,
     STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY,
     STOREPILOT_LISTING_STORAGE_KEY
@@ -43,7 +43,7 @@ async function storePilotGetProjectsState() {
 
   if (projects.length && !projects.some(project => project.id === activeProjectId)) {
     activeProjectId = projects[0].id;
-    await STOREPILOT_API.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: activeProjectId });
+    await storePilotStorageLocalSet({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: activeProjectId });
   }
 
   return { projects, activeProjectId };
@@ -145,7 +145,7 @@ function storePilotResolveDashboardProjectFromState(state, bindings = {}, contex
 }
 
 async function storePilotGetDashboardProjectBindings() {
-  const stored = await STOREPILOT_API.storage.local.get([STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]);
+  const stored = await storePilotStorageLocalGet([STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]);
   const bindings = stored[STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY];
   return bindings && typeof bindings === "object" ? bindings : {};
 }
@@ -163,7 +163,7 @@ async function storePilotBindDashboardProject(extensionId, projectId, patch = {}
     updatedAt: storePilotFormatTimestamp()
   };
 
-  await STOREPILOT_API.storage.local.set({
+  await storePilotStorageLocalSet({
     [STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]: {
       ...bindings,
       [normalizedExtensionId]: binding
@@ -184,7 +184,7 @@ async function storePilotResolveProjectForDashboard(context = {}) {
 }
 
 async function storePilotSetProjectsState({ projects, activeProjectId }) {
-  await STOREPILOT_API.storage.local.set({
+  await storePilotStorageLocalSet({
     [STOREPILOT_PROJECTS_STORAGE_KEY]: projects,
     [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: activeProjectId || ""
   });
@@ -198,7 +198,7 @@ async function storePilotGetActiveProject() {
 async function storePilotSetActiveProject(projectId) {
   const { projects } = await storePilotGetProjectsState();
   if (!projects.some(project => project.id === projectId)) return;
-  await STOREPILOT_API.storage.local.set({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: projectId });
+  await storePilotStorageLocalSet({ [STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]: projectId });
 }
 
 async function storePilotUpsertProject(nextProject, setActive = true) {
@@ -228,11 +228,11 @@ async function storePilotDeleteProject(projectId) {
   )));
 
   await storePilotDeleteProjectHandle(projectId);
-  await STOREPILOT_API.storage.local.set({ [STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]: nextBindings });
+  await storePilotStorageLocalSet({ [STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]: nextBindings });
   await storePilotSetProjectsState({ projects, activeProjectId });
 }
 
 async function storePilotResetLocalData() {
   await storePilotClearStoredHandles();
-  await STOREPILOT_API.storage.local.clear();
+  await storePilotStorageLocalClear();
 }

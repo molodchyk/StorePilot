@@ -9,6 +9,9 @@ if (Test-Path -LiteralPath $zip) {
 }
 
 New-Item -ItemType Directory -Path $artifacts -Force | Out-Null
+Get-ChildItem -LiteralPath $artifacts -File -Filter "storepilot-source-*.zip" -ErrorAction SilentlyContinue |
+  Where-Object { $_.FullName -ne $zip } |
+  Remove-Item -Force
 
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem

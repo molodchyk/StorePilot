@@ -36,6 +36,7 @@
   },
   "background": {
     "scripts": [
+      "src/platform/webextension.js",
       "src/shared/constants.js",
       "src/shared/i18n.js",
       "src/shared/files.js",
@@ -52,6 +53,7 @@
         "https://chromewebstore.google.com/devconsole/*"
       ],
       "js": [
+        "src/platform/webextension.js",
         "src/content/dashboard-helper.js"
       ]
     }

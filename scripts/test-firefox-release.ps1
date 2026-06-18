@@ -64,9 +64,11 @@ $requiredFiles = @(
   "assets\icons\icon48.png",
   "assets\icons\icon96.png",
   "assets\icons\icon128.png",
+  "src\platform\webextension.js",
   "docs\firefox-extension-modularization-playbook.md",
   "docs\firefox-modularization-audit.md",
   "docs\firefox-localization.md",
+  "docs\release-hygiene.md",
   "docs\reference.md",
   "docs\storage-ownership.md",
   "store-listing\amo\README.md",
@@ -91,6 +93,7 @@ Assert-Directory (Join-Path $root "src") "src/ is missing."
 Assert-Directory (Join-Path $root "assets") "assets/ is missing."
 Assert-Directory (Join-Path $root "_locales") "_locales/ is missing."
 Assert-Directory (Join-Path $root "store-listing") "store-listing/ is missing."
+Assert-True (-not (Test-Path -LiteralPath (Join-Path $root "LICENSE.txt"))) "Duplicate LICENSE.txt should not exist; keep one canonical LICENSE file."
 
 $manifest = Read-Text "manifest.json" | ConvertFrom-Json
 $version = [string]$manifest.version
@@ -163,9 +166,24 @@ foreach ($needle in @(
   Assert-TextContains "README.md" $readme $needle
 }
 
+$releaseHygiene = Read-Text "docs\release-hygiene.md"
+foreach ($needle in @(
+  'v<manifest version>',
+  'artifacts/storepilot-<version>.zip',
+  'artifacts/source/storepilot-source-<version>.zip',
+  'Keep one canonical license file: `LICENSE`',
+  'Do not track generated zips'
+)) {
+  Assert-TextContains "docs/release-hygiene.md" $releaseHygiene $needle
+}
+
 $license = Read-Text "LICENSE"
 Assert-TextContains "LICENSE" $license "GNU GENERAL PUBLIC LICENSE"
 Assert-TextContains "LICENSE" $license "Version 3"
+
+$trackedZipFiles = @(& git -C $root ls-files -- "*.zip")
+Assert-True ($LASTEXITCODE -eq 0) "Could not inspect tracked zip files."
+Assert-True ($trackedZipFiles.Count -eq 0) "Zip artifacts should not be tracked: $($trackedZipFiles -join ', ')"
 
 $privacy = Read-Text "PRIVACY.md"
 foreach ($needle in @(
@@ -323,9 +341,11 @@ Assert-ZipEntries $sourceZip @(
   "PRIVACY.md",
   "AMO_SUBMISSION.md",
   "assets/icons/icon128.png",
+  "src/platform/webextension.js",
   "docs/firefox-extension-modularization-playbook.md",
   "docs/firefox-modularization-audit.md",
   "docs/firefox-localization.md",
+  "docs/release-hygiene.md",
   "docs/storage-ownership.md",
   "store-listing/amo/listing/en-US.md",
   "store-listing/amo/media/screenshots.md",
@@ -336,5 +356,15 @@ Assert-ZipEntries $sourceZip @(
   "scripts/test-firefox-temporary-load.ps1",
   "test/project-resolution.test.js"
 )
+
+$allowedArtifactZips = @(
+  (Resolve-Path -LiteralPath $extensionZip).Path,
+  (Resolve-Path -LiteralPath $sourceZip).Path
+)
+$artifactRoot = Join-Path $root "artifacts"
+Get-ChildItem -LiteralPath $artifactRoot -Recurse -File -Filter "*.zip" | ForEach-Object {
+  $resolved = (Resolve-Path -LiteralPath $_.FullName).Path
+  Assert-True ($allowedArtifactZips -contains $resolved) "Old zip artifact should be removed before release: $resolved"
+}
 
 Write-Host "Firefox release checks passed for StorePilot $version."

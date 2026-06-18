@@ -1,5 +1,5 @@
 const SETTINGS_KEY = "storePilotSettings";
-var STOREPILOT_API = globalThis.browser;
+var STOREPILOT_API = globalThis.STOREPILOT_API || globalThis.browser || globalThis.chrome;
 
 function t(key, fallback, substitutions) {
   return storePilotText(key, fallback, substitutions);
@@ -66,7 +66,7 @@ function applyTheme(theme) {
 }
 
 async function getSettings() {
-  const stored = await STOREPILOT_API.storage.local.get(SETTINGS_KEY);
+  const stored = await storePilotStorageLocalGet(SETTINGS_KEY);
   return {
     theme: "system",
     showAdvancedFillActions: false,
@@ -80,7 +80,7 @@ async function updateSettings(patch) {
     ...patch
   };
 
-  await STOREPILOT_API.storage.local.set({ [SETTINGS_KEY]: settings });
+  await storePilotStorageLocalSet({ [SETTINGS_KEY]: settings });
   return settings;
 }
 
@@ -1278,7 +1278,7 @@ elements.resetLocalData.addEventListener("click", async () => {
   }
 });
 
-STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
+storePilotStorageOnChangedAddListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[SETTINGS_KEY]) {

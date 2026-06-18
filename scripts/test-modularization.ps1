@@ -64,15 +64,9 @@ foreach ($file in $sourceFiles) {
   }
 }
 
-$rawApiPattern = '\b(?:STOREPILOT_API|browser|chrome)\.(?:storage|runtime|tabs|scripting|i18n|action)\b'
+$rawApiPattern = '\b(?:STOREPILOT_API|browser)\.(?:storage|runtime|tabs|scripting|i18n|action)\b|\bchrome\.(?:storage|runtime|tabs|scripting|i18n|action)\b'
 $allowedRawApiFiles = @(
-  "src/background.js",
-  "src/content/dashboard-helper.js",
-  "src/options/options.js",
-  "src/popup/popup.js",
-  "src/shared/constants.js",
-  "src/shared/i18n.js",
-  "src/shared/storage.js"
+  "src/platform/webextension.js"
 )
 
 $rawApiFiles = $sourceFiles |

@@ -41,9 +41,9 @@ These modules are useful migration footholds, but they are still broad shared mo
 Browser/platform boundary inspected:
 
 - StorePilot uses Firefox's `browser.*` API through the global `STOREPILOT_API`.
-- Storage helpers exist in `src/shared/storage.js`.
-- Raw runtime, tabs, scripting, and storage calls still appear in runtime files such as `src/background.js`, `src/popup/popup.js`, `src/options/options.js`, and `src/content/dashboard-helper.js`.
-- A future migration should introduce narrow `src/platform/webextension/*` wrappers before adding more browser API calls.
+- `src/platform/webextension.js` now owns direct WebExtension API calls for storage, runtime, tabs, scripting, action, i18n, and extension URL helpers.
+- Existing runtime files now use the platform wrapper for new WebExtension API access.
+- Future migration should split the single platform wrapper into narrower `src/platform/webextension/*` modules once the build/runtime loading shape supports that cleanly.
 
 Storage and migration ownership inspected:
 
@@ -65,7 +65,7 @@ Test coverage inspected:
    - Move options-page project cards, Product Details, Graphic Assets, Additional Fields, Privacy Document, Data Usage, Projects, Reference, and Preferences rendering into smaller feature-owned modules and split `src/options/options.css` by surface/component.
 
 3. `Introduce WebExtension platform wrappers`
-   - Add narrow wrappers for runtime, tabs, scripting, storage, i18n, and action behavior so new feature modules do not call raw `browser.*` APIs directly.
+   - First slice done in this pass: `src/platform/webextension.js` centralizes direct WebExtension API access. Later split it into narrower platform modules when the source tree moves toward bundled or ES-module runtime entries.
 
 4. `Document storage key ownership`
    - Done in this pass: `docs/storage-ownership.md`.

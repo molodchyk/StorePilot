@@ -1,14 +1,14 @@
 const SETTINGS_KEY = "storePilotSettings";
 const FILL_ALL_STATUS_STORAGE_KEY = "storePilotFillAllStatus";
-var STOREPILOT_API = globalThis.browser;
+var STOREPILOT_API = globalThis.STOREPILOT_API || globalThis.browser || globalThis.chrome;
 
 function t(key, fallback, substitutions) {
   return storePilotText(key, fallback, substitutions);
 }
 
-if (STOREPILOT_API.tabs && STOREPILOT_API.runtime) {
-  STOREPILOT_API.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-    const ownOrigin = new URL(STOREPILOT_API.runtime.getURL("")).origin;
+if (STOREPILOT_API) {
+  storePilotTabsQuery({ active: true, currentWindow: true }).then(([tab]) => {
+    const ownOrigin = new URL(storePilotRuntimeGetUrl("")).origin;
     const url = tab && tab.url ? tab.url : "";
     if (!isDeveloperDashboardUrl(url) || url.startsWith(ownOrigin)) {
       window.close();
@@ -67,7 +67,7 @@ function applyTheme(theme) {
 }
 
 async function getSettings() {
-  const stored = await STOREPILOT_API.storage.local.get(SETTINGS_KEY);
+  const stored = await storePilotStorageLocalGet(SETTINGS_KEY);
   return {
     theme: "system",
     showAdvancedFillActions: false,
@@ -81,7 +81,7 @@ async function updateSettings(patch) {
     ...patch
   };
 
-  await STOREPILOT_API.storage.local.set({ [SETTINGS_KEY]: settings });
+  await storePilotStorageLocalSet({ [SETTINGS_KEY]: settings });
   return settings;
 }
 
@@ -350,12 +350,12 @@ async function updateDashboardSectionUi() {
 }
 
 async function getActiveTab() {
-  const [tab] = await STOREPILOT_API.tabs.query({ active: true, currentWindow: true });
+  const [tab] = await storePilotTabsQuery({ active: true, currentWindow: true });
   return tab;
 }
 
 async function injectContentScript(tabId) {
-  await STOREPILOT_API.scripting.executeScript({
+  await storePilotScriptingExecuteScript({
     target: { tabId },
     files: ["src/content/dashboard-helper.js"]
   });
@@ -385,7 +385,7 @@ async function sendToActiveTab(typeOrMessage) {
   }
 
   try {
-    const response = await STOREPILOT_API.tabs.sendMessage(tab.id, message);
+    const response = await storePilotTabsSendMessage(tab.id, message);
     return { ...response, diagnostics: { ...diagnostics, contentScript: t("contentScriptAlreadyConnected", "already connected"), response } };
   } catch (error) {
     diagnostics.initialMessageError = formatError(error);
@@ -393,7 +393,7 @@ async function sendToActiveTab(typeOrMessage) {
     try {
       await injectContentScript(tab.id);
       diagnostics.injection = t("injectionSucceeded", "succeeded");
-      const response = await STOREPILOT_API.tabs.sendMessage(tab.id, message);
+      const response = await storePilotTabsSendMessage(tab.id, message);
       return { ...response, diagnostics: { ...diagnostics, response } };
     } catch (injectionError) {
       diagnostics.injectionError = formatError(injectionError);
@@ -466,7 +466,7 @@ function stopFillAllStatusPolling() {
 }
 
 async function getStoredFillAllStatus() {
-  const stored = await STOREPILOT_API.storage.local.get(FILL_ALL_STATUS_STORAGE_KEY);
+  const stored = await storePilotStorageLocalGet(FILL_ALL_STATUS_STORAGE_KEY);
   return stored[FILL_ALL_STATUS_STORAGE_KEY] || null;
 }
 
@@ -494,7 +494,7 @@ async function uploadMediaFromPopup(kind) {
   const injection = await sendToActiveTab("storepilot-reload");
   if (!injection.ok) return injection;
 
-  return STOREPILOT_API.runtime.sendMessage({
+  return storePilotRuntimeSendMessage({
     type: "storepilot-upload-media-assets-from-project",
     requestAccess: true,
     kind
@@ -751,7 +751,7 @@ elements.openPanel.addEventListener("click", async () => {
 });
 
 function openOptionsPageFromPopup() {
-  STOREPILOT_API.runtime.openOptionsPage();
+  storePilotRuntimeOpenOptionsPage();
 }
 
 elements.openOptionsShortcut.addEventListener("click", openOptionsPageFromPopup);
@@ -763,7 +763,7 @@ elements.themeChoices.forEach(button => {
   });
 });
 
-STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
+storePilotStorageOnChangedAddListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[SETTINGS_KEY]) {
@@ -779,8 +779,8 @@ STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
   }
 });
 
-if (STOREPILOT_API.runtime && STOREPILOT_API.runtime.onMessage) {
-  STOREPILOT_API.runtime.onMessage.addListener(message => {
+if (STOREPILOT_API) {
+  storePilotRuntimeOnMessageAddListener(message => {
     if (!message || message.type !== "storepilot-fill-all-progress") {
       return;
     }

@@ -178,6 +178,7 @@ For Data usage checkboxes, answer the exact Chrome Web Store public disclosure q
 - [docs/reference.md](docs/reference.md): pasteable StorePilot project-reference contract matching the options Reference tab.
 - [docs/firefox-modularization-audit.md](docs/firefox-modularization-audit.md): current Firefox modularization gate result and named architecture follow-ups.
 - [docs/storage-ownership.md](docs/storage-ownership.md): storage keys, owners, migration notes, retention, quota risk, and privacy classification.
+- [docs/release-hygiene.md](docs/release-hygiene.md): GitHub release, artifact, license, and generated-file cleanliness rules.
 - [PROJECT_SCOPE_AND_PHILOSOPHY.md](PROJECT_SCOPE_AND_PHILOSOPHY.md): product boundaries, design intent, and safety principles.
 - [SPECIFICATIONS.md](SPECIFICATIONS.md): implementation details, data model, build flow, dashboard automation, and future-Codex context.
 - [CHANGELOG.md](CHANGELOG.md): release history.

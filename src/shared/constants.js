@@ -1,5 +1,5 @@
 const STOREPILOT_LISTING_STORAGE_KEY = "storePilotListings";
-var STOREPILOT_API = globalThis.browser;
+var STOREPILOT_API = globalThis.STOREPILOT_API || globalThis.browser || globalThis.chrome;
 const STOREPILOT_PROJECTS_STORAGE_KEY = "storePilotProjects";
 const STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
 const STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY = "storePilotDashboardProjectBindings";

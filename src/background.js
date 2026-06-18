@@ -1,6 +1,4 @@
 (function () {
-  const api = globalThis.browser;
-
   function text(key, fallback, substitutions) {
     return typeof storePilotText === "function" ? storePilotText(key, fallback, substitutions) : substitutions
       ? substitutions.reduce((message, value, index) => message.replace(`$${index + 1}`, value), fallback)
@@ -124,7 +122,7 @@
       return sender.tab;
     }
 
-    const tabs = await api.tabs.query({ active: true, currentWindow: true });
+    const tabs = await storePilotTabsQuery({ active: true, currentWindow: true });
     return tabs && tabs[0];
   }
 
@@ -137,7 +135,7 @@
     const resolved = await resolveMediaFilesForActiveProject(requestAccess, kind, tab.url || "");
     if (!resolved.ok) return resolved;
 
-    return api.tabs.sendMessage(tab.id, {
+    return storePilotTabsSendMessage(tab.id, {
       type: "storepilot-upload-media-assets",
       files: resolved.files,
       kind,
@@ -145,13 +143,9 @@
     });
   }
 
-  api.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  storePilotRuntimeOnMessageAddListener((message, sender, sendResponse) => {
     if (message && message.action === "openOptionsPage") {
-      if (api.runtime.openOptionsPage) {
-        api.runtime.openOptionsPage();
-      } else {
-        api.tabs.create({ url: api.runtime.getURL("src/options/options.html") });
-      }
+      storePilotRuntimeOpenOptionsPage();
       sendResponse({ ok: true });
     }
 
@@ -166,8 +160,8 @@
     }
   });
   // Conditionally open popup on devconsole pages, otherwise go to options
-  api.action.onClicked.addListener(() => {
-    api.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  storePilotActionOnClickedAddListener(() => {
+    storePilotTabsQuery({ active: true, currentWindow: true }).then(async tabs => {
       const tab = tabs && tabs[0];
       const url = tab && tab.url ? tab.url : '';
       const isDevConsole = url.includes('/devconsole/');
@@ -176,29 +170,21 @@
 
       if (isDevConsole) {
         // If the action API supports it, set the popup for this tab and open it
-        if (api.action && typeof api.action.setPopup === "function" && typeof api.action.openPopup === "function") {
-          api.action.setPopup({ tabId: tab.id, popup: "src/popup/popup.html" });
-          api.action.openPopup();
+        if (storePilotActionCanOpenPopup()) {
+          await storePilotActionSetPopup({ tabId: tab.id, popup: "src/popup/popup.html" });
+          await storePilotActionOpenPopup();
         } else {
           // Fallback: open the options page (no popup support)
-          if (api.runtime.openOptionsPage) {
-            api.runtime.openOptionsPage();
-          } else {
-            api.tabs.create({ url: api.runtime.getURL('src/options/options.html') });
-          }
+          await storePilotRuntimeOpenOptionsPage();
         }
         return;
       }
 
       // For non‑devconsole pages, redirect to options unless we are on the public Web Store or already on options
       if (!(isWebstore && !isDevConsole) && !isOptions) {
-        if (api.runtime.openOptionsPage) {
-          api.runtime.openOptionsPage();
-        } else {
-          api.tabs.create({ url: api.runtime.getURL('src/options/options.html') });
-        }
+        await storePilotRuntimeOpenOptionsPage();
       }
       // Otherwise do nothing
-    });
+    }).catch(() => {});
   });
 })();

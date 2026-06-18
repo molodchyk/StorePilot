@@ -1,5 +1,5 @@
 const LEGACY_STORAGE_KEY = "storePilotListings";
-var STOREPILOT_API = globalThis.browser;
+var STOREPILOT_API = globalThis.STOREPILOT_API || globalThis.browser || globalThis.chrome;
 const PROJECTS_STORAGE_KEY = "storePilotProjects";
 const ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
 const DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY = "storePilotDashboardProjectBindings";
@@ -81,9 +81,7 @@ function delay(ms) {
 }
 
 function localize(key, fallback, substitutions) {
-  const message = STOREPILOT_API.i18n && STOREPILOT_API.i18n.getMessage
-    ? STOREPILOT_API.i18n.getMessage(key, substitutions)
-    : "";
+  const message = storePilotI18nGetMessage(key, substitutions);
   const values = substitutions ? (Array.isArray(substitutions) ? substitutions : [substitutions]) : [];
   return String(message || fallback || "").replace(/\$(\d+)/g, (_match, index) => {
     const value = values[Number(index) - 1];
@@ -549,7 +547,7 @@ function enablePanelDrag(panel, dragHandle) {
 }
 
 async function loadSettings() {
-  const stored = await STOREPILOT_API.storage.local.get([SETTINGS_KEY]);
+  const stored = await storePilotStorageLocalGet([SETTINGS_KEY]);
   applySettings(stored[SETTINGS_KEY]);
   return {
     theme: currentTheme,
@@ -711,13 +709,13 @@ async function saveDashboardProjectBinding(extensionId, project, source = "title
   const normalizedExtensionId = normalizeDashboardExtensionId(extensionId);
   if (!normalizedExtensionId || !project || !project.id) return;
 
-  const stored = await STOREPILOT_API.storage.local.get([DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]);
+  const stored = await storePilotStorageLocalGet([DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]);
   const bindings = stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] && typeof stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] === "object"
     ? stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]
     : {};
   const existing = getDashboardProjectBinding(bindings, normalizedExtensionId) || {};
 
-  await STOREPILOT_API.storage.local.set({
+  await storePilotStorageLocalSet({
     [DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]: {
       ...bindings,
       [normalizedExtensionId]: {
@@ -754,7 +752,7 @@ function resolveDashboardProject(projects, activeStoredProjectId, bindings) {
 }
 
 async function loadListings() {
-  const stored = await STOREPILOT_API.storage.local.get([
+  const stored = await storePilotStorageLocalGet([
     LEGACY_STORAGE_KEY,
     PROJECTS_STORAGE_KEY,
     ACTIVE_PROJECT_STORAGE_KEY,
@@ -2843,12 +2841,8 @@ async function publishFillAllStatus(status) {
     panelStatus.textContent = fillAllStatus.message;
   }
 
-  if (!STOREPILOT_API.runtime || typeof STOREPILOT_API.runtime.sendMessage !== "function") {
-    return fillAllStatus;
-  }
-
   try {
-    const result = STOREPILOT_API.runtime.sendMessage({
+    const result = storePilotRuntimeSendMessage({
       type: "storepilot-fill-all-progress",
       status: fillAllStatus,
       message: fillAllStatus.message
@@ -2860,11 +2854,9 @@ async function publishFillAllStatus(status) {
     // Progress updates are best-effort because some extension contexts may be closed.
   }
 
-  if (STOREPILOT_API.storage && STOREPILOT_API.storage.local) {
-    await STOREPILOT_API.storage.local.set({
-      [FILL_ALL_STATUS_STORAGE_KEY]: fillAllStatus
-    });
-  }
+  await storePilotStorageLocalSet({
+    [FILL_ALL_STATUS_STORAGE_KEY]: fillAllStatus
+  });
 
   return fillAllStatus;
 }
@@ -3352,7 +3344,7 @@ function ensureMediaUploadBridge() {
     }
 
     script.dataset.storepilotMediaUploadBridge = "true";
-    script.src = STOREPILOT_API.runtime.getURL(MEDIA_UPLOAD_BRIDGE_SCRIPT);
+    script.src = storePilotRuntimeGetUrl(MEDIA_UPLOAD_BRIDGE_SCRIPT);
     script.addEventListener("load", () => finish(true), { once: true });
     script.addEventListener("error", () => finish(false), { once: true });
     (document.head || document.documentElement).append(script);
@@ -3843,14 +3835,9 @@ function createButton(label, onClick) {
 }
 
 function openOptionsPage() {
-  if (STOREPILOT_API.runtime && typeof STOREPILOT_API.runtime.sendMessage === "function") {
-    STOREPILOT_API.runtime.sendMessage({ action: "openOptionsPage" }).catch(() => {
-      window.open(STOREPILOT_API.runtime.getURL("src/options/options.html"), "_blank", "noopener");
-    });
-    return;
-  }
-
-  window.open(STOREPILOT_API.runtime.getURL("src/options/options.html"), "_blank", "noopener");
+  storePilotRuntimeSendMessage({ action: "openOptionsPage" }).catch(() => {
+    window.open(storePilotRuntimeGetUrl("src/options/options.html"), "_blank", "noopener");
+  });
 }
 
 function createPanelControls(panel) {
@@ -4120,7 +4107,7 @@ function renderPanel(locales) {
       setPanelMediaButtonsDisabled(true, localize("uploadingMedia", "Uploading media..."));
       status.textContent = localize("uploadingMedia", "Uploading media...");
       try {
-        const response = await STOREPILOT_API.runtime.sendMessage({
+        const response = await storePilotRuntimeSendMessage({
           type: "storepilot-upload-media-assets-from-project",
           requestAccess: false,
           kind
@@ -4396,7 +4383,7 @@ function injectStyles() {
   document.documentElement.append(style);
 }
 
-STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+storePilotRuntimeOnMessageAddListener((message, _sender, sendResponse) => {
   (async () => {
     if (message.type === "storepilot-copy") {
       if (!isListingDashboardSection()) {
@@ -4649,7 +4636,7 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
   renderPanel(await loadListings());
 })();
 
-STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
+storePilotStorageOnChangedAddListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[SETTINGS_KEY]) {
