@@ -10,7 +10,7 @@
 - `src/import-ui.js`: folder-import UI guidance and options-page import helpers.
 - `src/project-overrides.js`: project identity canonicalization and duplicate import merging.
 - `assets/icons/*`: extension icons referenced by the manifest.
-- `src/options/*`: options page UI, import controls, project list, media preview, privacy document preview, listing preview.
+- `src/options/*`: options page UI, import controls, project list, media preview, privacy document preview, settings, and listing preview.
 - `src/popup/*`: popup UI, project picker, dashboard commands, panel reopen control.
 - `src/content/dashboard-helper.js`: content-script message routing, diagnostics, and dashboard panel startup.
 - `src/content/dashboard-project-context.js`: dashboard extension-id, item-title, and project-binding resolution.
@@ -483,6 +483,7 @@ node --check src\content\dashboard-project-context.js
 node --check src\content\media-upload-main-world.js
 node --check src\popup\popup.js
 node --check src\options\options.js
+node --check src\options\options-settings.js
 node --check src\shared\media-assets.js
 node --check src\shared\store-docs\privacy-doc.js
 node --check src\shared\store-docs\category-doc.js
@@ -504,6 +505,7 @@ node --check dist\src\content\dashboard-project-context.js
 node --check dist\src\background\media.js
 node --check dist\src\popup\popup.js
 node --check dist\src\options\options.js
+node --check dist\src\options\options-settings.js
 node -e "JSON.parse(require('fs').readFileSync('dist/manifest.json','utf8')); console.log('dist manifest ok')"
 ```
 

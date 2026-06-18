@@ -33,11 +33,21 @@ function extractPopupHtmlScripts() {
   });
 }
 
+function extractOptionsHtmlScripts() {
+  const html = readText("src/options/options.html");
+  return Array.from(html.matchAll(/<script\s+src="([^"]+)"/g), match => {
+    const src = match[1];
+    if (src.startsWith("../")) return `src/${src.slice(3)}`;
+    return `src/options/${src}`;
+  });
+}
+
 const manifest = JSON.parse(readText("manifest.json"));
 const backgroundFiles = manifest.background.scripts || [];
 const contentFiles = manifest.content_scripts.flatMap(contentScript => contentScript.js || []);
 const injectionFiles = extractPopupInjectionFiles();
 const popupHtmlFiles = extractPopupHtmlScripts();
+const optionsHtmlFiles = extractOptionsHtmlScripts();
 
 for (const required of [
   "src/background/media.js",
@@ -82,5 +92,14 @@ for (const required of [
   assert.ok(popupHtmlFiles.includes(required), `popup.html is missing ${required}`);
 }
 assertBefore(popupHtmlFiles, "src/popup/settings.js", "src/popup/popup.js", "popup HTML scripts");
+for (const required of [
+  "src/options/options-media.js",
+  "src/options/options-review-tables.js",
+  "src/options/options-settings.js",
+  "src/options/options.js"
+]) {
+  assert.ok(optionsHtmlFiles.includes(required), `options.html is missing ${required}`);
+}
+assertBefore(optionsHtmlFiles, "src/options/options-settings.js", "src/options/options.js", "options HTML scripts");
 
 console.log("Runtime load surface tests passed.");

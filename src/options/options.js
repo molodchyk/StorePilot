@@ -1,4 +1,3 @@
-const SETTINGS_KEY = "storePilotSettings";
 var STOREPILOT_API = globalThis.STOREPILOT_API || globalThis.browser || globalThis.chrome;
 
 function t(key, fallback, substitutions) {
@@ -46,50 +45,6 @@ const elements = {
   showAdvancedFillActions: document.getElementById("showAdvancedFillActions"),
   resetLocalData: document.getElementById("resetLocalData")
 };
-
-function applyTheme(theme) {
-  const normalized = ["system", "light", "dark"].includes(theme) ? theme : "system";
-
-  if (normalized === "system") {
-    document.documentElement.removeAttribute("data-theme");
-  } else {
-    document.documentElement.dataset.theme = normalized;
-  }
-
-  elements.themeChoices.forEach(button => {
-    button.setAttribute("aria-pressed", String(button.dataset.themeChoice === normalized));
-  });
-}
-
-async function getSettings() {
-  const stored = await storePilotStorageLocalGet(SETTINGS_KEY);
-  return {
-    theme: "system",
-    showAdvancedFillActions: false,
-    ...(stored[SETTINGS_KEY] || {})
-  };
-}
-
-async function updateSettings(patch) {
-  const settings = {
-    ...(await getSettings()),
-    ...patch
-  };
-
-  await storePilotStorageLocalSet({ [SETTINGS_KEY]: settings });
-  return settings;
-}
-
-function applySettings(settings = {}) {
-  const normalized = {
-    theme: "system",
-    showAdvancedFillActions: false,
-    ...settings
-  };
-
-  applyTheme(normalized.theme);
-  elements.showAdvancedFillActions.checked = Boolean(normalized.showAdvancedFillActions);
-}
 
 function setStatus(message, isError = false) {
   elements.importStatus.textContent = message;
@@ -430,14 +385,14 @@ elements.deleteProject.addEventListener("click", async () => {
 
 elements.themeChoices.forEach(button => {
   button.addEventListener("click", async () => {
-    const settings = await updateSettings({ theme: button.dataset.themeChoice });
-    applySettings(settings);
+    const settings = await storePilotOptionsUpdateSettings({ theme: button.dataset.themeChoice });
+    storePilotOptionsApplySettings(settings, elements);
   });
 });
 
 elements.showAdvancedFillActions.addEventListener("change", async event => {
-  const settings = await updateSettings({ showAdvancedFillActions: event.target.checked });
-  applySettings(settings);
+  const settings = await storePilotOptionsUpdateSettings({ showAdvancedFillActions: event.target.checked });
+  storePilotOptionsApplySettings(settings, elements);
 });
 
 elements.resetLocalData.addEventListener("click", async () => {
@@ -450,7 +405,7 @@ elements.resetLocalData.addEventListener("click", async () => {
 
   try {
     await storePilotResetLocalData();
-    applySettings(await getSettings());
+    storePilotOptionsApplySettings(await storePilotOptionsGetSettings(), elements);
     await renderAll();
     setStatus(t("resetLocalDataDone", "Reset StorePilot local data."));
   } catch (error) {
@@ -462,8 +417,8 @@ elements.resetLocalData.addEventListener("click", async () => {
 storePilotStorageOnChangedAddListener((changes, areaName) => {
   if (areaName !== "local") return;
 
-  if (changes[SETTINGS_KEY]) {
-    applySettings(changes[SETTINGS_KEY].newValue);
+  if (changes[STOREPILOT_OPTIONS_SETTINGS_KEY]) {
+    storePilotOptionsApplySettings(changes[STOREPILOT_OPTIONS_SETTINGS_KEY].newValue, elements);
   }
 
   if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]) {
@@ -473,7 +428,7 @@ storePilotStorageOnChangedAddListener((changes, areaName) => {
 
 (async () => {
   storePilotApplyI18n();
-  applySettings(await getSettings());
+  storePilotOptionsApplySettings(await storePilotOptionsGetSettings(), elements);
   selectDetailTab("locales");
   await renderAll();
 })();
