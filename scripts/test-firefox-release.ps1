@@ -193,6 +193,8 @@ foreach ($needle in @(
   ".\scripts\test-unit.ps1",
   ".\scripts\test-firefox-release.ps1",
   ".\scripts\test-firefox-temporary-load.ps1",
+  "artifacts/storepilot-<manifest version>.zip",
+  "artifacts/source/storepilot-source-<manifest version>.zip",
   "store-listing/amo",
   "Reset local data",
   "https://github.com/molodchyk/StorePilot",

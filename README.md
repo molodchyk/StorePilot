@@ -34,7 +34,7 @@ Load it temporarily:
 The build also creates:
 
 ```text
-artifacts/storepilot-1.3.1.zip
+artifacts/storepilot-<manifest version>.zip
 ```
 
 AMO source-code upload package:
@@ -46,7 +46,7 @@ AMO source-code upload package:
 This creates:
 
 ```text
-artifacts/source/storepilot-source-1.3.1.zip
+artifacts/source/storepilot-source-<manifest version>.zip
 ```
 
 Run release-facing checks:
