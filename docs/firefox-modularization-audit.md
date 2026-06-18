@@ -19,7 +19,8 @@ Runtime entry and surface files inspected:
 | File | Current role | Audit result |
 | --- | --- | --- |
 | `src/background.js` | Background message handling, media upload orchestration, action-click behavior | Slightly over the entry-file budget and still owns browser API orchestration directly. |
-| `src/content/dashboard-helper.js` | Dashboard detection, panel UI, selector strategy, description fill, category fill, Additional fields, privacy, Data usage, media upload coordination | Major architecture debt. This is the main content-script runtime and still owns multiple feature behaviors that should move into feature modules. |
+| `src/content/dashboard-helper.js` | Dashboard detection, panel UI behavior, selector strategy, description fill, category fill, Additional fields, privacy, Data usage, and media upload coordination | Major architecture debt. This is the main content-script runtime and still owns multiple feature behaviors that should move into feature modules. First content split done: injected panel CSS moved out to `src/content/dashboard-panel-styles.js`. |
+| `src/content/dashboard-panel-styles.js` | Focused dashboard panel CSS injector loaded before the main content helper | Acceptable focused content UI helper. Keep panel styling changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/media-upload-main-world.js` | Narrow page-world upload bridge | Acceptable as a focused page bridge. |
 | `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | First split done. This file is now under the preferred UI-module budget after dashboard page detection, project-context resolution, active-tab messaging, panel state, and popup media dashboard state moved to `src/popup/dashboard-page.js`. |
 | `src/popup/dashboard-page.js` | Popup-owned Chrome Web Store dashboard URL checks, active-tab messaging, dashboard project binding resolution, panel visibility, and media action state | Acceptable focused popup helper. Keep this separate from content-script selector and fill logic. |
@@ -41,6 +42,7 @@ Feature and shared modules already present:
 - `src/shared/privacy-doc.js`
 - `src/shared/projects.js`
 - `src/shared/storage.js`
+- `src/content/dashboard-panel-styles.js`
 - `src/popup/dashboard-page.js`
 
 These modules are useful migration footholds, but they are still broad shared modules rather than feature-owned `features/*/core`, `features/*/content`, `features/*/popup`, and `features/*/options` modules.
@@ -66,7 +68,8 @@ Test coverage inspected:
 ## Named Follow-Ups
 
 1. `Split dashboard fill feature modules`
-   - Move description fill, category fill, Additional fields fill, privacy fill, Data Usage fill, selector diagnostics, and dashboard panel rendering out of `src/content/dashboard-helper.js` into feature-owned content/core modules.
+   - First content split done in this pass: dashboard panel CSS injection now lives in `src/content/dashboard-panel-styles.js`.
+   - Remaining work: move description fill, category fill, Additional fields fill, privacy fill, Data Usage fill, selector diagnostics, and dashboard panel rendering behavior out of `src/content/dashboard-helper.js` into feature-owned content/core modules.
 
 2. `Extract options project review modules`
    - First slice done in this pass: Graphic Assets rendering lives in `src/options/options-media.js`; Privacy Document, Data Usage, Additional Fields, Product Details category, and language diagnostics live in `src/options/options-review-tables.js`; `src/options/options.js` is back under the file-size budget.

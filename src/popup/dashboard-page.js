@@ -32,7 +32,10 @@ async function getActiveTab() {
 async function injectContentScript(tabId) {
   await storePilotScriptingExecuteScript({
     target: { tabId },
-    files: ["src/content/dashboard-helper.js"]
+    files: [
+      "src/content/dashboard-panel-styles.js",
+      "src/content/dashboard-helper.js"
+    ]
   });
 }
 

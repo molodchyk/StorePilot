@@ -54,6 +54,7 @@
       ],
       "js": [
         "src/platform/webextension.js",
+        "src/content/dashboard-panel-styles.js",
         "src/content/dashboard-helper.js"
       ]
     }
