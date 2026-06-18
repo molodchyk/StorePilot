@@ -2,53 +2,58 @@
 
 Use this file when submitting StorePilot to Firefox Add-ons.
 
-## Version 1.1.3 Fields
+## Version 1.3.0.1 Fields
 
 Release Notes:
 
 ```text
-StorePilot 1.1.3 is a small reliability release for project import and Chrome Web Store privacy automation.
+StorePilot 1.3.0.1 re-uploads the 1.3.0 feature release after an AMO submission glitch. It adds Chrome Web Store category, Additional fields, and Data usage disclosure automation, plus clearer release-prep project structure guidance.
 
 What's changed:
-- One-language project imports now recognize focused Chrome Web Store draft documents such as docs/chrome-web-store.md and import them as the English listing.
-- Folder imports through browser file pickers can pass image files through for media-asset scanning.
-- Privacy automation now keeps privacy_policy_url isolated from following key/value lines such as data_usage and certification fields.
-- Privacy form filling now extracts only the URL for the privacy policy URL field, even if an older import stored extra text.
+- Project imports can now detect docs/chrome-web-store-category.md with an explicit Selected category line.
+- The popup and dashboard panel can select the matching Chrome Web Store category at the user's request.
+- Project imports can now detect docs/chrome-web-store-additional-fields.md for Official URL, Homepage URL, Support URL, and Mature content values.
+- The popup and dashboard panel can fill detected Chrome Web Store Additional fields at the user's request.
+- The options page Product Details view now shows imported description text plus the detected category, source file, reason, and scan counts.
+- The options page Additional Fields view shows detected values, source file, and scan counts so users can verify them before filling the dashboard.
+- The options page Data Usage view shows detected Data usage and certification values so users can verify them before filling the privacy page.
+- The popup and dashboard panel include Fill data usage on the Chrome Web Store Privacy page; it only checks boxes with explicit yes values in the imported privacy document.
+- The Chrome Web Store Privacy fill action now treats remote_code as the dashboard Yes/No remote-code radio and fills remote_code_justification only when remote_code is yes.
+- Chrome Web Store graphic assets are now labeled as Graphic Assets in StorePilot to match the dashboard terminology.
+- The primary listing action is labeled Fill descriptions, while the old current-language filler is hidden behind an advanced preference for debugging/manual fallback use.
+- Additional Fields now appears after Graphic Assets in options, popup, and dashboard panel ordering to match the Chrome Web Store page.
+- The built-in project reference now documents one-language project layout, listing text, category, Additional fields, graphic assets, and privacy automation files, including that Data usage values are public disclosure decisions rather than permission justifications.
 - No permissions, data collection behavior, host permissions, or automatic submit/review behavior changed.
 ```
 
 Notes to Reviewer:
 
 ```text
-StorePilot is a local-first extension for browser extension publishers. It imports localized listing text, store media references, and privacy-form text from user-selected local files/folders, then helps fill Chrome Web Store Developer Dashboard fields at the user's request.
+StorePilot is a local-first tool for extension publishers. It imports user-selected local project files/folders (localized listing text, CWS category, Additional fields, graphic asset references, privacy-form text, and Data usage choices) and helps fill CWS Developer Dashboard fields only when the user clicks an action.
 
-Version 1.1.3 changes:
-- StorePilot can import a small one-language project when its Chrome Web Store listing draft is a single document such as docs/chrome-web-store.md.
-- The fallback folder picker accepts PNG/JPEG files so media assets remain available when the browser exposes folder contents as a FileList.
-- Chrome Web Store privacy-form parsing now stops privacy_policy_url before unrelated key/value lines such as data_usage and certification_1.
-- The privacy dashboard filler also extracts only the URL before writing to the privacy policy URL field.
-- No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed.
+Version 1.3.0.1 reviewer notes:
+- Adds category detection from docs/chrome-web-store-category.md and Select category on Chrome Web Store listing pages.
+- Adds Additional fields detection from docs/chrome-web-store-additional-fields.md for Official URL, Homepage URL, Support URL, and Mature content; Fill additional fields fills those controls from explicit imported values.
+- Adds a Data Usage options view and Fill data usage action for the CWS Privacy page. It maps the 9 Data usage categories and 3 certification boxes by section/order, checks explicit yes values, and unchecks explicit no values.
+- Updates Privacy fill: remote_code now drives the Yes/No remote-code radio; remote_code_justification is filled only when remote_code is yes.
+- Renames Store media UI to Graphic Assets, changes the main listing action to Fill descriptions, hides Fill current language behind an advanced preference, and orders Additional Fields after Graphic Assets.
+- Adds CWS item-id project binding so two open dashboard tabs can keep different StorePilot project contexts.
+- Adds reference docs for one-language project layouts, detailed description files, category, Additional fields, graphic assets, privacy, and Data usage disclosure decisions.
+- No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed. StorePilot never clicks final submit/publish/review.
 
 Privacy/data:
-- StorePilot has no analytics, tracking, telemetry, remote server, or off-device data transmission.
-- Imported listing text, media references, privacy-form text, project metadata, preferences, and folder permissions are stored only in local browser extension storage / browser-managed local handles.
-- The manifest declares browser_specific_settings.gecko.data_collection_permissions.required = ["none"].
+- No analytics, tracking, telemetry, remote server, or off-device data transmission.
+- Imported content, project metadata, preferences, and folder permissions stay in local browser extension storage / browser-managed local handles.
+- Manifest declares browser_specific_settings.gecko.data_collection_permissions.required = ["none"].
+- Host permissions for chrome.google.com/webstore/devconsole/* and chromewebstore.google.com/devconsole/* are used only to fill CWS dashboard fields and upload reviewable media at the user's request.
 
-Why Chrome Web Store host permissions are requested:
-- StorePilot runs on https://chrome.google.com/webstore/devconsole/* and https://chromewebstore.google.com/devconsole/* so it can fill dashboard fields and upload reviewable media at the user's request.
-
-Build:
+Build/source:
 - Source is not bundled, minified, transpiled, or obfuscated.
-- The submitted zip is built from this repository with:
-  powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-- The build copies source files, locales, icons, and manifest into dist, then writes artifacts/storepilot-1.1.3.zip.
-- The build script uses System.IO.Compression.ZipArchive instead of PowerShell Compress-Archive so zip entries use forward slashes, which AMO validation requires.
-
-Source package:
-- If source code is requested, upload artifacts/source/storepilot-source-1.1.3.zip.
-- It was generated with:
-  powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
-- The source package includes tracked repository files only, so unrelated local untracked files are not bundled.
+- Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
+- Expected extension package: artifacts/storepilot-1.3.0.1.zip
+- The build copies source, locales, icons, and manifest into dist, then creates the zip with forward-slash archive entries for AMO validation.
+- If source code is requested, upload artifacts/source/storepilot-source-1.3.0.1.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
+- Source package uses git ls-files, so generated/untracked local files are excluded.
 ```
 
 ## Add-on Page Fields
@@ -68,7 +73,7 @@ storepilot
 Summary:
 
 ```text
-Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, screenshots, and privacy forms.
+Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, screenshots, additional fields, and privacy forms.
 ```
 
 Description:
@@ -76,9 +81,9 @@ Description:
 ```text
 StorePilot: Chrome Web Store Automation helps browser extension developers automate Chrome extension store listings by autofilling Chrome Web Store Developer Dashboard fields from local project files instead of copy-pasting every locale by hand.
 
-Import an extension project root, a store-listing folder, or a direct listing folder containing locale-named listing text files such as en, de, or pt_BR. StorePilot keeps each extension as its own local project, detects localized descriptions, screenshots, icons, promo tiles, and privacy-form text, and stores imported data only in local browser extension storage.
+Import an extension project root, a store-listing folder, or a direct listing folder containing locale-named listing text files such as en, de, or pt_BR. StorePilot keeps each extension as its own local project, detects localized descriptions, category decisions, Additional fields values, screenshots, icons, promo tiles, and privacy-form text, and stores imported data only in local browser extension storage.
 
-On the Chrome Web Store Developer Dashboard, StorePilot can autofill the current listing language, fill all matching listing languages with progress and abort support, upload screenshots and other reviewable store media, clear uploaded media, and fill privacy fields from the imported project document.
+On the Chrome Web Store Developer Dashboard, StorePilot can fill matching detailed description fields with progress and abort support, select the imported category, upload screenshots and other reviewable graphic assets, clear uploaded assets, fill Additional fields, and fill privacy fields from the imported project document. A hidden-by-default advanced preference can expose the current-language filler for debugging or one-off manual fills.
 
 StorePilot never clicks final submit, publish, or review actions automatically.
 ```
@@ -86,7 +91,7 @@ StorePilot never clicks final submit, publish, or review actions automatically.
 Search/SEO notes:
 
 ```text
-AMO API checks after 1.1.1 showed StorePilot ranked #1 for "chrome web store listing autofill" but did not appear for "chrome extension store automate". The current English title and summary include broader exact-intent phrases: Chrome Web Store, automate, Chrome extension store listings, autofill, descriptions, screenshots, privacy forms, and Developer Dashboard.
+AMO API checks after 1.1.1 showed StorePilot ranked #1 for "chrome web store listing autofill" but did not appear for "chrome extension store automate". The current English title and summary include broader exact-intent phrases: Chrome Web Store, automate, Chrome extension store listings, autofill, descriptions, screenshots, additional fields, privacy forms, and Developer Dashboard.
 
 Live AMO tags after 1.1.1 were still google, translate, user scripts. Update the Tags field manually before or after upload.
 
@@ -143,7 +148,7 @@ Privacy Policy:
 ```text
 StorePilot does not collect or transmit data off your device.
 
-StorePilot has no analytics, no tracking, no telemetry, and no remote server. Imported listing text, media references, privacy-form text, project metadata, preferences, and folder permissions are stored only in the browser's local extension storage on your device.
+StorePilot has no analytics, no tracking, no telemetry, and no remote server. Imported listing text, category decisions, Additional fields values, media references, privacy-form text, project metadata, preferences, and folder permissions are stored only in the browser's local extension storage on your device.
 
 StorePilot only uses its requested permissions to:
 
@@ -163,7 +168,7 @@ Upload screenshots in this order:
 Caption:
 
 ```text
-Manage imported projects, review detected listing locales, media assets, privacy documents, and project source status.
+Manage imported projects, review detected listing locales, category, Additional fields, graphic assets, privacy documents, and project source status.
 ```
 
 2. `artifacts/screenshots/02-storepilot-listing-dashboard-panel.png`
@@ -171,7 +176,7 @@ Manage imported projects, review detected listing locales, media assets, privacy
 Caption:
 
 ```text
-Fill listing languages and manage uploaded store media directly from the Chrome Web Store dashboard panel.
+Fill listing languages, select category, fill Additional fields, and manage uploaded graphic assets directly from the Chrome Web Store dashboard panel.
 ```
 
 3. `artifacts/screenshots/03-storepilot-media-assets-preview.png`
@@ -217,7 +222,7 @@ automation
 
 Do not use unrelated tags such as ad blocker, privacy, security, vpn, shopping, or video downloader. StorePilot is a publishing/localization workflow tool, and AMO only allows up to 10 tags.
 
-After uploading 1.1.3, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
+After uploading 1.3.0.1, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
 
 ## Language Coverage Notes
 
@@ -290,7 +295,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 Expected output:
 
 ```text
-artifacts/storepilot-1.1.3.zip
+artifacts/storepilot-1.3.0.1.zip
 ```
 
 ## Source Code Upload
@@ -298,7 +303,7 @@ artifacts/storepilot-1.1.3.zip
 Upload this source package when AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.1.3.zip
+artifacts/source/storepilot-source-1.3.0.1.zip
 ```
 
 Create it with:
@@ -317,12 +322,12 @@ Required programs: PowerShell and Git.
 Node.js/npm: not required to build the submitted extension package.
 External dependencies: none.
 Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-Expected output: artifacts/storepilot-1.1.3.zip
+Expected output: artifacts/storepilot-1.3.0.1.zip
 ```
 
 ## Validation Requirements Learned
 
-- Submit `artifacts/storepilot-1.1.3.zip`.
+- Submit `artifacts/storepilot-1.3.0.1.zip`.
 - AMO rejects zip entries with Windows backslashes. The build script must preserve forward-slash archive names such as `src/background.js`.
 - The manifest declares:
 
@@ -352,34 +357,40 @@ Expected output: artifacts/storepilot-1.1.3.zip
 1. Run:
 
 ```powershell
+.\scripts\test-amo-submission.ps1
+```
+
+2. Build:
+
+```powershell
 .\scripts\build.ps1
 ```
 
-2. Create the source upload package:
+3. Create the source upload package:
 
 ```powershell
 .\scripts\build-amo-source.ps1
 ```
 
-3. Verify the extension artifact:
+4. Verify the extension artifact:
 
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.1.3.zip))
+$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.3.0.1.zip))
 $entries = $zip.Entries | Select-Object -ExpandProperty FullName
 if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash paths' }
 $zip.Dispose()
 ```
 
-4. Upload extension package:
+5. Upload extension package:
 
 ```text
-artifacts/storepilot-1.1.3.zip
+artifacts/storepilot-1.3.0.1.zip
 ```
 
-5. Upload source package if AMO asks for source code:
+6. Upload source package if AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.1.3.zip
+artifacts/source/storepilot-source-1.3.0.1.zip
 ```

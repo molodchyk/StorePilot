@@ -36,21 +36,42 @@
         <p id="importStatus" class="status project-status" role="status"></p>
       </section>
 
+      <section class="settings-panel" aria-label="Preferences" data-i18n-aria-label="preferences">
+        <div>
+          <h2 data-i18n="preferences">Preferences</h2>
+          <p class="hint" id="showAdvancedFillActionsHint" data-i18n="showAdvancedFillActionsHint">Shows Fill current language in the popup and dashboard panel for debugging or one-off manual fills.</p>
+        </div>
+        <label class="checkbox-setting" for="showAdvancedFillActions">
+          <input id="showAdvancedFillActions" type="checkbox" aria-describedby="showAdvancedFillActionsHint">
+          <span data-i18n="showAdvancedFillActions">Show advanced fill actions</span>
+        </label>
+      </section>
+
       <section class="status-cards" aria-label="Project status">
         <button id="listingsCard" class="status-card" type="button" data-detail-tab-target="locales">
-          <span class="card-label" data-i18n="importedListings">Imported Listings</span>
+          <span class="card-label" data-i18n="productDetails">Product Details</span>
           <strong id="listingsCardValue">0</strong>
           <span id="listingsCardMeta">No listings imported</span>
         </button>
         <button id="mediaCard" class="status-card" type="button" data-detail-tab-target="media">
-          <span class="card-label" data-i18n="storeMediaAssets">Store Media Assets</span>
+          <span class="card-label" data-i18n="storeMediaAssets">Graphic Assets</span>
           <strong id="mediaCardValue">Not scanned</strong>
-          <span id="mediaCardMeta">Re-import the project folder to scan media assets.</span>
+          <span id="mediaCardMeta">Re-import the project folder to scan graphic assets.</span>
+        </button>
+        <button id="additionalFieldsCard" class="status-card" type="button" data-detail-tab-target="additional">
+          <span class="card-label" data-i18n="additionalFields">Additional Fields</span>
+          <strong id="additionalFieldsCardValue">Not scanned</strong>
+          <span id="additionalFieldsCardMeta">Re-import the project folder to scan additional fields.</span>
         </button>
         <button id="privacyCard" class="status-card" type="button" data-detail-tab-target="privacy">
           <span class="card-label" data-i18n="privacyDocument">Privacy Document</span>
           <strong id="privacyCardValue">Not scanned</strong>
           <span id="privacyCardMeta">Re-import the project folder to scan the privacy document.</span>
+        </button>
+        <button id="dataUsageCard" class="status-card" type="button" data-detail-tab-target="dataUsage">
+          <span class="card-label" data-i18n="dataUsage">Data Usage</span>
+          <strong id="dataUsageCardValue">Not scanned</strong>
+          <span id="dataUsageCardMeta">Re-import the project folder to scan data usage disclosures.</span>
         </button>
         <button id="sourceCard" class="status-card" type="button" data-detail-tab-target="projects">
           <span class="card-label">Project Source</span>
@@ -60,27 +81,39 @@
       </section>
 
       <nav class="detail-tabs" aria-label="Details">
-        <button type="button" data-detail-tab="locales" aria-selected="true" data-i18n="importedListings">Imported Listings</button>
-        <button type="button" data-detail-tab="media" data-i18n="storeMediaAssets">Store Media Assets</button>
+        <button type="button" data-detail-tab="locales" aria-selected="true" data-i18n="productDetails">Product Details</button>
+        <button type="button" data-detail-tab="media" data-i18n="storeMediaAssets">Graphic Assets</button>
+        <button type="button" data-detail-tab="additional" data-i18n="additionalFields">Additional Fields</button>
         <button type="button" data-detail-tab="privacy" data-i18n="privacyDocument">Privacy Document</button>
+        <button type="button" data-detail-tab="dataUsage" data-i18n="dataUsage">Data Usage</button>
         <button type="button" data-detail-tab="projects" data-i18n="projects">Projects</button>
         <button type="button" data-detail-tab="reference">Reference</button>
       </nav>
 
       <section id="localesPanel" class="detail-panel" data-detail-panel="locales">
         <div class="section-heading">
-          <h2 data-i18n="importedListings">Imported Listings</h2>
+          <h2 data-i18n="productDetails">Product Details</h2>
           <span id="summary" data-i18n="noListingsImported">No listings imported</span>
         </div>
         <div id="listingTable" class="listing-table" aria-live="polite"></div>
+        <div id="languageDiagnosticsTable" class="language-diagnostics-table" aria-live="polite"></div>
+        <div id="productDetailsCategoryTable" class="category-table product-details-category-table" aria-live="polite"></div>
       </section>
 
       <section id="mediaPanel" class="detail-panel" data-detail-panel="media" hidden>
         <div class="section-heading">
-          <h2 data-i18n="storeMediaAssets">Store Media Assets</h2>
+          <h2 data-i18n="storeMediaAssets">Graphic Assets</h2>
           <span id="mediaSummary" data-i18n="mediaAssetsNotScanned">Not scanned</span>
         </div>
         <div id="mediaTable" class="media-table" aria-live="polite"></div>
+      </section>
+
+      <section id="additionalFieldsPanel" class="detail-panel" data-detail-panel="additional" hidden>
+        <div class="section-heading">
+          <h2 data-i18n="additionalFields">Additional Fields</h2>
+          <span id="additionalFieldsSummary" data-i18n="additionalFieldsDocNotScanned">Not scanned</span>
+        </div>
+        <div id="additionalFieldsTable" class="additional-fields-table" aria-live="polite"></div>
       </section>
 
       <section id="privacyPanel" class="detail-panel" data-detail-panel="privacy" hidden>
@@ -89,6 +122,15 @@
           <span id="privacySummary" data-i18n="privacyDocNotScanned">Not scanned</span>
         </div>
         <div id="privacyTable" class="privacy-table" aria-live="polite"></div>
+      </section>
+
+      <section id="dataUsagePanel" class="detail-panel" data-detail-panel="dataUsage" hidden>
+        <div class="section-heading">
+          <h2 data-i18n="dataUsage">Data Usage</h2>
+          <span id="dataUsageSummary" data-i18n="privacyDocNotScanned">Not scanned</span>
+        </div>
+        <div id="dataUsageTable" class="privacy-table" aria-live="polite"></div>
+        <p class="hint" data-i18n="privacyDocDataUsageRule">For data usage checkboxes, answer the exact Chrome Web Store public disclosure question: what user data do you plan to collect from users now or in the future? Treat collect as data that leaves local-only browser/device processing and is received, uploaded, logged, reviewed, or otherwise made available to the developer, a product backend, analytics, support, or a third-party service. These keys are not permission justifications and are not a list of data the extension can access or store locally. Use yes only for those developer or third-party collection cases. For local-only features where data stays on the user's device, use no; for example, a local history vault can need permission.history while still using data_usage.web_history: no. StorePilot applies explicit yes/no values: yes checks a box, no unchecks it; none, blank, or omitted leaves it unchanged.</p>
       </section>
 
       <section id="projectsPanel" class="detail-panel" data-detail-panel="projects" hidden>
@@ -102,9 +144,142 @@
       <section id="referencePanel" class="detail-panel reference-panel" data-detail-panel="reference" hidden>
         <div class="section-heading">
           <h2>Reference</h2>
-          <span data-i18n="privacyDocReferenceTitle">Privacy automation document reference</span>
+          <span data-i18n="projectReferenceTitle">Project import reference</span>
         </div>
         <div class="reference-content">
+          <section>
+            <h3 data-i18n="projectReferenceTitle">Project import reference</h3>
+            <p data-i18n="projectReferenceIntro">Start with one locale file if the extension only has one Chrome Web Store language today. Keep media, category, additional fields, and privacy files beside it so the same project can grow into more locales later.</p>
+            <pre><code>my-extension/
+manifest.json
+src/
+_locales/
+store-listing/
+  chrome-web-store/
+    listing/
+      en.md
+      # Add de.md, fr.md, pt_BR.md, etc. later.
+    media/
+      icon-128.png
+      screenshots/
+        01-main.png
+        02-settings.png
+      promo/
+        small-promo.png
+        marquee-promo.png
+docs/
+  chrome-web-store-additional-fields.md
+  chrome-web-store-category.md
+  chrome-web-store-privacy-form.md</code></pre>
+          </section>
+          <section class="reference-grid" aria-label="Detailed description and media reference">
+            <div>
+              <h3 data-i18n="listingReferenceTitle">Detailed description text</h3>
+              <p data-i18n="localeDescriptionRule">store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field. The file should contain only the final detailed description body users should see in the store listing.</p>
+              <p data-i18n="localeDescriptionWarnings">Do not include field labels such as Name, Summary, Description, or Detailed Description. Do not include Markdown headings. Do not put the short summary in this file.</p>
+              <p data-i18n="localeDescriptionExampleTitle">Example en.md content:</p>
+              <pre><code>New Tab: Custom URL lets you choose what opens when you create a new tab.
+
+Use a website, local HTML file, browser page, or a quiet blank page.</code></pre>
+              <ul>
+                <li><code>store-listing/chrome-web-store/listing/en.md</code></li>
+                <li><code>en.txt</code>, <code>en.md</code>, <code>en_US.md</code>, <code>de.md</code>, <code>pt_BR.md</code></li>
+              </ul>
+            </div>
+            <div>
+              <h3 data-i18n="mediaReferenceTitle">Graphic assets</h3>
+              <ul>
+                <li><code>icon-128.png</code> or <code>icon128.png</code>: 128 x 128</li>
+                <li><code>screenshots/01-name.png</code>: 1280 x 800 or 640 x 400, up to 5</li>
+                <li><code>promo/small-promo.png</code>: 440 x 280</li>
+                <li><code>promo/marquee-promo.png</code>: 1400 x 560</li>
+                <li>Accepted image files: <code>.png</code>, <code>.jpg</code>, <code>.jpeg</code></li>
+              </ul>
+            </div>
+          </section>
+          <section class="reference-grid" aria-label="Single draft and fields not imported">
+            <div>
+              <h3 data-i18n="singleDraftReferenceTitle">Alternative single-draft import</h3>
+              <p data-i18n="singleDraftReferenceRule">StorePilot also accepts docs/chrome-web-store.md for a single English draft. Only in this draft file, StorePilot may look for a Detailed Description or Description section and import that section as English detailed description text. This section parsing does not apply to store-listing/chrome-web-store/listing/en.md.</p>
+            </div>
+            <div>
+              <h3 data-i18n="listingNonGoalTitle">Fields not imported from listing/en.md</h3>
+              <ul>
+                <li>Name</li>
+                <li>Summary</li>
+                <li>Category</li>
+                <li>Homepage URL</li>
+                <li>Support URL</li>
+                <li>Official URL</li>
+                <li>Mature content</li>
+                <li>Privacy fields</li>
+              </ul>
+              <p data-i18n="listingNonGoalNote">These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files.</p>
+            </div>
+          </section>
+          <p class="hint" data-i18n="projectReferenceDetectionHint">Folder names such as store-listing, chrome-web-store, listing, media, screenshots, promo, assets, store-assets, and icons help StorePilot pick the right files when a project contains extra build output.</p>
+          <section>
+            <h3 data-i18n="additionalFieldsReferenceTitle">Additional fields document reference</h3>
+            <p data-i18n="additionalFieldsReferenceIntro">StorePilot can scan one project document for Chrome Web Store Additional fields values. Keep these outside locale listing files so the detailed description body stays clean.</p>
+            <pre><code>[additional_fields]
+official_url:
+none
+
+homepage_url:
+https://example.com
+
+support_url:
+https://example.com/support
+
+mature_content:
+no</code></pre>
+            <p data-i18n="additionalFieldsReferenceRule">Recommended filename: docs/chrome-web-store-additional-fields.md. Omit a key or leave it blank when StorePilot should not touch that dashboard field. Use none for URL fields only when you want StorePilot to clear/select no URL. For mature_content, use yes to turn the switch on or no to turn it off; none, blank, or omitted means do not touch the switch.</p>
+          </section>
+          <section>
+            <h3 data-i18n="categoryDocReferenceTitle">Category automation document reference</h3>
+            <p data-i18n="categoryDocReferenceIntro">StorePilot can scan one project document for the Chrome Web Store category. Use an explicit Selected category line so the scanner does not infer from notes or option lists.</p>
+            <pre><code>Chrome Web Store Category Decision
+Selected category: Functionality and UI
+
+Reason:
+The extension changes browser new-tab behavior and gives users a small interface for configuring that behavior.</code></pre>
+            <p data-i18n="categoryDocSelectedRule">Recommended filename: docs/chrome-web-store-category.md. The file should contain Selected category: followed by one visible Chrome Web Store category label.</p>
+          </section>
+          <section class="reference-grid" aria-label="Chrome Web Store category labels">
+            <div>
+              <h3>Productivity</h3>
+              <ul>
+                <li>Communication</li>
+                <li>Developer Tools</li>
+                <li>Education</li>
+                <li>Tools</li>
+                <li>Workflow and planning</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Lifestyle</h3>
+              <ul>
+                <li>Art &amp; Design</li>
+                <li>Entertainment</li>
+                <li>Games</li>
+                <li>Household</li>
+                <li>Just for fun</li>
+                <li>News &amp; Weather</li>
+                <li>Shopping</li>
+                <li>Social Networking</li>
+                <li>Travel</li>
+                <li>Wellbeing</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Make Chrome Yours</h3>
+              <ul>
+                <li>Accessibility</li>
+                <li>Functionality and UI</li>
+                <li>Privacy &amp; Security</li>
+              </ul>
+            </div>
+          </section>
           <section>
             <h3 data-i18n="privacyDocReferenceTitle">Privacy automation document reference</h3>
             <p data-i18n="privacyDocReferenceIntro">StorePilot can scan one project document for Chrome Web Store privacy fields. Use these canonical keys so the scanner can route text without guessing.</p>
@@ -122,11 +297,31 @@ host_permission:
 ...
 
 remote_code:
-...
+no
 
 privacy_policy_url:
-https://example.com/privacy</code></pre>
+https://example.com/privacy
+
+data_usage.personally_identifiable_information:
+no
+
+data_usage.web_history:
+no
+
+data_usage.website_content:
+no
+
+certification.no_sell_or_transfer:
+yes
+
+certification.no_unrelated_use:
+yes
+
+certification.no_creditworthiness:
+yes</code></pre>
             <p data-i18n="privacyDocPermissionRule">For permission justifications, use permission.&lt;manifest permission code&gt;. The suffix should match the code in your manifest permissions, optional_permissions, host_permissions, or content_scripts.matches.</p>
+            <p data-i18n="privacyDocRemoteCodeRule">For remote code, use remote_code as the Chrome Web Store yes/no answer. Use no when all code is packaged locally, and do not include remote_code_justification for that case. Use yes only when the extension uses remote code, and then provide remote_code_justification for the required justification textarea.</p>
+            <p data-i18n="privacyDocDataUsageRule">For data usage checkboxes, answer the exact Chrome Web Store public disclosure question: what user data do you plan to collect from users now or in the future? Treat collect as data that leaves local-only browser/device processing and is received, uploaded, logged, reviewed, or otherwise made available to the developer, a product backend, analytics, support, or a third-party service. These keys are not permission justifications and are not a list of data the extension can access or store locally. Use yes only for those developer or third-party collection cases. For local-only features where data stays on the user's device, use no; for example, a local history vault can need permission.history while still using data_usage.web_history: no. StorePilot applies explicit yes/no values: yes checks a box, no unchecks it; none, blank, or omitted leaves it unchanged.</p>
             <p data-i18n="privacyDocNamingGuideline">Recommended filename: docs/chrome-web-store-privacy-form.md. StorePilot also accepts other .md or .txt files when the content contains a [privacy] block and canonical keys, but that filename gives the scanner the strongest signal.</p>
           </section>
           <section class="reference-grid" aria-label="Common privacy document keys">
@@ -137,6 +332,24 @@ https://example.com/privacy</code></pre>
                 <li><code>remote_code</code></li>
                 <li><code>privacy_policy_url</code></li>
                 <li><code>host_permission</code></li>
+                <li><code>remote_code_justification</code></li>
+              </ul>
+            </div>
+            <div>
+              <h3 data-i18n="dataUsage">Data Usage</h3>
+              <ul>
+                <li><code>data_usage.personally_identifiable_information</code></li>
+                <li><code>data_usage.health_information</code></li>
+                <li><code>data_usage.financial_payment_information</code></li>
+                <li><code>data_usage.authentication_information</code></li>
+                <li><code>data_usage.personal_communications</code></li>
+                <li><code>data_usage.location</code></li>
+                <li><code>data_usage.web_history</code></li>
+                <li><code>data_usage.user_activity</code></li>
+                <li><code>data_usage.website_content</code></li>
+                <li><code>certification.no_sell_or_transfer</code></li>
+                <li><code>certification.no_unrelated_use</code></li>
+                <li><code>certification.no_creditworthiness</code></li>
               </ul>
             </div>
             <div>
@@ -176,6 +389,8 @@ https://example.com/privacy</code></pre>
     <script src="../shared/directory-detection.js"></script>
     <script src="../shared/media-assets.js"></script>
     <script src="../shared/privacy-doc.js"></script>
+    <script src="../shared/category-doc.js"></script>
+    <script src="../shared/additional-fields-doc.js"></script>
     <script src="../shared/storage.js"></script>
     <script src="../shared/importers.js"></script>
     <script src="../project-overrides.js"></script>

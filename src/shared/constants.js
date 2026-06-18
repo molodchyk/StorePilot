@@ -2,6 +2,7 @@ const STOREPILOT_LISTING_STORAGE_KEY = "storePilotListings";
 var STOREPILOT_API = globalThis.browser;
 const STOREPILOT_PROJECTS_STORAGE_KEY = "storePilotProjects";
 const STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
+const STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY = "storePilotDashboardProjectBindings";
 const STOREPILOT_HANDLE_DB_NAME = "storePilotHandles";
 const STOREPILOT_HANDLE_DB_VERSION = 2;
 const STOREPILOT_HANDLE_STORE_NAME = "handles";
@@ -46,62 +47,4 @@ const STOREPILOT_SKIPPED_DIRECTORY_NAMES = new Set([
   ".cache",
   ".next",
   "node_modules"
-]);
-const STOREPILOT_CHROME_WEB_STORE_SUPPORTED_LOCALES = new Set([
-  "ar",
-  "am",
-  "bg",
-  "bn",
-  "ca",
-  "cs",
-  "da",
-  "de",
-  "el",
-  "en",
-  "en_AU",
-  "en_GB",
-  "en_US",
-  "es",
-  "es_419",
-  "et",
-  "fa",
-  "fi",
-  "fil",
-  "fr",
-  "gu",
-  "he",
-  "hi",
-  "hr",
-  "hu",
-  "id",
-  "it",
-  "ja",
-  "kn",
-  "ko",
-  "lt",
-  "lv",
-  "ml",
-  "mr",
-  "ms",
-  "nl",
-  "no",
-  "pl",
-  "pt_BR",
-  "pt_PT",
-  "ro",
-  "ru",
-  "sk",
-  "sl",
-  "sr",
-  "sv",
-  "sw",
-  "ta",
-  "te",
-  "th",
-  "tr",
-  "uk",
-  "ur",
-  "vi",
-  "zh_CN",
-  "zh_TW"
 ]);

@@ -23,6 +23,7 @@ StorePilot currently focuses on:
 - Flat locale files named by locale, for example `en.txt`, `de.md`, `pt_BR.markdown`.
 - Multi-project local storage.
 - Chrome Web Store Developer Dashboard listing fields.
+- Chrome Web Store Developer Dashboard additional product fields.
 - Chrome Web Store Developer Dashboard media assets.
 - Chrome Web Store Developer Dashboard privacy fields.
 

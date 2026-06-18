@@ -23,6 +23,8 @@ const elements = {
   importFolder: document.getElementById("importFolder"),
   fillCurrentLanguage: document.getElementById("fillCurrentLanguage"),
   fillAllLanguages: document.getElementById("fillAllLanguages"),
+  selectCategory: document.getElementById("selectCategory"),
+  fillAdditionalFields: document.getElementById("fillAdditionalFields"),
   uploadStoreIcon: document.getElementById("uploadStoreIcon"),
   uploadScreenshots: document.getElementById("uploadScreenshots"),
   uploadSmallPromo: document.getElementById("uploadSmallPromo"),
@@ -33,6 +35,7 @@ const elements = {
   clearMarqueePromo: document.getElementById("clearMarqueePromo"),
   fillSinglePurpose: document.getElementById("fillSinglePurpose"),
   fillPrivacy: document.getElementById("fillPrivacy"),
+  fillDataUsage: document.getElementById("fillDataUsage"),
   diagnosePrivacyPage: document.getElementById("diagnosePrivacyPage"),
   abortFillAll: document.getElementById("abortFillAll"),
   openPanel: document.getElementById("openPanel"),
@@ -67,6 +70,7 @@ async function getSettings() {
   const stored = await STOREPILOT_API.storage.local.get(SETTINGS_KEY);
   return {
     theme: "system",
+    showAdvancedFillActions: false,
     ...(stored[SETTINGS_KEY] || {})
   };
 }
@@ -79,6 +83,17 @@ async function updateSettings(patch) {
 
   await STOREPILOT_API.storage.local.set({ [SETTINGS_KEY]: settings });
   return settings;
+}
+
+function applySettings(settings = {}) {
+  const normalized = {
+    theme: "system",
+    showAdvancedFillActions: false,
+    ...settings
+  };
+
+  applyTheme(normalized.theme);
+  elements.fillCurrentLanguage.hidden = !Boolean(normalized.showAdvancedFillActions);
 }
 
 function setStatus(message, isError = false) {
@@ -122,6 +137,8 @@ function getPopupListingActionControls() {
   return [
     elements.fillCurrentLanguage,
     elements.fillAllLanguages,
+    elements.selectCategory,
+    elements.fillAdditionalFields,
     elements.uploadStoreIcon,
     elements.uploadScreenshots,
     elements.uploadSmallPromo,
@@ -143,6 +160,7 @@ function getPopupPrivacyActionControls() {
   return [
     elements.fillSinglePurpose,
     elements.fillPrivacy,
+    elements.fillDataUsage,
     elements.diagnosePrivacyPage
   ].filter(Boolean);
 }
@@ -161,12 +179,16 @@ function setPopupMediaRunning(isRunning, title = "") {
   isPopupMediaRunning = isRunning;
   getPopupMediaButtons().forEach(button => {
     button.disabled = isRunning || isPopupFillAllRunning;
-    button.title = isRunning ? title : (isPopupFillAllRunning ? t("fillingAllLanguages", "Filling all languages...") : "");
+    button.title = isRunning ? title : (isPopupFillAllRunning ? t("fillingAllLanguages", "Filling descriptions...") : "");
   });
-  elements.fillCurrentLanguage.disabled = isRunning;
+  elements.fillCurrentLanguage.disabled = isRunning || isPopupFillAllRunning;
   elements.fillAllLanguages.disabled = isRunning || isPopupFillAllRunning;
-  elements.fillCurrentLanguage.title = title;
-  elements.fillAllLanguages.title = title;
+  elements.selectCategory.disabled = isRunning || isPopupFillAllRunning;
+  elements.fillAdditionalFields.disabled = isRunning || isPopupFillAllRunning;
+  elements.fillCurrentLanguage.title = title || (isPopupFillAllRunning ? t("fillingAllLanguages", "Filling descriptions...") : "");
+  elements.fillAllLanguages.title = title || (isPopupFillAllRunning ? t("fillingAllLanguages", "Filling descriptions...") : "");
+  elements.selectCategory.title = title || (isPopupFillAllRunning ? t("fillingAllLanguages", "Filling descriptions...") : "");
+  elements.fillAdditionalFields.title = title || (isPopupFillAllRunning ? t("fillingAllLanguages", "Filling descriptions...") : "");
   elements.abortFillAll.hidden = !(isPopupFillAllRunning || isPopupMediaRunning);
   elements.abortFillAll.disabled = false;
   syncUtilityActionsVisibility();
@@ -211,6 +233,63 @@ function renderProjectSelect(projects, activeProjectId) {
   elements.projectSelect.disabled = !projects.length;
 }
 
+async function getDashboardProjectContext(tab) {
+  const url = tab && tab.url ? tab.url : "";
+  const context = {
+    url,
+    extensionId: typeof storePilotGetDashboardExtensionIdFromUrl === "function"
+      ? storePilotGetDashboardExtensionIdFromUrl(url)
+      : "",
+    title: ""
+  };
+
+  if (!context.extensionId || !tab || !tab.id) return context;
+
+  try {
+    const result = await sendToActiveTab("storepilot-get-project-context");
+    if (result && result.ok && result.context) {
+      context.extensionId = result.context.extensionId || context.extensionId;
+      context.title = result.context.dashboardItemTitle || "";
+    }
+  } catch (_error) {
+    // The URL id is enough when the dashboard helper is not ready yet.
+  }
+
+  return context;
+}
+
+async function resolvePopupProject() {
+  const { projects, activeProjectId } = await storePilotGetProjectsState();
+  const tab = await getActiveTab().catch(() => null);
+  const context = tab && isDeveloperDashboardUrl(tab.url || "")
+    ? await getDashboardProjectContext(tab)
+    : { url: tab && tab.url || "", extensionId: "", title: "" };
+  const bindings = typeof storePilotGetDashboardProjectBindings === "function"
+    ? await storePilotGetDashboardProjectBindings()
+    : {};
+  const resolved = typeof storePilotResolveDashboardProjectFromState === "function"
+    ? storePilotResolveDashboardProjectFromState({ projects, activeProjectId }, bindings, context)
+    : {
+      project: projects.find(project => project.id === activeProjectId) || projects[0] || null,
+      extensionId: context.extensionId,
+      source: "active"
+    };
+
+  if (resolved.source === "title" && resolved.extensionId && resolved.project && typeof storePilotBindDashboardProject === "function") {
+    await storePilotBindDashboardProject(resolved.extensionId, resolved.project.id, {
+      dashboardItemTitle: context.title || "",
+      source: "title"
+    });
+  }
+
+  return {
+    projects,
+    project: resolved.project || null,
+    dashboardExtensionId: resolved.extensionId || context.extensionId || "",
+    dashboardProjectSource: resolved.source || "none"
+  };
+}
+
 function formatMediaSummary(projectOrResult) {
   return typeof storePilotFormatMediaSummary === "function"
     ? storePilotFormatMediaSummary(projectOrResult && projectOrResult.mediaAssets)
@@ -228,13 +307,18 @@ function hasPrivacyDocFile(projectOrResult) {
 }
 
 async function refreshSummary() {
-  const { projects, activeProjectId } = await storePilotGetProjectsState();
-  const activeProject = projects.find(project => project.id === activeProjectId) || projects[0] || null;
+  const {
+    projects,
+    project: activeProject,
+    dashboardExtensionId
+  } = await resolvePopupProject();
   const count = activeProject ? storePilotGetProjectLocaleCount(activeProject) : 0;
   const updatedAt = activeProject ? storePilotFormatDisplayTimestamp(activeProject.lastSyncedAt) : t("never", "Never");
 
   renderProjectSelect(projects, activeProject && activeProject.id);
-  elements.summary.textContent = activeProject
+  elements.summary.textContent = activeProject && dashboardExtensionId
+    ? t("popupDashboardProjectSummary", "$1 listing locale(s) in $2 for this dashboard item. Last updated on $3.", [String(count), activeProject.name, updatedAt])
+    : activeProject
     ? t("popupSummary", "$1 listing locale(s) in $2. Last updated on $3.", [String(count), activeProject.name, updatedAt])
     : t("noProjectsYet", "No projects yet");
   updateMediaActionState().catch(() => {});
@@ -324,19 +408,30 @@ async function sendToActiveTab(typeOrMessage) {
 
 function setPopupFillAllRunning(isRunning) {
   isPopupFillAllRunning = isRunning;
-  elements.fillAllLanguages.disabled = isRunning;
+  elements.fillCurrentLanguage.disabled = isRunning || isPopupMediaRunning;
+  elements.fillAllLanguages.disabled = isRunning || isPopupMediaRunning;
+  elements.selectCategory.disabled = isRunning || isPopupMediaRunning;
+  elements.fillAdditionalFields.disabled = isRunning || isPopupMediaRunning;
+  elements.fillCurrentLanguage.title = isRunning ? t("fillingAllLanguages", "Filling descriptions...") : "";
+  elements.fillAllLanguages.title = isRunning ? t("fillingAllLanguages", "Filling descriptions...") : "";
+  elements.selectCategory.title = isRunning ? t("fillingAllLanguages", "Filling descriptions...") : "";
+  elements.fillAdditionalFields.title = isRunning ? t("fillingAllLanguages", "Filling descriptions...") : "";
   elements.abortFillAll.hidden = !(isRunning || isPopupMediaRunning);
   elements.abortFillAll.disabled = false;
   syncUtilityActionsVisibility();
   getPopupMediaButtons().forEach(button => {
     button.disabled = isRunning;
-    button.title = isRunning ? t("fillingAllLanguages", "Filling all languages...") : "";
+    button.title = isRunning ? t("fillingAllLanguages", "Filling descriptions...") : "";
   });
   if (!isRunning && !isPopupMediaRunning) {
     elements.fillCurrentLanguage.disabled = false;
     elements.fillAllLanguages.disabled = false;
+    elements.selectCategory.disabled = false;
+    elements.fillAdditionalFields.disabled = false;
     elements.fillCurrentLanguage.title = "";
     elements.fillAllLanguages.title = "";
+    elements.selectCategory.title = "";
+    elements.fillAdditionalFields.title = "";
   }
 
   if (isRunning) {
@@ -503,9 +598,26 @@ function showActionResult(result) {
 }
 
 elements.projectSelect.addEventListener("change", async event => {
-  await storePilotSetActiveProject(event.target.value);
+  const projectId = event.target.value;
+  const tab = await getActiveTab().catch(() => null);
+  const dashboardExtensionId = tab && typeof storePilotGetDashboardExtensionIdFromUrl === "function"
+    ? storePilotGetDashboardExtensionIdFromUrl(tab.url || "")
+    : "";
+
+  if (dashboardExtensionId && typeof storePilotBindDashboardProject === "function") {
+    const selectedProject = (await storePilotGetProjectsState()).projects.find(project => project.id === projectId);
+    await storePilotBindDashboardProject(dashboardExtensionId, projectId, {
+      dashboardItemTitle: "",
+      source: "manual"
+    });
+    await sendToActiveTab("storepilot-reload").catch(() => null);
+    setStatus(t("dashboardProjectLinked", "Linked this dashboard item to $1.", [selectedProject ? selectedProject.name : t("selectedProject", "Selected project")]));
+  } else {
+    await storePilotSetActiveProject(projectId);
+    setStatus(t("projectSelected", "Project selected."));
+  }
+
   await refreshSummary();
-  setStatus(t("projectSelected", "Project selected."));
 });
 
 elements.fillCurrentLanguage.addEventListener("click", async () => {
@@ -519,7 +631,7 @@ elements.fillAllLanguages.addEventListener("click", async () => {
   if (isPopupFillAllRunning || isPopupMediaRunning) return;
 
   setPopupFillAllRunning(true);
-  setStatus(t("fillingAllLanguages", "Filling all languages..."));
+  setStatus(t("fillingAllLanguages", "Filling descriptions..."));
 
   try {
     const result = await sendToActiveTab("storepilot-fill-all-languages");
@@ -527,6 +639,22 @@ elements.fillAllLanguages.addEventListener("click", async () => {
   } finally {
     setPopupFillAllRunning(false);
   }
+});
+
+elements.selectCategory.addEventListener("click", async () => {
+  if (isPopupFillAllRunning || isPopupMediaRunning) return;
+
+  setStatus(t("selectingCategory", "Selecting category..."));
+  const result = await sendToActiveTab("storepilot-select-category");
+  showActionResult(result);
+});
+
+elements.fillAdditionalFields.addEventListener("click", async () => {
+  if (isPopupFillAllRunning || isPopupMediaRunning) return;
+
+  setStatus(t("fillingAdditionalFields", "Filling additional fields..."));
+  const result = await sendToActiveTab("storepilot-fill-additional-fields");
+  showActionResult(result);
 });
 
 elements.fillSinglePurpose.addEventListener("click", async () => {
@@ -539,6 +667,12 @@ elements.fillSinglePurpose.addEventListener("click", async () => {
 
 elements.fillPrivacy.addEventListener("click", async () => {
   const result = await sendToActiveTab("storepilot-fill-privacy");
+  showActionResult(result);
+});
+
+elements.fillDataUsage.addEventListener("click", async () => {
+  setStatus(t("fillingDataUsage", "Filling data usage..."));
+  const result = await sendToActiveTab("storepilot-fill-data-usage");
   showActionResult(result);
 });
 
@@ -604,7 +738,7 @@ elements.abortFillAll.addEventListener("click", async () => {
       return;
     }
     elements.abortFillAll.disabled = false;
-    setStatus(result.message || t("couldNotStopFillAll", "Could not stop fill all."), true);
+    setStatus(result.message || t("couldNotStopFillAll", "Could not stop the operation."), true);
   }
 });
 
@@ -625,7 +759,7 @@ elements.openOptionsShortcut.addEventListener("click", openOptionsPageFromPopup)
 elements.themeChoices.forEach(button => {
   button.addEventListener("click", async () => {
     const settings = await updateSettings({ theme: button.dataset.themeChoice });
-    applyTheme(settings.theme);
+    applySettings(settings);
   });
 });
 
@@ -633,10 +767,10 @@ STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[SETTINGS_KEY]) {
-    applyTheme(changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme);
+    applySettings(changes[SETTINGS_KEY].newValue);
   }
 
-  if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]) {
+  if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY] || changes[STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]) {
     refreshSummary();
   }
 
@@ -653,14 +787,14 @@ if (STOREPILOT_API.runtime && STOREPILOT_API.runtime.onMessage) {
 
     applyFillAllStatus(message.status || {
       running: isPopupFillAllRunning,
-      message: message.message || t("fillingAllLanguages", "Filling all languages...")
+      message: message.message || t("fillingAllLanguages", "Filling descriptions...")
     });
   });
 }
 
 (async () => {
   storePilotApplyI18n();
-  applyTheme((await getSettings()).theme);
+  applySettings(await getSettings());
   await updateDashboardSectionUi();
   await refreshSummary();
   await updateDashboardSectionUi();

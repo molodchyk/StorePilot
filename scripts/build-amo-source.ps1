@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root "artifacts\source"
-$zip = Join-Path $artifacts "storepilot-source-1.1.3.zip"
+$zip = Join-Path $artifacts "storepilot-source-1.3.0.1.zip"
 
 if (Test-Path -LiteralPath $zip) {
   Remove-Item -LiteralPath $zip -Force

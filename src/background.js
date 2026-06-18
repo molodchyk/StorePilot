@@ -44,9 +44,15 @@
     return false;
   }
 
-  async function resolveMediaFilesForActiveProject(requestAccess = false, kind = "") {
+  async function resolveMediaFilesForActiveProject(requestAccess = false, kind = "", dashboardUrl = "") {
     const state = await storePilotGetProjectsState();
-    const project = state.projects.find(candidate => candidate.id === state.activeProjectId) || state.projects[0] || null;
+    const resolved = typeof storePilotResolveProjectForDashboard === "function"
+      ? await storePilotResolveProjectForDashboard({ url: dashboardUrl })
+      : {};
+    const project = resolved.project ||
+      state.projects.find(candidate => candidate.id === state.activeProjectId) ||
+      state.projects[0] ||
+      null;
 
     if (!project) {
       return { ok: false, message: text("noActiveProject", "No active project") };
@@ -128,7 +134,7 @@
       return { ok: false, message: text("noActiveTab", "No active tab.") };
     }
 
-    const resolved = await resolveMediaFilesForActiveProject(requestAccess, kind);
+    const resolved = await resolveMediaFilesForActiveProject(requestAccess, kind, tab.url || "");
     if (!resolved.ok) return resolved;
 
     return api.tabs.sendMessage(tab.id, {

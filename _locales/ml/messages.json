@@ -72,7 +72,7 @@
     "message": "ഇറക്കുമതി ചെയ്ത ലിസ്റ്റിംഗുകൾ"
   },
   "storeMediaAssets": {
-    "message": "മീഡിയ അസറ്റുകൾ സംഭരിക്കുക"
+    "message": "Graphic Assets"
   },
   "privacyDocument": {
     "message": "സ്വകാര്യത പ്രമാണം"
@@ -162,7 +162,7 @@
     "message": "നിലവിലെ ഭാഷ പൂരിപ്പിക്കുക"
   },
   "fillAllLanguages": {
-    "message": "എല്ലാ ഭാഷകളും പൂരിപ്പിക്കുക"
+    "message": "Fill descriptions"
   },
   "uploadStoreIcon": {
     "message": "സ്റ്റോർ ഐക്കൺ അപ്ലോഡ് ചെയ്യുക"
@@ -192,7 +192,7 @@
     "message": "ക്ലിയർ മാർക്യൂ പ്രൊമോ"
   },
   "abortFillAll": {
-    "message": "എല്ലാം നിറയ്ക്കുക"
+    "message": "Abort operation"
   },
   "abortOperation": {
     "message": "ഓപ്പറേഷൻ നിർത്തലാക്കുക"
@@ -213,10 +213,10 @@
     "message": "നിലവിലെ ഭാഷ പൂരിപ്പിക്കുക"
   },
   "fillAll": {
-    "message": "എല്ലാ ഭാഷകളും പൂരിപ്പിക്കുക"
+    "message": "Fill descriptions"
   },
   "abort": {
-    "message": "എല്ലാം നിറയ്ക്കുക"
+    "message": "Abort operation"
   },
   "importListingsInOptions": {
     "message": "StorePilot ഓപ്ഷനുകളിൽ ലിസ്റ്റിംഗുകൾ ഇറക്കുമതി ചെയ്യുക"
@@ -297,7 +297,7 @@
     "message": "$1 സ്ക്രീൻഷോട്ട്(കൾ), ഐക്കൺ: $2, ചെറിയ പ്രൊമോ: $3, മാർക്യൂ പ്രൊമോ: $4."
   },
   "mediaAssetsNone": {
-    "message": "സ്റ്റോർ മീഡിയ അസറ്റുകളൊന്നും കണ്ടെത്തിയില്ല."
+    "message": "No graphic assets found."
   },
   "mediaUploadedKind": {
     "message": "അപ്ലോഡ് ചെയ്തത് $1: $2."
@@ -357,7 +357,7 @@
     "message": "കാണുന്നില്ല"
   },
   "reimportFolderToScanMediaAssets": {
-    "message": "മീഡിയ അസറ്റുകൾ സ്കാൻ ചെയ്യുന്നതിന് പ്രോജക്റ്റ് ഫോൾഡർ വീണ്ടും ഇറക്കുമതി ചെയ്യുക."
+    "message": "Re-import the project folder to scan graphic assets."
   },
   "screenshotNumber": {
     "message": "സ്ക്രീൻഷോട്ട് $1"
@@ -462,16 +462,16 @@
     "message": "പദ്ധതി തിരഞ്ഞെടുത്തു."
   },
   "fillingAllLanguages": {
-    "message": "എല്ലാ ഭാഷകളും നിറയുന്നു..."
+    "message": "Filling descriptions..."
   },
   "stopRequested": {
     "message": "നിർത്താൻ അഭ്യർത്ഥിച്ചു."
   },
   "fillAllNotRunning": {
-    "message": "ഫിൽ എല്ലാം പ്രവർത്തിക്കുന്നില്ല."
+    "message": "Description fill is not running."
   },
   "couldNotStopFillAll": {
-    "message": "എല്ലാം നിറയ്ക്കുന്നത് നിർത്താൻ കഴിഞ്ഞില്ല."
+    "message": "Could not stop the operation."
   },
   "diagnosticsFailedWithError": {
     "message": "ഡയഗ്നോസ്റ്റിക്സ് പരാജയപ്പെട്ടു: $1"
@@ -551,12 +551,6 @@
   "fillAllDashboardSummaryWithUnmatched": {
     "message": "ഇറക്കുമതി ചെയ്തത് $1; പൊരുത്തപ്പെടുന്ന $2 ഡാഷ്ബോർഡ് ഭാഷ(കൾ); സമാനതകളില്ലാത്ത ഇറക്കുമതി ചെയ്ത ലൊക്കേൽ(കൾ): $3."
   },
-  "unsupportedChromeWebStoreLocales": {
-    "message": "Chrome Web Store പിന്തുണയ്ക്കാത്ത ലൊക്കേൽ(കൾ) വാഗ്ദാനം ചെയ്തില്ല: $1."
-  },
-  "unmatchedImportedLocales": {
-    "message": "പിന്തുണയ്ക്കുന്ന ഇറക്കുമതി ചെയ്ത ലൊക്കേൽ(കൾ) ഡാഷ്ബോർഡ് വാഗ്ദാനം ചെയ്യുന്നില്ല: $1."
-  },
   "abortRequestedStopAfterStep": {
     "message": "അലസിപ്പിക്കാൻ അഭ്യർത്ഥിച്ചു. നിലവിലെ ഡാഷ്ബോർഡ് ഘട്ടത്തിന് ശേഷം StorePilot നിർത്തും."
   },
@@ -567,10 +561,10 @@
     "message": "ഡാഷ്ബോർഡ് ഡയഗ്നോസ്റ്റിക്സ് പേജ് ഘടകങ്ങൾ വിട്ടുപോയതായി കണ്ടെത്തി."
   },
   "fillAllAlreadyRunning": {
-    "message": "എല്ലാം പൂരിപ്പിക്കുക ഇതിനകം പ്രവർത്തിക്കുന്നു."
+    "message": "Description fill is already running."
   },
   "fillAllStopped": {
-    "message": "നിറയ്ക്കുക എല്ലാം നിർത്തി."
+    "message": "Description fill stopped."
   },
   "filling": {
     "message": "പൂരിപ്പിക്കൽ"
@@ -658,5 +652,188 @@
   },
   "privacyFieldDidNotAcceptValue": {
     "message": "സ്വകാര്യതാ ഫീൽഡ് മൂല്യം സ്വീകരിച്ചില്ല: $1."
+  },
+  "additionalFields": {
+    "message": "Additional Fields"
+  },
+  "additionalFieldsDocNotScanned": {
+    "message": "Not scanned"
+  },
+  "additionalFieldsDocNoUsableFile": {
+    "message": "No usable additional fields document found ($1 candidate(s) scanned)."
+  },
+  "additionalFieldsDocNoUsableFileShort": {
+    "message": "No usable additional fields document found."
+  },
+  "additionalFieldsDocSummary": {
+    "message": "$1 field(s) in $2"
+  },
+  "additionalFieldsCardValue": {
+    "message": "$1 field(s)"
+  },
+  "additionalFieldsDocCandidateCounts": {
+    "message": "Candidates"
+  },
+  "additionalFieldsDocCandidateCountsValue": {
+    "message": "Scanned: $1; matched: $2."
+  },
+  "reimportFolderToScanAdditionalFieldsDoc": {
+    "message": "Re-import the project folder to scan additional fields."
+  },
+  "officialUrl": {
+    "message": "Official URL"
+  },
+  "homepageUrl": {
+    "message": "Homepage URL"
+  },
+  "supportUrl": {
+    "message": "Support URL"
+  },
+  "matureContent": {
+    "message": "Mature content"
+  },
+  "additionalFieldsReferenceTitle": {
+    "message": "Additional fields document reference"
+  },
+  "additionalFieldsReferenceIntro": {
+    "message": "StorePilot can scan one project document for Chrome Web Store Additional fields values. Keep these outside locale listing files so the detailed description body stays clean."
+  },
+  "additionalFieldsReferenceRule": {
+    "message": "Recommended filename: docs/chrome-web-store-additional-fields.md. Omit a key or leave it blank when StorePilot should not touch that dashboard field. Use none for URL fields only when you want StorePilot to clear/select no URL. For mature_content, use yes to turn the switch on or no to turn it off; none, blank, or omitted means do not touch the switch."
+  },
+  "fillAdditionalFields": {
+    "message": "Fill additional fields"
+  },
+  "fillingAdditionalFields": {
+    "message": "Filling additional fields..."
+  },
+  "additionalFieldsDocNotImported": {
+    "message": "No additional fields document imported for the active project."
+  },
+  "additionalFieldSkipped": {
+    "message": "Skipped additional field: $1."
+  },
+  "officialUrlFieldNotFound": {
+    "message": "Could not find the Official URL field."
+  },
+  "additionalFieldAlreadySet": {
+    "message": "Additional field already set: $1."
+  },
+  "additionalFieldFilled": {
+    "message": "Filled additional field: $1."
+  },
+  "officialUrlOptionNotFound": {
+    "message": "Could not find Official URL option: $1."
+  },
+  "additionalFieldNotFound": {
+    "message": "Could not find additional field: $1."
+  },
+  "additionalFieldDidNotAcceptValue": {
+    "message": "Additional field did not accept value: $1."
+  },
+  "additionalFieldsFilled": {
+    "message": "Filled $1 additional field(s): $2."
+  },
+  "additionalFieldsSkipped": {
+    "message": "Skipped $1 additional field(s): $2."
+  },
+  "additionalFieldsNotFound": {
+    "message": "Could not find: $1."
+  },
+  "additionalFieldsNoSupportedFields": {
+    "message": "No supported additional fields were available to fill."
+  },
+  "preferences": {
+    "message": "Preferences"
+  },
+  "showAdvancedFillActions": {
+    "message": "Show advanced fill actions"
+  },
+  "showAdvancedFillActionsHint": {
+    "message": "Shows Fill current language in the popup and dashboard panel for debugging or one-off manual fills."
+  },
+  "dataUsage": {
+    "message": "Data Usage"
+  },
+  "fillDataUsage": {
+    "message": "Fill data usage"
+  },
+  "fillingDataUsage": {
+    "message": "Filling data usage..."
+  },
+  "reimportFolderToScanDataUsage": {
+    "message": "Re-import the project folder to scan data usage disclosures."
+  },
+  "dataUsageFieldsCardValue": {
+    "message": "$1 value(s)"
+  },
+  "dataUsageNoValues": {
+    "message": "No data usage values found."
+  },
+  "dataUsageSummary": {
+    "message": "$1 value(s) in $2"
+  },
+  "privacyDocDataUsageRule": {
+    "message": "For data usage checkboxes, answer the exact Chrome Web Store public disclosure question: what user data do you plan to collect from users now or in the future? Treat collect as data that leaves local-only browser/device processing and is received, uploaded, logged, reviewed, or otherwise made available to the developer, a product backend, analytics, support, or a third-party service. These keys are not permission justifications and are not a list of data the extension can access or store locally. Use yes only for those developer or third-party collection cases. For local-only features where data stays on the user's device, use no; for example, a local history vault can need permission.history while still using data_usage.web_history: no. StorePilot applies explicit yes/no values: yes checks a box, no unchecks it; none, blank, or omitted leaves it unchanged."
+  },
+  "dataUsagePersonallyIdentifiableInformation": {
+    "message": "Personally identifiable information"
+  },
+  "dataUsageHealthInformation": {
+    "message": "Health information"
+  },
+  "dataUsageFinancialPaymentInformation": {
+    "message": "Financial and payment information"
+  },
+  "dataUsageAuthenticationInformation": {
+    "message": "Authentication information"
+  },
+  "dataUsagePersonalCommunications": {
+    "message": "Personal communications"
+  },
+  "dataUsageLocation": {
+    "message": "Location"
+  },
+  "dataUsageWebHistory": {
+    "message": "Web history"
+  },
+  "dataUsageUserActivity": {
+    "message": "User activity"
+  },
+  "dataUsageWebsiteContent": {
+    "message": "Website content"
+  },
+  "certificationNoSellOrTransfer": {
+    "message": "Certification: no sale or transfer"
+  },
+  "certificationNoUnrelatedUse": {
+    "message": "Certification: no unrelated use"
+  },
+  "certificationNoCreditworthiness": {
+    "message": "Certification: no creditworthiness use"
+  },
+  "notProvided": {
+    "message": "Not provided"
+  },
+  "dataUsageCheckedFields": {
+    "message": "Checked $1 data usage disclosure(s): $2."
+  },
+  "dataUsageUncheckedFields": {
+    "message": "Unchecked $1 data usage disclosure(s): $2."
+  },
+  "dataUsageSkippedFields": {
+    "message": "Skipped $1 data usage disclosure(s): $2."
+  },
+  "dataUsageCheckboxesNotFound": {
+    "message": "Could not set: $1."
+  },
+  "dataUsageNoExplicitYes": {
+    "message": "No explicit data usage values were available to apply."
+  },
+  "dataUsageCheckboxStructureNotFound": {
+    "message": "Could not confidently map Data usage checkboxes."
+  },
+  "privacyDocRemoteCodeRule": {
+    "message": "For remote code, use remote_code as the Chrome Web Store yes/no answer. Use no when all code is packaged locally, and do not include remote_code_justification for that case. Use yes only when the extension uses remote code, and then provide remote_code_justification for the required justification textarea."
   }
 }

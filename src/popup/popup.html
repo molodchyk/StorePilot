@@ -27,8 +27,9 @@
           <button id="importFolder" type="button" data-i18n="importProjectFolder">Import project/folder</button>
         </div>
         <div class="action-group" data-popup-section="listing">
-          <button id="fillCurrentLanguage" type="button" data-i18n="fillCurrentLanguage">Fill current language</button>
-          <button id="fillAllLanguages" type="button" data-i18n="fillAllLanguages">Fill all languages</button>
+          <button id="fillCurrentLanguage" type="button" hidden data-i18n="fillCurrentLanguage">Fill current language</button>
+          <button id="fillAllLanguages" type="button" data-i18n="fillAllLanguages">Fill descriptions</button>
+          <button id="selectCategory" type="button" data-i18n="selectCategory">Select category</button>
         </div>
         <div class="action-group" data-popup-section="listing">
           <button id="uploadStoreIcon" type="button" data-i18n="uploadStoreIcon">Upload store icon</button>
@@ -42,9 +43,13 @@
           <button id="clearSmallPromo" class="danger-action" type="button" data-i18n="clearSmallPromo">Clear small promo</button>
           <button id="clearMarqueePromo" class="danger-action" type="button" data-i18n="clearMarqueePromo">Clear marquee promo</button>
         </div>
+        <div class="action-group action-group-single" data-popup-section="listing">
+          <button id="fillAdditionalFields" type="button" data-i18n="fillAdditionalFields">Fill additional fields</button>
+        </div>
         <div class="action-group" data-popup-section="privacy">
           <button id="fillSinglePurpose" type="button" data-i18n="fillSinglePurpose">Fill single purpose</button>
           <button id="fillPrivacy" type="button" data-i18n="fillPrivacy">Fill privacy</button>
+          <button id="fillDataUsage" type="button" data-i18n="fillDataUsage">Fill data usage</button>
           <button id="diagnosePrivacyPage" type="button" data-i18n="diagnosePage">Diagnose page</button>
         </div>
         <div id="utilityActions" class="action-group">
@@ -66,6 +71,8 @@
     <script src="../shared/directory-detection.js"></script>
     <script src="../shared/media-assets.js"></script>
     <script src="../shared/privacy-doc.js"></script>
+    <script src="../shared/category-doc.js"></script>
+    <script src="../shared/additional-fields-doc.js"></script>
     <script src="../shared/storage.js"></script>
     <script src="../shared/importers.js"></script>
     <script src="../project-overrides.js"></script>

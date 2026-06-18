@@ -3,7 +3,7 @@
     "message": "StorePilot: Chrome Web Store Automation"
   },
   "extensionDescription": {
-    "message": "Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, screenshots, and privacy forms."
+    "message": "Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, screenshots, additional fields, and privacy forms."
   },
   "optionsSubtitle": {
     "message": "Import flat locale listing files and use them in extension store dashboards."
@@ -65,17 +65,113 @@
   "privacyDocFutureProof": {
     "message": "If a permission is not listed here, use the same pattern anyway, for example permission.bookmarks or permission.system.display. StorePilot should treat the manifest code itself as the source of truth."
   },
+  "projectReferenceTitle": {
+    "message": "Project import reference"
+  },
+  "projectReferenceIntro": {
+    "message": "Start with one locale file if the extension only has one Chrome Web Store language today. Keep media, category, additional fields, and privacy files beside it so the same project can grow into more locales later."
+  },
+  "projectReferenceOneLanguage": {
+    "message": "store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field."
+  },
+  "listingReferenceTitle": {
+    "message": "Detailed description text"
+  },
+  "localeDescriptionRule": {
+    "message": "store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field. The file should contain only the final detailed description body users should see in the store listing."
+  },
+  "localeDescriptionWarnings": {
+    "message": "Do not include field labels such as Name, Summary, Description, or Detailed Description. Do not include Markdown headings. Do not put the short summary in this file."
+  },
+  "localeDescriptionExampleTitle": {
+    "message": "Example en.md content:"
+  },
+  "singleDraftReferenceTitle": {
+    "message": "Alternative single-draft import"
+  },
+  "singleDraftReferenceRule": {
+    "message": "StorePilot also accepts docs/chrome-web-store.md for a single English draft. Only in this draft file, StorePilot may look for a Detailed Description or Description section and import that section as English detailed description text. This section parsing does not apply to store-listing/chrome-web-store/listing/en.md."
+  },
+  "listingNonGoalTitle": {
+    "message": "Fields not imported from listing/en.md"
+  },
+  "listingNonGoalNote": {
+    "message": "These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files."
+  },
+  "mediaReferenceTitle": {
+    "message": "Graphic assets"
+  },
+  "projectReferenceDetectionHint": {
+    "message": "Folder names such as store-listing, chrome-web-store, listing, media, screenshots, promo, assets, store-assets, and icons help StorePilot pick the right files when a project contains extra build output."
+  },
+  "openMediaPreview": {
+    "message": "Open preview for $1"
+  },
+  "closePreview": {
+    "message": "Close preview"
+  },
   "projects": {
     "message": "Projects"
   },
   "importedListings": {
     "message": "Imported Listings"
   },
+  "productDetails": {
+    "message": "Product Details"
+  },
   "storeMediaAssets": {
-    "message": "Store Media Assets"
+    "message": "Graphic Assets"
   },
   "privacyDocument": {
     "message": "Privacy Document"
+  },
+  "storeCategory": {
+    "message": "Store Category"
+  },
+  "categoryDocReferenceTitle": {
+    "message": "Category automation document reference"
+  },
+  "categoryDocReferenceIntro": {
+    "message": "StorePilot can scan one project document for the Chrome Web Store category. Use an explicit Selected category line so the scanner does not infer from notes or option lists."
+  },
+  "categoryDocSelectedRule": {
+    "message": "Recommended filename: docs/chrome-web-store-category.md. The file should contain Selected category: followed by one visible Chrome Web Store category label."
+  },
+  "categoryDocOptionsListTitle": {
+    "message": "Visible category labels"
+  },
+  "categoryDocNotScanned": {
+    "message": "Not scanned"
+  },
+  "categoryDocNoUsableFile": {
+    "message": "No usable category document found ($1 candidate(s) scanned)."
+  },
+  "categoryDocNoUsableFileShort": {
+    "message": "No usable category document found."
+  },
+  "categoryDocSummary": {
+    "message": "Category: $1 in $2"
+  },
+  "categoryLabel": {
+    "message": "Category: $1"
+  },
+  "selectedCategory": {
+    "message": "Selected category"
+  },
+  "categoryValue": {
+    "message": "CWS data value"
+  },
+  "categoryGroup": {
+    "message": "Category group"
+  },
+  "categoryReason": {
+    "message": "Reason"
+  },
+  "categoryDocCandidateCounts": {
+    "message": "Candidates"
+  },
+  "categoryDocCandidateCountsValue": {
+    "message": "Scanned: $1; matched: $2."
   },
   "privacyDocNotScanned": {
     "message": "Not scanned"
@@ -146,6 +242,9 @@
   "reimportFolderToScanPrivacyDoc": {
     "message": "Re-import the project folder to scan the privacy document."
   },
+  "reimportFolderToScanCategoryDoc": {
+    "message": "Re-import the project folder to scan the category document."
+  },
   "mediaAssetsNotScanned": {
     "message": "Not scanned"
   },
@@ -162,7 +261,10 @@
     "message": "Fill current language"
   },
   "fillAllLanguages": {
-    "message": "Fill all languages"
+    "message": "Fill descriptions"
+  },
+  "selectCategory": {
+    "message": "Select category"
   },
   "uploadStoreIcon": {
     "message": "Upload store icon"
@@ -192,7 +294,7 @@
     "message": "Clear marquee promo"
   },
   "abortFillAll": {
-    "message": "Abort fill all"
+    "message": "Abort operation"
   },
   "abortOperation": {
     "message": "Abort operation"
@@ -213,10 +315,10 @@
     "message": "Fill current language"
   },
   "fillAll": {
-    "message": "Fill all languages"
+    "message": "Fill descriptions"
   },
   "abort": {
-    "message": "Abort fill all"
+    "message": "Abort operation"
   },
   "importListingsInOptions": {
     "message": "Import listings in StorePilot options"
@@ -297,7 +399,7 @@
     "message": "$1 screenshot(s), icon: $2, small promo: $3, marquee promo: $4."
   },
   "mediaAssetsNone": {
-    "message": "No store media assets found."
+    "message": "No graphic assets found."
   },
   "mediaUploadedKind": {
     "message": "Uploaded $1: $2."
@@ -335,6 +437,27 @@
   "listingActionsOnlyOnListingPage": {
     "message": "Listing and media actions are only available on the Store listing page."
   },
+  "selectingCategory": {
+    "message": "Selecting category..."
+  },
+  "categoryDocNotImported": {
+    "message": "No category document imported for the active project."
+  },
+  "categoryFieldNotFound": {
+    "message": "Could not find the Chrome Web Store category field."
+  },
+  "categoryOptionNotFound": {
+    "message": "Could not find category option: $1."
+  },
+  "categoryAlreadySelected": {
+    "message": "Category already selected: $1."
+  },
+  "categorySelected": {
+    "message": "Selected category: $1."
+  },
+  "clickedButCategoryShows": {
+    "message": "Clicked $1, but the dashboard still shows $2."
+  },
   "clearingMedia": {
     "message": "Clearing media..."
   },
@@ -357,7 +480,7 @@
     "message": "Missing"
   },
   "reimportFolderToScanMediaAssets": {
-    "message": "Re-import the project folder to scan media assets."
+    "message": "Re-import the project folder to scan graphic assets."
   },
   "screenshotNumber": {
     "message": "Screenshot $1"
@@ -462,16 +585,16 @@
     "message": "Project selected."
   },
   "fillingAllLanguages": {
-    "message": "Filling all languages..."
+    "message": "Filling descriptions..."
   },
   "stopRequested": {
     "message": "Stop requested."
   },
   "fillAllNotRunning": {
-    "message": "Fill all is not running."
+    "message": "Description fill is not running."
   },
   "couldNotStopFillAll": {
-    "message": "Could not stop fill all."
+    "message": "Could not stop the operation."
   },
   "diagnosticsFailedWithError": {
     "message": "Diagnostics failed: $1"
@@ -551,12 +674,6 @@
   "fillAllDashboardSummaryWithUnmatched": {
     "message": "Imported $1; matched $2 dashboard language(s); unmatched imported locale(s): $3."
   },
-  "unsupportedChromeWebStoreLocales": {
-    "message": "Chrome Web Store did not offer unsupported locale(s): $1."
-  },
-  "unmatchedImportedLocales": {
-    "message": "Dashboard did not offer supported imported locale(s): $1."
-  },
   "abortRequestedStopAfterStep": {
     "message": "Abort requested. StorePilot will stop after the current dashboard step."
   },
@@ -567,10 +684,10 @@
     "message": "Dashboard diagnostics found missing page elements."
   },
   "fillAllAlreadyRunning": {
-    "message": "Fill all is already running."
+    "message": "Description fill is already running."
   },
   "fillAllStopped": {
-    "message": "Fill all stopped."
+    "message": "Description fill stopped."
   },
   "filling": {
     "message": "Filling"
@@ -658,5 +775,188 @@
   },
   "privacyFieldDidNotAcceptValue": {
     "message": "Privacy field did not accept value: $1."
+  },
+  "additionalFields": {
+    "message": "Additional Fields"
+  },
+  "additionalFieldsDocNotScanned": {
+    "message": "Not scanned"
+  },
+  "additionalFieldsDocNoUsableFile": {
+    "message": "No usable additional fields document found ($1 candidate(s) scanned)."
+  },
+  "additionalFieldsDocNoUsableFileShort": {
+    "message": "No usable additional fields document found."
+  },
+  "additionalFieldsDocSummary": {
+    "message": "$1 field(s) in $2"
+  },
+  "additionalFieldsCardValue": {
+    "message": "$1 field(s)"
+  },
+  "additionalFieldsDocCandidateCounts": {
+    "message": "Candidates"
+  },
+  "additionalFieldsDocCandidateCountsValue": {
+    "message": "Scanned: $1; matched: $2."
+  },
+  "reimportFolderToScanAdditionalFieldsDoc": {
+    "message": "Re-import the project folder to scan additional fields."
+  },
+  "officialUrl": {
+    "message": "Official URL"
+  },
+  "homepageUrl": {
+    "message": "Homepage URL"
+  },
+  "supportUrl": {
+    "message": "Support URL"
+  },
+  "matureContent": {
+    "message": "Mature content"
+  },
+  "additionalFieldsReferenceTitle": {
+    "message": "Additional fields document reference"
+  },
+  "additionalFieldsReferenceIntro": {
+    "message": "StorePilot can scan one project document for Chrome Web Store Additional fields values. Keep these outside locale listing files so the detailed description body stays clean."
+  },
+  "additionalFieldsReferenceRule": {
+    "message": "Recommended filename: docs/chrome-web-store-additional-fields.md. Omit a key or leave it blank when StorePilot should not touch that dashboard field. Use none for URL fields only when you want StorePilot to clear/select no URL. For mature_content, use yes to turn the switch on or no to turn it off; none, blank, or omitted means do not touch the switch."
+  },
+  "fillAdditionalFields": {
+    "message": "Fill additional fields"
+  },
+  "fillingAdditionalFields": {
+    "message": "Filling additional fields..."
+  },
+  "additionalFieldsDocNotImported": {
+    "message": "No additional fields document imported for the active project."
+  },
+  "additionalFieldSkipped": {
+    "message": "Skipped additional field: $1."
+  },
+  "officialUrlFieldNotFound": {
+    "message": "Could not find the Official URL field."
+  },
+  "additionalFieldAlreadySet": {
+    "message": "Additional field already set: $1."
+  },
+  "additionalFieldFilled": {
+    "message": "Filled additional field: $1."
+  },
+  "officialUrlOptionNotFound": {
+    "message": "Could not find Official URL option: $1."
+  },
+  "additionalFieldNotFound": {
+    "message": "Could not find additional field: $1."
+  },
+  "additionalFieldDidNotAcceptValue": {
+    "message": "Additional field did not accept value: $1."
+  },
+  "additionalFieldsFilled": {
+    "message": "Filled $1 additional field(s): $2."
+  },
+  "additionalFieldsSkipped": {
+    "message": "Skipped $1 additional field(s): $2."
+  },
+  "additionalFieldsNotFound": {
+    "message": "Could not find: $1."
+  },
+  "additionalFieldsNoSupportedFields": {
+    "message": "No supported additional fields were available to fill."
+  },
+  "preferences": {
+    "message": "Preferences"
+  },
+  "showAdvancedFillActions": {
+    "message": "Show advanced fill actions"
+  },
+  "showAdvancedFillActionsHint": {
+    "message": "Shows Fill current language in the popup and dashboard panel for debugging or one-off manual fills."
+  },
+  "dataUsage": {
+    "message": "Data Usage"
+  },
+  "fillDataUsage": {
+    "message": "Fill data usage"
+  },
+  "fillingDataUsage": {
+    "message": "Filling data usage..."
+  },
+  "reimportFolderToScanDataUsage": {
+    "message": "Re-import the project folder to scan data usage disclosures."
+  },
+  "dataUsageFieldsCardValue": {
+    "message": "$1 value(s)"
+  },
+  "dataUsageNoValues": {
+    "message": "No data usage values found."
+  },
+  "dataUsageSummary": {
+    "message": "$1 value(s) in $2"
+  },
+  "privacyDocDataUsageRule": {
+    "message": "For data usage checkboxes, answer the exact Chrome Web Store public disclosure question: what user data do you plan to collect from users now or in the future? Treat collect as data that leaves local-only browser/device processing and is received, uploaded, logged, reviewed, or otherwise made available to the developer, a product backend, analytics, support, or a third-party service. These keys are not permission justifications and are not a list of data the extension can access or store locally. Use yes only for those developer or third-party collection cases. For local-only features where data stays on the user's device, use no; for example, a local history vault can need permission.history while still using data_usage.web_history: no. StorePilot applies explicit yes/no values: yes checks a box, no unchecks it; none, blank, or omitted leaves it unchanged."
+  },
+  "dataUsagePersonallyIdentifiableInformation": {
+    "message": "Personally identifiable information"
+  },
+  "dataUsageHealthInformation": {
+    "message": "Health information"
+  },
+  "dataUsageFinancialPaymentInformation": {
+    "message": "Financial and payment information"
+  },
+  "dataUsageAuthenticationInformation": {
+    "message": "Authentication information"
+  },
+  "dataUsagePersonalCommunications": {
+    "message": "Personal communications"
+  },
+  "dataUsageLocation": {
+    "message": "Location"
+  },
+  "dataUsageWebHistory": {
+    "message": "Web history"
+  },
+  "dataUsageUserActivity": {
+    "message": "User activity"
+  },
+  "dataUsageWebsiteContent": {
+    "message": "Website content"
+  },
+  "certificationNoSellOrTransfer": {
+    "message": "Certification: no sale or transfer"
+  },
+  "certificationNoUnrelatedUse": {
+    "message": "Certification: no unrelated use"
+  },
+  "certificationNoCreditworthiness": {
+    "message": "Certification: no creditworthiness use"
+  },
+  "notProvided": {
+    "message": "Not provided"
+  },
+  "dataUsageCheckedFields": {
+    "message": "Checked $1 data usage disclosure(s): $2."
+  },
+  "dataUsageUncheckedFields": {
+    "message": "Unchecked $1 data usage disclosure(s): $2."
+  },
+  "dataUsageSkippedFields": {
+    "message": "Skipped $1 data usage disclosure(s): $2."
+  },
+  "dataUsageCheckboxesNotFound": {
+    "message": "Could not set: $1."
+  },
+  "dataUsageNoExplicitYes": {
+    "message": "No explicit data usage values were available to apply."
+  },
+  "dataUsageCheckboxStructureNotFound": {
+    "message": "Could not confidently map Data usage checkboxes."
+  },
+  "privacyDocRemoteCodeRule": {
+    "message": "For remote code, use remote_code as the Chrome Web Store yes/no answer. Use no when all code is packaged locally, and do not include remote_code_justification for that case. Use yes only when the extension uses remote code, and then provide remote_code_justification for the required justification textarea."
   }
 }

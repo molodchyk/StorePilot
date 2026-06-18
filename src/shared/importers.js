@@ -25,6 +25,18 @@ async function storePilotImportListingFiles(files) {
   const privacyDoc = scannedPrivacyDoc && scannedPrivacyDoc.file
     ? scannedPrivacyDoc
     : project.privacyDoc || scannedPrivacyDoc || null;
+  const scannedCategoryDoc = typeof storePilotDiscoverCategoryDocFromFileList === "function"
+    ? await storePilotDiscoverCategoryDocFromFileList(files)
+    : project.categoryDoc || null;
+  const categoryDoc = scannedCategoryDoc && scannedCategoryDoc.file
+    ? scannedCategoryDoc
+    : project.categoryDoc || scannedCategoryDoc || null;
+  const scannedAdditionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromFileList === "function"
+    ? await storePilotDiscoverAdditionalFieldsDocFromFileList(files)
+    : project.additionalFieldsDoc || null;
+  const additionalFieldsDoc = scannedAdditionalFieldsDoc && scannedAdditionalFieldsDoc.file
+    ? scannedAdditionalFieldsDoc
+    : project.additionalFieldsDoc || scannedAdditionalFieldsDoc || null;
   const skipped = [];
   let imported = 0;
 
@@ -39,13 +51,17 @@ async function storePilotImportListingFiles(files) {
     imported++;
   }
 
-  await storePilotUpsertProject({
+  const nextProject = {
     ...project,
     listings: nextListings,
     sourcePath: project.sourcePath || storePilotText("manualFileImport", "Manual file import"),
     privacyDoc,
+    categoryDoc,
+    additionalFieldsDoc,
     lastSyncedAt: storePilotFormatTimestamp()
-  });
+  };
+
+  await storePilotUpsertProject(nextProject);
 
   return {
     imported,
@@ -53,8 +69,9 @@ async function storePilotImportListingFiles(files) {
     total: textFiles.length,
     listings: nextListings,
     privacyDoc,
-    unsupportedChromeWebStoreLocales: storePilotGetUnsupportedChromeWebStoreLocales(nextListings),
-    project
+    categoryDoc,
+    additionalFieldsDoc,
+    project: nextProject
   };
 }
 
@@ -191,6 +208,12 @@ async function storePilotImportListingFileList(files, projectId = "") {
   const privacyDoc = typeof storePilotDiscoverPrivacyDocFromFileList === "function"
     ? await storePilotDiscoverPrivacyDocFromFileList(files)
     : project.privacyDoc || null;
+  const categoryDoc = typeof storePilotDiscoverCategoryDocFromFileList === "function"
+    ? await storePilotDiscoverCategoryDocFromFileList(files)
+    : project.categoryDoc || null;
+  const additionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromFileList === "function"
+    ? await storePilotDiscoverAdditionalFieldsDocFromFileList(files)
+    : project.additionalFieldsDoc || null;
   const nextProject = {
     ...project,
     name: project.name || rootName,
@@ -198,6 +221,8 @@ async function storePilotImportListingFileList(files, projectId = "") {
     sourcePath: best.path,
     mediaAssets,
     privacyDoc,
+    categoryDoc,
+    additionalFieldsDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score,
@@ -216,6 +241,8 @@ async function storePilotImportListingFileList(files, projectId = "") {
     sourcePath: best.path,
     mediaAssets,
     privacyDoc,
+    categoryDoc,
+    additionalFieldsDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score
@@ -257,6 +284,12 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
   const privacyDoc = typeof storePilotDiscoverPrivacyDocFromDirectory === "function"
     ? await storePilotDiscoverPrivacyDocFromDirectory(directoryHandle)
     : project.privacyDoc || null;
+  const categoryDoc = typeof storePilotDiscoverCategoryDocFromDirectory === "function"
+    ? await storePilotDiscoverCategoryDocFromDirectory(directoryHandle)
+    : project.categoryDoc || null;
+  const additionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromDirectory === "function"
+    ? await storePilotDiscoverAdditionalFieldsDocFromDirectory(directoryHandle)
+    : project.additionalFieldsDoc || null;
   const nextProject = {
     ...project,
     name: project.name || directoryHandle.name,
@@ -264,6 +297,8 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
     sourcePath: best.path,
     mediaAssets,
     privacyDoc,
+    categoryDoc,
+    additionalFieldsDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score,
@@ -283,6 +318,8 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
     sourcePath: best.path,
     mediaAssets,
     privacyDoc,
+    categoryDoc,
+    additionalFieldsDoc,
     candidateCount: candidates.length,
     confidence: best.confidence,
     score: best.score
@@ -313,7 +350,6 @@ async function storePilotReadListingFiles(files) {
     imported,
     skipped,
     total: textFiles.length,
-    listings,
-    unsupportedChromeWebStoreLocales: storePilotGetUnsupportedChromeWebStoreLocales(listings)
+    listings
   };
 }

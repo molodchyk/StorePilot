@@ -197,6 +197,8 @@
       listingSignature: merged.listingSignature || duplicate.listingSignature,
       mediaAssets: merged.mediaAssets || duplicate.mediaAssets || null,
       privacyDoc: merged.privacyDoc || duplicate.privacyDoc || null,
+      categoryDoc: merged.categoryDoc || duplicate.categoryDoc || null,
+      additionalFieldsDoc: merged.additionalFieldsDoc || duplicate.additionalFieldsDoc || null,
       hasFolderHandle: Boolean(merged.hasFolderHandle || duplicate.hasFolderHandle)
     }), nextProject);
     const projects = state.projects
@@ -226,7 +228,7 @@
     return mergedProject;
   }
 
-  async function upsertProjectImport({ best, candidates, directoryName, projectId, hasFolderHandle, mediaAssets = null, privacyDoc = null }) {
+  async function upsertProjectImport({ best, candidates, directoryName, projectId, hasFolderHandle, mediaAssets = null, privacyDoc = null, categoryDoc = null, additionalFieldsDoc = null }) {
     const result = await storePilotReadListingFiles(best.files);
     const rootInfo = getProjectRootInfo(best, directoryName);
     const listingSignature = createListingSignature(result.listings);
@@ -260,6 +262,8 @@
       listingSignature,
       mediaAssets: mediaAssets || project.mediaAssets || null,
       privacyDoc: privacyDoc || project.privacyDoc || null,
+      categoryDoc: categoryDoc || project.categoryDoc || null,
+      additionalFieldsDoc: additionalFieldsDoc || project.additionalFieldsDoc || null,
       projectRootScore: rootInfo.rootScore,
       projectRootSignals: rootInfo.rootSignals,
       candidateCount: candidates.length,
@@ -278,6 +282,8 @@
       listingPath: mergedProject.listingPath,
       mediaAssets: mergedProject.mediaAssets,
       privacyDoc: mergedProject.privacyDoc,
+      categoryDoc: mergedProject.categoryDoc,
+      additionalFieldsDoc: mergedProject.additionalFieldsDoc,
       candidateCount: candidates.length,
       confidence: best.confidence,
       score: best.score
@@ -298,6 +304,12 @@
     const privacyDoc = typeof storePilotDiscoverPrivacyDocFromFileList === "function"
       ? await storePilotDiscoverPrivacyDocFromFileList(files)
       : null;
+    const categoryDoc = typeof storePilotDiscoverCategoryDocFromFileList === "function"
+      ? await storePilotDiscoverCategoryDocFromFileList(files)
+      : null;
+    const additionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromFileList === "function"
+      ? await storePilotDiscoverAdditionalFieldsDocFromFileList(files)
+      : null;
     const directoryName = normalizePathParts(best.path)[0] || text("importedProject", "Imported project");
 
     const result = await upsertProjectImport({
@@ -307,7 +319,9 @@
       projectId,
       hasFolderHandle: false,
       mediaAssets,
-      privacyDoc
+      privacyDoc,
+      categoryDoc,
+      additionalFieldsDoc
     });
 
     if (typeof storePilotSaveProjectMediaFilesFromFileList === "function") {
@@ -339,6 +353,12 @@
     const privacyDoc = typeof storePilotDiscoverPrivacyDocFromDirectory === "function"
       ? await storePilotDiscoverPrivacyDocFromDirectory(directoryHandle)
       : null;
+    const categoryDoc = typeof storePilotDiscoverCategoryDocFromDirectory === "function"
+      ? await storePilotDiscoverCategoryDocFromDirectory(directoryHandle)
+      : null;
+    const additionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromDirectory === "function"
+      ? await storePilotDiscoverAdditionalFieldsDocFromDirectory(directoryHandle)
+      : null;
     const result = await upsertProjectImport({
       best,
       candidates,
@@ -346,7 +366,9 @@
       projectId,
       hasFolderHandle: true,
       mediaAssets,
-      privacyDoc
+      privacyDoc,
+      categoryDoc,
+      additionalFieldsDoc
     });
 
     await storePilotSaveProjectHandle(result.project.id, directoryHandle);

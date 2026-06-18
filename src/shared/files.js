@@ -11,16 +11,6 @@ function storePilotGetLocaleFromFileName(fileName) {
   return region ? `${language}_${region}` : language;
 }
 
-function storePilotIsChromeWebStoreSupportedLocale(locale) {
-  return STOREPILOT_CHROME_WEB_STORE_SUPPORTED_LOCALES.has(String(locale || "").replace("-", "_"));
-}
-
-function storePilotGetUnsupportedChromeWebStoreLocales(listings) {
-  return Object.keys(listings || {})
-    .filter(locale => !storePilotIsChromeWebStoreSupportedLocale(locale))
-    .sort((a, b) => a.localeCompare(b));
-}
-
 function storePilotGetFileExtension(fileName) {
   const match = fileName.toLowerCase().match(/\.[^.]+$/);
   return match ? match[0] : "";

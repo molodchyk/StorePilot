@@ -31,6 +31,8 @@ function storePilotCreateProject(name, patch = {}) {
     candidateCount: 0,
     mediaAssets: null,
     privacyDoc: null,
+    categoryDoc: null,
+    additionalFieldsDoc: null,
     lastSyncedAt: "",
     hasFolderHandle: false,
     ...patch

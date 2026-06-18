@@ -173,7 +173,7 @@ function storePilotCreateMediaSummary(candidates) {
 }
 
 function storePilotFormatMediaSummary(mediaAssets) {
-  if (!mediaAssets) return storePilotText("mediaAssetsNone", "No store media assets found");
+  if (!mediaAssets) return storePilotText("mediaAssetsNone", "No graphic assets found");
 
   return storePilotText("mediaAssetsSummary", "$1 screenshot(s), icon: $2, small promo: $3, marquee promo: $4", [
     String((mediaAssets.screenshots || []).length),

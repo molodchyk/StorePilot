@@ -1,0 +1,8 @@
+# Keep repository text files LF regardless of each developer's global Git settings.
+* text=auto eol=lf
+
+# Binary assets should never be line-ending normalized.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary

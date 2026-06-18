@@ -2,6 +2,7 @@ const LEGACY_STORAGE_KEY = "storePilotListings";
 var STOREPILOT_API = globalThis.browser;
 const PROJECTS_STORAGE_KEY = "storePilotProjects";
 const ACTIVE_PROJECT_STORAGE_KEY = "storePilotActiveProjectId";
+const DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY = "storePilotDashboardProjectBindings";
 const SETTINGS_KEY = "storePilotSettings";
 const FILL_ALL_STATUS_STORAGE_KEY = "storePilotFillAllStatus";
 const PANEL_POSITION_STORAGE_KEY = "storePilotPanelPosition";
@@ -9,20 +10,56 @@ const PANEL_MODE_STORAGE_KEY = "storePilotPanelMode";
 const PANEL_ID = "storepilot-panel";
 const MEDIA_UPLOAD_BRIDGE_SCRIPT = "src/content/media-upload-main-world.js";
 const MAX_DASHBOARD_SCREENSHOTS = 5;
-const CHROME_WEB_STORE_SUPPORTED_LOCALES = new Set([
-  "ar", "am", "bg", "bn", "ca", "cs", "da", "de", "el", "en", "en_au", "en_gb", "en_us",
-  "es", "es_419", "et", "fa", "fi", "fil", "fr", "gu", "he", "hi", "hr", "hu", "id",
-  "it", "ja", "kn", "ko", "lt", "lv", "ml", "mr", "ms", "nl", "no", "pl", "pt_br",
-  "pt_pt", "ro", "ru", "sk", "sl", "sr", "sv", "sw", "ta", "te", "th", "tr", "uk",
-  "ur", "vi", "zh_cn", "zh_tw"
-]);
+const CHROME_WEB_STORE_CATEGORY_OPTIONS = [
+  { label: "Communication", value: "CATEGORY_COMMUNICATION" },
+  { label: "Developer Tools", value: "CATEGORY_DEVELOPER_TOOLS" },
+  { label: "Education", value: "CATEGORY_EDUCATION" },
+  { label: "Tools", value: "CATEGORY_TOOLS" },
+  { label: "Workflow and planning", value: "CATEGORY_WORKFLOW_AND_PLANNING" },
+  { label: "Art & Design", value: "CATEGORY_EXTENSIONS_ART_AND_DESIGN", aliases: ["Art and Design"] },
+  { label: "Entertainment", value: "CATEGORY_EXTENSIONS_ENTERTAINMENT" },
+  { label: "Games", value: "CATEGORY_GAMES" },
+  { label: "Household", value: "CATEGORY_HOUSEHOLD" },
+  { label: "Just for fun", value: "CATEGORY_JUST_FOR_FUN" },
+  { label: "News & Weather", value: "CATEGORY_NEWS_AND_WEATHER", aliases: ["News and Weather"] },
+  { label: "Shopping", value: "CATEGORY_SHOPPING" },
+  { label: "Social Networking", value: "CATEGORY_SOCIAL_NETWORKING" },
+  { label: "Travel", value: "CATEGORY_TRAVEL" },
+  { label: "Wellbeing", value: "CATEGORY_WELL_BEING", aliases: ["Well-being", "Well being"] },
+  { label: "Accessibility", value: "CATEGORY_ACCESSIBILITY" },
+  { label: "Functionality and UI", value: "CATEGORY_FUNCTIONALITY_AND_UI", aliases: ["Functionality & UI"] },
+  { label: "Privacy & Security", value: "CATEGORY_PRIVACY_AND_SECURITY", aliases: ["Privacy and Security"] }
+];
+const PRIVACY_DATA_USAGE_KEYS = [
+  "data_usage.personally_identifiable_information",
+  "data_usage.health_information",
+  "data_usage.financial_payment_information",
+  "data_usage.authentication_information",
+  "data_usage.personal_communications",
+  "data_usage.location",
+  "data_usage.web_history",
+  "data_usage.user_activity",
+  "data_usage.website_content"
+];
+const PRIVACY_CERTIFICATION_KEYS = [
+  "certification.no_sell_or_transfer",
+  "certification.no_unrelated_use",
+  "certification.no_creditworthiness"
+];
 
 let listings = {};
 let selectedLocale = "";
 let activeProjectName = "";
+let activeProjectId = "";
 let activeProjectUpdatedAt = "";
+let activeDashboardExtensionId = "";
+let activeDashboardItemTitle = "";
+let activeDashboardProjectSource = "";
 let activePrivacyDoc = null;
+let activeCategoryDoc = null;
+let activeAdditionalFieldsDoc = null;
 let currentTheme = "system";
+let showAdvancedFillActions = false;
 let isFillingAllLanguages = false;
 let fillAllAbortRequested = false;
 let fillAllStatus = {
@@ -371,7 +408,7 @@ function updatePanelMediaUi() {
   }
 
   if (fillAllRunning) {
-    setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling all languages..."));
+    setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling descriptions..."));
     return;
   }
 
@@ -513,8 +550,22 @@ function enablePanelDrag(panel, dragHandle) {
 
 async function loadSettings() {
   const stored = await STOREPILOT_API.storage.local.get([SETTINGS_KEY]);
-  currentTheme = (stored[SETTINGS_KEY] && stored[SETTINGS_KEY].theme) || "system";
-  return currentTheme;
+  applySettings(stored[SETTINGS_KEY]);
+  return {
+    theme: currentTheme,
+    showAdvancedFillActions
+  };
+}
+
+function applySettings(settings = {}) {
+  const normalized = {
+    theme: "system",
+    showAdvancedFillActions: false,
+    ...(settings || {})
+  };
+
+  currentTheme = normalized.theme || "system";
+  showAdvancedFillActions = Boolean(normalized.showAdvancedFillActions);
 }
 
 function getEditableCandidates() {
@@ -549,21 +600,187 @@ function findLikelyListingField() {
   return candidates[0] || null;
 }
 
+function normalizeDashboardExtensionId(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  return /^[a-p]{32}$/.test(normalized) ? normalized : "";
+}
+
+function getDashboardExtensionIdFromUrl(url = window.location.href) {
+  try {
+    const { pathname } = new URL(url);
+    const parts = pathname.split("/").filter(Boolean);
+    const consoleIndex = parts.findIndex(part => part === "devconsole");
+    return normalizeDashboardExtensionId(consoleIndex >= 0 ? parts[consoleIndex + 2] : "");
+  } catch (_error) {
+    return "";
+  }
+}
+
+function findDashboardIdElement() {
+  return Array.from(document.querySelectorAll("header span, main span, span"))
+    .filter(isVisible)
+    .find(element => /\bID:\s*[a-p]{32}\b/i.test(getVisibleText(element)));
+}
+
+function getDashboardExtensionIdFromHeader() {
+  const idElement = findDashboardIdElement();
+  const match = idElement ? getVisibleText(idElement).match(/\bID:\s*([a-p]{32})\b/i) : null;
+  return normalizeDashboardExtensionId(match && match[1]);
+}
+
+function getDashboardExtensionId() {
+  return getDashboardExtensionIdFromUrl() || getDashboardExtensionIdFromHeader();
+}
+
+function cleanDashboardItemTitle(value) {
+  return String(value || "")
+    .replace(/\bID:\s*[a-p]{32}\b/ig, "")
+    .replace(/\bStatus:\s*.+$/i, "")
+    .replace(/\bChrome Web Store Developer Dashboard\b/ig, "")
+    .replace(/\bPublisher:\s*.+$/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getDashboardItemTitle() {
+  const idElement = findDashboardIdElement();
+  const localContainer = idElement && idElement.closest(".oMEecd, .E0X3S, header");
+  const localTitle = cleanDashboardItemTitle(localContainer ? getVisibleText(localContainer) : "");
+  if (localTitle && localTitle.length <= 160) return localTitle;
+
+  const selectors = [
+    "header .oMEecd",
+    "header h1",
+    "header a",
+    "main h1",
+    "article h1"
+  ].join(",");
+  const candidates = Array.from(document.querySelectorAll(selectors))
+    .filter(isVisible)
+    .map(element => cleanDashboardItemTitle(getVisibleText(element)))
+    .filter(text => text && text.length <= 160 && !/^id:/i.test(text));
+
+  return candidates[0] || "";
+}
+
+function normalizeDashboardProjectText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function getDashboardProjectBinding(bindings, extensionId) {
+  const normalizedExtensionId = normalizeDashboardExtensionId(extensionId);
+  if (!normalizedExtensionId || !bindings) return null;
+
+  const binding = bindings[normalizedExtensionId];
+  if (!binding) return null;
+  if (typeof binding === "string") return { projectId: binding };
+  if (typeof binding === "object") return binding;
+  return null;
+}
+
+function findProjectByDashboardTitle(projects, title) {
+  const normalizedTitle = normalizeDashboardProjectText(title);
+  if (!normalizedTitle) return null;
+
+  const matches = projects
+    .map(project => {
+      const normalizedName = normalizeDashboardProjectText(project.name);
+      if (!normalizedName) return null;
+
+      const containsName = normalizedTitle.includes(normalizedName);
+      const containsTitle = normalizedName.includes(normalizedTitle);
+      if (!containsName && !containsTitle) return null;
+
+      return {
+        project,
+        score: containsName ? normalizedName.length : Math.max(1, normalizedTitle.length - 5)
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score);
+
+  if (!matches.length) return null;
+  if (matches[1] && matches[1].score === matches[0].score) return null;
+  return matches[0].project;
+}
+
+async function saveDashboardProjectBinding(extensionId, project, source = "title") {
+  const normalizedExtensionId = normalizeDashboardExtensionId(extensionId);
+  if (!normalizedExtensionId || !project || !project.id) return;
+
+  const stored = await STOREPILOT_API.storage.local.get([DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]);
+  const bindings = stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] && typeof stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] === "object"
+    ? stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]
+    : {};
+  const existing = getDashboardProjectBinding(bindings, normalizedExtensionId) || {};
+
+  await STOREPILOT_API.storage.local.set({
+    [DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]: {
+      ...bindings,
+      [normalizedExtensionId]: {
+        ...existing,
+        extensionId: normalizedExtensionId,
+        projectId: project.id,
+        dashboardItemTitle: activeDashboardItemTitle || getDashboardItemTitle(),
+        source,
+        updatedAt: new Date().toISOString()
+      }
+    }
+  });
+}
+
+function resolveDashboardProject(projects, activeStoredProjectId, bindings) {
+  const activeProject = projects.find(project => project.id === activeStoredProjectId) || projects[0] || null;
+  const extensionId = getDashboardExtensionId();
+  const dashboardTitle = getDashboardItemTitle();
+  const binding = getDashboardProjectBinding(bindings, extensionId);
+
+  if (binding && binding.projectId) {
+    const project = projects.find(candidate => candidate.id === binding.projectId);
+    if (project) {
+      return { project, extensionId, dashboardTitle, source: "binding" };
+    }
+  }
+
+  const titleProject = findProjectByDashboardTitle(projects, dashboardTitle);
+  if (titleProject) {
+    return { project: titleProject, extensionId, dashboardTitle, source: "title" };
+  }
+
+  return { project: activeProject, extensionId, dashboardTitle, source: activeProject ? "active" : "none" };
+}
+
 async function loadListings() {
   const stored = await STOREPILOT_API.storage.local.get([
     LEGACY_STORAGE_KEY,
     PROJECTS_STORAGE_KEY,
-    ACTIVE_PROJECT_STORAGE_KEY
+    ACTIVE_PROJECT_STORAGE_KEY,
+    DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY
   ]);
   const projects = stored[PROJECTS_STORAGE_KEY] || [];
-  const activeProject = projects.find(project => project.id === stored[ACTIVE_PROJECT_STORAGE_KEY]) ||
-    projects[0] ||
-    null;
+  const bindings = stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] && typeof stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY] === "object"
+    ? stored[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]
+    : {};
+  const resolved = resolveDashboardProject(projects, stored[ACTIVE_PROJECT_STORAGE_KEY], bindings);
+  const activeProject = resolved.project || null;
 
   listings = activeProject ? activeProject.listings || {} : stored[LEGACY_STORAGE_KEY] || {};
+  activeProjectId = activeProject ? activeProject.id : "";
   activeProjectName = activeProject ? activeProject.name : "";
   activeProjectUpdatedAt = activeProject ? activeProject.lastSyncedAt || "" : "";
+  activeDashboardExtensionId = resolved.extensionId || "";
+  activeDashboardItemTitle = resolved.dashboardTitle || "";
+  activeDashboardProjectSource = resolved.source || "";
   activePrivacyDoc = activeProject ? activeProject.privacyDoc || null : null;
+  activeCategoryDoc = activeProject ? activeProject.categoryDoc || null : null;
+  activeAdditionalFieldsDoc = activeProject ? activeProject.additionalFieldsDoc || null : null;
+  if (activeProject && activeDashboardExtensionId && resolved.source === "title") {
+    saveDashboardProjectBinding(activeDashboardExtensionId, activeProject, "title").catch(() => {});
+  }
+
   const locales = Object.keys(listings).sort((a, b) => a.localeCompare(b));
 
   if (!selectedLocale || !listings[selectedLocale]) {
@@ -596,6 +813,624 @@ function fillSelectedText() {
 
   fillElement(target, text);
   return { ok: true, message: localize("filledLocale", "Filled $1.", [selectedLocale]) };
+}
+
+function normalizeCategoryMatchText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getChromeWebStoreCategoryByValue(value) {
+  const normalizedValue = String(value || "").trim().toUpperCase();
+  return CHROME_WEB_STORE_CATEGORY_OPTIONS.find(category => category.value === normalizedValue) || null;
+}
+
+function getChromeWebStoreCategoryByLabel(label) {
+  const normalizedLabel = normalizeCategoryMatchText(label);
+  return CHROME_WEB_STORE_CATEGORY_OPTIONS.find(category => (
+    normalizeCategoryMatchText(category.label) === normalizedLabel ||
+    (category.aliases || []).some(alias => normalizeCategoryMatchText(alias) === normalizedLabel)
+  )) || null;
+}
+
+function getActiveCategorySelection() {
+  const file = activeCategoryDoc && activeCategoryDoc.file;
+  if (!file) return null;
+
+  const category = getChromeWebStoreCategoryByValue(file.categoryValue) ||
+    getChromeWebStoreCategoryByLabel(file.categoryLabel) ||
+    getChromeWebStoreCategoryByLabel(file.rawCategory);
+  if (!category && !file.categoryLabel) return null;
+
+  return {
+    label: category ? category.label : file.categoryLabel,
+    value: category ? category.value : file.categoryValue || "",
+    path: file.path || "",
+    rawCategory: file.rawCategory || file.categoryLabel || ""
+  };
+}
+
+function categoryTextMatches(text, category) {
+  const normalizedText = normalizeCategoryMatchText(text);
+  const normalizedCategory = normalizeCategoryMatchText(category && category.label);
+  return Boolean(normalizedCategory && (
+    normalizedText === normalizedCategory ||
+    normalizedText.endsWith(` ${normalizedCategory}`)
+  ));
+}
+
+function getCategoryDropdownSelectedText(dropdown) {
+  if (!dropdown) return "";
+
+  const selectedElement = dropdown.querySelector("[jsname='Fb0Bif'], .VfPpkd-uusGie-fmcmS");
+  const selectedText = selectedElement ? getVisibleText(selectedElement) : "";
+  if (selectedText) return selectedText;
+
+  const labelledBy = dropdown.getAttribute("aria-labelledby") || "";
+  const labelledTexts = labelledBy.split(/\s+/)
+    .map(id => document.getElementById(id))
+    .filter(Boolean)
+    .map(getVisibleText)
+    .filter(Boolean)
+    .filter(text => !/^(category|select a category)$/i.test(text.trim()));
+  if (labelledTexts.length) return labelledTexts[labelledTexts.length - 1];
+
+  return getVisibleText(dropdown).replace(/\bcategory\b/i, "").trim();
+}
+
+function getCategoryDropdownContextText(dropdown) {
+  return normalizeCategoryMatchText([
+    dropdown && dropdown.getAttribute("aria-label") || "",
+    dropdown ? getElementLabelText(dropdown) : "",
+    dropdown ? getVisibleText(dropdown) : ""
+  ].join(" "));
+}
+
+function findCategoryDropdown() {
+  const candidates = Array.from(document.querySelectorAll("[role='combobox'], .VfPpkd-TkwUic"))
+    .filter(isVisible)
+    .filter(element => element.getAttribute("aria-disabled") !== "true");
+
+  return candidates.find(element => /\bcategory\b/.test(getCategoryDropdownContextText(element))) || null;
+}
+
+function getOpenCategoryOptions() {
+  return Array.from(document.querySelectorAll("[role='option']"))
+    .filter(element => element.getAttribute("aria-disabled") !== "true")
+    .filter(isVisible)
+    .map(element => ({
+      element,
+      text: getVisibleText(element),
+      value: element.getAttribute("data-value") || ""
+    }))
+    .filter(option => (
+      option.value.startsWith("CATEGORY_") ||
+      Boolean(getChromeWebStoreCategoryByLabel(option.text))
+    ))
+    .filter(option => getChromeWebStoreCategoryByValue(option.value) || getChromeWebStoreCategoryByLabel(option.text));
+}
+
+function findCategoryOption(category) {
+  const options = getOpenCategoryOptions();
+  return options.find(option => category.value && option.value === category.value) ||
+    options.find(option => normalizeCategoryMatchText(option.text) === normalizeCategoryMatchText(category.label)) ||
+    null;
+}
+
+async function openCategoryDropdown(dropdown = findCategoryDropdown()) {
+  if (!dropdown) {
+    return { ok: false, message: localize("categoryFieldNotFound", "Could not find the Chrome Web Store category field.") };
+  }
+
+  dropdown.scrollIntoView({ block: "center", inline: "nearest" });
+  activateDashboardButton(dropdown);
+  await delay(250);
+
+  if (!getOpenCategoryOptions().length) {
+    dropdown.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", code: "ArrowDown", bubbles: true, cancelable: true }));
+    await delay(250);
+  }
+
+  return { ok: true, dropdown };
+}
+
+async function selectDashboardCategory() {
+  if (mediaOperationState.running) {
+    return {
+      ok: true,
+      ignored: true,
+      message: localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label])
+    };
+  }
+
+  if (isFillingAllLanguages) {
+    return { ok: false, message: localize("fillAllAlreadyRunning", "Description fill is already running.") };
+  }
+
+  await loadListings();
+
+  const category = getActiveCategorySelection();
+  if (!category) {
+    return { ok: false, message: localize("categoryDocNotImported", "No category document imported for the active project.") };
+  }
+
+  const dropdown = findCategoryDropdown();
+  if (!dropdown) {
+    return {
+      ok: false,
+      message: localize("categoryFieldNotFound", "Could not find the Chrome Web Store category field."),
+      diagnostics: {
+        targetCategory: category,
+        comboboxCount: document.querySelectorAll("[role='combobox'], .VfPpkd-TkwUic").length
+      }
+    };
+  }
+
+  const currentCategory = getCategoryDropdownSelectedText(dropdown);
+  if (categoryTextMatches(currentCategory, category)) {
+    return { ok: true, message: localize("categoryAlreadySelected", "Category already selected: $1.", [category.label]) };
+  }
+
+  const opened = await openCategoryDropdown(dropdown);
+  if (!opened.ok) return opened;
+
+  let option = findCategoryOption(category);
+  for (let attempt = 0; !option && attempt < 10; attempt++) {
+    await delay(150);
+    option = findCategoryOption(category);
+  }
+
+  if (!option) {
+    const availableOptions = getOpenCategoryOptions().map(candidate => candidate.text || candidate.value).filter(Boolean);
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    return {
+      ok: false,
+      message: localize("categoryOptionNotFound", "Could not find category option: $1.", [category.label]),
+      diagnostics: {
+        targetCategory: category,
+        currentCategory,
+        availableOptions
+      }
+    };
+  }
+
+  activateDashboardButton(option.element);
+
+  for (let attempt = 0; attempt < 12; attempt++) {
+    await delay(150);
+    const nextDropdown = findCategoryDropdown() || dropdown;
+    const nextCategory = getCategoryDropdownSelectedText(nextDropdown);
+    if (!nextCategory || categoryTextMatches(nextCategory, category)) {
+      return { ok: true, message: localize("categorySelected", "Selected category: $1.", [category.label]) };
+    }
+  }
+
+  return {
+    ok: false,
+    message: localize("clickedButCategoryShows", "Clicked $1, but the dashboard still shows $2.", [
+      category.label,
+      getCategoryDropdownSelectedText(findCategoryDropdown() || dropdown) || localize("unknown", "Unknown")
+    ]),
+    diagnostics: {
+      targetCategory: category,
+      clickedOption: option.text,
+      clickedValue: option.value
+    }
+  };
+}
+
+function normalizeAdditionalMatchText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&nbsp;|\u00a0/g, " ")
+    .replace(/[^a-z0-9_.:/ -]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getActiveAdditionalFields() {
+  return activeAdditionalFieldsDoc && activeAdditionalFieldsDoc.file && activeAdditionalFieldsDoc.file.fields
+    ? activeAdditionalFieldsDoc.file.fields
+    : {};
+}
+
+function hasAdditionalField(fields, key) {
+  return Object.prototype.hasOwnProperty.call(fields || {}, key);
+}
+
+function isNoneAdditionalFieldValue(value) {
+  return /^(none|null|n\/a|na|not applicable|not provided)$/i.test(String(value || "").trim());
+}
+
+function getAdditionalUrlFieldFillValue(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  if (isNoneAdditionalFieldValue(raw)) return "";
+
+  const firstUrl = raw.match(/https?:\/\/\S+/i);
+  const url = firstUrl ? firstUrl[0] : raw.split(/\r?\n/).map(line => line.trim()).find(Boolean) || "";
+  return url.replace(/[),;]+$/g, "").trim();
+}
+
+function parseMatureContentValue(value) {
+  const normalized = normalizeAdditionalMatchText(value);
+  if (/^(yes|true|on|1)$/.test(normalized)) return true;
+  if (/^(no|false|off|0)$/.test(normalized)) return false;
+  return null;
+}
+
+function getAdditionalFieldContextText(element) {
+  const parts = [getElementLabelText(element)];
+  const containers = [
+    element.closest("label"),
+    element.closest(".TVM7Wc"),
+    element.closest(".Ufn6O"),
+    element.closest(".n5L2Mb")
+  ].filter(Boolean);
+
+  containers.forEach(container => {
+    const clone = container.cloneNode(true);
+    clone.querySelectorAll("textarea,input,[role='textbox'],[role='combobox'],[role='switch']").forEach(control => {
+      control.remove();
+    });
+    parts.push(getVisibleText(clone));
+  });
+
+  return normalizeAdditionalMatchText(parts.join(" "));
+}
+
+function getAdditionalTextFieldCandidates() {
+  return Array.from(document.querySelectorAll([
+    "input[type='text']",
+    "input[type='url']",
+    "input:not([type])",
+    "[role='textbox']"
+  ].join(",")))
+    .filter(isVisible)
+    .map((element, index) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        element,
+        index,
+        context: getAdditionalFieldContextText(element),
+        maxLength: Number(element.getAttribute("maxlength") || 0),
+        tagName: element.tagName.toLowerCase(),
+        area: rect.width * rect.height
+      };
+    });
+}
+
+function scoreAdditionalTextFieldCandidate(candidate, key) {
+  const context = candidate.context;
+  let score = 0;
+
+  if (key === "homepage_url") {
+    if (/\bhomepage url\b|\bhome page url\b/.test(context)) score += 180;
+    if (/\bhomepage\b|\bhome page\b/.test(context)) score += 100;
+    if (/\burl\b/.test(context)) score += 35;
+    if (/\bsupport\b/.test(context)) score -= 120;
+  } else if (key === "support_url") {
+    if (/\bsupport url\b/.test(context)) score += 180;
+    if (/\bsupport\b/.test(context)) score += 100;
+    if (/\burl\b/.test(context)) score += 35;
+    if (/\bhomepage\b|\bhome page\b/.test(context)) score -= 120;
+  }
+
+  if (candidate.tagName === "input") score += 25;
+  if (candidate.maxLength >= 1000) score += 15;
+  if (candidate.area > 12000) score += 10;
+
+  return score;
+}
+
+function findAdditionalTextField(key) {
+  const candidates = getAdditionalTextFieldCandidates()
+    .map(candidate => ({
+      ...candidate,
+      score: scoreAdditionalTextFieldCandidate(candidate, key)
+    }))
+    .filter(candidate => candidate.score > 0)
+    .sort((a, b) => b.score - a.score || b.area - a.area || a.index - b.index);
+
+  return candidates[0] && candidates[0].score >= 90 ? candidates[0] : null;
+}
+
+function normalizeAdditionalUrlForMatch(value) {
+  return String(value || "")
+    .trim()
+    .replace(/\/+$/, "")
+    .toLowerCase();
+}
+
+function getOfficialUrlDropdownContextText(dropdown) {
+  return normalizeAdditionalMatchText([
+    dropdown && dropdown.getAttribute("aria-label") || "",
+    dropdown ? getElementLabelText(dropdown) : "",
+    dropdown ? getVisibleText(dropdown) : ""
+  ].join(" "));
+}
+
+function findOfficialUrlDropdown() {
+  const candidates = Array.from(document.querySelectorAll("[role='combobox'], .VfPpkd-TkwUic"))
+    .filter(isVisible)
+    .filter(element => element.getAttribute("aria-disabled") !== "true");
+
+  return candidates.find(element => /\bofficial url\b/.test(getOfficialUrlDropdownContextText(element))) || null;
+}
+
+function getOfficialUrlDropdownSelectedText(dropdown) {
+  if (!dropdown) return "";
+
+  const selectedElement = dropdown.querySelector("[jsname='Fb0Bif'], .VfPpkd-uusGie-fmcmS");
+  const selectedText = selectedElement ? getVisibleText(selectedElement) : "";
+  if (selectedText) return selectedText;
+
+  const labelledBy = dropdown.getAttribute("aria-labelledby") || "";
+  const labelledTexts = labelledBy.split(/\s+/)
+    .map(id => document.getElementById(id))
+    .filter(Boolean)
+    .map(getVisibleText)
+    .filter(Boolean)
+    .filter(text => !/^official url$/i.test(text.trim()));
+  if (labelledTexts.length) return labelledTexts[labelledTexts.length - 1];
+
+  return getVisibleText(dropdown).replace(/\bofficial url\b/i, "").trim();
+}
+
+function getOpenOfficialUrlOptions() {
+  return Array.from(document.querySelectorAll("[role='option']"))
+    .filter(element => element.getAttribute("aria-disabled") !== "true")
+    .filter(isVisible)
+    .map(element => ({
+      element,
+      text: getVisibleText(element),
+      value: element.getAttribute("data-value") || ""
+    }))
+    .filter(option => option.text || option.value);
+}
+
+function findOfficialUrlOption(targetValue) {
+  const options = getOpenOfficialUrlOptions();
+  const normalizedTarget = normalizeAdditionalUrlForMatch(targetValue);
+
+  if (isNoneAdditionalFieldValue(targetValue)) {
+    return options.find(option => /^none$/i.test(option.value || option.text)) || null;
+  }
+
+  return options.find(option => normalizeAdditionalUrlForMatch(option.value) === normalizedTarget) ||
+    options.find(option => normalizeAdditionalUrlForMatch(option.text) === normalizedTarget) ||
+    options.find(option => normalizeAdditionalUrlForMatch(option.text).includes(normalizedTarget)) ||
+    null;
+}
+
+async function openOfficialUrlDropdown(dropdown = findOfficialUrlDropdown()) {
+  if (!dropdown) {
+    return { ok: false, message: localize("officialUrlFieldNotFound", "Could not find the Official URL field.") };
+  }
+
+  dropdown.scrollIntoView({ block: "center", inline: "nearest" });
+  activateDashboardButton(dropdown);
+  await delay(250);
+
+  if (!getOpenOfficialUrlOptions().length) {
+    dropdown.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", code: "ArrowDown", bubbles: true, cancelable: true }));
+    await delay(250);
+  }
+
+  return { ok: true, dropdown };
+}
+
+async function selectOfficialUrlField(rawValue) {
+  const targetValue = isNoneAdditionalFieldValue(rawValue) ? "None" : getAdditionalUrlFieldFillValue(rawValue);
+  if (!targetValue) {
+    return {
+      ok: true,
+      skipped: true,
+      key: "official_url",
+      message: localize("additionalFieldSkipped", "Skipped additional field: $1.", ["official_url"])
+    };
+  }
+
+  const dropdown = findOfficialUrlDropdown();
+  if (!dropdown) {
+    return { ok: false, key: "official_url", message: localize("officialUrlFieldNotFound", "Could not find the Official URL field.") };
+  }
+
+  const currentValue = getOfficialUrlDropdownSelectedText(dropdown);
+  if (
+    isNoneAdditionalFieldValue(targetValue) && /^none$/i.test(currentValue) ||
+    normalizeAdditionalUrlForMatch(currentValue) === normalizeAdditionalUrlForMatch(targetValue)
+  ) {
+    return { ok: true, key: "official_url", message: localize("additionalFieldAlreadySet", "Additional field already set: $1.", ["official_url"]) };
+  }
+
+  const opened = await openOfficialUrlDropdown(dropdown);
+  if (!opened.ok) return { ...opened, key: "official_url" };
+
+  let option = findOfficialUrlOption(targetValue);
+  for (let attempt = 0; !option && attempt < 8; attempt++) {
+    await delay(150);
+    option = findOfficialUrlOption(targetValue);
+  }
+
+  if (!option) {
+    const availableOptions = getOpenOfficialUrlOptions().map(candidate => candidate.text || candidate.value).filter(Boolean);
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    return {
+      ok: false,
+      key: "official_url",
+      message: localize("officialUrlOptionNotFound", "Could not find Official URL option: $1.", [targetValue]),
+      diagnostics: {
+        targetValue,
+        currentValue,
+        availableOptions
+      }
+    };
+  }
+
+  activateDashboardButton(option.element);
+  await delay(250);
+  return { ok: true, key: "official_url", message: localize("additionalFieldFilled", "Filled additional field: $1.", ["official_url"]) };
+}
+
+function fillAdditionalUrlTextField(key) {
+  const fields = getActiveAdditionalFields();
+  if (!hasAdditionalField(fields, key)) {
+    return {
+      ok: true,
+      skipped: true,
+      key,
+      message: localize("additionalFieldSkipped", "Skipped additional field: $1.", [key])
+    };
+  }
+
+  const rawValue = String(fields[key] || "").trim();
+  if (!rawValue) {
+    return {
+      ok: true,
+      skipped: true,
+      key,
+      message: localize("additionalFieldSkipped", "Skipped additional field: $1.", [key])
+    };
+  }
+
+  const value = getAdditionalUrlFieldFillValue(rawValue);
+  const target = findAdditionalTextField(key);
+  if (!target) {
+    return { ok: false, key, message: localize("additionalFieldNotFound", "Could not find additional field: $1.", [key]) };
+  }
+
+  if (!fillElement(target.element, value)) {
+    return { ok: false, key, message: localize("additionalFieldDidNotAcceptValue", "Additional field did not accept value: $1.", [key]) };
+  }
+
+  const actual = normalizeFilledPrivacyValue(getEditableElementValue(target.element));
+  const expected = normalizeFilledPrivacyValue(value);
+  if (actual !== expected) {
+    return {
+      ok: false,
+      key,
+      message: localize("additionalFieldDidNotAcceptValue", "Additional field did not accept value: $1.", [key]),
+      actual,
+      expected
+    };
+  }
+
+  return { ok: true, key, message: localize("additionalFieldFilled", "Filled additional field: $1.", [key]) };
+}
+
+function getMatureContentSwitchContextText(element) {
+  const parts = [getElementLabelText(element)];
+  const containers = [
+    element.closest("label"),
+    element.closest(".TVM7Wc"),
+    element.closest(".n5L2Mb")
+  ].filter(Boolean);
+
+  containers.forEach(container => {
+    parts.push(getVisibleText(container));
+  });
+
+  return normalizeAdditionalMatchText(parts.join(" "));
+}
+
+function findMatureContentSwitch() {
+  const candidates = Array.from(document.querySelectorAll("button[role='switch'], [role='switch']"))
+    .filter(isVisible)
+    .filter(element => element.getAttribute("aria-disabled") !== "true")
+    .map((element, index) => {
+      const context = getMatureContentSwitchContextText(element);
+      let score = 0;
+      if (/\bmature content\b/.test(context)) score += 180;
+      if (/\bmature\b/.test(context)) score += 80;
+      if (/\bcontent\b/.test(context)) score += 25;
+      return { element, index, context, score };
+    })
+    .filter(candidate => candidate.score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index);
+
+  return candidates[0] && candidates[0].score >= 120 ? candidates[0].element : null;
+}
+
+function setMatureContentField(rawValue) {
+  const targetValue = parseMatureContentValue(rawValue);
+  if (targetValue === null) {
+    return {
+      ok: true,
+      skipped: true,
+      key: "mature_content",
+      message: localize("additionalFieldSkipped", "Skipped additional field: $1.", ["mature_content"])
+    };
+  }
+
+  const switchElement = findMatureContentSwitch();
+  if (!switchElement) {
+    return { ok: false, key: "mature_content", message: localize("additionalFieldNotFound", "Could not find additional field: $1.", ["mature_content"]) };
+  }
+
+  const currentValue = switchElement.getAttribute("aria-checked") === "true";
+  if (currentValue === targetValue) {
+    return { ok: true, key: "mature_content", message: localize("additionalFieldAlreadySet", "Additional field already set: $1.", ["mature_content"]) };
+  }
+
+  activateDashboardButton(switchElement);
+  return { ok: true, key: "mature_content", message: localize("additionalFieldFilled", "Filled additional field: $1.", ["mature_content"]) };
+}
+
+async function fillDetectedAdditionalFields() {
+  const fields = getActiveAdditionalFields();
+  if (!Object.keys(fields).length) {
+    return { ok: false, message: localize("additionalFieldsDocNotImported", "No additional fields document imported for the active project.") };
+  }
+
+  const filled = [];
+  const missing = [];
+  const skipped = [];
+  const results = [];
+
+  for (const key of ["official_url", "homepage_url", "support_url", "mature_content"]) {
+    if (!hasAdditionalField(fields, key)) continue;
+
+    let result;
+    if (key === "official_url") {
+      result = await selectOfficialUrlField(fields[key]);
+    } else if (key === "homepage_url" || key === "support_url") {
+      result = fillAdditionalUrlTextField(key);
+    } else if (key === "mature_content") {
+      result = setMatureContentField(fields[key]);
+    }
+
+    if (!result) continue;
+    results.push(result);
+    if (result.skipped) {
+      skipped.push(key);
+    } else if (result.ok) {
+      filled.push(key);
+    } else {
+      missing.push(key);
+    }
+  }
+
+  return {
+    ok: filled.length > 0 || skipped.length > 0,
+    message: [
+      filled.length ? localize("additionalFieldsFilled", "Filled $1 additional field(s): $2.", [String(filled.length), filled.join(", ")]) : "",
+      skipped.length ? localize("additionalFieldsSkipped", "Skipped $1 additional field(s): $2.", [String(skipped.length), skipped.join(", ")]) : "",
+      missing.length ? localize("additionalFieldsNotFound", "Could not find: $1.", [missing.join(", ")]) : ""
+    ].filter(Boolean).join(" ") || localize("additionalFieldsNoSupportedFields", "No supported additional fields were available to fill."),
+    filled,
+    skipped,
+    missing,
+    results
+  };
 }
 
 function normalizePrivacyMatchText(value) {
@@ -696,7 +1531,8 @@ function getExpectedPrivacyPayloads(key) {
   if (key === "single_purpose") return ["singlepurpose", "singlepurposejustification"];
   if (key === "privacy_policy_url") return ["privacypolicyurl", "privacypolicy"];
   if (key === "host_permission") return ["hostpermission", "hostpermissions", "hostpermissionjustification"];
-  if (key === "remote_code") return ["remotecode", "remotecodejustification"];
+  if (key === "remote_code") return ["remotecode"];
+  if (key === "remote_code_justification") return ["remotecodejustification"];
 
   const permissionMatch = key.match(/^permission\.(.+)$/);
   return permissionMatch ? [normalizePrivacyPayload(permissionMatch[1])] : [];
@@ -742,7 +1578,10 @@ function scorePrivacyFieldCandidate(candidate, key) {
     if (candidate.tagName === "textarea") score += 20;
   } else if (key === "remote_code") {
     if (/remote code|remotecode|remote.*code|extern.*code|ausgelagert.*code/.test(context)) score += 120;
-    if (/begrundung|justification|erklarung/.test(context)) score += 25;
+  } else if (key === "remote_code_justification") {
+    if (/remote code|remotecode|remote.*code|extern.*code|ausgelagert.*code/.test(context)) score += 120;
+    if (/begrundung|justification|erklarung|reason|rationale|explanation/.test(context)) score += 35;
+    if (candidate.tagName === "textarea") score += 20;
   } else if (permissionMatch) {
     const permission = normalizePrivacyMatchText(permissionMatch[1]);
     if (new RegExp(`\\b${permission.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(context)) score += 110;
@@ -788,17 +1627,114 @@ function getContextAroundElement(element) {
   return normalizePrivacyMatchText(containers.map(getVisibleText).join(" "));
 }
 
-function isRemoteCodeNoSelected() {
-  return Array.from(document.querySelectorAll([
-    "input[type='radio']:checked",
-    "[role='radio'][aria-checked='true']"
-  ].join(","))).some(control => {
-    const context = getContextAroundElement(control);
-    return /remote ?code|remotecode/.test(context) &&
-      (/\bno\b/.test(context) || /nein/.test(context)) &&
-      (/\bnot\b/.test(context) || /nicht/.test(context)) &&
-      !(/\byes\b/.test(context) || /\bja\b/.test(context));
+function getPrivacyRadioControl(input) {
+  return input && (
+    input.closest(".VfPpkd-GCYh9b") ||
+    input.closest(".VfPpkd-dgl2Hf-ppHlrf-sM5MNb") ||
+    input.closest("[role='radio']") ||
+    input.closest("label") ||
+    input
+  );
+}
+
+function isPrivacyRadioChecked(input) {
+  return Boolean(
+    input &&
+    (input.checked || input.getAttribute("aria-checked") === "true" ||
+      (input.closest("[aria-checked]") && input.closest("[aria-checked]").getAttribute("aria-checked") === "true"))
+  );
+}
+
+function normalizeRemoteCodeRadioValue(input) {
+  const value = String(input && (input.value || input.getAttribute("data-value") || input.getAttribute("aria-label")) || "")
+    .trim()
+    .toLowerCase();
+  if (value === "true" || value === "yes") return "yes";
+  if (value === "false" || value === "no") return "no";
+
+  const context = getContextAroundElement(input);
+  if (/\byes\b|\bja\b/.test(context) && /remote ?code|remotecode/.test(context)) return "yes";
+  if (/\bno\b|nein/.test(context) && /remote ?code|remotecode/.test(context)) return "no";
+  return "";
+}
+
+function getRemoteCodeRadioGroup() {
+  const radios = Array.from(document.querySelectorAll("input[type='radio'], [role='radio']"))
+    .map((input, index) => {
+      const control = getPrivacyRadioControl(input);
+      const value = normalizeRemoteCodeRadioValue(input);
+      return {
+        input,
+        control,
+        value,
+        index,
+        groupKey: input.name || input.getAttribute("name") || input.getAttribute("aria-controls") || `radio-${index}`,
+        context: getContextAroundElement(input),
+        visible: isVisible(control) || isVisible(input)
+      };
+    })
+    .filter(item => item.visible && (item.value === "yes" || item.value === "no"));
+
+  const groups = [];
+  radios.forEach(item => {
+    let group = groups.find(candidate => candidate.groupKey === item.groupKey);
+    if (!group) {
+      group = {
+        groupKey: item.groupKey,
+        rows: [],
+        yes: null,
+        no: null,
+        context: ""
+      };
+      groups.push(group);
+    }
+    group.rows.push(item);
+    group[item.value] = item;
+    group.context = normalizePrivacyMatchText(`${group.context} ${item.context}`);
   });
+
+  const completeGroups = groups
+    .filter(group => group.yes && group.no)
+    .map(group => ({
+      ...group,
+      score: (/remote ?code|remotecode|extern.*code|ausgelagert.*code/.test(group.context) ? 100 : 0) +
+        (groups.length === 1 ? 30 : 0) +
+        (group.rows.length === 2 ? 20 : 0)
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  const best = completeGroups[0];
+  return best && best.score >= 80 ? best : null;
+}
+
+function setPrivacyRadioChecked(item) {
+  const input = item && item.input ? item.input : item;
+  if (!input) return false;
+  if (isPrivacyRadioChecked(input)) return true;
+
+  const control = getPrivacyRadioControl(input);
+  activateDashboardButton(control);
+  if (isPrivacyRadioChecked(input)) return true;
+
+  input.click();
+  if (isPrivacyRadioChecked(input)) return true;
+
+  const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "checked");
+  const sameName = input.name
+    ? Array.from(document.querySelectorAll(`input[type='radio'][name='${CSS.escape(input.name)}']`))
+    : [];
+  sameName.forEach(other => {
+    if (other !== input) {
+      if (descriptor && typeof descriptor.set === "function") descriptor.set.call(other, false);
+      else other.checked = false;
+    }
+  });
+  if (descriptor && typeof descriptor.set === "function") descriptor.set.call(input, true);
+  else input.checked = true;
+  input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+  input.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+
+  return isPrivacyRadioChecked(input);
 }
 
 function getActivePrivacyFields() {
@@ -829,7 +1765,7 @@ function getPrivacyFieldFillValue(key, value) {
   const raw = String(value || "").trim();
   const firstUrl = raw.match(/https?:\/\/\S+/i);
   let url = firstUrl ? firstUrl[0] : raw.split(/\r?\n/).map(line => line.trim()).find(Boolean) || "";
-  const markerIndex = url.search(/(?:data_usage|certification_\d+|single_purpose|host_permission|remote_code|privacy_policy_url|permission\.[A-Za-z0-9_.-]+)\s*:/i);
+  const markerIndex = url.search(/(?:data_usage(?:\.[A-Za-z0-9_.-]+)?|certification(?:\.[A-Za-z0-9_.-]+)?|certification_\d+|single_purpose|host_permission|remote_code(?:_justification)?|privacy_policy_url|permission\.[A-Za-z0-9_.-]+)\s*:/i);
 
   if (markerIndex > 0) {
     url = url.slice(0, markerIndex);
@@ -838,8 +1774,374 @@ function getPrivacyFieldFillValue(key, value) {
   return url.replace(/[),;]+$/g, "").trim();
 }
 
+function getRemoteCodeDecision(value) {
+  const raw = String(value || "").trim();
+  const normalized = normalizePrivacyBooleanValue(raw);
+  if (normalized === "yes" || normalized === "no" || normalized === "") {
+    return {
+      decision: normalized,
+      legacyJustification: ""
+    };
+  }
+
+  const matchText = normalizePrivacyMatchText(raw);
+  const negative = (
+    /does not (load|use|include|execute|eval|reference).*remote code/.test(matchText) ||
+    /remote code.*(not used|not loaded|not included|not requested|none|no)/.test(matchText) ||
+    /\bno remote code\b/.test(matchText) ||
+    /remote scripts?.*(not used|not loaded|none|no)/.test(matchText) ||
+    /all extension code.*packaged locally/.test(matchText) ||
+    /code.*packaged locally/.test(matchText)
+  );
+
+  if (negative) {
+    return {
+      decision: "no",
+      legacyJustification: ""
+    };
+  }
+
+  return {
+    decision: raw ? "yes" : "",
+    legacyJustification: raw
+  };
+}
+
+function getRemoteCodeJustificationValue(fields, decisionResult) {
+  const explicit = String(fields.remote_code_justification || "").trim();
+  if (explicit) return explicit;
+  return decisionResult && decisionResult.decision === "yes" ? decisionResult.legacyJustification : "";
+}
+
+function isPrivacyDataUsageKey(key) {
+  return PRIVACY_DATA_USAGE_KEYS.includes(key) || PRIVACY_CERTIFICATION_KEYS.includes(key);
+}
+
+function getVisiblePrivacyFieldKeys(fields) {
+  const privacyFields = fields || {};
+  const remoteCodeDecision = getRemoteCodeDecision(privacyFields.remote_code).decision;
+  const includeRemoteCodeJustification = remoteCodeDecision === "yes";
+  const keys = Object.keys(privacyFields).filter(key => (
+    !isPrivacyDataUsageKey(key) &&
+    key !== "remote_code" &&
+    key !== "remote_code_justification"
+  ));
+  const permissionKeys = keys.filter(key => key.startsWith("permission.")).sort((a, b) => a.localeCompare(b));
+  const preferredOrder = [
+    "single_purpose",
+    "host_permission"
+  ];
+
+  const remoteCodeOrder = [];
+  if (Object.prototype.hasOwnProperty.call(privacyFields, "remote_code")) {
+    remoteCodeOrder.push("remote_code");
+  }
+  if (includeRemoteCodeJustification) {
+    remoteCodeOrder.push("remote_code_justification");
+  }
+
+  const ordered = preferredOrder.filter(key => keys.includes(key))
+    .concat(permissionKeys)
+    .concat(keys.filter(key => (
+      !preferredOrder.includes(key) &&
+      !permissionKeys.includes(key) &&
+      key !== "privacy_policy_url"
+    )).sort((a, b) => a.localeCompare(b)))
+    .concat(remoteCodeOrder);
+
+  if (keys.includes("privacy_policy_url")) ordered.push("privacy_policy_url");
+  return ordered;
+}
+
+function getPrivacyDataUsageFieldKeys(fields) {
+  const privacyFields = fields || {};
+  const expected = new Set([...PRIVACY_DATA_USAGE_KEYS, ...PRIVACY_CERTIFICATION_KEYS]);
+  return Object.keys(privacyFields).filter(key => expected.has(key));
+}
+
+function normalizePrivacyBooleanValue(value) {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
+  if (["yes", "true", "on", "1", "y"].includes(normalized)) return "yes";
+  if (["no", "false", "off", "0", "n", "none", ""].includes(normalized)) return normalized ? "no" : "";
+  return normalized;
+}
+
+function normalizeDataUsageDisclosureValue(value) {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
+  if (["yes", "true", "on", "1", "y"].includes(normalized)) return "yes";
+  if (["no", "false", "off", "0", "n"].includes(normalized)) return "no";
+  if (["", "none", "na", "n_a", "not_applicable", "omit", "skip"].includes(normalized)) return "";
+  return "";
+}
+
+function isPrivacyCheckboxChecked(input) {
+  if (!input) return false;
+  return Boolean(
+    input.checked ||
+    input.getAttribute("aria-checked") === "true" ||
+    (input.closest("[aria-checked]") && input.closest("[aria-checked]").getAttribute("aria-checked") === "true")
+  );
+}
+
+function getPrivacyCheckboxRows() {
+  return Array.from(document.querySelectorAll("input[type='checkbox']"))
+    .map((input, index) => {
+      const row = input.closest(".VfPpkd-I9GLp-yrriRe") ||
+        input.closest("label") ||
+        input.parentElement ||
+        input;
+      const section = input.closest(".xOQx5b") || input.closest("section") || document.body;
+      const control = input.closest(".VfPpkd-MPu53c") || input;
+      const rect = row.getBoundingClientRect();
+
+      return {
+        input,
+        row,
+        section,
+        control,
+        index,
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
+        label: input.getAttribute("aria-label") || getVisibleText(row)
+      };
+    })
+    .filter(item => isVisible(item.row) || isVisible(item.control) || isVisible(item.input))
+    .sort((a, b) => a.top - b.top || a.left - b.left || a.index - b.index);
+}
+
+function getPrivacyCheckboxGroups() {
+  const rows = getPrivacyCheckboxRows();
+  const groups = [];
+
+  rows.forEach(row => {
+    let group = groups.find(candidate => candidate.section === row.section);
+    if (!group) {
+      group = {
+        section: row.section,
+        top: row.top,
+        rows: []
+      };
+      groups.push(group);
+    }
+    group.rows.push(row);
+    group.top = Math.min(group.top, row.top);
+  });
+
+  return groups
+    .map(group => ({
+      ...group,
+      rows: group.rows.sort((a, b) => a.top - b.top || a.left - b.left || a.index - b.index)
+    }))
+    .sort((a, b) => a.top - b.top);
+}
+
+function getPrivacyDataUsageCheckboxMap() {
+  const groups = getPrivacyCheckboxGroups();
+  const dataGroup = groups.find(group => group.rows.length === PRIVACY_DATA_USAGE_KEYS.length);
+  const certificationGroup = dataGroup
+    ? groups.find(group => group.top > dataGroup.top && group.rows.length === PRIVACY_CERTIFICATION_KEYS.length)
+    : null;
+
+  if (!dataGroup || !certificationGroup) {
+    return {
+      ok: false,
+      message: localize("dataUsageCheckboxStructureNotFound", "Could not confidently map Data usage checkboxes."),
+      diagnostics: {
+        checkboxGroupSizes: groups.map(group => group.rows.length),
+        checkboxLabels: groups.map(group => group.rows.map(row => row.label))
+      }
+    };
+  }
+
+  const entries = {};
+  PRIVACY_DATA_USAGE_KEYS.forEach((key, index) => {
+    entries[key] = {
+      ...dataGroup.rows[index],
+      group: "data_usage"
+    };
+  });
+  PRIVACY_CERTIFICATION_KEYS.forEach((key, index) => {
+    entries[key] = {
+      ...certificationGroup.rows[index],
+      group: "certification"
+    };
+  });
+
+  return {
+    ok: true,
+    entries,
+    diagnostics: {
+      mapping: Object.fromEntries(Object.entries(entries).map(([key, item]) => [key, item.label])),
+      checkboxGroupSizes: groups.map(group => group.rows.length)
+    }
+  };
+}
+
+function setPrivacyCheckboxChecked(item, checked) {
+  if (!item || !item.input) return false;
+  if (isPrivacyCheckboxChecked(item.input) === checked) return true;
+
+  const target = item.control || item.input;
+  activateDashboardButton(target);
+
+  if (isPrivacyCheckboxChecked(item.input) === checked) return true;
+
+  item.input.click();
+  if (isPrivacyCheckboxChecked(item.input) === checked) return true;
+
+  const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "checked");
+  if (descriptor && typeof descriptor.set === "function") {
+    descriptor.set.call(item.input, checked);
+  } else {
+    item.input.checked = checked;
+  }
+  item.input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+  item.input.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+
+  return isPrivacyCheckboxChecked(item.input) === checked;
+}
+
+function fillPrivacyDataUsage() {
+  const fields = getActivePrivacyFields();
+  if (!Object.keys(fields).length) {
+    return { ok: false, message: localize("privacyDocNotImported", "No privacy document imported for the active project.") };
+  }
+
+  const map = getPrivacyDataUsageCheckboxMap();
+  if (!map.ok) {
+    return {
+      ok: false,
+      message: map.message,
+      diagnostics: map.diagnostics
+    };
+  }
+
+  const checked = [];
+  const unchecked = [];
+  const skipped = [];
+  const failed = [];
+  const allKeys = [...PRIVACY_DATA_USAGE_KEYS, ...PRIVACY_CERTIFICATION_KEYS];
+
+  allKeys.forEach(key => {
+    if (!Object.prototype.hasOwnProperty.call(fields, key)) return;
+
+    const normalized = normalizeDataUsageDisclosureValue(fields[key]);
+    if (!normalized) {
+      skipped.push(key);
+      return;
+    }
+
+    const item = map.entries[key];
+    const checkedState = normalized === "yes";
+    if (!item || !setPrivacyCheckboxChecked(item, checkedState)) {
+      failed.push(key);
+      return;
+    }
+
+    if (checkedState) {
+      checked.push(key);
+    } else {
+      unchecked.push(key);
+    }
+  });
+
+  const messageParts = [
+    checked.length ? localize("dataUsageCheckedFields", "Checked $1 data usage disclosure(s): $2.", [String(checked.length), checked.join(", ")]) : "",
+    unchecked.length ? localize("dataUsageUncheckedFields", "Unchecked $1 data usage disclosure(s): $2.", [String(unchecked.length), unchecked.join(", ")]) : "",
+    skipped.length ? localize("dataUsageSkippedFields", "Skipped $1 data usage disclosure(s): $2.", [String(skipped.length), skipped.join(", ")]) : "",
+    failed.length ? localize("dataUsageCheckboxesNotFound", "Could not set: $1.", [failed.join(", ")]) : ""
+  ].filter(Boolean);
+
+  return {
+    ok: (checked.length > 0 || unchecked.length > 0) && failed.length === 0,
+    message: messageParts.join(" ") || localize("dataUsageNoExplicitYes", "No explicit data usage values were available to apply."),
+    checked,
+    unchecked,
+    skipped,
+    failed,
+    diagnostics: map.diagnostics
+  };
+}
+
+function fillRemoteCodePrivacyField() {
+  const fields = getActivePrivacyFields();
+  const decisionResult = getRemoteCodeDecision(fields.remote_code);
+
+  if (!decisionResult.decision) {
+    return { ok: false, message: localize("privacyNoValueForField", "No privacy document value for $1.", ["remote_code"]) };
+  }
+
+  const radioGroup = getRemoteCodeRadioGroup();
+  if (!radioGroup) {
+    return { ok: false, message: localize("privacyFieldNotFound", "Could not find privacy field: $1", ["remote_code"]) };
+  }
+
+  const radio = decisionResult.decision === "yes" ? radioGroup.yes : radioGroup.no;
+  if (!setPrivacyRadioChecked(radio)) {
+    return { ok: false, message: localize("privacyFieldDidNotAcceptValue", "Privacy field did not accept value: $1.", ["remote_code"]) };
+  }
+
+  if (decisionResult.decision === "no") {
+    return {
+      ok: true,
+      message: localize("privacyFilledField", "Filled privacy field: $1.", ["remote_code"]),
+      key: "remote_code",
+      decision: "no"
+    };
+  }
+
+  const justification = getRemoteCodeJustificationValue(fields, decisionResult);
+  if (!justification) {
+    return { ok: false, message: localize("privacyNoValueForField", "No privacy document value for $1.", ["remote_code_justification"]) };
+  }
+
+  const target = findPrivacyField("remote_code_justification");
+  if (!target || isDisabledEditableElement(target.element)) {
+    return { ok: false, message: localize("privacyFieldNotFound", "Could not find privacy field: $1.", ["remote_code_justification"]) };
+  }
+
+  if (!fillElement(target.element, justification)) {
+    return { ok: false, message: localize("privacyFieldDidNotAcceptValue", "Privacy field did not accept value: $1.", ["remote_code_justification"]) };
+  }
+
+  const expected = normalizeFilledPrivacyValue(justification);
+  const actual = normalizeFilledPrivacyValue(getEditableElementValue(target.element));
+  if (actual !== expected) {
+    return {
+      ok: false,
+      message: localize("privacyFieldDidNotAcceptValue", "Privacy field did not accept value: $1.", ["remote_code_justification"]),
+      key: "remote_code_justification",
+      score: target.score,
+      actualLength: actual.length,
+      expectedLength: expected.length
+    };
+  }
+
+  return {
+    ok: true,
+    message: localize("privacyFilledField", "Filled privacy field: $1.", ["remote_code"]),
+    key: "remote_code",
+    decision: "yes",
+    score: target.score
+  };
+}
+
 function fillPrivacyField(key) {
   const fields = getActivePrivacyFields();
+  if (key === "remote_code") {
+    return fillRemoteCodePrivacyField();
+  }
+
   const value = getPrivacyFieldFillValue(key, fields[key]);
 
   if (!value) {
@@ -847,29 +2149,9 @@ function fillPrivacyField(key) {
   }
 
   const target = findPrivacyField(key);
-  if (key === "remote_code" && (!target || isRemoteCodeNoSelected())) {
-    return {
-      ok: true,
-      skipped: true,
-      message: localize("privacySkippedField", "Skipped privacy field: $1.", [key]),
-      key,
-      reason: "remote_code_not_used"
-    };
-  }
 
   if (!target) {
     return { ok: false, message: localize("privacyFieldNotFound", "Could not find privacy field: $1.", [key]) };
-  }
-
-  if (key === "remote_code" && isDisabledEditableElement(target.element)) {
-    return {
-      ok: true,
-      skipped: true,
-      message: localize("privacySkippedField", "Skipped privacy field: $1.", [key]),
-      key,
-      score: target.score,
-      reason: "remote_code_justification_disabled"
-    };
   }
 
   if (!fillElement(target.element, value)) {
@@ -945,10 +2227,15 @@ function fillDetectedPrivacyFields() {
 
 function getPrivacyDiagnostics() {
   const fields = getActivePrivacyFields();
+  const dataUsageMap = getPrivacyDataUsageCheckboxMap();
   return {
     hasPrivacyDoc: Boolean(activePrivacyDoc && activePrivacyDoc.file),
     privacyDocPath: activePrivacyDoc && activePrivacyDoc.file ? activePrivacyDoc.file.path : "",
     privacyDocKeys: Object.keys(fields),
+    dataUsageCheckboxes: dataUsageMap.ok ? dataUsageMap.diagnostics : {
+      ok: false,
+      ...(dataUsageMap.diagnostics || {})
+    },
     fieldCandidates: getPrivacyFieldCandidates().map(candidate => ({
       index: candidate.index,
       tagName: candidate.tagName,
@@ -966,10 +2253,6 @@ function getPrivacyDiagnostics() {
 
 function normalizeLocale(locale) {
   return String(locale || "").replace("-", "_").toLowerCase();
-}
-
-function isChromeWebStoreSupportedLocale(locale) {
-  return CHROME_WEB_STORE_SUPPORTED_LOCALES.has(normalizeLocale(locale));
 }
 
 function getEquivalentLocales(locale) {
@@ -1005,6 +2288,25 @@ function normalizeLanguageText(text) {
     .replace(/\s+/g, " ");
 }
 
+function getElementsByIdList(idList) {
+  return String(idList || "")
+    .split(/\s+/)
+    .map(id => id && document.getElementById(id))
+    .filter(Boolean);
+}
+
+function getReferencedText(element, attribute) {
+  return getElementsByIdList(element && element.getAttribute(attribute))
+    .map(getVisibleText)
+    .filter(Boolean)
+    .join(" ");
+}
+
+function normalizePotentialLocaleCode(value) {
+  const normalized = normalizeLocale(value);
+  return /^[a-z]{2,3}(?:_[a-z0-9]{2,4})?$/.test(normalized) ? normalized : "";
+}
+
 function getLocaleDisplayLabels(locale) {
   const normalizedLocale = normalizeLocale(locale);
   const languageTag = normalizedLocale.replace("_", "-");
@@ -1018,7 +2320,7 @@ function getLocaleDisplayLabels(locale) {
         const label = displayNames.of(tag);
         if (label) labels.add(label);
       } catch (_error) {
-        // Ignore unsupported locale display names and keep code-based matching.
+        // Keep code-based labels for locale tags Intl cannot display.
       }
     });
   }
@@ -1081,6 +2383,27 @@ function isLikelyLanguageText(text) {
   return /^(language|sprache|langue|idioma|lingua|言語|语言)$/i.test(text.trim());
 }
 
+function containsLikelyLanguageText(text) {
+  return /\b(language|sprache|langue|idioma|lingua)\b|言語|语言/i.test(String(text || ""));
+}
+
+function getElementLocale(element, localeKeys = Object.keys(listings)) {
+  if (!element) return "";
+
+  const attributeValues = [
+    element.getAttribute("data-value"),
+    element.getAttribute("value"),
+    element.getAttribute("aria-label")
+  ].filter(Boolean);
+
+  for (const value of attributeValues) {
+    const locale = normalizePotentialLocaleCode(value);
+    if (locale) return locale;
+  }
+
+  return getLocaleFromText(getVisibleText(element), localeKeys);
+}
+
 function findClickableAncestor(element) {
   let current = element;
 
@@ -1104,10 +2427,233 @@ function findClickableAncestor(element) {
   return element;
 }
 
-function findLanguageDropdown() {
+function getDropdownMenuRoots(dropdown) {
+  if (!dropdown) return [];
+
+  const roots = [];
+  const addRoot = root => {
+    if (root && !roots.includes(root)) roots.push(root);
+  };
+
+  getElementsByIdList(dropdown.getAttribute("aria-controls")).forEach(addRoot);
+  addRoot(dropdown.nextElementSibling);
+
+  const container = dropdown.closest(".VfPpkd-O1htCb") ||
+    dropdown.closest("label") ||
+    dropdown.parentElement;
+  if (container) {
+    Array.from(container.querySelectorAll("[role='listbox'], [role='menu']")).forEach(addRoot);
+  }
+
+  return roots.filter(Boolean);
+}
+
+function getLanguageOptionElements(dropdown = null, visibleOnly = true) {
+  const selector = "[role='option'], [role='menuitem'], .VfPpkd-StrnGf-rymPhb-ibnC6b";
+  const roots = dropdown ? getDropdownMenuRoots(dropdown) : [];
+  let options = roots.flatMap(root => Array.from(root.querySelectorAll(selector)));
+
+  if (!options.length) {
+    options = Array.from(document.querySelectorAll(selector));
+  }
+
+  return Array.from(new Set(options))
+    .filter(option => !visibleOnly || isVisible(option));
+}
+
+function getLanguageDropdownSelectedText(dropdown) {
+  if (!dropdown) return "";
+
+  const labelIds = new Set(getElementsByIdList(dropdown.getAttribute("aria-labelledby"))
+    .filter(element => isLikelyLanguageText(getVisibleText(element)))
+    .map(element => element.id)
+    .filter(Boolean));
+  const selectedTextFromLabelledBy = getElementsByIdList(dropdown.getAttribute("aria-labelledby"))
+    .filter(element => !labelIds.has(element.id))
+    .map(getVisibleText)
+    .filter(Boolean)
+    .join(" ");
+
+  return selectedTextFromLabelledBy || getVisibleText(dropdown);
+}
+
+function getLanguageDropdownLocale(dropdown) {
+  return getElementLocale(dropdown) ||
+    getLocaleFromText(getLanguageDropdownSelectedText(dropdown)) ||
+    getLocaleFromText(getReferencedText(dropdown, "aria-labelledby"));
+}
+
+function getElementTop(element) {
+  return element && element.getBoundingClientRect ? element.getBoundingClientRect().top : Number.POSITIVE_INFINITY;
+}
+
+function findVisibleTextElement(pattern) {
+  return Array.from(document.querySelectorAll("h1, h2, h3, h4, span, div, label"))
+    .filter(isVisible)
+    .find(element => {
+      const text = getVisibleText(element);
+      return text.length > 0 && text.length <= 140 && pattern.test(text);
+    });
+}
+
+function getDropdownLocalContext(dropdown) {
+  if (!dropdown) return "";
+
+  const containers = [
+    dropdown.closest(".TVM7Wc"),
+    dropdown.closest(".O1htCb-H9tDt"),
+    dropdown.closest("label"),
+    dropdown.parentElement,
+    dropdown
+  ].filter(Boolean);
+
+  return containers
+    .map(getVisibleText)
+    .filter(Boolean)
+    .sort((a, b) => a.length - b.length)[0] || "";
+}
+
+function getLanguageDropdownLabelText(dropdown) {
+  return [
+    getReferencedText(dropdown, "aria-labelledby"),
+    dropdown && dropdown.getAttribute("aria-label") || "",
+    dropdown ? getDropdownLocalContext(dropdown) : ""
+  ].filter(Boolean).join(" ");
+}
+
+function isLanguageDropdownCandidate(dropdown) {
+  if (!dropdown) return false;
+
+  const labelText = getLanguageDropdownLabelText(dropdown);
+  return containsLikelyLanguageText(labelText) ||
+    getLanguageOptionElements(dropdown, false).some(option => getElementLocale(option));
+}
+
+function isMultiLocaleLanguageDropdown(dropdown) {
+  if (!isLanguageDropdownCandidate(dropdown)) return false;
+
+  const localContext = normalizeLanguageText(getDropdownLocalContext(dropdown));
+  if (/current editing language/.test(localContext)) return true;
+
+  const currentEditingLabel = findVisibleTextElement(/current editing language/i);
+  if (!currentEditingLabel) return false;
+
+  const dropdownRect = dropdown.getBoundingClientRect();
+  const labelRect = currentEditingLabel.getBoundingClientRect();
+  return Math.abs(dropdownRect.top - labelRect.top) < 140 &&
+    dropdownRect.left > labelRect.left;
+}
+
+function isOneLanguageProductDetailsDropdown(dropdown) {
+  if (!isLanguageDropdownCandidate(dropdown)) return false;
+  if (isMultiLocaleLanguageDropdown(dropdown)) return false;
+
+  const localContext = normalizeLanguageText(getDropdownLocalContext(dropdown));
+  if (/select a language/.test(localContext) && !/current editing language/.test(localContext)) {
+    return true;
+  }
+
+  const categoryDropdown = typeof findCategoryDropdown === "function" ? findCategoryDropdown() : null;
+  const graphicAssetsLabel = findVisibleTextElement(/graphic assets/i);
+  const dropdownTop = getElementTop(dropdown);
+  const categoryBottom = categoryDropdown ? categoryDropdown.getBoundingClientRect().bottom : Number.NEGATIVE_INFINITY;
+  const graphicAssetsTop = graphicAssetsLabel ? graphicAssetsLabel.getBoundingClientRect().top : Number.POSITIVE_INFINITY;
+
+  return dropdownTop > categoryBottom - 24 &&
+    dropdownTop < graphicAssetsTop + 24 &&
+    !/current editing language/.test(localContext);
+}
+
+function isLanguageDropdownPlaceholder(dropdown) {
+  const rawText = getVisibleText(dropdown);
+  const normalizedText = normalizeLanguageText(rawText);
+  return !getLanguageDropdownLocale(dropdown) &&
+    (/select a language|select language|language auswahlen|sprache auswahlen|seleccion(?:a|ar|e) (?:un )?idioma|selectionn(?:er|ez) une langue|seleziona(?:re)? (?:una )?lingua/i.test(normalizedText) ||
+      /言語を選択|选择语言/.test(rawText));
+}
+
+function getLanguageDropdownMode(dropdown) {
+  if (!dropdown) return "";
+
+  if (isMultiLocaleLanguageDropdown(dropdown)) return "multi-locale";
+  if (isOneLanguageProductDetailsDropdown(dropdown)) return "one-language";
+  return "unknown";
+}
+
+function getExpectedLanguageDropdownMode() {
+  return Object.keys(listings).length === 1 ? "one-language" : "multi-locale";
+}
+
+function scoreLanguageDropdown(dropdown, preferredLocale = "") {
+  const visibleText = getVisibleText(dropdown);
+  const labelledText = getReferencedText(dropdown, "aria-labelledby");
+  const labelText = [
+    labelledText,
+    dropdown.getAttribute("aria-label") || "",
+    dropdown.closest("label") ? getVisibleText(dropdown.closest("label")) : ""
+  ].filter(Boolean).join(" ");
+  const menuRoots = getDropdownMenuRoots(dropdown);
+  const menuLabelText = menuRoots
+    .map(root => [
+      root.getAttribute && root.getAttribute("aria-label") || "",
+      getReferencedText(root, "aria-labelledby")
+    ].filter(Boolean).join(" "))
+    .join(" ");
+  const optionLocales = getLanguageOptionElements(dropdown, false)
+    .map(option => getElementLocale(option))
+    .filter(Boolean);
+  const optionLocaleCount = new Set(optionLocales).size;
+  const selectedLocale = getLanguageDropdownLocale(dropdown);
+  const preferredMatchesOption = preferredLocale && optionLocales.some(locale => localesMatch(locale, preferredLocale));
+  const normalizedContext = normalizeLanguageText([
+    visibleText,
+    labelText,
+    menuLabelText,
+    dropdown.closest("section") ? getVisibleText(dropdown.closest("section")).slice(0, 400) : ""
+  ].join(" "));
+
+  let score = 0;
+  if (isLikelyLanguageText(labelledText) || isLikelyLanguageText(labelText)) score += 140;
+  if (containsLikelyLanguageText(labelText)) score += 90;
+  if (containsLikelyLanguageText(visibleText)) score += 45;
+  if (containsLikelyLanguageText(menuLabelText)) score += 35;
+  if (dropdown.getAttribute("aria-required") === "true") score += 12;
+  if ((dropdown.getAttribute("aria-haspopup") || "").toLowerCase() === "listbox") score += 12;
+  if (optionLocaleCount) score += Math.min(90, 30 + optionLocaleCount * 4);
+  if (preferredMatchesOption) score += 80;
+  if (selectedLocale) score += 25;
+  if (preferredLocale && selectedLocale && localesMatch(selectedLocale, preferredLocale)) score += 40;
+  if (/select a language/.test(normalizedContext)) score += 25;
+  if (/current editing language/.test(normalizedContext)) score += 25;
+  if (/product details/.test(normalizedContext) && /graphic assets/.test(normalizedContext)) score += 15;
+  if (/\b(category|official url|homepage url|support url|mature content)\b/.test(normalizedContext)) score -= 90;
+  if (/select a category|functionality and ui|privacy and security|developer tools/.test(normalizedContext)) score -= 60;
+
+  return score;
+}
+
+function findLanguageDropdown(preferredLocale = "", expectedMode = "") {
   const comboboxes = Array.from(document.querySelectorAll("[role='combobox'], .VfPpkd-TkwUic")).filter(isVisible);
-  const labeledCombobox = comboboxes.find(element => /language|sprache|langue|idioma/i.test(getVisibleText(element)));
-  if (labeledCombobox) return labeledCombobox;
+  const candidates = comboboxes
+    .map((element, index) => ({
+      element,
+      index,
+      mode: getLanguageDropdownMode(element),
+      score: scoreLanguageDropdown(element, preferredLocale)
+    }));
+
+  if (expectedMode) {
+    const modeMatchedCombobox = candidates
+      .filter(candidate => candidate.mode === expectedMode)
+      .sort((a, b) => b.score - a.score || a.index - b.index)[0];
+    return modeMatchedCombobox ? modeMatchedCombobox.element : null;
+  }
+
+  const rankedComboboxes = candidates
+    .filter(candidate => candidate.score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index);
+
+  if (rankedComboboxes.length) return rankedComboboxes[0].element;
 
   const labels = Array.from(document.querySelectorAll("span, label, div"))
     .filter(isVisible)
@@ -1126,10 +2672,11 @@ function findLanguageDropdown() {
   return null;
 }
 
-function getCurrentDashboardLocale() {
+function getCurrentDashboardLocale({ includePageFallback = true } = {}) {
   const dropdown = findLanguageDropdown();
-  const dropdownLocale = dropdown ? getLocaleFromText(getVisibleText(dropdown)) : "";
+  const dropdownLocale = dropdown ? getLanguageDropdownLocale(dropdown) : "";
   if (dropdownLocale) return dropdownLocale;
+  if (!includePageFallback) return "";
 
   const localeKeys = Object.keys(listings);
   const visibleLocaleText = Array.from(document.querySelectorAll("span, div, button"))
@@ -1163,15 +2710,99 @@ function findDescriptionField() {
   return findLikelyListingField();
 }
 
-function getOpenLanguageOptions() {
-  return Array.from(document.querySelectorAll("[role='option'], [role='menuitem'], .VfPpkd-StrnGf-rymPhb-ibnC6b"))
-    .filter(isVisible)
+function getOpenLanguageOptions(dropdown = null, visibleOnly = true) {
+  return getLanguageOptionElements(dropdown, visibleOnly)
     .map(element => ({
       element,
       text: getVisibleText(element),
-      locale: getLocaleFromText(getVisibleText(element))
+      value: element.getAttribute("data-value") || element.getAttribute("value") || "",
+      locale: getElementLocale(element)
     }))
     .filter(option => option.locale);
+}
+
+function scrollDropdownOptionIntoView(optionElement) {
+  if (!optionElement) return;
+
+  const scrollRoot = optionElement.closest("[role='listbox'], [role='menu'], .VfPpkd-xl07Ob, .VfPpkd-xl07Ob-XxIAqe");
+  if (scrollRoot && scrollRoot.scrollHeight > scrollRoot.clientHeight) {
+    const optionRect = optionElement.getBoundingClientRect();
+    const rootRect = scrollRoot.getBoundingClientRect();
+    const centeredOffset = optionRect.top - rootRect.top - ((rootRect.height - optionRect.height) / 2);
+    scrollRoot.scrollTop += centeredOffset;
+  }
+
+  if (typeof optionElement.scrollIntoView === "function") {
+    optionElement.scrollIntoView({ block: "center", inline: "nearest" });
+  }
+}
+
+function activateDropdownOption(optionElement) {
+  if (!optionElement) return;
+
+  if (typeof optionElement.focus === "function") {
+    optionElement.focus({ preventScroll: true });
+  }
+
+  [
+    ["pointerover", PointerEvent],
+    ["mouseover", MouseEvent],
+    ["mouseenter", MouseEvent],
+    ["pointerdown", PointerEvent],
+    ["mousedown", MouseEvent],
+    ["pointerup", PointerEvent],
+    ["mouseup", MouseEvent]
+  ].forEach(([type, EventConstructor]) => {
+    const isPointer = EventConstructor === PointerEvent;
+    const isDown = type.endsWith("down");
+    const event = isPointer
+      ? new PointerEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        pointerType: "mouse",
+        buttons: isDown ? 1 : 0
+      })
+      : new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 0,
+        buttons: isDown ? 1 : 0
+    });
+    optionElement.dispatchEvent(event);
+  });
+
+  if (typeof optionElement.click === "function") {
+    optionElement.click();
+  }
+}
+
+function activateDropdownOptionLegacy(optionElement) {
+  if (!optionElement) return;
+
+  optionElement.scrollIntoView({ block: "center", inline: "nearest" });
+  optionElement.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
+  optionElement.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true, view: window }));
+  optionElement.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
+  optionElement.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true, view: window }));
+  optionElement.click();
+}
+
+function getLanguageOptionsForMode(opened, mode) {
+  return mode === "one-language"
+    ? getOpenLanguageOptions(opened.dropdown, false)
+    : getOpenLanguageOptions(null, true);
+}
+
+function activateLanguageOptionForMode(optionElement, mode) {
+  if (mode === "one-language") {
+    scrollDropdownOptionIntoView(optionElement);
+    return "scrolled";
+  }
+
+  activateDropdownOptionLegacy(optionElement);
+  return "legacy";
 }
 
 function formatLanguageOption(optionOrLocale) {
@@ -1186,17 +2817,14 @@ function formatFillAllProgress(action, index, total, option) {
   return `${action} ${index}/${total}: ${formatLanguageOption(option)}...`;
 }
 
-function formatFillAllSummary(importedCount, matchedCount, unsupportedUnmatchedLocaleKeys, unmatchedLocaleKeys) {
+function formatFillAllSummary(importedCount, matchedCount, unmatchedLocaleKeys) {
   return [
     localize("fillAllDashboardSummary", "Imported $1; matched $2 dashboard language(s).", [
       String(importedCount),
       String(matchedCount)
     ]),
-    unsupportedUnmatchedLocaleKeys.length
-      ? localize("unsupportedChromeWebStoreLocales", "Chrome Web Store did not offer unsupported locale(s): $1.", [unsupportedUnmatchedLocaleKeys.join(", ")])
-      : "",
     unmatchedLocaleKeys.length
-      ? localize("unmatchedImportedLocales", "Dashboard did not offer supported imported locale(s): $1.", [unmatchedLocaleKeys.join(", ")])
+      ? localize("unmatchedImportedLocales", "Dashboard language menu did not offer imported locale(s): $1.", [unmatchedLocaleKeys.join(", ")])
       : ""
   ].filter(Boolean).join(" ");
 }
@@ -1249,6 +2877,8 @@ function updatePanelFillAllUi() {
   const mediaRunning = Boolean(mediaOperationState.running);
   const fillCurrentButton = panel.querySelector("[data-storepilot-action='fill-current']");
   const fillAllButton = panel.querySelector("[data-storepilot-action='fill-all']");
+  const selectCategoryButton = panel.querySelector("[data-storepilot-action='select-category']");
+  const fillAdditionalFieldsButton = panel.querySelector("[data-storepilot-action='fill-additional-fields']");
   const abortButtons = Array.from(panel.querySelectorAll("[data-storepilot-action='abort-operation'], [data-storepilot-action='abort-fill-all']"));
 
   if (fillCurrentButton) {
@@ -1259,14 +2889,22 @@ function updatePanelFillAllUi() {
     fillAllButton.disabled = running || mediaRunning;
     fillAllButton.title = mediaRunning ? mediaOperationState.label : "";
   }
+  if (selectCategoryButton) {
+    selectCategoryButton.disabled = running || mediaRunning;
+    selectCategoryButton.title = mediaRunning ? mediaOperationState.label : (running ? localize("fillingAllLanguages", "Filling descriptions...") : "");
+  }
+  if (fillAdditionalFieldsButton) {
+    fillAdditionalFieldsButton.disabled = running || mediaRunning;
+    fillAdditionalFieldsButton.title = mediaRunning ? mediaOperationState.label : (running ? localize("fillingAllLanguages", "Filling descriptions...") : "");
+  }
   abortButtons.forEach(button => {
     button.hidden = !running && !mediaRunning;
     button.disabled = false;
   });
 }
 
-async function openLanguageDropdown() {
-  const dropdown = findLanguageDropdown();
+async function openLanguageDropdown(preferredLocale = "", expectedMode = "") {
+  const dropdown = findLanguageDropdown(preferredLocale, expectedMode);
   if (!dropdown) {
     return { ok: false, message: localize("languageDropdownNotFound", "Could not find the Chrome Web Store language dropdown.") };
   }
@@ -1279,21 +2917,29 @@ async function openLanguageDropdown() {
   dropdown.click();
   await delay(250);
 
-  return { ok: true, dropdown };
+  return {
+    ok: true,
+    dropdown,
+    mode: getLanguageDropdownMode(dropdown) || expectedMode || "unknown"
+  };
 }
 
 async function selectDashboardLanguage(locale) {
   const normalizedTarget = normalizeLocale(locale);
-  const opened = await openLanguageDropdown();
+  const expectedMode = getExpectedLanguageDropdownMode();
+  const opened = await openLanguageDropdown(locale, expectedMode);
   if (!opened.ok) return opened;
+  const mode = opened.mode || expectedMode;
 
-  let options = getOpenLanguageOptions();
-  let option = options.find(candidate => normalizeLocale(candidate.locale) === normalizedTarget);
+  let options = getLanguageOptionsForMode(opened, mode);
+  let option = options.find(candidate => normalizeLocale(candidate.locale) === normalizedTarget) ||
+    options.find(candidate => localesMatch(candidate.locale, normalizedTarget));
 
   if (!option) {
     await delay(300);
-    options = getOpenLanguageOptions();
-    option = options.find(candidate => normalizeLocale(candidate.locale) === normalizedTarget);
+    options = getLanguageOptionsForMode(opened, mode);
+    option = options.find(candidate => normalizeLocale(candidate.locale) === normalizedTarget) ||
+      options.find(candidate => localesMatch(candidate.locale, normalizedTarget));
   }
 
   if (!option) {
@@ -1305,17 +2951,20 @@ async function selectDashboardLanguage(locale) {
     };
   }
 
-  option.element.scrollIntoView({ block: "center", inline: "nearest" });
-  option.element.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
-  option.element.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true, view: window }));
-  option.element.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
-  option.element.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true, view: window }));
-  option.element.click();
+  const activation = activateLanguageOptionForMode(option.element, mode);
+  if (activation === "scrolled") {
+    await delay(75);
+    activateDropdownOption(option.element);
+  }
 
-  for (let attempt = 0; attempt < 12; attempt++) {
+  for (let attempt = 0; attempt < 16; attempt++) {
     await delay(150);
-    const currentLocale = getCurrentDashboardLocale();
-    if (!currentLocale || normalizeLocale(currentLocale) === normalizedTarget) {
+    const currentDropdown = findLanguageDropdown(locale, expectedMode) || opened.dropdown;
+    const currentLocale = currentDropdown ? getLanguageDropdownLocale(currentDropdown) : "";
+    if (currentLocale && localesMatch(currentLocale, normalizedTarget)) {
+      return { ok: true, message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)]) };
+    }
+    if (!currentLocale && currentDropdown && !isLanguageDropdownPlaceholder(currentDropdown)) {
       return { ok: true, message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)]) };
     }
   }
@@ -1384,10 +3033,11 @@ async function fillAllDashboardLanguages(onProgress = null) {
     return { ok: false, message: localize("noProjectListingsImported", "No project listings imported.") };
   }
 
-  const firstOpen = await openLanguageDropdown();
+  const expectedMode = getExpectedLanguageDropdownMode();
+  const firstOpen = await openLanguageDropdown(localeKeys[0], expectedMode);
   if (!firstOpen.ok) return firstOpen;
 
-  const availableOptions = getOpenLanguageOptions();
+  const availableOptions = getLanguageOptionsForMode(firstOpen, firstOpen.mode || expectedMode);
   document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
   await delay(150);
 
@@ -1403,19 +3053,12 @@ async function fillAllDashboardLanguages(onProgress = null) {
     });
     return options;
   }, []);
-  const unsupportedUnmatchedLocaleKeys = localeKeys.filter(locale => (
-    !isChromeWebStoreSupportedLocale(locale) &&
-    !matchedLocaleKeys.has(locale)
-  ));
-  const unmatchedLocaleKeys = localeKeys.filter(locale => (
-    isChromeWebStoreSupportedLocale(locale) &&
-    !matchedLocaleKeys.has(locale)
-  ));
+  const unmatchedLocaleKeys = localeKeys.filter(locale => !matchedLocaleKeys.has(locale));
   if (!matchingOptions.length) {
     return {
       ok: false,
       message: localize("noImportedLocalesMatchMenu", "No imported locales match the dashboard language menu.") +
-        ` ${formatFillAllSummary(localeKeys.length, 0, unsupportedUnmatchedLocaleKeys, unmatchedLocaleKeys)}`
+        ` ${formatFillAllSummary(localeKeys.length, 0, unmatchedLocaleKeys)}`
     };
   }
 
@@ -1496,7 +3139,6 @@ async function fillAllDashboardLanguages(onProgress = null) {
   const summaryNote = ` ${formatFillAllSummary(
     localeKeys.length,
     matchingOptions.length,
-    unsupportedUnmatchedLocaleKeys,
     unmatchedLocaleKeys
   )}`;
 
@@ -1534,7 +3176,7 @@ function abortCurrentOperation() {
 
 function abortFillAllLanguages() {
   if (!isFillingAllLanguages) {
-    return { ok: false, message: localize("fillAllNotRunning", "Fill all is not running.") };
+    return { ok: false, message: localize("fillAllNotRunning", "Description fill is not running.") };
   }
 
   fillAllAbortRequested = true;
@@ -2128,18 +3770,25 @@ async function uploadDashboardMediaAssets(files, kind = "") {
 async function diagnoseDashboardPage() {
   await loadListings();
 
-  const dropdown = findLanguageDropdown();
+  const expectedLanguageDropdownMode = getExpectedLanguageDropdownMode();
+  const dropdown = findLanguageDropdown(Object.keys(listings)[0] || "", expectedLanguageDropdownMode);
+  const categoryDropdown = findCategoryDropdown();
   const descriptionField = findDescriptionField();
   const mediaUploadTargets = getMediaUploadDiagnostics();
+  const activeCategory = getActiveCategorySelection();
   let dropdownOptions = [];
 
   if (dropdown) {
-    const opened = await openLanguageDropdown();
+    const opened = await openLanguageDropdown(Object.keys(listings)[0] || "", expectedLanguageDropdownMode);
     if (opened.ok) {
-      dropdownOptions = getOpenLanguageOptions().map(option => ({
+      const allDropdownOptions = getLanguageOptionsForMode(opened, opened.mode || expectedLanguageDropdownMode);
+      const visibleDropdownOptions = getOpenLanguageOptions(opened.dropdown, true);
+      dropdownOptions = allDropdownOptions.map(option => ({
         locale: option.locale,
+        value: option.value,
         text: option.text
       }));
+      dropdownOptions.visibleCount = visibleDropdownOptions.length;
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
       await delay(100);
     }
@@ -2147,14 +3796,27 @@ async function diagnoseDashboardPage() {
 
   const diagnostics = {
     url: location.href,
+    dashboardExtensionId: activeDashboardExtensionId,
+    dashboardItemTitle: activeDashboardItemTitle,
+    dashboardProjectSource: activeDashboardProjectSource,
+    activeProjectId,
     activeProjectName,
     importedLocaleCount: Object.keys(listings).length,
     selectedLocale,
     languageDropdownFound: Boolean(dropdown),
     languageDropdownText: dropdown ? getVisibleText(dropdown) : "",
+    languageDropdownSelectedText: dropdown ? getLanguageDropdownSelectedText(dropdown) : "",
+    languageDropdownMode: dropdown ? getLanguageDropdownMode(dropdown) : "",
+    expectedLanguageDropdownMode,
+    languageDropdownScore: dropdown ? scoreLanguageDropdown(dropdown, Object.keys(listings)[0] || "") : 0,
     currentDashboardLocale: getCurrentDashboardLocale(),
     dashboardLanguageOptionCount: dropdownOptions.length,
+    dashboardVisibleLanguageOptionCount: dropdownOptions.visibleCount || dropdownOptions.length,
     firstDashboardLanguageOptions: dropdownOptions.slice(0, 8),
+    categoryDropdownFound: Boolean(categoryDropdown),
+    categoryDropdownText: categoryDropdown ? getCategoryDropdownSelectedText(categoryDropdown) : "",
+    importedCategory: activeCategory ? activeCategory.label : "",
+    importedCategoryPath: activeCategory ? activeCategory.path : "",
     mediaUploadTargets,
     descriptionFieldFound: Boolean(descriptionField),
     descriptionFieldLabel: descriptionField
@@ -2237,9 +3899,13 @@ function createPanelBase() {
 }
 
 function createPanelActionGroup(...controls) {
+  const visibleControls = controls.filter(Boolean);
   const group = document.createElement("div");
   group.className = "storepilot-action-group";
-  group.append(...controls.filter(Boolean));
+  if (visibleControls.length === 1) {
+    group.classList.add("storepilot-action-group-single");
+  }
+  group.append(...visibleControls);
   return group;
 }
 
@@ -2258,7 +3924,8 @@ function renderPrivacyPanel() {
 
   const { panel, header, title, meta, status, actions } = createPanelBase();
   const fields = getActivePrivacyFields();
-  const fieldKeys = Object.keys(fields);
+  const fieldKeys = getVisiblePrivacyFieldKeys(fields);
+  const dataUsageFieldKeys = getPrivacyDataUsageFieldKeys(fields);
 
   meta.textContent = activePrivacyDoc && activePrivacyDoc.file
     ? localize("privacyPanelSummary", "$1 privacy field(s) in $2", [String(fieldKeys.length), activeProjectName || localize("activeProject", "Active project")])
@@ -2284,6 +3951,19 @@ function renderPrivacyPanel() {
   fillPrivacyButton.dataset.storepilotAction = "fill-privacy";
   fillPrivacyButton.disabled = !fieldKeys.length;
 
+  const fillDataUsageButton = createButton(localize("fillDataUsage", "Fill data usage"), () => {
+    const result = fillPrivacyDataUsage();
+    status.textContent = result.message;
+    if (!result.ok && result.diagnostics) {
+      console.info("StorePilot data usage diagnostics", result.diagnostics);
+    }
+  });
+  fillDataUsageButton.dataset.storepilotAction = "fill-data-usage";
+  fillDataUsageButton.disabled = !dataUsageFieldKeys.length;
+  fillDataUsageButton.title = dataUsageFieldKeys.length
+    ? ""
+    : localize("dataUsageNoValues", "No data usage values found.");
+
   const diagnoseButton = createButton(localize("diagnosePage", "Diagnose page"), () => {
     const diagnostics = getPrivacyDiagnostics();
     status.textContent = localize("privacyDiagnosticsSummary", "Found $1 editable privacy candidate(s).", [String(diagnostics.fieldCandidates.length)]);
@@ -2294,6 +3974,7 @@ function renderPrivacyPanel() {
   const optionsButton = createButton(localize("options", "Options"), openOptionsPage);
   actions.append(
     createPanelActionGroup(fillSinglePurposeButton, fillPrivacyButton),
+    createPanelActionGroup(fillDataUsageButton),
     createPanelActionGroup(diagnoseButton, optionsButton)
   );
   panel.append(header, meta, actions, status);
@@ -2342,23 +4023,27 @@ function renderPanel(locales) {
     ? fillAllStatus.message
     : localize("lastUpdatedOn", "Last updated on $1.", [formatDisplayTimestamp(activeProjectUpdatedAt)]);
 
-  const fillCurrentButton = createButton(localize("fillCurrent", "Fill current"), async () => {
+  let fillCurrentButton = null;
+  if (showAdvancedFillActions) {
+    fillCurrentButton = createButton(localize("fillCurrent", "Fill current language"), async () => {
       if (mediaOperationState.running) {
         status.textContent = localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label]);
         return;
       }
       const result = await fillCurrentDashboardLanguage();
       status.textContent = result.message;
-  });
-  fillCurrentButton.dataset.storepilotAction = "fill-current";
-  const fillAllButton = createButton(localize("fillAll", "Fill all"), async () => {
+    });
+    fillCurrentButton.dataset.storepilotAction = "fill-current";
+  }
+
+  const fillAllButton = createButton(localize("fillAll", "Fill descriptions"), async () => {
     if (mediaOperationState.running) {
       status.textContent = localize("mediaOperationAlreadyRunning", "Media operation already running: $1.", [mediaOperationState.label]);
       return;
     }
 
     if (isFillingAllLanguages) {
-      status.textContent = localize("fillAllAlreadyRunning", "Fill all is already running.");
+      status.textContent = localize("fillAllAlreadyRunning", "Description fill is already running.");
       return;
     }
 
@@ -2366,13 +4051,17 @@ function renderPanel(locales) {
     fillAllAbortRequested = false;
     await publishFillAllStatus({
       running: true,
-      message: localize("fillingAllLanguages", "Filling all languages...")
+      message: localize("fillingAllLanguages", "Filling descriptions...")
     });
     fillAllButton.disabled = true;
-    fillCurrentButton.disabled = true;
-    setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling all languages..."));
+    if (fillCurrentButton) fillCurrentButton.disabled = true;
+    selectCategoryButton.disabled = true;
+    fillAdditionalFieldsButton.disabled = true;
+    selectCategoryButton.title = localize("fillingAllLanguages", "Filling descriptions...");
+    fillAdditionalFieldsButton.title = localize("fillingAllLanguages", "Filling descriptions...");
+    setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling descriptions..."));
     abortButton.hidden = false;
-    status.textContent = localize("fillingAllLanguages", "Filling all languages...");
+    status.textContent = localize("fillingAllLanguages", "Filling descriptions...");
 
     try {
       const result = await fillAllDashboardLanguages(message => {
@@ -2389,6 +4078,20 @@ function renderPanel(locales) {
     }
   });
   fillAllButton.dataset.storepilotAction = "fill-all";
+  const selectCategoryButton = createButton(localize("selectCategory", "Select category"), async () => {
+    status.textContent = localize("selectingCategory", "Selecting category...");
+    const result = await selectDashboardCategory();
+    status.textContent = result.message;
+    updatePanelFillAllUi();
+  });
+  selectCategoryButton.dataset.storepilotAction = "select-category";
+  const fillAdditionalFieldsButton = createButton(localize("fillAdditionalFields", "Fill additional fields"), async () => {
+    status.textContent = localize("fillingAdditionalFields", "Filling additional fields...");
+    const result = await fillDetectedAdditionalFields();
+    status.textContent = result.message;
+    updatePanelFillAllUi();
+  });
+  fillAdditionalFieldsButton.dataset.storepilotAction = "fill-additional-fields";
   const abortButton = createButton(localize("abortOperation", "Abort operation"), () => {
     const result = abortCurrentOperation();
     status.textContent = result.message;
@@ -2464,7 +4167,7 @@ function renderPanel(locales) {
   const optionsButton = createButton(localize("options", "Options"), openOptionsPage);
 
   actions.append(
-    createPanelActionGroup(fillCurrentButton, fillAllButton),
+    createPanelActionGroup(fillCurrentButton, fillAllButton, selectCategoryButton),
     createPanelActionGroup(
       uploadStoreIconButton,
       uploadScreenshotsButton,
@@ -2477,6 +4180,7 @@ function renderPanel(locales) {
       clearSmallPromoButton,
       clearMarqueePromoButton
     ),
+    createPanelActionGroup(fillAdditionalFieldsButton),
     createPanelActionGroup(abortButton, optionsButton)
   );
 
@@ -2592,6 +4296,10 @@ function injectStyles() {
       gap: 6px;
       padding-top: 8px;
       border-top: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    #${PANEL_ID} .storepilot-action-group-single {
+      grid-template-columns: 1fr;
     }
 
     #${PANEL_ID} .storepilot-action-group:first-child {
@@ -2723,6 +4431,28 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
       return;
     }
 
+    if (message.type === "storepilot-select-category") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
+      await loadSettings();
+      renderPanel(await loadListings());
+      sendResponse(await selectDashboardCategory());
+      return;
+    }
+
+    if (message.type === "storepilot-fill-additional-fields") {
+      if (!isListingDashboardSection()) {
+        sendResponse(createWrongDashboardSectionResult());
+        return;
+      }
+      await loadSettings();
+      renderPanel(await loadListings());
+      sendResponse(await fillDetectedAdditionalFields());
+      return;
+    }
+
     if (message.type === "storepilot-fill-all-languages") {
       if (!isListingDashboardSection()) {
         sendResponse(createWrongDashboardSectionResult());
@@ -2731,7 +4461,7 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
       await loadSettings();
       renderPanel(await loadListings());
       if (isFillingAllLanguages) {
-        sendResponse({ ok: false, message: localize("fillAllAlreadyRunning", "Fill all is already running.") });
+        sendResponse({ ok: false, message: localize("fillAllAlreadyRunning", "Description fill is already running.") });
         return;
       }
 
@@ -2739,7 +4469,7 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
       fillAllAbortRequested = false;
       await publishFillAllStatus({
         running: true,
-        message: localize("fillingAllLanguages", "Filling all languages...")
+        message: localize("fillingAllLanguages", "Filling descriptions...")
       });
       renderPanel(Object.keys(listings).sort((a, b) => a.localeCompare(b)));
 
@@ -2751,10 +4481,10 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
       }
       await publishFillAllStatus({
         running: false,
-          message: result ? result.message : localize("fillAllStopped", "Fill all stopped.")
+          message: result ? result.message : localize("fillAllStopped", "Description fill stopped.")
       });
       renderPanel(Object.keys(listings).sort((a, b) => a.localeCompare(b)));
-      sendResponse(result || { ok: false, message: localize("fillAllStopped", "Fill all stopped.") });
+      sendResponse(result || { ok: false, message: localize("fillAllStopped", "Description fill stopped.") });
       return;
     }
 
@@ -2812,6 +4542,21 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
       return;
     }
 
+    if (message.type === "storepilot-get-project-context") {
+      await loadListings();
+      sendResponse({
+        ok: true,
+        context: {
+          extensionId: activeDashboardExtensionId || getDashboardExtensionId(),
+          dashboardItemTitle: activeDashboardItemTitle || getDashboardItemTitle(),
+          projectId: activeProjectId,
+          projectName: activeProjectName,
+          projectSource: activeDashboardProjectSource
+        }
+      });
+      return;
+    }
+
     if (message.type === "storepilot-show-panel") {
       if (!isPanelDashboardSection()) {
         removePanel();
@@ -2856,6 +4601,21 @@ STOREPILOT_API.runtime.onMessage.addListener((message, _sender, sendResponse) =>
       return;
     }
 
+    if (message.type === "storepilot-fill-data-usage") {
+      if (!isPrivacyDashboardSection()) {
+        sendResponse({
+          ok: false,
+          message: localize("privacyActionsOnlyOnPrivacyPage", "Privacy actions are only available on the Privacy page.")
+        });
+        return;
+      }
+      await loadSettings();
+      await loadListings();
+      renderPanel(Object.keys(listings).sort((a, b) => a.localeCompare(b)));
+      sendResponse(fillPrivacyDataUsage());
+      return;
+    }
+
     if (message.type === "storepilot-reload") {
       await loadSettings();
       renderPanel(await loadListings());
@@ -2893,11 +4653,11 @@ STOREPILOT_API.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[SETTINGS_KEY]) {
-    currentTheme = (changes[SETTINGS_KEY].newValue && changes[SETTINGS_KEY].newValue.theme) || "system";
+    applySettings(changes[SETTINGS_KEY].newValue);
     renderPanel(Object.keys(listings).sort((a, b) => a.localeCompare(b)));
   }
 
-  if (changes[PROJECTS_STORAGE_KEY] || changes[ACTIVE_PROJECT_STORAGE_KEY]) {
+  if (changes[PROJECTS_STORAGE_KEY] || changes[ACTIVE_PROJECT_STORAGE_KEY] || changes[DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]) {
     loadListings()
       .then(renderPanel)
       .catch(() => {});
