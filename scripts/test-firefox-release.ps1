@@ -65,6 +65,7 @@ $requiredFiles = @(
   "assets\icons\icon96.png",
   "assets\icons\icon128.png",
   "src\platform\webextension.js",
+  "src\popup\dashboard-page.js",
   "docs\firefox-extension-modularization-playbook.md",
   "docs\firefox-modularization-audit.md",
   "docs\firefox-localization.md",
@@ -302,6 +303,16 @@ foreach ($match in $screenshotMatches) {
   Assert-File (Join-Path $root $relativePath) "AMO screenshot artifact is missing: $($match.Groups["path"].Value)"
 }
 
+$amoListingReadme = Read-Text "store-listing\amo\README.md"
+foreach ($needle in @(
+  "limited set of Markdown",
+  "summary is limited to 250 characters",
+  "one shared screenshot set",
+  "description can use bullets, links, bold, italic, blockquotes, and fenced code"
+)) {
+  Assert-TextContains "store-listing/amo/README.md" $amoListingReadme $needle
+}
+
 $sourceText = Get-ChildItem -LiteralPath (Join-Path $root "src") -Recurse -File |
   Where-Object { $_.Extension -in @(".js", ".html") } |
   ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw }
@@ -328,6 +339,7 @@ Assert-ZipEntries $extensionZip @(
   "manifest.json",
   "assets/icons/icon128.png",
   "src/options/options.html",
+  "src/popup/dashboard-page.js",
   "src/popup/popup.html",
   "src/background.js",
   "_locales/en/messages.json"
@@ -342,11 +354,13 @@ Assert-ZipEntries $sourceZip @(
   "AMO_SUBMISSION.md",
   "assets/icons/icon128.png",
   "src/platform/webextension.js",
+  "src/popup/dashboard-page.js",
   "docs/firefox-extension-modularization-playbook.md",
   "docs/firefox-modularization-audit.md",
   "docs/firefox-localization.md",
   "docs/release-hygiene.md",
   "docs/storage-ownership.md",
+  "store-listing/amo/README.md",
   "store-listing/amo/listing/en-US.md",
   "store-listing/amo/media/screenshots.md",
   "scripts/build.ps1",

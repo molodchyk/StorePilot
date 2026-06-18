@@ -21,7 +21,8 @@ Runtime entry and surface files inspected:
 | `src/background.js` | Background message handling, media upload orchestration, action-click behavior | Slightly over the entry-file budget and still owns browser API orchestration directly. |
 | `src/content/dashboard-helper.js` | Dashboard detection, panel UI, selector strategy, description fill, category fill, Additional fields, privacy, Data usage, media upload coordination | Major architecture debt. This is the main content-script runtime and still owns multiple feature behaviors that should move into feature modules. |
 | `src/content/media-upload-main-world.js` | Narrow page-world upload bridge | Acceptable as a focused page bridge. |
-| `src/popup/popup.js` | Popup state, project selection, dashboard messaging, and action availability | Over the preferred UI-module budget; should be split after dashboard feature boundaries exist. |
+| `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | First split done. This file is now under the preferred UI-module budget after dashboard page detection, project-context resolution, active-tab messaging, panel state, and popup media dashboard state moved to `src/popup/dashboard-page.js`. |
+| `src/popup/dashboard-page.js` | Popup-owned Chrome Web Store dashboard URL checks, active-tab messaging, dashboard project binding resolution, panel visibility, and media action state | Acceptable focused popup helper. Keep this separate from content-script selector and fill logic. |
 | `src/options/options.js` | Options-page import flow, project views, previews, reset, preferences, and rendering | Major architecture debt. It still owns too much UI rendering and state coordination for one surface file. |
 | `src/options/options.css` | Options-page layout and component styling | Major architecture debt. It should be split into surface layout plus feature/component styles. |
 
@@ -35,6 +36,7 @@ Feature and shared modules already present:
 - `src/shared/privacy-doc.js`
 - `src/shared/projects.js`
 - `src/shared/storage.js`
+- `src/popup/dashboard-page.js`
 
 These modules are useful migration footholds, but they are still broad shared modules rather than feature-owned `features/*/core`, `features/*/content`, `features/*/popup`, and `features/*/options` modules.
 
@@ -64,13 +66,16 @@ Test coverage inspected:
 2. `Extract options project review modules`
    - Move options-page project cards, Product Details, Graphic Assets, Additional Fields, Privacy Document, Data Usage, Projects, Reference, and Preferences rendering into smaller feature-owned modules and split `src/options/options.css` by surface/component.
 
-3. `Introduce WebExtension platform wrappers`
+3. `Continue popup module ownership`
+   - First slice done in this pass: `src/popup/dashboard-page.js` owns popup dashboard URL checks, active-tab messaging, dashboard project resolution, panel state, and media action state. Keep future popup features in focused popup-owned helpers instead of growing `src/popup/popup.js` again.
+
+4. `Introduce WebExtension platform wrappers`
    - First slice done in this pass: `src/platform/webextension.js` centralizes direct WebExtension API access. Later split it into narrower platform modules when the source tree moves toward bundled or ES-module runtime entries.
 
-4. `Document storage key ownership`
+5. `Document storage key ownership`
    - Done in this pass: `docs/storage-ownership.md`.
 
-5. `Add modularization audit script`
+6. `Add modularization audit script`
    - Done in this pass: `scripts/test-modularization.ps1` reports file-size budgets, folder-density budgets, raw WebExtension API usage, and known deferrals.
 
 ## Current Release Gate
