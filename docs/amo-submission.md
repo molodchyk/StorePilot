@@ -7,14 +7,13 @@ Use this file when submitting StorePilot to Firefox Add-ons.
 Release Notes:
 
 ```text
-StorePilot 1.3.1 fixes a dashboard integration regression from the modularization work. Popup fallback injection and manifest content scripts now load the same shared project-resolution helpers, so the popup, per-dashboard project binding, and dashboard panel can resolve the active project reliably again.
+StorePilot 1.3.1 fixes a dashboard integration regression from the modularization work and includes release-readiness cleanup. Popup fallback injection and manifest content scripts now load the same shared project-resolution helpers, and release checks now verify cleaner project structure, fresh source packages, locale fallback consistency, and internal module boundaries.
 
 What's changed:
-- Restores project communication between options, popup, and Chrome Web Store dashboard pages after the content-script split.
-- Makes popup fallback script injection use the same complete dependency order as the manifest content script.
-- Adds popup startup diagnostics instead of leaving the popup on Loading listings when initialization fails.
-- Adds a runtime load-surface test so missing dashboard dependencies are caught before packaging.
-- Build scripts now read the package version from manifest.json instead of hardcoding artifact names.
+- Moves project maintenance documentation under docs/ and adds release checks that keep the root clean.
+- Adds release checks for README section order, manifest-derived artifact names, source-package freshness, locale key parity, and placeholder consistency.
+- Splits popup settings/theme handling, options settings/theme handling, privacy schema normalization, options review rendering, WebExtension wrappers, background media orchestration, dashboard project context, and dashboard message routing into focused modules.
+- Documents GitHub release hygiene: each published release/tag is an immutable snapshot for its exact version, so replacement uploads after a version bump use a new release.
 - No permissions, data collection behavior, host permissions, or automatic submit/review behavior changed.
 ```
 
@@ -27,7 +26,9 @@ Version 1.3.1 reviewer notes:
 - Fixes dashboard content-script load order after the modularization split so shared project-resolution helpers load before the dashboard helper.
 - Makes popup fallback injection match the manifest content-script dependency order.
 - Restores reliable project communication between the options page, popup, and Chrome Web Store dashboard panel.
-- Adds popup startup diagnostics and a runtime load-surface unit test for this dependency contract.
+- Moves maintenance docs under docs/ and adds release checks that keep repository/source-package structure clean.
+- Adds source-package freshness validation so the AMO source zip must match the current tracked file set and contents.
+- Adds popup startup diagnostics, locale fallback validation, and focused module splits for large helper areas without changing user permissions or data behavior.
 - Retains the 1.3.x category, Additional fields, Data Usage, remote-code radio, Graphic Assets, and project-binding features.
 - No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed. StorePilot never clicks final submit/publish/review.
 

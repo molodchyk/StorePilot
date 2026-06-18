@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.3.1 - 2026-06-18
+
 - Moved release and project maintenance documents under `docs/` to keep the repository root focused on package identity and primary policy files.
 - Added release checks that reject old root documentation stubs and verify the moved docs are included in AMO source packages.
 - Moved the README Support block after privacy, license, and source information, then added a release check for that section order.
@@ -17,9 +19,6 @@
 - Split privacy document schema/key normalization from privacy document discovery and parsing, with focused tests for remote-code and Data Usage field routing.
 - Split options-page review rendering into shared row helpers, Privacy/Data Usage review, and category/additional/language diagnostics modules.
 - Split dashboard content message routing into a focused content helper loaded after dashboard startup/state helpers.
-
-## 1.3.1 - 2026-06-18
-
 - Fixed dashboard content-script load order after the modularization split so the popup and dashboard panel can resolve active projects again.
 - Made popup fallback injection match the manifest content-script list, including shared project-resolution dependencies.
 - Added popup startup diagnostics instead of leaving the popup stuck on "Loading listings..." when initialization fails.
