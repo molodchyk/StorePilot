@@ -6,6 +6,8 @@ Result: deferred with reason.
 
 This audit satisfies the Firefox Extension Playbook architecture and modularization gate for the StorePilot 1.3.0.1 release-prep pass. StorePilot has useful shared modules and release scaffolding, but the current source tree is not yet compliant with the Firefox Extension Modularization Playbook's target architecture.
 
+File size and flat folder density are active architecture constraints. New source files over the soft budget or tracked repository folders over the flat-file budget must be split or explicitly named in this audit with a reason. Generated output and one-file locale folders are not useful density signals and are excluded from the script.
+
 ## Reason For Deferral
 
 StorePilot's largest remaining gaps are in high-risk runtime surfaces that automate live Chrome Web Store dashboard pages and render the main options UI. Splitting those files immediately before an AMO re-upload would mix broad structural movement with policy-sensitive dashboard behavior. That is the kind of refactor the modularization playbook says to migrate in small verified steps, not as a release-prep side effect.
@@ -46,7 +48,7 @@ Browser/platform boundary inspected:
 Storage and migration ownership inspected:
 
 - Project state, active-project state, dashboard project bindings, imported listing data, handles, and media file references are visible in `src/shared/storage.js`, `src/shared/handles.js`, and `src/shared/constants.js`.
-- The current ownership is understandable but not yet documented per storage key with owner, data shape, migration path, retention, and quota risk.
+- Storage ownership is documented in `docs/storage-ownership.md` with owner, data shape, migration path, retention, quota risk, and privacy classification for each current key/store.
 
 Test coverage inspected:
 
@@ -66,10 +68,10 @@ Test coverage inspected:
    - Add narrow wrappers for runtime, tabs, scripting, storage, i18n, and action behavior so new feature modules do not call raw `browser.*` APIs directly.
 
 4. `Document storage key ownership`
-   - Add a storage ownership reference for each extension storage and IndexedDB key, including owner feature, area, shape/version, migration path, retention, quota risk, and privacy classification.
+   - Done in this pass: `docs/storage-ownership.md`.
 
 5. `Add modularization audit script`
-   - Add a script that reports file-size budgets, folder-density budgets, raw WebExtension API usage, and known deferrals. The first version may report deferred items without failing release builds; later versions can enforce budgets once the split work lands.
+   - Done in this pass: `scripts/test-modularization.ps1` reports file-size budgets, folder-density budgets, raw WebExtension API usage, and known deferrals.
 
 ## Current Release Gate
 

@@ -364,6 +364,7 @@ Expected output: artifacts/storepilot-1.3.0.1.zip
 
 ```powershell
 .\scripts\test-unit.ps1
+.\scripts\test-modularization.ps1
 .\scripts\test-reference-sync.ps1
 .\scripts\test-amo-submission.ps1
 .\scripts\test-firefox-release.ps1

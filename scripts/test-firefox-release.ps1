@@ -68,11 +68,13 @@ $requiredFiles = @(
   "docs\firefox-modularization-audit.md",
   "docs\firefox-localization.md",
   "docs\reference.md",
+  "docs\storage-ownership.md",
   "store-listing\amo\README.md",
   "store-listing\amo\listing\en-US.md",
   "store-listing\amo\media\screenshots.md",
   "scripts\build.ps1",
   "scripts\build-amo-source.ps1",
+  "scripts\test-modularization.ps1",
   "scripts\test-unit.ps1",
   "scripts\test-amo-submission.ps1",
   "scripts\test-reference-sync.ps1",
@@ -222,10 +224,23 @@ foreach ($needle in @(
   "Split dashboard fill feature modules",
   "Extract options project review modules",
   "Introduce WebExtension platform wrappers",
-  "Document storage key ownership",
-  "Add modularization audit script"
+  "docs/storage-ownership.md",
+  "scripts/test-modularization.ps1"
 )) {
   Assert-TextContains "docs/firefox-modularization-audit.md" $modularizationAudit $needle
+}
+
+$storageOwnership = Read-Text "docs\storage-ownership.md"
+foreach ($needle in @(
+  "storePilotProjects",
+  "storePilotDashboardProjectBindings",
+  "storePilotSettings",
+  "storePilotFillAllStatus",
+  "storePilotHandles",
+  "storePilotPanelPosition",
+  "storePilotPanelMode"
+)) {
+  Assert-TextContains "docs/storage-ownership.md" $storageOwnership $needle
 }
 
 $listing = Read-Text "store-listing\amo\listing\en-US.md"
@@ -287,6 +302,9 @@ foreach ($pattern in $remoteCodePatterns) {
 & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root "scripts\test-unit.ps1")
 Assert-True ($LASTEXITCODE -eq 0) "Unit test script failed."
 
+& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root "scripts\test-modularization.ps1")
+Assert-True ($LASTEXITCODE -eq 0) "Modularization test script failed."
+
 $extensionZip = Join-Path $root "artifacts\storepilot-$version.zip"
 Assert-ZipEntries $extensionZip @(
   "manifest.json",
@@ -308,9 +326,11 @@ Assert-ZipEntries $sourceZip @(
   "docs/firefox-extension-modularization-playbook.md",
   "docs/firefox-modularization-audit.md",
   "docs/firefox-localization.md",
+  "docs/storage-ownership.md",
   "store-listing/amo/listing/en-US.md",
   "store-listing/amo/media/screenshots.md",
   "scripts/build.ps1",
+  "scripts/test-modularization.ps1",
   "scripts/test-unit.ps1",
   "scripts/test-firefox-release.ps1",
   "scripts/test-firefox-temporary-load.ps1",

@@ -53,6 +53,7 @@ Run release-facing checks:
 
 ```powershell
 .\scripts\test-unit.ps1
+.\scripts\test-modularization.ps1
 .\scripts\test-reference-sync.ps1
 .\scripts\test-amo-submission.ps1
 .\scripts\test-firefox-release.ps1
@@ -176,6 +177,7 @@ For Data usage checkboxes, answer the exact Chrome Web Store public disclosure q
 
 - [docs/reference.md](docs/reference.md): pasteable StorePilot project-reference contract matching the options Reference tab.
 - [docs/firefox-modularization-audit.md](docs/firefox-modularization-audit.md): current Firefox modularization gate result and named architecture follow-ups.
+- [docs/storage-ownership.md](docs/storage-ownership.md): storage keys, owners, migration notes, retention, quota risk, and privacy classification.
 - [PROJECT_SCOPE_AND_PHILOSOPHY.md](PROJECT_SCOPE_AND_PHILOSOPHY.md): product boundaries, design intent, and safety principles.
 - [SPECIFICATIONS.md](SPECIFICATIONS.md): implementation details, data model, build flow, dashboard automation, and future-Codex context.
 - [CHANGELOG.md](CHANGELOG.md): release history.

@@ -28,5 +28,9 @@ The current modularization gate result is tracked in `docs/firefox-modularizatio
 1. Split dashboard fill feature modules.
 2. Extract options project review modules.
 3. Introduce WebExtension platform wrappers.
-4. Document storage key ownership.
-5. Add a modularization audit script.
+4. Continue tightening `scripts/test-modularization.ps1` until it can enforce file-size, folder-density, and API-boundary budgets without release deferrals.
+
+Completed slices:
+
+- Documented storage key ownership in `docs/storage-ownership.md`.
+- Added `scripts/test-modularization.ps1` so file-size and tracked folder-density pressure stays visible in release checks.
