@@ -1,0 +1,146 @@
+.media-review-overlay {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(8 12 20 / 78%);
+}
+
+.media-review-dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  width: min(1180px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #15171c;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 40%);
+}
+
+.media-review-header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 14px 16px 0;
+}
+
+.media-review-title {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.media-review-title h3 {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.media-review-meta,
+.media-review-path {
+  color: #5d6472;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.media-review-close {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+}
+
+.media-review-image-frame {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  margin: 0 16px;
+  overflow: auto;
+  border: 1px solid #d9dee7;
+  border-radius: 6px;
+  background: #f7f9fc;
+}
+
+.media-review-image-frame img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 190px);
+  object-fit: contain;
+}
+
+.media-review-path {
+  padding: 0 16px 14px;
+}
+
+.reference-panel {
+  border: 0;
+  background: transparent;
+}
+
+.reference-content {
+  display: grid;
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.reference-content section {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.reference-content pre {
+  margin: 0;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid #d9dee7;
+  border-radius: 6px;
+  background: #f7f9fc;
+  color: #283044;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.reference-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.2fr);
+  gap: 16px;
+}
+
+.reference-grid h3 {
+  margin: 0;
+}
+
+.reference-grid > div {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.reference-grid ul {
+  display: grid;
+  gap: 5px 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  margin: 0;
+  padding-left: 18px;
+}
+
+.reference-grid li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.reference-grid code,
+.reference-content p code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
