@@ -127,3 +127,21 @@ function findVisibleTextElement(pattern) {
       return text.length > 0 && text.length <= 140 && pattern.test(text);
     });
 }
+
+function activateDashboardButton(button) {
+  button.scrollIntoView({ block: "center", inline: "center" });
+  if (typeof button.focus === "function") {
+    button.focus({ preventScroll: true });
+  }
+
+  for (const type of ["pointerover", "mouseover", "mouseenter", "pointerdown", "mousedown", "pointerup", "mouseup", "click"]) {
+    button.dispatchEvent(new MouseEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      button: 0,
+      buttons: type.endsWith("down") ? 1 : 0,
+      view: window
+    }));
+  }
+}

@@ -16,6 +16,7 @@ async function injectContentScript(tabId) {
       "src/content/dashboard-privacy-core.js",
       "src/content/dashboard-privacy-data-usage.js",
       "src/content/dashboard-privacy-fields.js",
+      "src/content/dashboard-media.js",
       "src/content/dashboard-panel-styles.js",
       "src/content/dashboard-helper.js"
     ]
