@@ -4,7 +4,9 @@ $root = Split-Path -Parent $PSScriptRoot
 $dist = Join-Path $root "dist"
 $stagedDist = Join-Path $root "dist-next"
 $artifacts = Join-Path $root "artifacts"
-$zip = Join-Path $artifacts "storepilot-1.3.0.1.zip"
+$manifest = Get-Content -LiteralPath (Join-Path $root "manifest.json") -Raw | ConvertFrom-Json
+$version = [string]$manifest.version
+$zip = Join-Path $artifacts "storepilot-$version.zip"
 
 if (Test-Path -LiteralPath $stagedDist) {
   Remove-Item -LiteralPath $stagedDist -Recurse -Force

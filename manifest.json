@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "1.3.0.1",
+  "version": "1.3.1",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "permissions": [
@@ -55,7 +55,11 @@
       ],
       "js": [
         "src/platform/webextension.js",
+        "src/shared/constants.js",
+        "src/shared/i18n.js",
+        "src/shared/projects.js",
         "src/shared/dashboard-url.js",
+        "src/shared/storage.js",
         "src/shared/store-docs/privacy-doc.js",
         "src/shared/store-docs/category-doc.js",
         "src/content/dashboard-dom.js",

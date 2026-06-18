@@ -530,7 +530,7 @@ if (STOREPILOT_API) {
   });
 }
 
-(async () => {
+async function initializePopup() {
   storePilotApplyI18n();
   applySettings(await getSettings());
   await updateDashboardSectionUi();
@@ -538,4 +538,13 @@ if (STOREPILOT_API) {
   await updateDashboardSectionUi();
   await updateOpenPanelButtonState();
   await refreshFillAllStatus();
-})();
+}
+
+initializePopup().catch(error => {
+  elements.summary.textContent = t("popupInitializationFailed", "Could not load StorePilot projects.");
+  setStatus(formatError(error) || t("popupInitializationFailed", "Could not load StorePilot projects."), true);
+  setDiagnostics({
+    action: "initialize-popup",
+    error: formatError(error)
+  });
+});

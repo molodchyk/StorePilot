@@ -2,7 +2,9 @@ $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root "artifacts\source"
-$zip = Join-Path $artifacts "storepilot-source-1.3.0.1.zip"
+$manifest = Get-Content -LiteralPath (Join-Path $root "manifest.json") -Raw | ConvertFrom-Json
+$version = [string]$manifest.version
+$zip = Join-Path $artifacts "storepilot-source-$version.zip"
 
 if (Test-Path -LiteralPath $zip) {
   Remove-Item -LiteralPath $zip -Force

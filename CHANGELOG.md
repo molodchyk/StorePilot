@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.1 - 2026-06-18
+
+- Fixed dashboard content-script load order after the modularization split so the popup and dashboard panel can resolve active projects again.
+- Made popup fallback injection match the manifest content-script list, including shared project-resolution dependencies.
+- Added popup startup diagnostics instead of leaving the popup stuck on "Loading listings..." when initialization fails.
+- Added a runtime load-surface unit test to catch missing manifest or popup injection dependencies.
+- Made release package scripts read the version from `manifest.json` instead of hardcoding artifact names.
+
 ## 1.3.0.1 - 2026-06-17
 
 - Rebuilt AMO upload after a submission-side glitch. No extension behavior changes from 1.3.0.

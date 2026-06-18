@@ -2,27 +2,19 @@
 
 Use this file when submitting StorePilot to Firefox Add-ons.
 
-## Version 1.3.0.1 Fields
+## Version 1.3.1 Fields
 
 Release Notes:
 
 ```text
-StorePilot 1.3.0.1 re-uploads the 1.3.0 feature release after an AMO submission glitch. It adds Chrome Web Store category, Additional fields, and Data usage disclosure automation, plus clearer release-prep project structure guidance.
+StorePilot 1.3.1 fixes a dashboard integration regression from the modularization work. Popup fallback injection and manifest content scripts now load the same shared project-resolution helpers, so the popup, per-dashboard project binding, and dashboard panel can resolve the active project reliably again.
 
 What's changed:
-- Project imports can now detect docs/chrome-web-store-category.md with an explicit Selected category line.
-- The popup and dashboard panel can select the matching Chrome Web Store category at the user's request.
-- Project imports can now detect docs/chrome-web-store-additional-fields.md for Official URL, Homepage URL, Support URL, and Mature content values.
-- The popup and dashboard panel can fill detected Chrome Web Store Additional fields at the user's request.
-- The options page Product Details view now shows imported description text plus the detected category, source file, reason, and scan counts.
-- The options page Additional Fields view shows detected values, source file, and scan counts so users can verify them before filling the dashboard.
-- The options page Data Usage view shows detected Data usage and certification values so users can verify them before filling the privacy page.
-- The popup and dashboard panel include Fill data usage on the Chrome Web Store Privacy page; it only checks boxes with explicit yes values in the imported privacy document.
-- The Chrome Web Store Privacy fill action now treats remote_code as the dashboard Yes/No remote-code radio and fills remote_code_justification only when remote_code is yes.
-- Chrome Web Store graphic assets are now labeled as Graphic Assets in StorePilot to match the dashboard terminology.
-- The primary listing action is labeled Fill descriptions, while the old current-language filler is hidden behind an advanced preference for debugging/manual fallback use.
-- Additional Fields now appears after Graphic Assets in options, popup, and dashboard panel ordering to match the Chrome Web Store page.
-- The built-in project reference now documents one-language project layout, listing text, category, Additional fields, graphic assets, and privacy automation files, including that Data usage values are public disclosure decisions rather than permission justifications.
+- Restores project communication between options, popup, and Chrome Web Store dashboard pages after the content-script split.
+- Makes popup fallback script injection use the same complete dependency order as the manifest content script.
+- Adds popup startup diagnostics instead of leaving the popup on Loading listings when initialization fails.
+- Adds a runtime load-surface test so missing dashboard dependencies are caught before packaging.
+- Build scripts now read the package version from manifest.json instead of hardcoding artifact names.
 - No permissions, data collection behavior, host permissions, or automatic submit/review behavior changed.
 ```
 
@@ -31,14 +23,12 @@ Notes to Reviewer:
 ```text
 StorePilot is a local-first tool for extension publishers. It imports user-selected local project files/folders (localized listing text, CWS category, Additional fields, graphic asset references, privacy-form text, and Data usage choices) and helps fill CWS Developer Dashboard fields only when the user clicks an action.
 
-Version 1.3.0.1 reviewer notes:
-- Adds category detection from docs/chrome-web-store-category.md and Select category on Chrome Web Store listing pages.
-- Adds Additional fields detection from docs/chrome-web-store-additional-fields.md for Official URL, Homepage URL, Support URL, and Mature content; Fill additional fields fills those controls from explicit imported values.
-- Adds a Data Usage options view and Fill data usage action for the CWS Privacy page. It maps the 9 Data usage categories and 3 certification boxes by section/order, checks explicit yes values, and unchecks explicit no values.
-- Updates Privacy fill: remote_code now drives the Yes/No remote-code radio; remote_code_justification is filled only when remote_code is yes.
-- Renames Store media UI to Graphic Assets, changes the main listing action to Fill descriptions, hides Fill current language behind an advanced preference, and orders Additional Fields after Graphic Assets.
-- Adds CWS item-id project binding so two open dashboard tabs can keep different StorePilot project contexts.
-- Adds reference docs for one-language project layouts, detailed description files, category, Additional fields, graphic assets, privacy, and Data usage disclosure decisions.
+Version 1.3.1 reviewer notes:
+- Fixes dashboard content-script load order after the modularization split so shared project-resolution helpers load before the dashboard helper.
+- Makes popup fallback injection match the manifest content-script dependency order.
+- Restores reliable project communication between the options page, popup, and Chrome Web Store dashboard panel.
+- Adds popup startup diagnostics and a runtime load-surface unit test for this dependency contract.
+- Retains the 1.3.x category, Additional fields, Data Usage, remote-code radio, Graphic Assets, and project-binding features.
 - No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed. StorePilot never clicks final submit/publish/review.
 
 Privacy/data:
@@ -50,10 +40,10 @@ Privacy/data:
 Build/source:
 - Source is not bundled, minified, transpiled, or obfuscated.
 - Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-- Expected extension package: artifacts/storepilot-1.3.0.1.zip
+- Expected extension package: artifacts/storepilot-1.3.1.zip
 - The build copies source, locales, icons, and manifest into dist, then creates the zip with forward-slash archive entries for AMO validation.
 - Node.js is used only for tests, not to build the submitted extension package.
-- If source code is requested, upload artifacts/source/storepilot-source-1.3.0.1.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
+- If source code is requested, upload artifacts/source/storepilot-source-1.3.1.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
 - Source package uses git ls-files, so generated/untracked local files are excluded.
 ```
 
@@ -233,7 +223,7 @@ automation
 
 Do not use unrelated tags such as ad blocker, privacy, security, vpn, shopping, or video downloader. StorePilot is a publishing/localization workflow tool, and AMO only allows up to 10 tags.
 
-After uploading 1.3.0.1, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
+After uploading 1.3.1, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
 
 ## Language Coverage Notes
 
@@ -306,7 +296,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 Expected output:
 
 ```text
-artifacts/storepilot-1.3.0.1.zip
+artifacts/storepilot-1.3.1.zip
 ```
 
 ## Source Code Upload
@@ -314,7 +304,7 @@ artifacts/storepilot-1.3.0.1.zip
 Upload this source package when AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.3.0.1.zip
+artifacts/source/storepilot-source-1.3.1.zip
 ```
 
 Create it with:
@@ -333,12 +323,12 @@ Required programs: PowerShell and Git.
 Node.js/npm: not required to build the submitted extension package.
 External dependencies: none.
 Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-Expected output: artifacts/storepilot-1.3.0.1.zip
+Expected output: artifacts/storepilot-1.3.1.zip
 ```
 
 ## Validation Requirements Learned
 
-- Submit `artifacts/storepilot-1.3.0.1.zip`.
+- Submit `artifacts/storepilot-1.3.1.zip`.
 - AMO rejects zip entries with Windows backslashes. The build script must preserve forward-slash archive names such as `src/background.js`.
 - The manifest declares:
 
@@ -411,7 +401,7 @@ Open StorePilot options and smoke-check project import, the popup, and one Chrom
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.3.0.1.zip))
+$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.3.1.zip))
 $entries = $zip.Entries | Select-Object -ExpandProperty FullName
 if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash paths' }
 $zip.Dispose()
@@ -420,11 +410,11 @@ $zip.Dispose()
 6. Upload extension package:
 
 ```text
-artifacts/storepilot-1.3.0.1.zip
+artifacts/storepilot-1.3.1.zip
 ```
 
 7. Upload source package if AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.3.0.1.zip
+artifacts/source/storepilot-source-1.3.1.zip
 ```

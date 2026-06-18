@@ -7,7 +7,12 @@ async function injectContentScript(tabId) {
   await storePilotScriptingExecuteScript({
     target: { tabId },
     files: [
+      "src/platform/webextension.js",
+      "src/shared/constants.js",
+      "src/shared/i18n.js",
+      "src/shared/projects.js",
       "src/shared/dashboard-url.js",
+      "src/shared/storage.js",
       "src/shared/store-docs/privacy-doc.js",
       "src/shared/store-docs/category-doc.js",
       "src/content/dashboard-dom.js",
