@@ -6,6 +6,7 @@
 - Added release checks that reject old root documentation stubs and verify the moved docs are included in AMO source packages.
 - Moved the README Support block after privacy, license, and source information, then added a release check for that section order.
 - Documented manifest-derived package artifact names in README and added release-check coverage for that convention.
+- Added source-package freshness validation so AMO source zips must match the current tracked file set and file contents.
 
 ## 1.3.1 - 2026-06-18
 

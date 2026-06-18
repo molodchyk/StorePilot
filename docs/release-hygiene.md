@@ -43,3 +43,4 @@ Delete old version zips. They make the workspace harder to review and increase t
 - no zip files are tracked by git.
 - only the current version's extension and source zips exist under `artifacts/`.
 - the current package and source package contain the expected files.
+- the AMO source package has exactly the current `git ls-files` file set and matching file contents, so stale source zips fail validation.

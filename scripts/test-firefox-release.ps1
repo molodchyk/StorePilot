@@ -53,6 +53,75 @@ function Assert-ZipEntries($zipPath, $requiredEntries) {
   }
 }
 
+function Get-StreamSha256($stream) {
+  $sha256 = [System.Security.Cryptography.SHA256]::Create()
+  try {
+    return (($sha256.ComputeHash($stream) | ForEach-Object { $_.ToString("x2") }) -join "")
+  } finally {
+    $sha256.Dispose()
+  }
+}
+
+function Get-FileSha256($path) {
+  return ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash).ToLowerInvariant()
+}
+
+function Assert-SourceZipMatchesTrackedFiles($zipPath) {
+  Assert-File $zipPath "Expected source package not found: $zipPath"
+
+  $trackedFiles = @(& git -C $root ls-files --cached)
+  Assert-True ($LASTEXITCODE -eq 0) "git ls-files failed while checking AMO source package freshness."
+  $expectedEntries = @($trackedFiles |
+    Where-Object { Test-Path -LiteralPath (Join-Path $root $_) -PathType Leaf } |
+    ForEach-Object { $_.Replace("\", "/") } |
+    Sort-Object)
+
+  Add-Type -AssemblyName System.IO.Compression
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  $zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path -LiteralPath $zipPath))
+  try {
+    $entries = @($zip.Entries | Where-Object { -not [string]::IsNullOrEmpty($_.Name) })
+    $actualEntries = @($entries | Select-Object -ExpandProperty FullName | Sort-Object)
+    $actualSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($entryName in $actualEntries) {
+      Assert-True (-not ($entryName -match "\\")) "$zipPath contains Windows backslash path: $entryName"
+      [void]$actualSet.Add($entryName)
+    }
+
+    $expectedSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($entryName in $expectedEntries) {
+      [void]$expectedSet.Add($entryName)
+    }
+
+    foreach ($entryName in $expectedEntries) {
+      Assert-True ($actualSet.Contains($entryName)) "$zipPath is missing tracked source file: $entryName"
+    }
+
+    foreach ($entryName in $actualEntries) {
+      Assert-True ($expectedSet.Contains($entryName)) "$zipPath contains a file that is not in git ls-files: $entryName"
+    }
+
+    $entryByName = @{}
+    foreach ($entry in $entries) {
+      $entryByName[$entry.FullName] = $entry
+    }
+
+    foreach ($entryName in $expectedEntries) {
+      $sourcePath = Join-Path $root ($entryName -replace "/", [System.IO.Path]::DirectorySeparatorChar)
+      $expectedHash = Get-FileSha256 $sourcePath
+      $stream = $entryByName[$entryName].Open()
+      try {
+        $actualHash = Get-StreamSha256 $stream
+      } finally {
+        $stream.Dispose()
+      }
+      Assert-True ($actualHash -eq $expectedHash) "$zipPath has stale content for tracked file: $entryName"
+    }
+  } finally {
+    $zip.Dispose()
+  }
+}
+
 $requiredFiles = @(
   "README.md",
   "LICENSE",
@@ -471,6 +540,7 @@ Assert-ZipEntries $sourceZip @(
   "test/project-resolution.test.js",
   "test/runtime-load-surfaces.test.js"
 )
+Assert-SourceZipMatchesTrackedFiles $sourceZip
 
 $allowedArtifactZips = @(
   (Resolve-Path -LiteralPath $extensionZip).Path,
