@@ -14,6 +14,7 @@ Current rule:
 - Use the same version in `manifest.json`, `CHANGELOG.md`, AMO submission notes, extension package name, source package name, and GitHub release tag.
 - Attach the current extension package from `artifacts/storepilot-<version>.zip`.
 - Attach the current AMO source package from `artifacts/source/storepilot-source-<version>.zip`.
+- Treat each published GitHub release/tag as an immutable snapshot for that exact version. Do not reattach or replace assets on an older release after `manifest.json` has moved to a different version; bump again and create a new release when the replacement upload is ready.
 - Do not create a GitHub release for every tiny unversioned fix. Prepare the release only when the project has intentionally bumped version and is ready to upload.
 - Do not leave an older GitHub release marked Latest after a newer release-ready version is validated and uploaded.
 

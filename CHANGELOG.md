@@ -7,6 +7,8 @@
 - Moved the README Support block after privacy, license, and source information, then added a release check for that section order.
 - Documented manifest-derived package artifact names in README and added release-check coverage for that convention.
 - Added source-package freshness validation so AMO source zips must match the current tracked file set and file contents.
+- Documented that published GitHub releases are immutable snapshots for their exact version; replacement uploads after a version bump should use a new release.
+- Added explicit English fallback strings for newly added runtime locale keys and tightened release checks so locale files must match the default key set and placeholder names.
 
 ## 1.3.1 - 2026-06-18
 

@@ -65,6 +65,51 @@
   "privacyDocFutureProof": {
     "message": "หากการอนุญาตไม่อยู่ในรายการที่นี่ ให้ใช้รูปแบบเดียวกัน ตัวอย่างเช่น permission.bookmarks หรือ permission.system.display. StorePilot ควรถือว่าโค้ดรายการนั้นเองเป็นแหล่งที่มาของความจริง"
   },
+  "projectReferenceTitle": {
+    "message": "Project import reference"
+  },
+  "projectReferenceIntro": {
+    "message": "Start with one locale file if the extension only has one Chrome Web Store language today. Keep media, category, additional fields, and privacy files beside it so the same project can grow into more locales later."
+  },
+  "projectReferenceOneLanguage": {
+    "message": "store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field."
+  },
+  "listingReferenceTitle": {
+    "message": "Detailed description text"
+  },
+  "localeDescriptionRule": {
+    "message": "store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field. The file should contain only the final detailed description body users should see in the store listing."
+  },
+  "localeDescriptionWarnings": {
+    "message": "Do not include field labels such as Name, Summary, Description, or Detailed Description. Do not include Markdown headings. Do not put the short summary in this file."
+  },
+  "localeDescriptionExampleTitle": {
+    "message": "Example en.md content:"
+  },
+  "singleDraftReferenceTitle": {
+    "message": "Alternative single-draft import"
+  },
+  "singleDraftReferenceRule": {
+    "message": "StorePilot also accepts docs/chrome-web-store.md for a single English draft. Only in this draft file, StorePilot may look for a Detailed Description or Description section and import that section as English detailed description text. This section parsing does not apply to store-listing/chrome-web-store/listing/en.md."
+  },
+  "listingNonGoalTitle": {
+    "message": "Fields not imported from listing/en.md"
+  },
+  "listingNonGoalNote": {
+    "message": "These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files."
+  },
+  "mediaReferenceTitle": {
+    "message": "Graphic assets"
+  },
+  "projectReferenceDetectionHint": {
+    "message": "Folder names such as store-listing, chrome-web-store, listing, media, screenshots, promo, assets, store-assets, and icons help StorePilot pick the right files when a project contains extra build output."
+  },
+  "openMediaPreview": {
+    "message": "Open preview for $1"
+  },
+  "closePreview": {
+    "message": "Close preview"
+  },
   "projects": {
     "message": "โปรเจกต์"
   },
@@ -74,11 +119,62 @@
   "importedListings": {
     "message": "รายการที่นำเข้า"
   },
+  "productDetails": {
+    "message": "Product Details"
+  },
   "storeMediaAssets": {
     "message": "Graphic Assets"
   },
   "privacyDocument": {
     "message": "เอกสารความเป็นส่วนตัว"
+  },
+  "storeCategory": {
+    "message": "Store Category"
+  },
+  "categoryDocReferenceTitle": {
+    "message": "Category automation document reference"
+  },
+  "categoryDocReferenceIntro": {
+    "message": "StorePilot can scan one project document for the Chrome Web Store category. Use an explicit Selected category line so the scanner does not infer from notes or option lists."
+  },
+  "categoryDocSelectedRule": {
+    "message": "Recommended filename: docs/chrome-web-store-category.md. The file should contain Selected category: followed by one visible Chrome Web Store category label."
+  },
+  "categoryDocOptionsListTitle": {
+    "message": "Visible category labels"
+  },
+  "categoryDocNotScanned": {
+    "message": "Not scanned"
+  },
+  "categoryDocNoUsableFile": {
+    "message": "No usable category document found ($1 candidate(s) scanned)."
+  },
+  "categoryDocNoUsableFileShort": {
+    "message": "No usable category document found."
+  },
+  "categoryDocSummary": {
+    "message": "Category: $1 in $2"
+  },
+  "categoryLabel": {
+    "message": "Category: $1"
+  },
+  "selectedCategory": {
+    "message": "Selected category"
+  },
+  "categoryValue": {
+    "message": "CWS data value"
+  },
+  "categoryGroup": {
+    "message": "Category group"
+  },
+  "categoryReason": {
+    "message": "Reason"
+  },
+  "categoryDocCandidateCounts": {
+    "message": "Candidates"
+  },
+  "categoryDocCandidateCountsValue": {
+    "message": "Scanned: $1; matched: $2."
   },
   "privacyDocNotScanned": {
     "message": "ไม่ได้สแกน"
@@ -149,6 +245,9 @@
   "reimportFolderToScanPrivacyDoc": {
     "message": "นำเข้าโฟลเดอร์โครงการอีกครั้งเพื่อสแกนเอกสารความเป็นส่วนตัว"
   },
+  "reimportFolderToScanCategoryDoc": {
+    "message": "Re-import the project folder to scan the category document."
+  },
   "mediaAssetsNotScanned": {
     "message": "ไม่ได้สแกน"
   },
@@ -166,6 +265,9 @@
   },
   "fillAllLanguages": {
     "message": "Fill descriptions"
+  },
+  "selectCategory": {
+    "message": "Select category"
   },
   "uploadStoreIcon": {
     "message": "อัพโหลดไอคอนร้านค้า"
@@ -337,6 +439,27 @@
   },
   "listingActionsOnlyOnListingPage": {
     "message": "การดำเนินการกับรายการและสื่อใช้ได้ในหน้ารายการร้านค้าเท่านั้น"
+  },
+  "selectingCategory": {
+    "message": "Selecting category..."
+  },
+  "categoryDocNotImported": {
+    "message": "No category document imported for the active project."
+  },
+  "categoryFieldNotFound": {
+    "message": "Could not find the Chrome Web Store category field."
+  },
+  "categoryOptionNotFound": {
+    "message": "Could not find category option: $1."
+  },
+  "categoryAlreadySelected": {
+    "message": "Category already selected: $1."
+  },
+  "categorySelected": {
+    "message": "Selected category: $1."
+  },
+  "clickedButCategoryShows": {
+    "message": "Clicked $1, but the dashboard still shows $2."
   },
   "clearingMedia": {
     "message": "กำลังล้างสื่อ..."

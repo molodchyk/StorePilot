@@ -29,6 +29,19 @@ function Assert-TextContains($name, $text, $needle) {
   Assert-True ($text.IndexOf($needle, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) "$name is missing required text: $needle"
 }
 
+function Get-MessagePlaceholderNames($messageEntry) {
+  if ($null -eq $messageEntry) {
+    return @()
+  }
+
+  $placeholderProperty = $messageEntry.PSObject.Properties["placeholders"]
+  if ($null -eq $placeholderProperty -or $null -eq $placeholderProperty.Value) {
+    return @()
+  }
+
+  return @($placeholderProperty.Value.PSObject.Properties.Name | Sort-Object)
+}
+
 function Assert-ManifestFile($relativePath) {
   $normalized = [string]$relativePath
   Assert-True ($normalized -and -not [System.IO.Path]::IsPathRooted($normalized)) "Manifest path must be relative: $normalized"
@@ -204,7 +217,14 @@ $manifest = Read-Text "manifest.json" | ConvertFrom-Json
 $version = [string]$manifest.version
 Assert-True ($version -match "^\d+\.\d+\.\d+(?:\.\d+)?$") "Manifest version is not release-like: $version"
 Assert-True ($manifest.default_locale -eq "en") "manifest.default_locale should be en."
-Assert-File (Join-Path $root "_locales\en\messages.json") "Default locale messages file is missing."
+$defaultMessagesFile = Join-Path $root "_locales\en\messages.json"
+Assert-File $defaultMessagesFile "Default locale messages file is missing."
+$defaultMessages = Get-Content -LiteralPath $defaultMessagesFile -Raw | ConvertFrom-Json
+$defaultMessageKeys = @($defaultMessages.PSObject.Properties.Name)
+$defaultMessageKeySet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+foreach ($key in $defaultMessageKeys) {
+  [void]$defaultMessageKeySet.Add($key)
+}
 
 foreach ($permission in @("storage", "unlimitedStorage", "activeTab", "scripting")) {
   Assert-True ($manifest.permissions -contains $permission) "Manifest missing expected permission: $permission"
@@ -251,8 +271,23 @@ Get-ChildItem -LiteralPath (Join-Path $root "_locales") -Directory | ForEach-Obj
   Assert-File $messagesFile "Locale messages file is missing: $($_.Name)"
   $messages = Get-Content -LiteralPath $messagesFile -Raw | ConvertFrom-Json
   $messageKeys = @($messages.PSObject.Properties.Name)
+  $messageKeySet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+  foreach ($key in $messageKeys) {
+    [void]$messageKeySet.Add($key)
+  }
   foreach ($key in @("extensionName", "extensionDescription", "reference", "resetLocalData", "resetLocalDataConfirm")) {
     Assert-True ($messageKeys -contains $key) "Locale $($_.Name) is missing required key: $key"
+  }
+  foreach ($key in $defaultMessageKeys) {
+    Assert-True ($messageKeySet.Contains($key)) "Locale $($_.Name) is missing default message key: $key"
+  }
+  foreach ($key in $messageKeys) {
+    Assert-True ($defaultMessageKeySet.Contains($key)) "Locale $($_.Name) has message key not present in default locale: $key"
+  }
+  foreach ($key in $defaultMessageKeys) {
+    $defaultPlaceholderNames = (Get-MessagePlaceholderNames $defaultMessages.$key) -join "`n"
+    $localePlaceholderNames = (Get-MessagePlaceholderNames $messages.$key) -join "`n"
+    Assert-True ($localePlaceholderNames -eq $defaultPlaceholderNames) "Locale $($_.Name) placeholder names differ for message key: $key"
   }
 }
 
@@ -290,6 +325,7 @@ foreach ($needle in @(
   'v<manifest version>',
   'artifacts/storepilot-<version>.zip',
   'artifacts/source/storepilot-source-<version>.zip',
+  'Treat each published GitHub release/tag as an immutable snapshot for that exact version',
   'Keep one canonical license file: `LICENSE`',
   'Do not track generated zips'
 )) {

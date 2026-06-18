@@ -114,7 +114,7 @@ Before releasing a localized Firefox add-on:
 
 - Confirm `manifest.json` has `default_locale` exactly when `_locales/` exists.
 - Confirm the `default_locale` folder exists.
-- Confirm all locale `messages.json` files have matching keys and placeholder names.
+- Confirm all locale `messages.json` files have matching keys and placeholder names. When new runtime UI keys are added, copy explicit English fallback entries into each locale until a translation pass updates them.
 - Confirm no `_locales` folder uses hyphens.
 - Confirm AMO listing translations target the AMO production list above or a currently visible Developer Hub language.
 - Confirm localized AMO descriptions still render well with AMO's limited Markdown support.
