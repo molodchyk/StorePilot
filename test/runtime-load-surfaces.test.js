@@ -125,6 +125,8 @@ for (const required of [
   "src/shared/store-docs/privacy-schema.js",
   "src/shared/store-docs/privacy-doc.js",
   "src/options/options-media.js",
+  "src/options/options-review-ui.js",
+  "src/options/options-privacy-review.js",
   "src/options/options-review-tables.js",
   "src/options/options-settings.js",
   "src/options/options.js"
@@ -133,6 +135,9 @@ for (const required of [
 }
 assertPlatformFiles(optionsHtmlFiles, "options HTML scripts");
 assertBefore(optionsHtmlFiles, "src/shared/store-docs/privacy-schema.js", "src/shared/store-docs/privacy-doc.js", "options HTML scripts");
+assertBefore(optionsHtmlFiles, "src/options/options-review-ui.js", "src/options/options-privacy-review.js", "options HTML scripts");
+assertBefore(optionsHtmlFiles, "src/options/options-review-ui.js", "src/options/options-review-tables.js", "options HTML scripts");
+assertBefore(optionsHtmlFiles, "src/options/options-privacy-review.js", "src/options/options.js", "options HTML scripts");
 assertBefore(optionsHtmlFiles, "src/options/options-settings.js", "src/options/options.js", "options HTML scripts");
 
 console.log("Runtime load surface tests passed.");
