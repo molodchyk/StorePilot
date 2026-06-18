@@ -22,7 +22,8 @@ Runtime entry and surface files inspected:
 | --- | --- | --- |
 | `src/background.js` | Thin background message/action wiring for options opening, popup opening, and media upload delegation | Under the entry-file budget after media file resolution and dashboard upload orchestration moved to `src/background/media.js`. Keep new background responsibilities out of this entry file. |
 | `src/background/media.js` | Background-owned media file-handle resolution and dashboard upload delegation | Acceptable focused background helper. Keep project media file resolution and active dashboard upload dispatch here. |
-| `src/content/dashboard-helper.js` | Dashboard section detection, settings load, abort handling, diagnostics, message routing, and startup orchestration | Under the file-size budget after focused content splits. This remains the dashboard orchestration entry and should stay thin: selector, project-context, fill, panel, and media behavior belong in focused modules. |
+| `src/content/dashboard-helper.js` | Dashboard section detection, settings load, abort handling, diagnostics, startup orchestration, and storage-change reactions | Under the file-size budget after focused content splits. Message routing now lives in `src/content/dashboard-messages.js`; selector, project-context, fill, panel, and media behavior belong in focused modules. |
+| `src/content/dashboard-messages.js` | Focused content-script runtime message routing for popup and panel dashboard commands | Acceptable focused content helper. Keep command dispatch here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-dom.js` | Focused content-script DOM visibility, text, form-fill, click activation, and timing helpers loaded before feature modules | Acceptable focused content utility module. Keep generic content DOM/form mechanics here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-project-context.js` | Focused Chrome Web Store dashboard extension-id detection, item-title cleanup, and dashboard-project binding resolution | Acceptable focused content helper. Keep dashboard identity and project-binding changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/language/locale.js` | Focused locale normalization, CWS locale alias matching, and visible-language text matching helpers | Acceptable focused language helper. Keep locale-code and language-label matching here so CWS and future AMO language flows share the same assumptions. |
@@ -68,6 +69,7 @@ Feature and shared modules already present:
 - `src/shared/storage.js`
 - `src/background/media.js`
 - `src/content/dashboard-dom.js`
+- `src/content/dashboard-messages.js`
 - `src/content/dashboard-project-context.js`
 - `src/content/language/locale.js`
 - `src/content/language/picker.js`
@@ -126,7 +128,8 @@ Test coverage inspected:
    - Ninth content split done in this pass: locale normalization, two-mode language picker detection, option activation, description-field detection, and Fill descriptions progress handling now live in `src/content/language/locale.js`, `src/content/language/picker.js`, and `src/content/language/description-fill.js`.
    - Tenth content split done in this pass: dashboard panel state, viewport clamping, media button state, media-operation locking, and listing/privacy panel rendering now live in `src/content/panel/state.js` and `src/content/panel/render.js`.
    - Eleventh content split done in this pass: dashboard extension-id detection, item-title cleanup, and dashboard-project binding resolution now live in `src/content/dashboard-project-context.js`.
-   - Remaining work: move selector diagnostics and message routing into narrower modules if those surfaces grow again. `src/content/dashboard-helper.js` is now under the current file-size budget.
+   - Twelfth content split done in this pass: popup/panel command routing now lives in `src/content/dashboard-messages.js`.
+   - Remaining work: move selector diagnostics into narrower modules if those surfaces grow again. `src/content/dashboard-helper.js` is now under the current file-size budget.
 
 1a. `Split store document parser modules`
    - First slice done in this pass: privacy canonical keys, label/key normalization, remote-code display decision, and display-field ordering now live in `src/shared/store-docs/privacy-schema.js`; privacy file discovery and parsing remain in `src/shared/store-docs/privacy-doc.js`; `test/privacy-doc.test.js` covers the split's important routing behavior.

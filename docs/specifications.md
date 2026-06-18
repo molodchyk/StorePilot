@@ -16,7 +16,8 @@
 - `src/options/options-privacy-review.js`: options-page Privacy Document and Data Usage review summaries and tables.
 - `src/options/options-review-tables.js`: options-page Additional Fields, Product Details category, and language-diagnostic review tables.
 - `src/popup/*`: popup UI, project picker, dashboard commands, panel reopen control.
-- `src/content/dashboard-helper.js`: content-script message routing, diagnostics, and dashboard panel startup.
+- `src/content/dashboard-helper.js`: content-script dashboard diagnostics, settings/listing load state, panel startup, and storage-change reactions.
+- `src/content/dashboard-messages.js`: content-script runtime message routing for popup/panel dashboard commands.
 - `src/content/dashboard-project-context.js`: dashboard extension-id, item-title, and project-binding resolution.
 - `src/content/media-upload-main-world.js`: page-world bridge for dashboard media upload.
 - `src/shared/constants.js`: storage keys, file extension allow/block lists, skipped directories.
@@ -248,7 +249,7 @@ Popup state considerations:
 
 ## Dashboard Panel
 
-The dashboard panel is rendered by `src/content/dashboard-helper.js` on supported dashboard pages.
+The dashboard panel startup is coordinated by `src/content/dashboard-helper.js` and rendered by focused helpers under `src/content/panel/` on supported dashboard pages.
 
 It includes:
 
@@ -491,6 +492,7 @@ node --check src\platform\webextension\i18n.js
 node --check src\import-ui.js
 node --check src\project-overrides.js
 node --check src\content\dashboard-helper.js
+node --check src\content\dashboard-messages.js
 node --check src\content\dashboard-project-context.js
 node --check src\content\media-upload-main-world.js
 node --check src\popup\popup.js
@@ -517,6 +519,7 @@ Check the generated package:
 
 ```powershell
 node --check dist\src\content\dashboard-helper.js
+node --check dist\src\content\dashboard-messages.js
 node --check dist\src\content\dashboard-project-context.js
 node --check dist\src\background\media.js
 node --check dist\src\platform\webextension\core.js

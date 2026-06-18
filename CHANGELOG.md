@@ -16,6 +16,7 @@
 - Split the broad WebExtension platform wrapper into focused classic-script wrappers for core, storage, runtime, tabs, scripting, action, and i18n APIs.
 - Split privacy document schema/key normalization from privacy document discovery and parsing, with focused tests for remote-code and Data Usage field routing.
 - Split options-page review rendering into shared row helpers, Privacy/Data Usage review, and category/additional/language diagnostics modules.
+- Split dashboard content message routing into a focused content helper loaded after dashboard startup/state helpers.
 
 ## 1.3.1 - 2026-06-18
 

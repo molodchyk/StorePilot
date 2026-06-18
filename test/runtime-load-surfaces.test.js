@@ -93,7 +93,8 @@ for (const [label, files] of [
     "src/shared/store-docs/privacy-schema.js",
     "src/content/dashboard-dom.js",
     "src/content/dashboard-project-context.js",
-    "src/content/dashboard-helper.js"
+    "src/content/dashboard-helper.js",
+    "src/content/dashboard-messages.js"
   ]) {
     assert.ok(files.includes(required), `${label} is missing ${required}`);
   }
@@ -106,6 +107,7 @@ for (const [label, files] of [
   assertBefore(files, "src/content/dashboard-dom.js", "src/content/dashboard-project-context.js", label);
   assertBefore(files, "src/content/dashboard-project-context.js", "src/content/dashboard-helper.js", label);
   assertBefore(files, "src/shared/storage.js", "src/content/dashboard-helper.js", label);
+  assertBefore(files, "src/content/dashboard-helper.js", "src/content/dashboard-messages.js", label);
 }
 
 assert.deepEqual(injectionFiles, contentFiles, "Popup fallback injection should match manifest content script order.");

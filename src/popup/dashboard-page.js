@@ -36,7 +36,8 @@ async function injectContentScript(tabId) {
       "src/content/panel/state.js",
       "src/content/panel/render.js",
       "src/content/dashboard-panel-styles.js",
-      "src/content/dashboard-helper.js"
+      "src/content/dashboard-helper.js",
+      "src/content/dashboard-messages.js"
     ]
   });
 }
