@@ -369,6 +369,8 @@ Expected output: artifacts/storepilot-1.3.0.1.zip
 .\scripts\test-firefox-release.ps1
 ```
 
+The Firefox modularization gate result is currently tracked in `docs/firefox-modularization-audit.md` as deferred with reason. Do not call the source tree modularization-compliant until the named follow-ups in that audit are completed.
+
 2. Build:
 
 ```powershell

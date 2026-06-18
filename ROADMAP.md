@@ -20,3 +20,13 @@ Safety notes:
 - Never click final submit, publish, or review actions.
 - Keep all helpers explicit and reviewable from the popup or dashboard panel.
 - Treat policy-sensitive answers, including remote code and data usage, as imported evidence plus user confirmation rather than hidden automatic decisions.
+
+## Firefox Architecture Follow-Ups
+
+The current modularization gate result is tracked in `docs/firefox-modularization-audit.md` as deferred with reason. Do these in small verified commits rather than during release-prep packaging:
+
+1. Split dashboard fill feature modules.
+2. Extract options project review modules.
+3. Introduce WebExtension platform wrappers.
+4. Document storage key ownership.
+5. Add a modularization audit script.

@@ -65,6 +65,7 @@ $requiredFiles = @(
   "assets\icons\icon96.png",
   "assets\icons\icon128.png",
   "docs\firefox-extension-modularization-playbook.md",
+  "docs\firefox-modularization-audit.md",
   "docs\firefox-localization.md",
   "docs\reference.md",
   "store-listing\amo\README.md",
@@ -215,6 +216,18 @@ foreach ($needle in @(
   Assert-TextContains "AMO_SUBMISSION.md" $amo $needle
 }
 
+$modularizationAudit = Read-Text "docs\firefox-modularization-audit.md"
+foreach ($needle in @(
+  "Result: deferred with reason.",
+  "Split dashboard fill feature modules",
+  "Extract options project review modules",
+  "Introduce WebExtension platform wrappers",
+  "Document storage key ownership",
+  "Add modularization audit script"
+)) {
+  Assert-TextContains "docs/firefox-modularization-audit.md" $modularizationAudit $needle
+}
+
 $listing = Read-Text "store-listing\amo\listing\en-US.md"
 foreach ($needle in @(
   "StorePilot: Chrome Web Store Automation",
@@ -293,6 +306,7 @@ Assert-ZipEntries $sourceZip @(
   "AMO_SUBMISSION.md",
   "assets/icons/icon128.png",
   "docs/firefox-extension-modularization-playbook.md",
+  "docs/firefox-modularization-audit.md",
   "docs/firefox-localization.md",
   "store-listing/amo/listing/en-US.md",
   "store-listing/amo/media/screenshots.md",
