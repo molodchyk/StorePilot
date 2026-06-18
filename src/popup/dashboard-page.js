@@ -8,8 +8,8 @@ async function injectContentScript(tabId) {
     target: { tabId },
     files: [
       "src/shared/dashboard-url.js",
-      "src/shared/privacy-doc.js",
-      "src/shared/category-doc.js",
+      "src/shared/store-docs/privacy-doc.js",
+      "src/shared/store-docs/category-doc.js",
       "src/content/dashboard-dom.js",
       "src/content/language/locale.js",
       "src/content/dashboard-category.js",

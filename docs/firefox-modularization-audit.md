@@ -10,7 +10,9 @@ File size and flat folder density are active architecture constraints. New sourc
 
 ## Reason For Deferral
 
-StorePilot's largest remaining gaps are in high-risk runtime surfaces that automate live Chrome Web Store dashboard pages and render the main options UI. Splitting those files immediately before an AMO re-upload would mix broad structural movement with policy-sensitive dashboard behavior. That is the kind of refactor the modularization playbook says to migrate in small verified steps, not as a release-prep side effect.
+StorePilot now satisfies the current file-size and flat-folder-density budgets, and the former large dashboard, options, popup, style, and document-parser surfaces have been split into focused modules. The remaining gap is architectural shape: StorePilot is still a manifest-loaded global-script extension rather than the modularization playbook's full feature-first ES-module target with thin entry files, feature-owned tests, and generated Firefox output.
+
+Moving to that final shape would require a build/runtime loading migration across background, content, popup, and options surfaces. That is broader than release-prep hygiene and should happen as a separate, behavior-protected migration.
 
 ## Source Tree Evidence
 
@@ -46,13 +48,13 @@ Runtime entry and surface files inspected:
 
 Feature and shared modules already present:
 
-- `src/shared/additional-fields-doc.js`
-- `src/shared/category-doc.js`
+- `src/shared/store-docs/additional-fields-doc.js`
+- `src/shared/store-docs/category-doc.js`
 - `src/shared/dashboard-url.js`
 - `src/shared/directory-detection.js`
 - `src/shared/importers.js`
 - `src/shared/media-assets.js`
-- `src/shared/privacy-doc.js`
+- `src/shared/store-docs/privacy-doc.js`
 - `src/shared/projects.js`
 - `src/shared/storage.js`
 - `src/content/dashboard-dom.js`
@@ -91,13 +93,13 @@ Test coverage inspected:
 
 - `test/project-resolution.test.js` covers dashboard project-id resolution and binding selection.
 - Release scripts validate manifest paths, locale shape, privacy/AMO text, packaging, zip paths, remote-code-like patterns, source upload contents, reference sync, and Firefox temporary load.
-- There is not yet enough feature-owned coverage to safely split dashboard fill, media upload, privacy/Data usage fill, or options rendering in one broad refactor.
+- There is not yet enough feature-owned coverage to safely convert the classic global-script runtime into ES modules and generated Firefox output in one broad refactor.
 
 ## Named Follow-Ups
 
 1. `Split dashboard fill feature modules`
    - First content split done in this pass: dashboard panel CSS injection now lives in `src/content/dashboard-panel-styles.js`.
-   - Second content split done in this pass: `src/content/dashboard-helper.js` reuses `src/shared/category-doc.js` and `src/shared/privacy-doc.js` constants for category options, Data Usage keys, and certification keys.
+   - Second content split done in this pass: `src/content/dashboard-helper.js` reuses `src/shared/store-docs/category-doc.js` and `src/shared/store-docs/privacy-doc.js` constants for category options, Data Usage keys, and certification keys.
    - Third content split done in this pass: dashboard project binding and title matching now delegate to `src/shared/storage.js`, which is covered by `test/project-resolution.test.js`.
    - Fourth content split done in this pass: generic content DOM/form helpers now live in `src/content/dashboard-dom.js`.
    - Fifth content split done in this pass: category dropdown detection and selection now live in `src/content/dashboard-category.js`.
@@ -129,6 +131,7 @@ Test coverage inspected:
 The 1.3.0.1 release-prep gate is allowed to continue with this explicit deferral because:
 
 - The extension behavior, manifest, privacy posture, AMO listing text, and package output are already release-validated.
-- The remaining modularization work is broad and behavior-sensitive.
+- The current source tree passes file-size and flat-folder-density checks.
+- The remaining modularization work is the broader ES-module/feature-folder migration, which is behavior-sensitive.
 - The debt is now documented in a tracked audit with named follow-ups.
 - Future Codex work has clear ownership targets instead of a passive "use the playbook" reference.

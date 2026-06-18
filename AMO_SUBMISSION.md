@@ -375,7 +375,7 @@ Expected output: artifacts/storepilot-1.3.0.1.zip
 .\scripts\test-firefox-release.ps1
 ```
 
-The Firefox modularization gate result is currently tracked in `docs/firefox-modularization-audit.md` as deferred with reason. Do not call the source tree modularization-compliant until the named follow-ups in that audit are completed.
+The Firefox modularization gate result is tracked in `docs/firefox-modularization-audit.md` as deferred with reason. The current source tree passes file-size and flat-folder-density checks; the remaining deferral is the broader ES-module/feature-folder migration described in the audit.
 
 Before upload, follow `docs/release-hygiene.md`: keep one `LICENSE`, remove old local zip artifacts, and publish the matching GitHub release after the versioned package is validated.
 

@@ -18,9 +18,9 @@
 - `src/shared/directory-detection.js`: listing-folder detection and scoring.
 - `src/shared/importers.js`: project/listing import flows.
 - `src/shared/media-assets.js`: media asset discovery and scoring.
-- `src/shared/privacy-doc.js`: privacy document discovery and parsing.
-- `src/shared/category-doc.js`: Chrome Web Store category document discovery and parsing.
-- `src/shared/additional-fields-doc.js`: Chrome Web Store Additional fields document discovery and parsing.
+- `src/shared/store-docs/privacy-doc.js`: privacy document discovery and parsing.
+- `src/shared/store-docs/category-doc.js`: Chrome Web Store category document discovery and parsing.
+- `src/shared/store-docs/additional-fields-doc.js`: Chrome Web Store Additional fields document discovery and parsing.
 - `src/shared/projects.js`: project creation, naming, identity helpers.
 - `src/shared/storage.js`: project storage in extension storage.
 - `src/shared/handles.js`: IndexedDB folder-handle storage.
@@ -480,9 +480,9 @@ node --check src\content\media-upload-main-world.js
 node --check src\popup\popup.js
 node --check src\options\options.js
 node --check src\shared\media-assets.js
-node --check src\shared\privacy-doc.js
-node --check src\shared\category-doc.js
-node --check src\shared\additional-fields-doc.js
+node --check src\shared\store-docs\privacy-doc.js
+node --check src\shared\store-docs\category-doc.js
+node --check src\shared\store-docs\additional-fields-doc.js
 node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8')); console.log('manifest ok')"
 ```
 
