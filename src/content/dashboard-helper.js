@@ -10,42 +10,9 @@ const PANEL_MODE_STORAGE_KEY = "storePilotPanelMode";
 const PANEL_ID = "storepilot-panel";
 const MEDIA_UPLOAD_BRIDGE_SCRIPT = "src/content/media-upload-main-world.js";
 const MAX_DASHBOARD_SCREENSHOTS = 5;
-const CHROME_WEB_STORE_CATEGORY_OPTIONS = [
-  { label: "Communication", value: "CATEGORY_COMMUNICATION" },
-  { label: "Developer Tools", value: "CATEGORY_DEVELOPER_TOOLS" },
-  { label: "Education", value: "CATEGORY_EDUCATION" },
-  { label: "Tools", value: "CATEGORY_TOOLS" },
-  { label: "Workflow and planning", value: "CATEGORY_WORKFLOW_AND_PLANNING" },
-  { label: "Art & Design", value: "CATEGORY_EXTENSIONS_ART_AND_DESIGN", aliases: ["Art and Design"] },
-  { label: "Entertainment", value: "CATEGORY_EXTENSIONS_ENTERTAINMENT" },
-  { label: "Games", value: "CATEGORY_GAMES" },
-  { label: "Household", value: "CATEGORY_HOUSEHOLD" },
-  { label: "Just for fun", value: "CATEGORY_JUST_FOR_FUN" },
-  { label: "News & Weather", value: "CATEGORY_NEWS_AND_WEATHER", aliases: ["News and Weather"] },
-  { label: "Shopping", value: "CATEGORY_SHOPPING" },
-  { label: "Social Networking", value: "CATEGORY_SOCIAL_NETWORKING" },
-  { label: "Travel", value: "CATEGORY_TRAVEL" },
-  { label: "Wellbeing", value: "CATEGORY_WELL_BEING", aliases: ["Well-being", "Well being"] },
-  { label: "Accessibility", value: "CATEGORY_ACCESSIBILITY" },
-  { label: "Functionality and UI", value: "CATEGORY_FUNCTIONALITY_AND_UI", aliases: ["Functionality & UI"] },
-  { label: "Privacy & Security", value: "CATEGORY_PRIVACY_AND_SECURITY", aliases: ["Privacy and Security"] }
-];
-const PRIVACY_DATA_USAGE_KEYS = [
-  "data_usage.personally_identifiable_information",
-  "data_usage.health_information",
-  "data_usage.financial_payment_information",
-  "data_usage.authentication_information",
-  "data_usage.personal_communications",
-  "data_usage.location",
-  "data_usage.web_history",
-  "data_usage.user_activity",
-  "data_usage.website_content"
-];
-const PRIVACY_CERTIFICATION_KEYS = [
-  "certification.no_sell_or_transfer",
-  "certification.no_unrelated_use",
-  "certification.no_creditworthiness"
-];
+const CHROME_WEB_STORE_CATEGORY_OPTIONS = STOREPILOT_CHROME_WEB_STORE_CATEGORIES;
+const PRIVACY_DATA_USAGE_KEYS = STOREPILOT_PRIVACY_DATA_USAGE_KEYS;
+const PRIVACY_CERTIFICATION_KEYS = STOREPILOT_PRIVACY_CERTIFICATION_KEYS;
 
 let listings = {};
 let selectedLocale = "";
@@ -814,14 +781,7 @@ function fillSelectedText() {
 }
 
 function normalizeCategoryMatchText(value) {
-  return String(value || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  return storePilotNormalizeCategoryText(value);
 }
 
 function getChromeWebStoreCategoryByValue(value) {

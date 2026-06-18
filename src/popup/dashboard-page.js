@@ -33,6 +33,8 @@ async function injectContentScript(tabId) {
   await storePilotScriptingExecuteScript({
     target: { tabId },
     files: [
+      "src/shared/privacy-doc.js",
+      "src/shared/category-doc.js",
       "src/content/dashboard-panel-styles.js",
       "src/content/dashboard-helper.js"
     ]
