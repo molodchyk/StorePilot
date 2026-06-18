@@ -390,10 +390,23 @@ $allowedArtifactZips = @(
   (Resolve-Path -LiteralPath $extensionZip).Path,
   (Resolve-Path -LiteralPath $sourceZip).Path
 )
+$allowedArtifactFiles = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+foreach ($zipPath in $allowedArtifactZips) {
+  [void]$allowedArtifactFiles.Add($zipPath)
+}
+foreach ($match in @($mediaScreenshotMatches) + @($screenshotMatches)) {
+  $relativePath = $match.Groups["path"].Value -replace "/", [System.IO.Path]::DirectorySeparatorChar
+  $resolved = (Resolve-Path -LiteralPath (Join-Path $root $relativePath)).Path
+  [void]$allowedArtifactFiles.Add($resolved)
+}
 $artifactRoot = Join-Path $root "artifacts"
 Get-ChildItem -LiteralPath $artifactRoot -Recurse -File -Filter "*.zip" | ForEach-Object {
   $resolved = (Resolve-Path -LiteralPath $_.FullName).Path
   Assert-True ($allowedArtifactZips -contains $resolved) "Old zip artifact should be removed before release: $resolved"
+}
+Get-ChildItem -LiteralPath $artifactRoot -Recurse -File | ForEach-Object {
+  $resolved = (Resolve-Path -LiteralPath $_.FullName).Path
+  Assert-True ($allowedArtifactFiles.Contains($resolved)) "Unexpected artifact should be removed before release: $resolved"
 }
 
 Write-Host "Firefox release checks passed for StorePilot $version."
