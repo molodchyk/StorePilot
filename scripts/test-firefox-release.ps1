@@ -173,6 +173,7 @@ $requiredFiles = @(
   "src\content\panel\render.js",
   "src\content\dashboard-panel-styles.js",
   "src\popup\dashboard-page.js",
+  "src\popup\settings.js",
   "docs\firefox-extension-modularization-playbook.md",
   "docs\firefox-modularization-audit.md",
   "docs\firefox-localization.md",
@@ -516,6 +517,7 @@ Assert-ZipEntries $extensionZip @(
   "src/content/panel/render.js",
   "src/content/dashboard-panel-styles.js",
   "src/popup/dashboard-page.js",
+  "src/popup/settings.js",
   "src/popup/popup.html",
   "src/background.js",
   "_locales/en/messages.json"
@@ -556,6 +558,7 @@ Assert-ZipEntries $sourceZip @(
   "src/content/panel/render.js",
   "src/content/dashboard-panel-styles.js",
   "src/popup/dashboard-page.js",
+  "src/popup/settings.js",
   "docs/firefox-extension-modularization-playbook.md",
   "docs/firefox-modularization-audit.md",
   "docs/firefox-localization.md",

@@ -24,9 +24,19 @@ function extractPopupInjectionFiles() {
   return Array.from(filesMatch[1].matchAll(/"([^"]+)"/g), match => match[1]);
 }
 
+function extractPopupHtmlScripts() {
+  const html = readText("src/popup/popup.html");
+  return Array.from(html.matchAll(/<script\s+src="([^"]+)"/g), match => {
+    const src = match[1];
+    if (src.startsWith("../")) return `src/${src.slice(3)}`;
+    return `src/popup/${src}`;
+  });
+}
+
 const manifest = JSON.parse(readText("manifest.json"));
 const contentFiles = manifest.content_scripts.flatMap(contentScript => contentScript.js || []);
 const injectionFiles = extractPopupInjectionFiles();
+const popupHtmlFiles = extractPopupHtmlScripts();
 
 for (const [label, files] of [
   ["manifest content scripts", contentFiles],
@@ -51,5 +61,13 @@ for (const [label, files] of [
 }
 
 assert.deepEqual(injectionFiles, contentFiles, "Popup fallback injection should match manifest content script order.");
+for (const required of [
+  "src/popup/dashboard-page.js",
+  "src/popup/settings.js",
+  "src/popup/popup.js"
+]) {
+  assert.ok(popupHtmlFiles.includes(required), `popup.html is missing ${required}`);
+}
+assertBefore(popupHtmlFiles, "src/popup/settings.js", "src/popup/popup.js", "popup HTML scripts");
 
 console.log("Runtime load surface tests passed.");

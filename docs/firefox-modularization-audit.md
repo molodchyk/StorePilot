@@ -36,8 +36,9 @@ Runtime entry and surface files inspected:
 | `src/content/panel/render.js` | Focused dashboard panel DOM construction for listing and privacy pages | Acceptable focused panel helper. Keep panel button layout and per-page panel rendering here. |
 | `src/content/dashboard-panel-styles.js` | Focused dashboard panel CSS injector loaded before the main content helper | Acceptable focused content UI helper. Keep panel styling changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/media-upload-main-world.js` | Narrow page-world upload bridge | Acceptable as a focused page bridge. |
-| `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | First split done. This file is now under the preferred UI-module budget after dashboard page detection, project-context resolution, active-tab messaging, panel state, and popup media dashboard state moved to `src/popup/dashboard-page.js`. |
+| `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | Second split done. This file is now under the preferred UI-module budget after dashboard page behavior moved to `src/popup/dashboard-page.js` and popup settings/theme behavior moved to `src/popup/settings.js`. |
 | `src/popup/dashboard-page.js` | Popup-owned active-tab messaging, dashboard project binding resolution, panel visibility, and media action state | Acceptable focused popup helper. It now uses shared dashboard URL helpers instead of owning URL parsing directly. Keep this separate from content-script selector and fill logic. |
+| `src/popup/settings.js` | Popup-owned settings load/save, theme selection, and advanced fill action visibility | Acceptable focused popup helper. Keep storage-backed popup preferences here instead of growing `src/popup/popup.js`. |
 | `src/options/options.js` | Options-page state coordination, import flow, project cards, preferences, reset, and event wiring | First split done. This file is now under the preferred UI-module budget after media preview/rendering moved to `src/options/options-media.js` and privacy/category/additional/data-usage review tables moved to `src/options/options-review-tables.js`. |
 | `src/options/options-media.js` | Options-page Graphic Assets preview overlay, media cards, media summaries, and media file handle previews | Acceptable focused options helper. |
 | `src/options/options-review-tables.js` | Options-page Privacy Document, Data Usage, Additional Fields, Product Details category, and language-diagnostic review tables | Acceptable focused options helper. |
@@ -71,6 +72,7 @@ Feature and shared modules already present:
 - `src/content/panel/render.js`
 - `src/content/dashboard-panel-styles.js`
 - `src/popup/dashboard-page.js`
+- `src/popup/settings.js`
 
 These modules are useful migration footholds, but they are still broad shared modules rather than feature-owned `features/*/core`, `features/*/content`, `features/*/popup`, and `features/*/options` modules.
 
@@ -116,6 +118,7 @@ Test coverage inspected:
 
 3. `Continue popup module ownership`
    - First slice done in this pass: `src/popup/dashboard-page.js` owns active-tab messaging, dashboard project resolution, panel state, and media action state. Dashboard URL checks now live in `src/shared/dashboard-url.js`. Keep future popup features in focused popup-owned helpers instead of growing `src/popup/popup.js` again.
+   - Second slice done in this pass: `src/popup/settings.js` owns popup settings persistence, theme button state, and advanced fill action visibility. Runtime load tests now require it to load before `src/popup/popup.js`.
 
 4. `Introduce WebExtension platform wrappers`
    - First slice done in this pass: `src/platform/webextension.js` centralizes direct WebExtension API access. Later split it into narrower platform modules when the source tree moves toward bundled or ES-module runtime entries.

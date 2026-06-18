@@ -9,6 +9,7 @@
 - Added source-package freshness validation so AMO source zips must match the current tracked file set and file contents.
 - Documented that published GitHub releases are immutable snapshots for their exact version; replacement uploads after a version bump should use a new release.
 - Added explicit English fallback strings for newly added runtime locale keys and tightened release checks so locale files must match the default key set and placeholder names.
+- Split popup settings and theme handling into a focused popup helper, with runtime-load checks covering the new script order.
 
 ## 1.3.1 - 2026-06-18
 

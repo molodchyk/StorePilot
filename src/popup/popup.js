@@ -1,4 +1,3 @@
-const SETTINGS_KEY = "storePilotSettings";
 const FILL_ALL_STATUS_STORAGE_KEY = "storePilotFillAllStatus";
 var STOREPILOT_API = globalThis.STOREPILOT_API || globalThis.browser || globalThis.chrome;
 
@@ -51,50 +50,6 @@ const elements = {
 let isPopupFillAllRunning = false;
 let fillAllStatusPollId = 0;
 let isPopupMediaRunning = false;
-
-function applyTheme(theme) {
-  const normalized = ["system", "light", "dark"].includes(theme) ? theme : "system";
-
-  if (normalized === "system") {
-    document.documentElement.removeAttribute("data-theme");
-  } else {
-    document.documentElement.dataset.theme = normalized;
-  }
-
-  elements.themeChoices.forEach(button => {
-    button.setAttribute("aria-pressed", String(button.dataset.themeChoice === normalized));
-  });
-}
-
-async function getSettings() {
-  const stored = await storePilotStorageLocalGet(SETTINGS_KEY);
-  return {
-    theme: "system",
-    showAdvancedFillActions: false,
-    ...(stored[SETTINGS_KEY] || {})
-  };
-}
-
-async function updateSettings(patch) {
-  const settings = {
-    ...(await getSettings()),
-    ...patch
-  };
-
-  await storePilotStorageLocalSet({ [SETTINGS_KEY]: settings });
-  return settings;
-}
-
-function applySettings(settings = {}) {
-  const normalized = {
-    theme: "system",
-    showAdvancedFillActions: false,
-    ...settings
-  };
-
-  applyTheme(normalized.theme);
-  elements.fillCurrentLanguage.hidden = !Boolean(normalized.showAdvancedFillActions);
-}
 
 function setStatus(message, isError = false) {
   elements.status.textContent = message;
@@ -496,16 +451,16 @@ elements.openOptionsShortcut.addEventListener("click", openOptionsPageFromPopup)
 
 elements.themeChoices.forEach(button => {
   button.addEventListener("click", async () => {
-    const settings = await updateSettings({ theme: button.dataset.themeChoice });
-    applySettings(settings);
+    const settings = await storePilotPopupUpdateSettings({ theme: button.dataset.themeChoice });
+    storePilotPopupApplySettings(settings, elements);
   });
 });
 
 storePilotStorageOnChangedAddListener((changes, areaName) => {
   if (areaName !== "local") return;
 
-  if (changes[SETTINGS_KEY]) {
-    applySettings(changes[SETTINGS_KEY].newValue);
+  if (changes[STOREPILOT_SETTINGS_KEY]) {
+    storePilotPopupApplySettings(changes[STOREPILOT_SETTINGS_KEY].newValue, elements);
   }
 
   if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY] || changes[STOREPILOT_DASHBOARD_PROJECT_BINDINGS_STORAGE_KEY]) {
@@ -532,7 +487,7 @@ if (STOREPILOT_API) {
 
 async function initializePopup() {
   storePilotApplyI18n();
-  applySettings(await getSettings());
+  storePilotPopupApplySettings(await storePilotPopupGetSettings(), elements);
   await updateDashboardSectionUi();
   await refreshSummary();
   await updateDashboardSectionUi();
