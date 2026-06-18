@@ -59,12 +59,17 @@
         "src/shared/privacy-doc.js",
         "src/shared/category-doc.js",
         "src/content/dashboard-dom.js",
+        "src/content/language/locale.js",
         "src/content/dashboard-category.js",
+        "src/content/language/picker.js",
+        "src/content/language/description-fill.js",
         "src/content/dashboard-additional-fields.js",
         "src/content/dashboard-privacy-core.js",
         "src/content/dashboard-privacy-data-usage.js",
         "src/content/dashboard-privacy-fields.js",
         "src/content/dashboard-media.js",
+        "src/content/panel/state.js",
+        "src/content/panel/render.js",
         "src/content/dashboard-panel-styles.js",
         "src/content/dashboard-helper.js"
       ]

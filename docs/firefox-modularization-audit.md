@@ -19,14 +19,19 @@ Runtime entry and surface files inspected:
 | File | Current role | Audit result |
 | --- | --- | --- |
 | `src/background.js` | Background message handling, media upload orchestration, action-click behavior | Slightly over the entry-file budget and still owns browser API orchestration directly. |
-| `src/content/dashboard-helper.js` | Dashboard detection, panel UI behavior, selector strategy, description fill, and message routing | Major architecture debt. This is the main content-script runtime and still owns multiple feature behaviors that should move into feature modules. First content split done: injected panel CSS moved out to `src/content/dashboard-panel-styles.js`. Second content split done: category and privacy disclosure constants now come from shared modules instead of being duplicated in this helper. Third content split done: dashboard project-resolution logic now delegates to the tested shared storage module. Fourth content split done: generic content DOM/form helpers moved to `src/content/dashboard-dom.js`. Fifth content split done: category dropdown detection and selection moved to `src/content/dashboard-category.js`. Sixth content split done: Additional fields detection and filling moved to `src/content/dashboard-additional-fields.js`. Seventh content split done: privacy form helpers and fill behavior moved to focused privacy modules. Eighth content split done: media upload and clearing automation moved to `src/content/dashboard-media.js`. |
+| `src/content/dashboard-helper.js` | Dashboard section detection, active-project resolution, settings load, abort handling, diagnostics, message routing, and startup orchestration | Under the file-size budget after focused content splits. This remains the dashboard orchestration entry and should stay thin: selector, fill, panel, and media behavior belong in the focused modules below. |
 | `src/content/dashboard-dom.js` | Focused content-script DOM visibility, text, form-fill, click activation, and timing helpers loaded before feature modules | Acceptable focused content utility module. Keep generic content DOM/form mechanics here instead of growing `src/content/dashboard-helper.js`. |
+| `src/content/language/locale.js` | Focused locale normalization, CWS locale alias matching, and visible-language text matching helpers | Acceptable focused language helper. Keep locale-code and language-label matching here so CWS and future AMO language flows share the same assumptions. |
+| `src/content/language/picker.js` | Focused Chrome Web Store language dropdown discovery, two-mode picker detection, option enumeration, and option activation | Acceptable focused language-picker helper. It preserves the separate multi-locale top-picker and one-language Product Details picker modes. |
+| `src/content/language/description-fill.js` | Focused Chrome Web Store listing description fill flow, fill-progress status, and current/all-language fill actions | Acceptable focused dashboard-fill helper. Keep description-fill status and selection flow here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-category.js` | Focused Chrome Web Store category dropdown matching and selection behavior | Acceptable focused dashboard-fill content helper. Keep category selector changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-additional-fields.js` | Focused Chrome Web Store Additional fields matching and filling behavior | Acceptable focused dashboard-fill content helper. Keep Official URL, Homepage URL, Support URL, and Mature content fill changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-privacy-core.js` | Focused privacy/data-usage normalization and active privacy field access | Acceptable focused dashboard privacy helper. Keep shared privacy form normalization here. |
 | `src/content/dashboard-privacy-data-usage.js` | Focused Chrome Web Store Data Usage checkbox mapping and checked-state changes | Acceptable focused dashboard privacy helper. Keep Data Usage disclosure checkbox changes here. |
 | `src/content/dashboard-privacy-fields.js` | Focused Chrome Web Store privacy field, permission justification, and remote-code radio fill behavior | Acceptable focused dashboard privacy helper. Keep privacy text/radio field changes here. |
 | `src/content/dashboard-media.js` | Focused Chrome Web Store media upload, clear, diagnostics, and page-bridge coordination behavior | Acceptable focused content helper. Keep Graphic Assets upload and removal changes here instead of growing `src/content/dashboard-helper.js`. |
+| `src/content/panel/state.js` | Focused dashboard panel mode, position, viewport clamp, media button state, and media-operation lock behavior | Acceptable focused panel helper. Keep panel state and operation lock mechanics here instead of returning them to `src/content/dashboard-helper.js`. |
+| `src/content/panel/render.js` | Focused dashboard panel DOM construction for listing and privacy pages | Acceptable focused panel helper. Keep panel button layout and per-page panel rendering here. |
 | `src/content/dashboard-panel-styles.js` | Focused dashboard panel CSS injector loaded before the main content helper | Acceptable focused content UI helper. Keep panel styling changes here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/media-upload-main-world.js` | Narrow page-world upload bridge | Acceptable as a focused page bridge. |
 | `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | First split done. This file is now under the preferred UI-module budget after dashboard page detection, project-context resolution, active-tab messaging, panel state, and popup media dashboard state moved to `src/popup/dashboard-page.js`. |
@@ -51,12 +56,17 @@ Feature and shared modules already present:
 - `src/shared/projects.js`
 - `src/shared/storage.js`
 - `src/content/dashboard-dom.js`
+- `src/content/language/locale.js`
+- `src/content/language/picker.js`
+- `src/content/language/description-fill.js`
 - `src/content/dashboard-category.js`
 - `src/content/dashboard-additional-fields.js`
 - `src/content/dashboard-privacy-core.js`
 - `src/content/dashboard-privacy-data-usage.js`
 - `src/content/dashboard-privacy-fields.js`
 - `src/content/dashboard-media.js`
+- `src/content/panel/state.js`
+- `src/content/panel/render.js`
 - `src/content/dashboard-panel-styles.js`
 - `src/popup/dashboard-page.js`
 
@@ -94,7 +104,9 @@ Test coverage inspected:
    - Sixth content split done in this pass: Additional fields detection and filling now live in `src/content/dashboard-additional-fields.js`.
    - Seventh content split done in this pass: privacy form normalization, Data Usage checkbox filling, permission justification filling, and remote-code radio behavior now live in `src/content/dashboard-privacy-core.js`, `src/content/dashboard-privacy-data-usage.js`, and `src/content/dashboard-privacy-fields.js`.
    - Eighth content split done in this pass: Graphic Assets upload, clear, diagnostics, and page-bridge coordination now live in `src/content/dashboard-media.js`.
-   - Remaining work: move description fill, selector diagnostics, and dashboard panel rendering behavior out of `src/content/dashboard-helper.js` into feature-owned content/core modules.
+   - Ninth content split done in this pass: locale normalization, two-mode language picker detection, option activation, description-field detection, and Fill descriptions progress handling now live in `src/content/language/locale.js`, `src/content/language/picker.js`, and `src/content/language/description-fill.js`.
+   - Tenth content split done in this pass: dashboard panel state, viewport clamping, media button state, media-operation locking, and listing/privacy panel rendering now live in `src/content/panel/state.js` and `src/content/panel/render.js`.
+   - Remaining work: move selector diagnostics and message routing into narrower modules if those surfaces grow again. `src/content/dashboard-helper.js` is now under the current file-size budget.
 
 2. `Extract options project review modules`
    - First slice done in this pass: Graphic Assets rendering lives in `src/options/options-media.js`; Privacy Document, Data Usage, Additional Fields, Product Details category, and language diagnostics live in `src/options/options-review-tables.js`; `src/options/options.js` is back under the file-size budget.
