@@ -1,6 +1,9 @@
 let mediaPreviewUrls = [];
 let mediaReviewOverlay = null;
 let mediaReviewReturnFocus = null;
+let mediaReviewItems = [];
+let mediaReviewCurrentIndex = -1;
+let mediaReviewElements = null;
 
 function formatMediaSummary(projectOrResult) {
   return typeof storePilotFormatMediaSummary === "function"
@@ -32,6 +35,8 @@ function revokeMediaPreviewUrls() {
   closeMediaReview({ restoreFocus: false });
   mediaPreviewUrls.forEach(url => URL.revokeObjectURL(url));
   mediaPreviewUrls = [];
+  mediaReviewItems = [];
+  mediaReviewCurrentIndex = -1;
 }
 
 function createMediaPreviewUrl(file) {
@@ -47,10 +52,101 @@ function getFocusableMediaReviewElements() {
     .filter(element => !element.disabled && element.offsetParent !== null);
 }
 
+function getMediaReviewMetaParts(item) {
+  const asset = item && item.asset;
+  return [
+    asset && asset.width && asset.height ? formatMediaDimensions(asset) : "",
+    asset && asset.size ? formatBytes(asset.size) : ""
+  ].filter(Boolean);
+}
+
+function getMediaReviewPath(item) {
+  if (!item) return "";
+  return item.asset && item.asset.path ? item.asset.path : item.fileName || "";
+}
+
+function registerMediaReviewItem(item) {
+  mediaReviewItems.push(item);
+  return item;
+}
+
+function createMediaReviewArrowIcon(direction) {
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  icon.setAttribute("focusable", "false");
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", "2.25");
+  path.setAttribute("stroke-linecap", "round");
+  path.setAttribute("stroke-linejoin", "round");
+  path.setAttribute("d", direction < 0 ? "m15 18-6-6 6-6" : "m9 18 6-6-6-6");
+  icon.append(path);
+  return icon;
+}
+
+function createMediaReviewNavButton(direction, label) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = direction < 0
+    ? "media-review-nav media-review-nav-previous"
+    : "media-review-nav media-review-nav-next";
+  button.setAttribute("aria-label", label);
+  button.title = label;
+  button.append(createMediaReviewArrowIcon(direction));
+  button.addEventListener("click", () => showAdjacentMediaReview(direction));
+  return button;
+}
+
+function updateMediaReviewNavState() {
+  if (!mediaReviewElements) return;
+
+  const canNavigate = mediaReviewItems.length > 1;
+  mediaReviewElements.previousButton.disabled = !canNavigate;
+  mediaReviewElements.nextButton.disabled = !canNavigate;
+}
+
+function setMediaReviewContent(item) {
+  if (!mediaReviewElements || !item || !item.previewUrl) return;
+
+  const itemIndex = mediaReviewItems.indexOf(item);
+  mediaReviewCurrentIndex = itemIndex >= 0 ? itemIndex : 0;
+  mediaReviewElements.title.textContent = item.typeLabel;
+  mediaReviewElements.meta.textContent = getMediaReviewMetaParts(item).join(" | ");
+  mediaReviewElements.image.src = item.previewUrl;
+  mediaReviewElements.image.alt = item.typeLabel;
+  mediaReviewElements.path.textContent = getMediaReviewPath(item);
+  updateMediaReviewNavState();
+}
+
+function showAdjacentMediaReview(direction) {
+  if (!mediaReviewOverlay || mediaReviewItems.length < 2) return;
+
+  const nextIndex = (mediaReviewCurrentIndex + direction + mediaReviewItems.length) % mediaReviewItems.length;
+  setMediaReviewContent(mediaReviewItems[nextIndex]);
+}
+
 function handleMediaReviewKeydown(event) {
   if (event.key === "Escape") {
     closeMediaReview();
     return;
+  }
+
+  if (!event.altKey && !event.ctrlKey && !event.metaKey) {
+    const key = event.key.toLowerCase();
+    if (key === "a" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      showAdjacentMediaReview(-1);
+      return;
+    }
+
+    if (key === "d" || event.key === "ArrowRight") {
+      event.preventDefault();
+      showAdjacentMediaReview(1);
+      return;
+    }
   }
 
   if (event.key !== "Tab") return;
@@ -76,6 +172,8 @@ function closeMediaReview(options = {}) {
   const restoreFocus = options.restoreFocus !== false;
   mediaReviewOverlay.remove();
   mediaReviewOverlay = null;
+  mediaReviewElements = null;
+  mediaReviewCurrentIndex = -1;
   document.body.classList.remove("media-review-open");
   document.removeEventListener("keydown", handleMediaReviewKeydown);
 
@@ -85,8 +183,8 @@ function closeMediaReview(options = {}) {
   mediaReviewReturnFocus = null;
 }
 
-function openMediaReview({ previewUrl, typeLabel, asset, fileName }) {
-  if (!previewUrl) return;
+function openMediaReview(item) {
+  if (!item || !item.previewUrl) return;
 
   closeMediaReview({ restoreFocus: false });
   mediaReviewReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -99,13 +197,10 @@ function openMediaReview({ previewUrl, typeLabel, asset, fileName }) {
   const meta = document.createElement("div");
   const closeButton = document.createElement("button");
   const imageFrame = document.createElement("div");
+  const previousButton = createMediaReviewNavButton(-1, t("previousMediaPreview", "Previous graphic asset"));
+  const nextButton = createMediaReviewNavButton(1, t("nextMediaPreview", "Next graphic asset"));
   const image = document.createElement("img");
   const path = document.createElement("div");
-  const reviewPath = asset && asset.path ? asset.path : fileName || "";
-  const metaParts = [
-    asset && asset.width && asset.height ? formatMediaDimensions(asset) : "",
-    asset && asset.size ? formatBytes(asset.size) : ""
-  ].filter(Boolean);
 
   overlay.className = "media-review-overlay";
   dialog.className = "media-review-dialog";
@@ -121,16 +216,11 @@ function openMediaReview({ previewUrl, typeLabel, asset, fileName }) {
   dialog.setAttribute("aria-modal", "true");
   dialog.setAttribute("aria-labelledby", "mediaReviewTitle");
   title.id = "mediaReviewTitle";
-  title.textContent = typeLabel;
-  meta.textContent = metaParts.join(" | ");
   closeButton.type = "button";
   closeButton.textContent = t("closePreview", "Close preview");
   closeButton.addEventListener("click", () => closeMediaReview());
-  image.src = previewUrl;
-  image.alt = typeLabel;
-  path.textContent = reviewPath;
 
-  imageFrame.append(image);
+  imageFrame.append(previousButton, image, nextButton);
   titleBlock.append(title, meta);
   header.append(titleBlock, closeButton);
   dialog.append(header, imageFrame, path);
@@ -141,6 +231,15 @@ function openMediaReview({ previewUrl, typeLabel, asset, fileName }) {
   });
 
   mediaReviewOverlay = overlay;
+  mediaReviewElements = {
+    title,
+    meta,
+    image,
+    path,
+    previousButton,
+    nextButton
+  };
+  setMediaReviewContent(item);
   document.body.classList.add("media-review-open");
   document.addEventListener("keydown", handleMediaReviewKeydown);
   document.body.append(overlay);
@@ -177,16 +276,18 @@ function createMediaCard(typeLabel, asset, stateLabel = "", file = null) {
   size.textContent = asset && asset.size ? formatBytes(asset.size) : "";
 
   if (previewUrl) {
-    thumb = document.createElement("button");
-    thumb.type = "button";
-    thumb.className = "media-thumb media-thumb-button";
-    thumb.setAttribute("aria-label", t("openMediaPreview", "Open preview for $1", [typeLabel]));
-    thumb.addEventListener("click", () => openMediaReview({
+    const reviewItem = registerMediaReviewItem({
       previewUrl,
       typeLabel,
       asset,
       fileName: file && file.name
-    }));
+    });
+
+    thumb = document.createElement("button");
+    thumb.type = "button";
+    thumb.className = "media-thumb media-thumb-button";
+    thumb.setAttribute("aria-label", t("openMediaPreview", "Open preview for $1", [typeLabel]));
+    thumb.addEventListener("click", () => openMediaReview(reviewItem));
 
     const image = document.createElement("img");
     image.src = previewUrl;

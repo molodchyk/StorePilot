@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 1.3.1.2 - 2026-06-24
+
+- Added keyboard shortcuts for switching options tabs: number keys select tabs directly, while `W`/`S` and Up/Down arrows move between tabs.
+- Added Preferences controls to enable or disable number-key, `W`/`S`, and arrow-key tab navigation separately.
+- Kept tab shortcuts out of text inputs, selects, contenteditable fields, and media-preview dialogs so normal editing and preview controls keep their expected behavior.
+- Added left/right arrow buttons plus `A`/`D` and Left/Right arrow-key navigation inside the Graphic Assets preview dialog.
+
+## 1.3.1.1 - 2026-06-21
+
+- Tightened StorePilot project-reference guidance for direct Detailed description files: prefer `.txt`, avoid `.md` for new direct listing files, and keep extension names, titles, Markdown headings, labels, and summaries out of the copied description body.
+- Updated the options Reference tab, packaged locale strings, README, and reference/spec docs to match the stricter direct-description guidance.
+- Aligned single-draft import diagnostics with the `.txt` direct-listing convention.
+
 ## 1.3.1 - 2026-06-18
 
 - Moved release and project maintenance documents under `docs/` to keep the repository root focused on package identity and primary policy files.

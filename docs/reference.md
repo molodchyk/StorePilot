@@ -16,8 +16,8 @@ _locales/
 store-listing/
   chrome-web-store/
     listing/
-      en.md
-      # Add de.md, fr.md, pt_BR.md, etc. later.
+      en.txt
+      # Add de.txt, fr.txt, pt_BR.txt, etc. later.
     media/
       icon-128.png
       screenshots/
@@ -36,9 +36,11 @@ Folder names such as `store-listing`, `chrome-web-store`, `listing`, `media`, `s
 
 ## Detailed Description Text
 
-`store-listing/chrome-web-store/listing/en.md` is copied directly into the Chrome Web Store Detailed description field.
+`store-listing/chrome-web-store/listing/en.txt` is the recommended direct locale listing file and is copied verbatim into the Chrome Web Store Detailed description field.
 
 The file should contain only the final detailed description body users should see in the store listing.
+
+Do not include the extension name or a title.
 
 Do not include field labels such as `Name`, `Summary`, `Description`, or `Detailed Description`.
 
@@ -46,20 +48,27 @@ Do not include Markdown headings.
 
 Do not put the short summary in this file.
 
-Example `en.md` content:
+Use `.txt` for new direct listing files. StorePilot can still import `.md`, but do not create `.md` files for direct listings because Markdown headings, labels, and title-like content are copied into the dashboard.
+
+Example `en.txt` content:
 
 ```text
-New Tab: Custom URL lets you choose what opens when you create a new tab.
+Choose what opens when you create a new tab.
 
 Use a website, local HTML file, browser page, or a quiet blank page.
 ```
 
 Accepted detailed-description file examples:
 
-- `store-listing/chrome-web-store/listing/en.md`
 - `en.txt`
+- `store-listing/chrome-web-store/listing/en.txt`
+- `en_US.txt`
+- `de.txt`
+- `pt_BR.txt`
+
+Supported for existing plain-text files, but not recommended for new direct listing files:
+
 - `en.md`
-- `en_US.md`
 - `de.md`
 - `pt_BR.md`
 
@@ -69,9 +78,9 @@ StorePilot also accepts `docs/chrome-web-store.md` for a single English draft.
 
 Only in this draft file, StorePilot may look for a `Detailed Description` or `Description` section and import that section as English detailed description text.
 
-This section parsing does not apply to `store-listing/chrome-web-store/listing/en.md`.
+This section parsing does not apply to direct locale listing files such as `store-listing/chrome-web-store/listing/en.txt`.
 
-## Fields Not Imported From `listing/en.md`
+## Fields Not Imported From `listing/en.txt`
 
 These fields belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files:
 

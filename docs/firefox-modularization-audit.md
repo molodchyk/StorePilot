@@ -1,10 +1,10 @@
 # Firefox Modularization Audit
 
-Last reviewed: 2026-06-18.
+Last reviewed: 2026-06-21.
 
 Result: deferred with reason.
 
-This audit satisfies the Firefox Extension Playbook architecture and modularization gate for the StorePilot 1.3.1 release-prep pass. StorePilot has useful shared modules and release scaffolding, but the current source tree is not yet compliant with the Firefox Extension Modularization Playbook's target architecture.
+This audit satisfies the Firefox Extension Playbook architecture and modularization gate for the StorePilot 1.3.1.2 release-prep pass. StorePilot has useful shared modules and release scaffolding, but the current source tree is not yet compliant with the Firefox Extension Modularization Playbook's target architecture.
 
 File size and flat folder density are active architecture constraints. New source files over the soft budget or tracked repository folders over the flat-file budget must be split or explicitly named in this audit with a reason. Generated output and one-file locale folders are not useful density signals and are excluded from the script.
 
@@ -156,7 +156,7 @@ Test coverage inspected:
 
 ## Current Release Gate
 
-The 1.3.1 release-prep gate is allowed to continue with this explicit deferral because:
+The 1.3.1.2 release-prep gate is allowed to continue with this explicit deferral because:
 
 - The extension behavior, manifest, privacy posture, AMO listing text, and package output are already release-validated.
 - The current source tree passes file-size and flat-folder-density checks.

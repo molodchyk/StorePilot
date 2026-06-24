@@ -4,16 +4,17 @@ StorePilot is a local-first Firefox extension for automating Chrome extension st
 
 ## What It Does
 
-- Imports locale-named detailed description files such as `en.md`, `de.md`, and `pt_BR.md`.
+- Imports locale-named detailed description text files such as `en.txt`, `de.txt`, and `pt_BR.txt`.
 - Detects listing folders inside project roots, `store-listing` folders, and direct listing folders.
 - Keeps multiple extension projects separate.
 - Stores detailed description text, graphic asset metadata, category decisions, additional product fields, privacy-form text, data usage disclosure choices, preferences, and folder handles locally.
 - Lets the user select an active project from options, popup, project rows, or the dashboard panel.
+- Lets the user switch options tabs with number keys, W/S, or Up/Down arrows, with each shortcut style configurable in Preferences.
 - Fills matching Chrome Web Store dashboard description fields with progress, abort, retry, and named failure reporting.
 - Can expose an advanced Fill current language action for debugging or one-off manual fills.
 - Selects the Chrome Web Store category from a detected project category document.
 - Fills Chrome Web Store Additional fields values such as Homepage URL, Support URL, Official URL, and Mature content from a detected project document.
-- Uploads discovered graphic assets for screenshots, icon, small promo, and marquee promo where the dashboard allows it.
+- Uploads discovered graphic assets for screenshots, icon, small promo, and marquee promo where the dashboard allows it, with preview navigation through arrow buttons or A/D.
 - Fills Chrome Web Store privacy-form text from a detected project privacy document.
 - Fills Chrome Web Store Data usage disclosure checkboxes from explicit yes values in a detected privacy document.
 
@@ -89,8 +90,8 @@ my-extension/
 store-listing/
   chrome-web-store/
     listing/
-      en.md
-      # Add de.md, fr.md, pt_BR.md, etc. later.
+      en.txt
+      # Add de.txt, fr.txt, pt_BR.txt, etc. later.
     media/
       icon-128.png
       screenshots/
@@ -105,19 +106,21 @@ docs/
   chrome-web-store-privacy-form.md
 ```
 
-`store-listing/chrome-web-store/listing/en.md` is copied directly into the Chrome Web Store **Detailed description** field. Do not include field labels such as `Name`, `Summary`, `Description`, or `Detailed Description`; do not include Markdown headings; and do not put the short summary in this file. It should contain only the final detailed description body users should see in the store listing.
+`store-listing/chrome-web-store/listing/en.txt` is the recommended direct locale listing file and is copied verbatim into the Chrome Web Store **Detailed description** field. Use `.txt` for new direct listing files. StorePilot can still import `.md`, but do not create `.md` files for direct listings because Markdown headings, labels, and title-like content are copied into the dashboard.
 
-Example `en.md` content:
+The file should contain only the final detailed description body users should see in the store listing. Do not include the extension name, a title, field labels such as `Name`, `Summary`, `Description`, or `Detailed Description`, Markdown headings, or the short summary.
+
+Example `en.txt` content:
 
 ```text
-New Tab: Custom URL lets you choose what opens when you create a new tab.
+Choose what opens when you create a new tab.
 
 Use a website, local HTML file, browser page, or a quiet blank page.
 ```
 
-Alternative single-draft import: StorePilot also accepts `docs/chrome-web-store.md` for a single English draft. Only in this draft file, StorePilot may look for a `Detailed Description` or `Description` section and import that section as English detailed description text. This section parsing does not apply to `store-listing/chrome-web-store/listing/en.md`.
+Alternative single-draft import: StorePilot also accepts `docs/chrome-web-store.md` for a single English draft. Only in this draft file, StorePilot may look for a `Detailed Description` or `Description` section and import that section as English detailed description text. This section parsing does not apply to direct locale listing files such as `store-listing/chrome-web-store/listing/en.txt`.
 
-Fields not imported from `listing/en.md`: name, summary, category, homepage URL, support URL, official URL, mature content, and privacy fields. These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files.
+Fields not imported from `listing/en.txt`: name, summary, category, homepage URL, support URL, official URL, mature content, and privacy fields. These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files.
 
 Graphic assets should use `.png`, `.jpg`, or `.jpeg`: icon `128 x 128`, screenshots `1280 x 800` or `640 x 400` up to five files, small promo `440 x 280`, and marquee promo `1400 x 560`.
 

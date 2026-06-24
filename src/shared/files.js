@@ -138,7 +138,7 @@ function storePilotCreateStoreListingDraftCandidate(file, pathParts, text) {
   if (!listingText) return null;
 
   return {
-    name: "en.md",
+    name: "en.txt",
     sourceName: file.name,
     sourcePath: pathParts.join("/"),
     listingLocale: "en",

@@ -2,18 +2,19 @@
 
 Use this file when submitting StorePilot to Firefox Add-ons.
 
-## Version 1.3.1 Fields
+## Version 1.3.1.2 Fields
 
 Release Notes:
 
 ```text
-StorePilot 1.3.1 fixes a dashboard integration regression from the modularization work and includes release-readiness cleanup. Popup fallback injection and manifest content scripts now load the same shared project-resolution helpers, and release checks now verify cleaner project structure, fresh source packages, locale fallback consistency, and internal module boundaries.
+StorePilot 1.3.1.2 is a small options-workflow update. It adds keyboard shortcuts for switching the options tabs, lets users choose which shortcut styles are active from Preferences, and adds keyboard/button navigation inside the Graphic Assets preview dialog.
 
 What's changed:
-- Moves project maintenance documentation under docs/ and adds release checks that keep the root clean.
-- Adds release checks for README section order, manifest-derived artifact names, source-package freshness, locale key parity, and placeholder consistency.
-- Splits popup settings/theme handling, options settings/theme handling, privacy schema normalization, options review rendering, WebExtension wrappers, background media orchestration, dashboard project context, and dashboard message routing into focused modules.
-- Documents GitHub release hygiene: each published release/tag is an immutable snapshot for its exact version, so replacement uploads after a version bump use a new release.
+- Number keys select options tabs directly.
+- W/S and Up/Down arrow keys move between options tabs.
+- Preferences now lets users enable or disable number-key, W/S, and arrow-key tab navigation separately.
+- Shortcuts are ignored while editing inputs, selects, textareas, contenteditable fields, or media previews.
+- Graphic Assets previews now have left/right arrow buttons and support A/D or Left/Right arrow keys to move between previewable assets.
 - No permissions, data collection behavior, host permissions, or automatic submit/review behavior changed.
 ```
 
@@ -22,13 +23,12 @@ Notes to Reviewer:
 ```text
 StorePilot is a local-first tool for extension publishers. It imports user-selected local project files/folders (localized listing text, CWS category, Additional fields, graphic asset references, privacy-form text, and Data usage choices) and helps fill CWS Developer Dashboard fields only when the user clicks an action.
 
-Version 1.3.1 reviewer notes:
-- Fixes dashboard content-script load order after the modularization split so shared project-resolution helpers load before the dashboard helper.
-- Makes popup fallback injection match the manifest content-script dependency order.
-- Restores reliable project communication between the options page, popup, and Chrome Web Store dashboard panel.
-- Moves maintenance docs under docs/ and adds release checks that keep repository/source-package structure clean.
-- Adds source-package freshness validation so the AMO source zip must match the current tracked file set and contents.
-- Adds popup startup diagnostics, locale fallback validation, and focused module splits for large helper areas without changing user permissions or data behavior.
+Version 1.3.1.2 reviewer notes:
+- Adds options-tab keyboard navigation so users can move through Product Details, Graphic Assets, Additional Fields, Privacy Document, Data Usage, Projects, Preferences, and Reference without clicking each tab.
+- Supports number keys for direct tab selection and W/S or Up/Down arrows for previous/next tab navigation.
+- Adds Preferences checkboxes so each shortcut style can be enabled or disabled independently.
+- Keeps shortcuts inactive while the user is typing in fields, changing selects, editing contenteditable text, or using the media-preview dialog.
+- Adds previous/next arrow buttons to the Graphic Assets preview dialog, plus A/D and Left/Right arrow-key navigation between previewable graphic assets.
 - Retains the 1.3.x category, Additional fields, Data Usage, remote-code radio, Graphic Assets, and project-binding features.
 - No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed. StorePilot never clicks final submit/publish/review.
 
@@ -41,10 +41,10 @@ Privacy/data:
 Build/source:
 - Source is not bundled, minified, transpiled, or obfuscated.
 - Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-- Expected extension package: artifacts/storepilot-1.3.1.zip
+- Expected extension package: artifacts/storepilot-1.3.1.2.zip
 - The build copies source, locales, icons, and manifest into dist, then creates the zip with forward-slash archive entries for AMO validation.
 - Node.js is used only for tests, not to build the submitted extension package.
-- If source code is requested, upload artifacts/source/storepilot-source-1.3.1.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
+- If source code is requested, upload artifacts/source/storepilot-source-1.3.1.2.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
 - Source package uses git ls-files, so generated/untracked local files are excluded.
 ```
 
@@ -224,7 +224,7 @@ automation
 
 Do not use unrelated tags such as ad blocker, privacy, security, vpn, shopping, or video downloader. StorePilot is a publishing/localization workflow tool, and AMO only allows up to 10 tags.
 
-After uploading 1.3.1, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
+After uploading 1.3.1.2, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
 
 ## Language Coverage Notes
 
@@ -297,7 +297,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 Expected output:
 
 ```text
-artifacts/storepilot-1.3.1.zip
+artifacts/storepilot-1.3.1.2.zip
 ```
 
 ## Source Code Upload
@@ -305,7 +305,7 @@ artifacts/storepilot-1.3.1.zip
 Upload this source package when AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.3.1.zip
+artifacts/source/storepilot-source-1.3.1.2.zip
 ```
 
 Create it with:
@@ -324,12 +324,12 @@ Required programs: PowerShell and Git.
 Node.js/npm: not required to build the submitted extension package.
 External dependencies: none.
 Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-Expected output: artifacts/storepilot-1.3.1.zip
+Expected output: artifacts/storepilot-1.3.1.2.zip
 ```
 
 ## Validation Requirements Learned
 
-- Submit `artifacts/storepilot-1.3.1.zip`.
+- Submit `artifacts/storepilot-1.3.1.2.zip`.
 - AMO rejects zip entries with Windows backslashes. The build script must preserve forward-slash archive names such as `src/background.js`.
 - The manifest declares:
 
@@ -402,7 +402,7 @@ Open StorePilot options and smoke-check project import, the popup, and one Chrom
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.3.1.zip))
+$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.3.1.2.zip))
 $entries = $zip.Entries | Select-Object -ExpandProperty FullName
 if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash paths' }
 $zip.Dispose()
@@ -411,11 +411,11 @@ $zip.Dispose()
 6. Upload extension package:
 
 ```text
-artifacts/storepilot-1.3.1.zip
+artifacts/storepilot-1.3.1.2.zip
 ```
 
 7. Upload source package if AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.3.1.zip
+artifacts/source/storepilot-source-1.3.1.2.zip
 ```

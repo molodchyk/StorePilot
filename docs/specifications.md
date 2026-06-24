@@ -136,8 +136,8 @@ _locales/
 store-listing/
   chrome-web-store/
     listing/
-      en.md
-      # Add de.md, fr.md, pt_BR.md, etc. later.
+      en.txt
+      # Add de.txt, fr.txt, pt_BR.txt, etc. later.
     media/
       icon-128.png
       screenshots/
@@ -154,23 +154,25 @@ docs/
 
 Detailed description text rules:
 
-- A direct locale file such as `en.md`, `en.txt`, `en_US.md`, `de.md`, or `pt_BR.md` is copied directly into that locale's Chrome Web Store Detailed description field.
-- For a one-language project, `store-listing/chrome-web-store/listing/en.md` is preferred because sibling locale files can be added later.
+- A direct locale file such as `en.txt`, `en_US.txt`, `de.txt`, or `pt_BR.txt` is copied directly into that locale's Chrome Web Store Detailed description field.
+- For a one-language project, `store-listing/chrome-web-store/listing/en.txt` is preferred because sibling locale files can be added later.
 - Direct locale files must contain only the final detailed description body users should see in the store listing.
+- Direct locale files must not include the extension name or a title.
 - Direct locale files must not include field labels such as `Name`, `Summary`, `Description`, or `Detailed Description`.
 - Direct locale files must not include Markdown headings or the short summary.
+- `.md` is supported for existing plain-text direct locale files, but new direct locale listing files should use `.txt` to avoid Markdown headings, labels, or title-like content being copied into the dashboard.
 
-Example `en.md` content:
+Example `en.txt` content:
 
 ```text
-New Tab: Custom URL lets you choose what opens when you create a new tab.
+Choose what opens when you create a new tab.
 
 Use a website, local HTML file, browser page, or a quiet blank page.
 ```
 
 - StorePilot also accepts a focused draft such as `docs/chrome-web-store.md`; only this draft flow may parse the `Detailed Description`, `Store Description`, or `Description` section and import that section as English detailed description text.
-- Section parsing does not apply to direct locale files such as `store-listing/chrome-web-store/listing/en.md`.
-- Fields not imported from `listing/en.md`: name, summary, category, homepage URL, support URL, official URL, mature content, and privacy fields.
+- Section parsing does not apply to direct locale files such as `store-listing/chrome-web-store/listing/en.txt`.
+- Fields not imported from `listing/en.txt`: name, summary, category, homepage URL, support URL, official URL, mature content, and privacy fields.
 - Those fields belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files.
 - Supported listing-like text extensions are defined in `STOREPILOT_TEXT_LISTING_EXTENSIONS`.
 

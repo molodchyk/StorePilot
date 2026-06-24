@@ -159,6 +159,26 @@
           </section>
           <section class="preference-section">
             <div>
+              <h3 id="tabKeyboardNavigationTitle" data-i18n="tabKeyboardNavigation">Tab keyboard navigation</h3>
+              <p class="hint" id="tabKeyboardNavigationHint" data-i18n="tabKeyboardNavigationHint">Choose which shortcuts switch the options tabs.</p>
+            </div>
+            <div class="shortcut-settings" role="group" aria-labelledby="tabKeyboardNavigationTitle" aria-describedby="tabKeyboardNavigationHint">
+              <label class="checkbox-setting" for="tabShortcutNumbers">
+                <input id="tabShortcutNumbers" type="checkbox" data-tab-shortcut-setting="numbers">
+                <span data-i18n="tabShortcutNumbers">Number keys</span>
+              </label>
+              <label class="checkbox-setting" for="tabShortcutLetters">
+                <input id="tabShortcutLetters" type="checkbox" data-tab-shortcut-setting="letters">
+                <span data-i18n="tabShortcutLetters">W/S keys</span>
+              </label>
+              <label class="checkbox-setting" for="tabShortcutArrows">
+                <input id="tabShortcutArrows" type="checkbox" data-tab-shortcut-setting="arrows">
+                <span data-i18n="tabShortcutArrows">Up/Down arrow keys</span>
+              </label>
+            </div>
+          </section>
+          <section class="preference-section">
+            <div>
               <h3 data-i18n="localData">Local data</h3>
               <p class="hint" id="resetLocalDataHint" data-i18n="resetLocalDataHint">Deletes imported projects, preferences, dashboard bindings, folder permissions, and media file handles from this browser.</p>
             </div>
@@ -183,8 +203,8 @@ _locales/
 store-listing/
   chrome-web-store/
     listing/
-      en.md
-      # Add de.md, fr.md, pt_BR.md, etc. later.
+      en.txt
+      # Add de.txt, fr.txt, pt_BR.txt, etc. later.
     media/
       icon-128.png
       screenshots/
@@ -201,15 +221,16 @@ docs/
           <section class="reference-grid" aria-label="Detailed description and media reference">
             <div>
               <h3 data-i18n="listingReferenceTitle">Detailed description text</h3>
-              <p data-i18n="localeDescriptionRule">store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field. The file should contain only the final detailed description body users should see in the store listing.</p>
-              <p data-i18n="localeDescriptionWarnings">Do not include field labels such as Name, Summary, Description, or Detailed Description. Do not include Markdown headings. Do not put the short summary in this file.</p>
-              <p data-i18n="localeDescriptionExampleTitle">Example en.md content:</p>
-              <pre><code>New Tab: Custom URL lets you choose what opens when you create a new tab.
+              <p data-i18n="localeDescriptionRule">store-listing/chrome-web-store/listing/en.txt is the recommended direct locale listing file and is copied verbatim into the Chrome Web Store Detailed description field. The file should contain only the final detailed description body users should see in the store listing.</p>
+              <p data-i18n="localeDescriptionWarnings">Do not include the extension name, a title, field labels such as Name, Summary, Description, or Detailed Description, Markdown headings, or the short summary. Use .txt for new direct listing files; .md is supported only for existing plain-text files and is not recommended for new direct listing files.</p>
+              <p data-i18n="localeDescriptionExampleTitle">Example en.txt content:</p>
+              <pre><code>Choose what opens when you create a new tab.
 
 Use a website, local HTML file, browser page, or a quiet blank page.</code></pre>
               <ul>
-                <li><code>store-listing/chrome-web-store/listing/en.md</code></li>
-                <li><code>en.txt</code>, <code>en.md</code>, <code>en_US.md</code>, <code>de.md</code>, <code>pt_BR.md</code></li>
+                <li><code>store-listing/chrome-web-store/listing/en.txt</code> (recommended)</li>
+                <li><code>en.txt</code>, <code>en_US.txt</code>, <code>de.txt</code>, <code>pt_BR.txt</code></li>
+                <li>Supported for existing plain-text files only: <code>en.md</code>, <code>de.md</code>, <code>pt_BR.md</code></li>
               </ul>
             </div>
             <div>
@@ -226,10 +247,10 @@ Use a website, local HTML file, browser page, or a quiet blank page.</code></pre
           <section class="reference-grid" aria-label="Single draft and fields not imported">
             <div>
               <h3 data-i18n="singleDraftReferenceTitle">Alternative single-draft import</h3>
-              <p data-i18n="singleDraftReferenceRule">StorePilot also accepts docs/chrome-web-store.md for a single English draft. Only in this draft file, StorePilot may look for a Detailed Description or Description section and import that section as English detailed description text. This section parsing does not apply to store-listing/chrome-web-store/listing/en.md.</p>
+              <p data-i18n="singleDraftReferenceRule">StorePilot also accepts docs/chrome-web-store.md for a single English draft. Only in this draft file, StorePilot may look for a Detailed Description or Description section and import that section as English detailed description text. This section parsing does not apply to direct locale listing files such as store-listing/chrome-web-store/listing/en.txt.</p>
             </div>
             <div>
-              <h3 data-i18n="listingNonGoalTitle">Fields not imported from listing/en.md</h3>
+              <h3 data-i18n="listingNonGoalTitle">Fields not imported from listing/en.txt</h3>
               <ul>
                 <li>Name</li>
                 <li>Summary</li>

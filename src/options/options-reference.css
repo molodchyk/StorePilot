@@ -57,6 +57,7 @@
 .media-review-image-frame {
   display: grid;
   place-items: center;
+  position: relative;
   min-height: 0;
   margin: 0 16px;
   overflow: auto;
@@ -70,6 +71,43 @@
   max-width: 100%;
   max-height: calc(100vh - 190px);
   object-fit: contain;
+}
+
+.media-review-nav {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 56px;
+  padding: 0;
+  transform: translateY(-50%);
+  border-color: rgb(255 255 255 / 28%);
+  background: rgb(17 24 39 / 78%);
+  color: #ffffff;
+}
+
+.media-review-nav:hover,
+.media-review-nav:focus-visible {
+  border-color: rgb(255 255 255 / 60%);
+  background: rgb(17 24 39 / 92%);
+}
+
+.media-review-nav:disabled {
+  opacity: 0.35;
+}
+
+.media-review-nav svg {
+  width: 24px;
+  height: 24px;
+}
+
+.media-review-nav-previous {
+  left: 10px;
+}
+
+.media-review-nav-next {
+  right: 10px;
 }
 
 .media-review-path {

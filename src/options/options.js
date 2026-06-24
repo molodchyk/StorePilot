@@ -42,9 +42,18 @@ const elements = {
   detailPanels: Array.from(document.querySelectorAll("[data-detail-panel]")),
   statusCards: Array.from(document.querySelectorAll("[data-detail-tab-target]")),
   themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]")),
+  tabShortcutControls: Array.from(document.querySelectorAll("[data-tab-shortcut-setting]")),
   showAdvancedFillActions: document.getElementById("showAdvancedFillActions"),
   resetLocalData: document.getElementById("resetLocalData")
 };
+
+let activeTabKeyboardShortcuts = storePilotOptionsDefaultTabKeyboardShortcuts();
+
+function applyOptionsSettings(settings) {
+  const normalized = storePilotOptionsNormalizeSettings(settings);
+  activeTabKeyboardShortcuts = normalized.tabKeyboardShortcuts;
+  storePilotOptionsApplySettings(normalized, elements);
+}
 
 function setStatus(message, isError = false) {
   elements.importStatus.textContent = message;
@@ -61,6 +70,68 @@ function selectDetailTab(tabName) {
   elements.statusCards.forEach(card => {
     card.setAttribute("aria-current", String(card.dataset.detailTabTarget === tabName));
   });
+}
+
+function getSelectedDetailTabIndex() {
+  const selectedIndex = elements.detailTabButtons.findIndex(button => button.getAttribute("aria-selected") === "true");
+  return selectedIndex >= 0 ? selectedIndex : 0;
+}
+
+function selectDetailTabByIndex(index) {
+  if (!elements.detailTabButtons.length) return false;
+
+  const tabIndex = ((index % elements.detailTabButtons.length) + elements.detailTabButtons.length) % elements.detailTabButtons.length;
+  const button = elements.detailTabButtons[tabIndex];
+
+  selectDetailTab(button.dataset.detailTab);
+  button.focus({ preventScroll: true });
+  return true;
+}
+
+function getNumberShortcutIndex(key) {
+  if (/^[1-9]$/.test(key)) return Number(key) - 1;
+  if (key === "0") return 9;
+  return null;
+}
+
+function isEditableShortcutTarget(target) {
+  if (!(target instanceof Element)) return false;
+  if (target.closest("input, select, textarea")) return true;
+  return Boolean(target.closest("[contenteditable]:not([contenteditable='false'])"));
+}
+
+function shouldIgnoreDetailTabShortcut(event) {
+  return event.defaultPrevented ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey ||
+    document.body.classList.contains("media-review-open") ||
+    isEditableShortcutTarget(event.target);
+}
+
+function handleDetailTabKeyboardShortcut(event) {
+  if (shouldIgnoreDetailTabShortcut(event)) return;
+
+  const numberShortcutIndex = activeTabKeyboardShortcuts.numbers
+    ? getNumberShortcutIndex(event.key)
+    : null;
+  if (numberShortcutIndex !== null && numberShortcutIndex < elements.detailTabButtons.length) {
+    event.preventDefault();
+    selectDetailTabByIndex(numberShortcutIndex);
+    return;
+  }
+
+  const lowerKey = event.key.toLowerCase();
+  if (activeTabKeyboardShortcuts.letters && (lowerKey === "w" || lowerKey === "s")) {
+    event.preventDefault();
+    selectDetailTabByIndex(getSelectedDetailTabIndex() + (lowerKey === "w" ? -1 : 1));
+    return;
+  }
+
+  if (activeTabKeyboardShortcuts.arrows && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+    event.preventDefault();
+    selectDetailTabByIndex(getSelectedDetailTabIndex() + (event.key === "ArrowUp" ? -1 : 1));
+  }
 }
 
 function formatConfidence(value) {
@@ -361,6 +432,8 @@ elements.statusCards.forEach(card => {
   });
 });
 
+document.addEventListener("keydown", handleDetailTabKeyboardShortcut);
+
 elements.projectSelect.addEventListener("change", async event => {
   await storePilotSetActiveProject(event.target.value);
   await renderAll();
@@ -386,13 +459,25 @@ elements.deleteProject.addEventListener("click", async () => {
 elements.themeChoices.forEach(button => {
   button.addEventListener("click", async () => {
     const settings = await storePilotOptionsUpdateSettings({ theme: button.dataset.themeChoice });
-    storePilotOptionsApplySettings(settings, elements);
+    applyOptionsSettings(settings);
   });
 });
 
 elements.showAdvancedFillActions.addEventListener("change", async event => {
   const settings = await storePilotOptionsUpdateSettings({ showAdvancedFillActions: event.target.checked });
-  storePilotOptionsApplySettings(settings, elements);
+  applyOptionsSettings(settings);
+});
+
+elements.tabShortcutControls.forEach(control => {
+  control.addEventListener("change", async () => {
+    const settings = await storePilotOptionsUpdateSettings({
+      tabKeyboardShortcuts: {
+        ...activeTabKeyboardShortcuts,
+        [control.dataset.tabShortcutSetting]: control.checked
+      }
+    });
+    applyOptionsSettings(settings);
+  });
 });
 
 elements.resetLocalData.addEventListener("click", async () => {
@@ -405,7 +490,7 @@ elements.resetLocalData.addEventListener("click", async () => {
 
   try {
     await storePilotResetLocalData();
-    storePilotOptionsApplySettings(await storePilotOptionsGetSettings(), elements);
+    applyOptionsSettings(await storePilotOptionsGetSettings());
     await renderAll();
     setStatus(t("resetLocalDataDone", "Reset StorePilot local data."));
   } catch (error) {
@@ -418,7 +503,7 @@ storePilotStorageOnChangedAddListener((changes, areaName) => {
   if (areaName !== "local") return;
 
   if (changes[STOREPILOT_OPTIONS_SETTINGS_KEY]) {
-    storePilotOptionsApplySettings(changes[STOREPILOT_OPTIONS_SETTINGS_KEY].newValue, elements);
+    applyOptionsSettings(changes[STOREPILOT_OPTIONS_SETTINGS_KEY].newValue);
   }
 
   if (changes[STOREPILOT_PROJECTS_STORAGE_KEY] || changes[STOREPILOT_ACTIVE_PROJECT_STORAGE_KEY]) {
@@ -428,7 +513,7 @@ storePilotStorageOnChangedAddListener((changes, areaName) => {
 
 (async () => {
   storePilotApplyI18n();
-  storePilotOptionsApplySettings(await storePilotOptionsGetSettings(), elements);
+  applyOptionsSettings(await storePilotOptionsGetSettings());
   selectDetailTab("locales");
   await renderAll();
 })();

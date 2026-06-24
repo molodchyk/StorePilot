@@ -20,7 +20,7 @@ The product should feel like a careful cockpit for release work, not like a bot 
 StorePilot currently focuses on:
 
 - Browser extension store listing text.
-- Flat locale files named by locale, for example `en.txt`, `de.md`, `pt_BR.markdown`.
+- Flat locale files named by locale, preferably plain `.txt` files such as `en.txt`, `de.txt`, and `pt_BR.txt`.
 - Multi-project local storage.
 - Chrome Web Store Developer Dashboard listing fields.
 - Chrome Web Store Developer Dashboard additional product fields.

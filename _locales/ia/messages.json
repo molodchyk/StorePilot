@@ -72,28 +72,28 @@
     "message": "Start with one locale file if the extension only has one Chrome Web Store language today. Keep media, category, additional fields, and privacy files beside it so the same project can grow into more locales later."
   },
   "projectReferenceOneLanguage": {
-    "message": "store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field."
+    "message": "store-listing/chrome-web-store/listing/en.txt is the recommended direct locale listing file and is copied directly into the Chrome Web Store Detailed description field."
   },
   "listingReferenceTitle": {
     "message": "Detailed description text"
   },
   "localeDescriptionRule": {
-    "message": "store-listing/chrome-web-store/listing/en.md is copied directly into the Chrome Web Store Detailed description field. The file should contain only the final detailed description body users should see in the store listing."
+    "message": "store-listing/chrome-web-store/listing/en.txt is the recommended direct locale listing file and is copied verbatim into the Chrome Web Store Detailed description field. The file should contain only the final detailed description body users should see in the store listing."
   },
   "localeDescriptionWarnings": {
-    "message": "Do not include field labels such as Name, Summary, Description, or Detailed Description. Do not include Markdown headings. Do not put the short summary in this file."
+    "message": "Do not include the extension name, a title, field labels such as Name, Summary, Description, or Detailed Description, Markdown headings, or the short summary. Use .txt for new direct listing files; .md is supported only for existing plain-text files and is not recommended for new direct listing files."
   },
   "localeDescriptionExampleTitle": {
-    "message": "Example en.md content:"
+    "message": "Example en.txt content:"
   },
   "singleDraftReferenceTitle": {
     "message": "Alternative single-draft import"
   },
   "singleDraftReferenceRule": {
-    "message": "StorePilot also accepts docs/chrome-web-store.md for a single English draft. Only in this draft file, StorePilot may look for a Detailed Description or Description section and import that section as English detailed description text. This section parsing does not apply to store-listing/chrome-web-store/listing/en.md."
+    "message": "StorePilot also accepts docs/chrome-web-store.md for a single English draft. Only in this draft file, StorePilot may look for a Detailed Description or Description section and import that section as English detailed description text. This section parsing does not apply to direct locale listing files such as store-listing/chrome-web-store/listing/en.txt."
   },
   "listingNonGoalTitle": {
-    "message": "Fields not imported from listing/en.md"
+    "message": "Fields not imported from listing/en.txt"
   },
   "listingNonGoalNote": {
     "message": "These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files."
@@ -871,6 +871,21 @@
   },
   "preferences": {
     "message": "Preferences"
+  },
+  "tabKeyboardNavigation": {
+    "message": "Tab keyboard navigation"
+  },
+  "tabKeyboardNavigationHint": {
+    "message": "Choose which shortcuts switch the options tabs."
+  },
+  "tabShortcutNumbers": {
+    "message": "Number keys"
+  },
+  "tabShortcutLetters": {
+    "message": "W/S keys"
+  },
+  "tabShortcutArrows": {
+    "message": "Up/Down arrow keys"
   },
   "showAdvancedFillActions": {
     "message": "Show advanced fill actions"
