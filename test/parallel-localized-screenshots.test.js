@@ -87,15 +87,23 @@ assert.equal(filteredFiles.smallPromo, null);
 assert.equal(filteredFiles.marqueePromo, null);
 
 assert.equal(context.storePilotFormatParallelLocalizedScreenshotElapsed(123456), "2m 03s");
+assert.equal(context.storePilotNormalizeParallelLocalizedScreenshotMode("coordinated"), "clearThenUpload");
+assert.equal(context.storePilotNormalizeParallelLocalizedScreenshotMode("replace"), "replace");
+assert.equal(context.storePilotNormalizeParallelLocalizedScreenshotMode("clear"), "clearOnly");
+assert.equal(context.storePilotNormalizeParallelLocalizedScreenshotMode("upload"), "uploadOnly");
 
 const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot({
   runId: "run-1",
   status: "running",
+  mode: "clearThenUpload",
+  phase: "uploading",
   parentTabId: 1,
   parentUrl: "https://chrome.google.com/webstore/devconsole/item/edit/listing",
   startedAt: Date.now() - 5000,
   closeSuccessfulWorkers: true,
   abortRequested: false,
+  totalLocales: 2,
+  totalScreenshots: 6,
   initialSkipped: [],
   initialSkippedLocales: 0,
   message: "",
@@ -105,6 +113,7 @@ const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot(
       tabId: 2,
       status: "completed",
       closed: false,
+      operation: "uploadOnly",
       assignedLocales: ["am"],
       totalScreenshots: 3,
       completedLocales: 1,
@@ -118,6 +127,7 @@ const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot(
       tabId: 3,
       status: "failed",
       closed: false,
+      operation: "uploadOnly",
       assignedLocales: ["ar"],
       totalScreenshots: 3,
       completedLocales: 0,
@@ -128,6 +138,9 @@ const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot(
     }
   ]
 });
+assert.equal(snapshot.mode, "clearThenUpload");
+assert.equal(snapshot.phase, "uploading");
+assert.equal(snapshot.workers[0].operation, "uploadOnly");
 assert.equal(snapshot.workers[0].closeable, true);
 assert.equal(snapshot.workers[1].closeable, false);
 assert.equal(snapshot.totals.completedLocales, 1);

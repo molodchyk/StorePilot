@@ -22,6 +22,9 @@ const LOCALIZED_SCREENSHOT_RETRY_DELAY_MS = 250;
 const MEDIA_VISIBILITY_POLL_MS = 1000;
 const MEDIA_VISIBILITY_FOCUS_RETRY_MS = 5000;
 const MEDIA_UPLOAD_BRIDGE_TIMEOUT_MS = 500;
+const LOCALIZED_SCREENSHOT_OPERATION_REPLACE = "replace";
+const LOCALIZED_SCREENSHOT_OPERATION_CLEAR_ONLY = "clearOnly";
+const LOCALIZED_SCREENSHOT_OPERATION_UPLOAD_ONLY = "uploadOnly";
 
 let mediaUploadBridgePromise = null;
 let mediaUploadBridgeBypassed = false;
@@ -1644,6 +1647,16 @@ function applyLocalizedScreenshotAssignedLocales(entries, assignedLocales) {
   };
 }
 
+function normalizeLocalizedScreenshotOperation(value) {
+  return [
+    LOCALIZED_SCREENSHOT_OPERATION_REPLACE,
+    LOCALIZED_SCREENSHOT_OPERATION_CLEAR_ONLY,
+    LOCALIZED_SCREENSHOT_OPERATION_UPLOAD_ONLY
+  ].includes(value)
+    ? value
+    : LOCALIZED_SCREENSHOT_OPERATION_REPLACE;
+}
+
 function countLocalizedScreenshotSkippedLocales(skipped) {
   return skipped.reduce((count, item) => {
     const match = String(item || "").match(/^(\d+) locale\(s\) before start locale\b/);
@@ -1771,7 +1784,8 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
   };
 }
 
-async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, localeAttempt, stats) {
+async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, localeAttempt, stats, operation = LOCALIZED_SCREENSHOT_OPERATION_REPLACE) {
+  const normalizedOperation = normalizeLocalizedScreenshotOperation(operation);
   let progress = createLocalizedScreenshotProgress(entry, localeIndex, total, stats);
   const attemptPrefix = localeAttempt > 1
     ? `retrying locale (attempt ${localeAttempt}/${LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS}); `
@@ -1795,39 +1809,69 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
     getAvailableMediaUploadInput("localizedScreenshots");
 
   scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
-  setLocalizedScreenshotProgress(progress, "localized screenshot field found; clearing existing screenshots");
-  const clearResult = await performClearDashboardMediaAssets("localizedScreenshots", {
-    localizedProgress: progress
-  });
-  if (!clearResult.ok) {
-    return {
-      ok: false,
-      aborted: Boolean(clearResult.aborted),
-      uploadedCount: 0,
-      message: `${entry.locale}: ${clearResult.message || "could not clear localized screenshots"}`
-    };
-  }
-  if (mediaOperationState.abortRequested || clearResult.aborted) {
-    return { ok: false, aborted: true, uploadedCount: 0, message: localize("operationStopped", "Stopped.") };
+
+  if (normalizedOperation !== LOCALIZED_SCREENSHOT_OPERATION_UPLOAD_ONLY) {
+    setLocalizedScreenshotProgress(progress, "localized screenshot field found; clearing existing screenshots");
+    const clearResult = await performClearDashboardMediaAssets("localizedScreenshots", {
+      localizedProgress: progress
+    });
+    if (!clearResult.ok) {
+      return {
+        ok: false,
+        aborted: Boolean(clearResult.aborted),
+        uploadedCount: 0,
+        completed: false,
+        message: `${entry.locale}: ${clearResult.message || "could not clear localized screenshots"}`
+      };
+    }
+    if (mediaOperationState.abortRequested || clearResult.aborted) {
+      return { ok: false, aborted: true, uploadedCount: 0, completed: false, message: localize("operationStopped", "Stopped.") };
+    }
+
+    setLocalizedScreenshotProgress(progress, "verifying localized screenshot field is clear");
+    const clearWait = await waitForVisibleMediaImageCount(
+      "localizedScreenshots",
+      0,
+      LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS,
+      { progress }
+    );
+    if (!clearWait.ok) {
+      return {
+        ok: false,
+        uploadedCount: 0,
+        completed: false,
+        message: `${entry.locale}: CWS still shows ${clearWait.count} localized screenshot(s) after clear`
+      };
+    }
+
+    if (normalizedOperation === LOCALIZED_SCREENSHOT_OPERATION_CLEAR_ONLY) {
+      setLocalizedScreenshotProgress(progress, "localized screenshot field cleared");
+      return { ok: true, uploadedCount: 0, completed: true, message: "" };
+    }
   }
 
-  setLocalizedScreenshotProgress(progress, "verifying localized screenshot field is clear");
-  const clearWait = await waitForVisibleMediaImageCount(
-    "localizedScreenshots",
-    0,
-    LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS,
-    { progress }
-  );
-  if (!clearWait.ok) {
-    return {
-      ok: false,
-      uploadedCount: 0,
-      message: `${entry.locale}: CWS still shows ${clearWait.count} localized screenshot(s) after clear`
-    };
+  let startingFileIndex = 0;
+  if (normalizedOperation === LOCALIZED_SCREENSHOT_OPERATION_UPLOAD_ONLY) {
+    const visibleCount = getVisibleMediaImageCount("localizedScreenshots");
+    if (visibleCount > entry.files.length) {
+      return {
+        ok: false,
+        uploadedCount: 0,
+        completed: false,
+        message: `${entry.locale}: CWS already shows ${visibleCount} localized screenshot(s), expected at most ${entry.files.length}`
+      };
+    }
+    if (visibleCount === entry.files.length) {
+      setLocalizedScreenshotProgress(progress, `upload-only found expected screenshot count (${visibleCount})`);
+      return { ok: true, uploadedCount: 0, completed: true, message: "" };
+    }
+
+    startingFileIndex = visibleCount;
+    setLocalizedScreenshotProgress(progress, `upload-only continuing from visible screenshot count ${visibleCount}`);
   }
 
   let uploadedForLocale = 0;
-  for (let fileIndex = 0; fileIndex < entry.files.length; fileIndex++) {
+  for (let fileIndex = startingFileIndex; fileIndex < entry.files.length; fileIndex++) {
     progress = createLocalizedScreenshotProgress(entry, localeIndex, total, stats, {
       uploadedScreenshots: (stats.uploadedScreenshots || 0) + uploadedForLocale
     });
@@ -1844,6 +1888,7 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
         ok: false,
         aborted: Boolean(uploadResult.aborted),
         uploadedCount: uploadedForLocale,
+        completed: false,
         message: uploadResult.message
       };
     }
@@ -1859,11 +1904,12 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
     return {
       ok: false,
       uploadedCount: uploadedForLocale,
+      completed: false,
       message: `${entry.locale}: CWS shows ${finalLocalizedCount} localized screenshot(s) after ${uploadedForLocale} upload(s)`
     };
   }
 
-  return { ok: true, uploadedCount: uploadedForLocale, message: "" };
+  return { ok: true, uploadedCount: uploadedForLocale, completed: true, message: "" };
 }
 
 async function performUploadLocalizedScreenshots(files, options = {}) {
@@ -1871,7 +1917,9 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
   const uploaded = [];
   const failed = [];
   const skipped = [];
+  const completed = [];
   let aborted = false;
+  const operation = normalizeLocalizedScreenshotOperation(options.localizedScreenshotsOperation || options.operation || "");
 
   if (typeof loadListings === "function") {
     await loadListings();
@@ -1916,8 +1964,10 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
       uploaded,
       skipped,
       failed,
+      completed,
       elapsedMs,
       assignedLocales,
+      operation,
       diagnostics: {
         mediaUploadTargets: getMediaUploadDiagnostics()
       }
@@ -1934,7 +1984,7 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
 
     for (let localeAttempt = 1; localeAttempt <= LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS; localeAttempt++) {
       const localeResult = await uploadLocalizedScreenshotLocale(entry, localeIndex, entries.length, localeAttempt, {
-        completedLocales: uploaded.length,
+        completedLocales: completed.length,
         failedLocales: failed.length,
         skippedLocales: countLocalizedScreenshotSkippedLocales(skipped),
         uploadedScreenshots: uploadedScreenshotCount,
@@ -1942,12 +1992,12 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
         startedAt,
         runId: options.parallelRunId || options.runId || "",
         workerId: options.parallelWorkerId || options.workerId || ""
-      });
+      }, operation);
       localeUploadedCount = Math.max(localeUploadedCount, localeResult.uploadedCount || 0);
 
       if (localeResult.ok) {
         localeFailures.length = 0;
-        localeUploadedCount = localeResult.uploadedCount || entry.files.length;
+        localeUploadedCount = localeResult.uploadedCount || 0;
         break;
       }
 
@@ -1965,7 +2015,11 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
 
     if (localeFailures.length) {
       failed.push(`${entry.locale}: ${localeFailures.join(" | ")}`);
-    } else if (localeUploadedCount > 0) {
+    } else {
+      completed.push(entry.locale);
+    }
+
+    if (!localeFailures.length && localeUploadedCount > 0) {
       uploaded.push(`${entry.locale}: ${localeUploadedCount}`);
       uploadedScreenshotCount += localeUploadedCount;
     }
@@ -1982,7 +2036,12 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
 
   const skippedLocaleCount = countLocalizedScreenshotSkippedLocales(skipped);
   const elapsedMs = Date.now() - startedAt;
-  const runSummary = `Localized screenshot upload ${aborted ? "stopped" : "finished"}: ${uploaded.length}/${entries.length} run locale(s) completed, ${uploadedScreenshotCount}/${totalScreenshots} screenshot(s) uploaded, ${skippedLocaleCount} locale(s) skipped, ${failed.length} failed. Elapsed: ${formatLocalizedScreenshotElapsedTime(elapsedMs)}.`;
+  const operationLabel = operation === LOCALIZED_SCREENSHOT_OPERATION_CLEAR_ONLY
+    ? "clear"
+    : operation === LOCALIZED_SCREENSHOT_OPERATION_UPLOAD_ONLY
+      ? "upload-only"
+      : "upload";
+  const runSummary = `Localized screenshot ${operationLabel} ${aborted ? "stopped" : "finished"}: ${completed.length}/${entries.length} run locale(s) completed, ${uploadedScreenshotCount}/${totalScreenshots} screenshot(s) uploaded, ${skippedLocaleCount} locale(s) skipped, ${failed.length} failed. Elapsed: ${formatLocalizedScreenshotElapsedTime(elapsedMs)}.`;
   const messageParts = [
     runSummary,
     aborted ? localize("operationStopped", "Stopped.") : "",
@@ -1991,14 +2050,16 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
   ].filter(Boolean);
 
   return {
-    ok: failed.length === 0 && (uploaded.length > 0 || skipped.length > 0),
+    ok: failed.length === 0 && (completed.length > 0 || uploaded.length > 0 || skipped.length > 0),
     aborted,
     message: messageParts.join(" "),
     uploaded,
     skipped,
     failed,
+    completed,
     elapsedMs,
     assignedLocales,
+    operation,
     diagnostics: {
       mediaUploadTargets: getMediaUploadDiagnostics()
     }

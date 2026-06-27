@@ -312,6 +312,12 @@ function renderPanel(locales) {
     if (workerCountText === null) return null;
 
     const workerCount = Math.min(Math.max(Number.parseInt(workerCountText, 10) || 2, 1), 6);
+    const mode = window.prompt(
+      localize("parallelLocalizedScreenshotsModePrompt", "Parallel mode: coordinated, replace, clear, or upload."),
+      "coordinated"
+    );
+    if (mode === null) return null;
+
     const currentLocale = typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() : "";
     const startLocale = window.prompt(
       localize("localizedScreenshotsStartLocalePrompt", "Start at locale (optional; leave empty for first locale)."),
@@ -321,6 +327,7 @@ function renderPanel(locales) {
 
     return {
       workerCount,
+      parallelMode: mode.trim() || "coordinated",
       localizedScreenshotsStartLocale: startLocale.trim(),
       closeSuccessfulWorkers: true
     };

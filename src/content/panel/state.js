@@ -60,6 +60,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   board.hidden = false;
   summary.replaceChildren(
     createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), `${run.status || "unknown"} - elapsed ${elapsed}`),
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsMode", "Mode"), `${run.mode || "coordinated"}${run.phase ? ` - ${run.phase}` : ""}`),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsLocales", "Locales"), `${totals.completedLocales || 0}/${totals.totalLocales || 0} completed, ${totals.failedLocales || 0} failed, ${totals.skippedLocales || 0} skipped`),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), `${totals.uploadedScreenshots || 0}/${totals.totalScreenshots || 0} uploaded`)
   );
@@ -78,7 +79,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     title.className = "storepilot-parallel-worker-title";
     counts.className = "storepilot-parallel-worker-counts";
     current.className = "storepilot-parallel-worker-current";
-    title.textContent = `${worker.workerId}: ${worker.status}${worker.closed ? " (closed)" : ""}`;
+    title.textContent = `${worker.workerId}: ${worker.operation || "replace"} - ${worker.status}${worker.closed ? " (closed)" : ""}`;
     counts.textContent = `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}; elapsed ${elapsedLabel}`;
     current.textContent = currentText || "Waiting for progress.";
     row.append(title, counts, current);
