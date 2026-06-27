@@ -14,6 +14,11 @@ const LOCALIZED_SCREENSHOT_LANGUAGE_SELECTION_OPTIONS = {
 };
 const LOCALIZED_SCREENSHOT_LANGUAGE_VERIFICATION_ATTEMPTS = 8;
 const LOCALIZED_SCREENSHOT_LANGUAGE_VERIFICATION_DELAY_MS = 75;
+const LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS = 2;
+const LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE = 3;
+const LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE = 3;
+const LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS = 10000;
+const LOCALIZED_SCREENSHOT_RETRY_DELAY_MS = 250;
 const MEDIA_UPLOAD_BRIDGE_TIMEOUT_MS = 500;
 
 let mediaUploadBridgePromise = null;
@@ -569,6 +574,13 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
       return true;
     }
 
+    if (kind === "localizedScreenshots" &&
+      nextCount <= beforeCount &&
+      getVisibleDashboardStatusMessageText(/failed.*(upload|add)|upload.*failed|could not upload|couldn t upload|image upload failed/)) {
+      dismissVisibleDashboardStatusMessages();
+      return false;
+    }
+
     if (reachedExpectedCount && !hasMediaUploadInProgress(kind)) {
       return true;
     }
@@ -1041,6 +1053,27 @@ function getVisibleDialogConfirmButton() {
     null;
 }
 
+function getVisibleDashboardStatusMessageText(pattern = null) {
+  const elements = Array.from(document.querySelectorAll([
+    "[role='alert']",
+    "[aria-live]",
+    ".VfPpkd-SnS2Cb",
+    ".VfPpkd-Bz112c-LgbsSe"
+  ].join(","))).filter(isVisible);
+
+  return elements
+    .map(getVisibleText)
+    .filter(text => text && text.length <= 260)
+    .find(text => !pattern || pattern.test(normalizeLanguageText(text))) || "";
+}
+
+function dismissVisibleDashboardStatusMessages() {
+  Array.from(document.querySelectorAll("button,[role='button']"))
+    .filter(isVisible)
+    .filter(button => /^(dismiss|close|ok|schliessen|schlie en)$/.test(normalizeLanguageText(getVisibleText(button))))
+    .forEach(button => activateDashboardButton(button));
+}
+
 function getMediaRemoveButtons(kind) {
   if (kind === "localizedScreenshots") {
     return getLocalizedScreenshotRemoveButtons();
@@ -1062,25 +1095,82 @@ function hasClearableMedia(kind) {
 
 async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS) {
   const startedAt = Date.now();
-  let confirmed = false;
+  let lastConfirmAt = 0;
 
   while (Date.now() - startedAt < timeoutMs) {
     if (getVisibleMediaImageCount(kind) < beforeCount) {
       return true;
     }
 
-    if (!confirmed) {
-      const confirmButton = getVisibleDialogConfirmButton();
-      if (confirmButton) {
-        activateDashboardButton(confirmButton);
-        confirmed = true;
-      }
+    if (kind === "localizedScreenshots" &&
+      getVisibleDashboardStatusMessageText(/failed.*(delete|remove)|delete.*failed|remove.*failed|could not (delete|remove)|couldn t (delete|remove)/)) {
+      dismissVisibleDashboardStatusMessages();
+      return false;
+    }
+
+    const confirmButton = getVisibleDialogConfirmButton();
+    if (confirmButton && Date.now() - lastConfirmAt > 300) {
+      activateDashboardButton(confirmButton);
+      lastConfirmAt = Date.now();
     }
 
     await delay(75);
   }
 
   return false;
+}
+
+async function removeOneLocalizedScreenshotWithRetries() {
+  const label = getMediaUploadKindLabel("localizedScreenshots");
+  let lastButtonLabel = label;
+
+  for (let attempt = 1; attempt <= LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE; attempt++) {
+    if (mediaOperationState.abortRequested) {
+      return { ok: false, aborted: true, message: localize("operationStopped", "Stopped.") };
+    }
+
+    const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
+    if (!beforeCount) {
+      return { ok: true, alreadyClear: true, removedCount: 0, label };
+    }
+
+    scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
+    await revealMediaRemoveControls("localizedScreenshots");
+    const buttons = getMediaRemoveButtons("localizedScreenshots");
+    if (!buttons.length) {
+      return { ok: false, message: `${label}: remove button not found` };
+    }
+
+    const button = buttons[buttons.length - 1];
+    lastButtonLabel = button.getAttribute("aria-label") || label;
+    scrollMediaActionTargetIntoView(button);
+    dismissVisibleDashboardStatusMessages();
+    activateDashboardButton(button);
+
+    const changed = await waitForMediaRemovalAfterClick(
+      "localizedScreenshots",
+      beforeCount,
+      LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS
+    );
+    const afterCount = getVisibleMediaImageCount("localizedScreenshots");
+    if (changed || afterCount < beforeCount) {
+      return {
+        ok: true,
+        removedCount: Math.max(1, beforeCount - afterCount),
+        label: lastButtonLabel
+      };
+    }
+
+    dismissVisibleDashboardStatusMessages();
+    if (attempt < LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE) {
+      await delay(LOCALIZED_SCREENSHOT_RETRY_DELAY_MS);
+    }
+  }
+
+  return {
+    ok: false,
+    message: `${lastButtonLabel}: CWS did not remove the image after ${LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE} attempt(s)`
+  };
 }
 
 async function performClearLocalizedScreenshotAssets() {
@@ -1098,29 +1188,19 @@ async function performClearLocalizedScreenshotAssets() {
     const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
     if (!beforeCount) break;
 
-    scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
-    await revealMediaRemoveControls("localizedScreenshots");
-    const buttons = getMediaRemoveButtons("localizedScreenshots");
-    if (!buttons.length) {
-      failed.push(`${label}: remove button not found`);
+    const removal = await removeOneLocalizedScreenshotWithRetries();
+    if (removal.aborted) {
+      aborted = true;
       break;
     }
-
-    const button = buttons[buttons.length - 1];
-    const buttonLabel = button.getAttribute("aria-label") || label;
-    scrollMediaActionTargetIntoView(button);
-    activateDashboardButton(button);
-
-    const changed = await waitForMediaRemovalAfterClick("localizedScreenshots", beforeCount);
-    const afterCount = getVisibleMediaImageCount("localizedScreenshots");
-    if (!changed) {
-      failed.push(`${buttonLabel}: CWS did not remove the image`);
+    if (!removal.ok) {
+      failed.push(removal.message || `${label}: CWS did not remove the image`);
       break;
     }
+    if (removal.alreadyClear) break;
 
-    const removedCount = Math.max(1, beforeCount - afterCount);
-    for (let index = 0; index < removedCount; index++) {
-      removed.push(buttonLabel);
+    for (let index = 0; index < removal.removedCount; index++) {
+      removed.push(removal.label);
     }
   }
 
@@ -1224,7 +1304,230 @@ function getLocalizedScreenshotFileEntries(files) {
     .sort((a, b) => a.locale.localeCompare(b.locale));
 }
 
-async function performUploadLocalizedScreenshots(files) {
+function applyLocalizedScreenshotStartLocale(entries, startLocale) {
+  const normalizedStartLocale = normalizeLocale(startLocale);
+  if (!normalizedStartLocale) {
+    return {
+      ok: true,
+      entries,
+      skippedBeforeStart: []
+    };
+  }
+
+  const startIndex = entries.findIndex(entry => localesMatch(entry.locale, normalizedStartLocale));
+  if (startIndex < 0) {
+    return {
+      ok: false,
+      entries: [],
+      skippedBeforeStart: [],
+      message: `start locale ${startLocale} was not found in localized screenshot files`
+    };
+  }
+
+  return {
+    ok: true,
+    entries: entries.slice(startIndex),
+    skippedBeforeStart: startIndex > 0
+      ? [`${startIndex} locale(s) before start locale ${startLocale}`]
+      : []
+  };
+}
+
+function formatLocalizedScreenshotProgress(entry, localeIndex, total) {
+  return localize("uploadingLocalizedScreenshotsProgress", "Uploading localized screenshots $1/$2: $3 ($4 screenshots)...", [
+    String(localeIndex + 1),
+    String(total),
+    entry.locale,
+    String(entry.files.length)
+  ]);
+}
+
+async function resolveLocalizedScreenshotUploadTarget(currentTarget) {
+  if (currentTarget && currentTarget.input && currentTarget.input.isConnected) {
+    return currentTarget;
+  }
+
+  return waitForAvailableMediaUploadInput("localizedScreenshots");
+}
+
+async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, localizedUploadTarget, progressMessage) {
+  const file = entry.files[fileIndex];
+  let target = localizedUploadTarget;
+  let lastMessage = "";
+
+  for (let uploadAttempt = 1; uploadAttempt <= LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE; uploadAttempt++) {
+    if (mediaOperationState.abortRequested) {
+      return { ok: false, aborted: true, message: localize("operationStopped", "Stopped."), target };
+    }
+
+    const attemptSuffix = uploadAttempt > 1
+      ? ` attempt ${uploadAttempt}/${LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE}`
+      : "";
+    setMediaOperationProgress(`${progressMessage} ${localize("screenshotNumber", "Screenshot $1", [String(fileIndex + 1)])}/${entry.files.length}${attemptSuffix}`);
+
+    if (!isDashboardLocaleSelected(entry.locale)) {
+      const uploadContext = await ensureLocalizedScreenshotUploadContext(entry.locale);
+      if (!uploadContext.ok) {
+        return {
+          ok: false,
+          message: `${entry.locale} screenshot ${fileIndex + 1}: ${uploadContext.message}`,
+          target
+        };
+      }
+      target = uploadContext.fieldReady && uploadContext.fieldReady.uploadTarget ||
+        getAvailableMediaUploadInput("localizedScreenshots");
+    }
+
+    const currentCount = getVisibleMediaImageCount("localizedScreenshots");
+    if (currentCount >= MAX_DASHBOARD_SCREENSHOTS) {
+      return {
+        ok: false,
+        message: `${entry.locale}: localized screenshots already show the CWS limit of ${MAX_DASHBOARD_SCREENSHOTS}`,
+        target
+      };
+    }
+
+    target = await resolveLocalizedScreenshotUploadTarget(target);
+    if (!target) {
+      return { ok: false, message: `${entry.locale}: localized screenshot upload target not found`, target };
+    }
+
+    try {
+      dismissVisibleDashboardStatusMessages();
+      const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
+      const result = await setUploadInputFile(target.input, [file], "localizedScreenshots", {
+        beforeCount,
+        expectedCount: beforeCount + 1,
+        timeoutMs: LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS
+      });
+      const afterCount = result.afterCount;
+      const addedCount = afterCount - beforeCount;
+
+      if (afterCount > MAX_DASHBOARD_SCREENSHOTS) {
+        return {
+          ok: false,
+          aborted: true,
+          message: `${entry.locale} screenshot ${fileIndex + 1}: CWS exceeded the ${MAX_DASHBOARD_SCREENSHOTS} screenshot limit`,
+          target
+        };
+      }
+      if (addedCount > 1) {
+        return {
+          ok: false,
+          aborted: true,
+          message: `${entry.locale} screenshot ${fileIndex + 1}: CWS added ${addedCount} screenshots for one upload; stopped to avoid duplicates`,
+          target
+        };
+      }
+      if (addedCount === 1) {
+        if (!isDashboardLocaleSelected(entry.locale)) {
+          return {
+            ok: false,
+            aborted: true,
+            message: `${entry.locale} screenshot ${fileIndex + 1}: dashboard locale changed during upload; stopped to avoid writing to the wrong locale`,
+            target
+          };
+        }
+        return { ok: true, target };
+      }
+
+      lastMessage = `${entry.locale} screenshot ${fileIndex + 1}: CWS still shows ${afterCount} screenshot(s) after upload (${result.method})`;
+    } catch (error) {
+      lastMessage = `${entry.locale} screenshot ${fileIndex + 1}: ${error.message || String(error)}`;
+    }
+
+    dismissVisibleDashboardStatusMessages();
+    target = null;
+    if (uploadAttempt < LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE) {
+      await delay(LOCALIZED_SCREENSHOT_RETRY_DELAY_MS);
+    }
+  }
+
+  return {
+    ok: false,
+    message: lastMessage || `${entry.locale} screenshot ${fileIndex + 1}: CWS did not show the uploaded image`,
+    target
+  };
+}
+
+async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, localeAttempt) {
+  const progressMessage = formatLocalizedScreenshotProgress(entry, localeIndex, total);
+  const attemptSuffix = localeAttempt > 1
+    ? ` retry ${localeAttempt}/${LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS}`
+    : "";
+  setMediaOperationProgress(`${progressMessage}${attemptSuffix}`);
+
+  if (mediaOperationState.abortRequested) {
+    return { ok: false, aborted: true, uploadedCount: 0, message: localize("operationStopped", "Stopped.") };
+  }
+
+  const contextReady = await ensureLocalizedScreenshotUploadContext(entry.locale);
+  if (!contextReady.ok) {
+    return { ok: false, uploadedCount: 0, message: `${entry.locale}: ${contextReady.message}` };
+  }
+  let localizedUploadTarget = contextReady.fieldReady && contextReady.fieldReady.uploadTarget ||
+    getAvailableMediaUploadInput("localizedScreenshots");
+
+  const clearResult = await performClearDashboardMediaAssets("localizedScreenshots");
+  if (!clearResult.ok) {
+    return {
+      ok: false,
+      aborted: Boolean(clearResult.aborted),
+      uploadedCount: 0,
+      message: `${entry.locale}: ${clearResult.message || "could not clear localized screenshots"}`
+    };
+  }
+  if (mediaOperationState.abortRequested || clearResult.aborted) {
+    return { ok: false, aborted: true, uploadedCount: 0, message: localize("operationStopped", "Stopped.") };
+  }
+
+  const clearWait = await waitForVisibleMediaImageCount(
+    "localizedScreenshots",
+    0,
+    LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS
+  );
+  if (!clearWait.ok) {
+    return {
+      ok: false,
+      uploadedCount: 0,
+      message: `${entry.locale}: CWS still shows ${clearWait.count} localized screenshot(s) after clear`
+    };
+  }
+
+  let uploadedForLocale = 0;
+  for (let fileIndex = 0; fileIndex < entry.files.length; fileIndex++) {
+    const uploadResult = await uploadLocalizedScreenshotFileWithRetries(
+      entry,
+      fileIndex,
+      localizedUploadTarget,
+      progressMessage
+    );
+    localizedUploadTarget = uploadResult.target || localizedUploadTarget;
+
+    if (!uploadResult.ok) {
+      return {
+        ok: false,
+        aborted: Boolean(uploadResult.aborted),
+        uploadedCount: uploadedForLocale,
+        message: uploadResult.message
+      };
+    }
+    uploadedForLocale++;
+  }
+
+  const finalLocalizedCount = getVisibleMediaImageCount("localizedScreenshots");
+  if (finalLocalizedCount !== entry.files.length) {
+    return {
+      ok: false,
+      uploadedCount: uploadedForLocale,
+      message: `${entry.locale}: CWS shows ${finalLocalizedCount} localized screenshot(s) after ${uploadedForLocale} upload(s)`
+    };
+  }
+
+  return { ok: true, uploadedCount: uploadedForLocale, message: "" };
+}
+
+async function performUploadLocalizedScreenshots(files, options = {}) {
   const uploaded = [];
   const failed = [];
   const skipped = [];
@@ -1234,7 +1537,7 @@ async function performUploadLocalizedScreenshots(files) {
     await loadListings();
   }
 
-  const entries = getLocalizedScreenshotFileEntries(files).filter(entry => {
+  let entries = getLocalizedScreenshotFileEntries(files).filter(entry => {
     if (typeof getListingLocaleKey !== "function") return true;
     const listingLocale = getListingLocaleKey(entry.locale);
     if (listingLocale) return true;
@@ -1242,13 +1545,24 @@ async function performUploadLocalizedScreenshots(files) {
     return false;
   });
 
+  const startLocaleResult = applyLocalizedScreenshotStartLocale(entries, options.localizedScreenshotsStartLocale || options.startLocale || "");
+  if (!startLocaleResult.ok) {
+    failed.push(startLocaleResult.message);
+    entries = [];
+  } else {
+    entries = startLocaleResult.entries;
+    skipped.push(...startLocaleResult.skippedBeforeStart);
+  }
+
   if (!entries.length) {
     return {
-      ok: skipped.length > 0,
+      ok: skipped.length > 0 && failed.length === 0,
       aborted: false,
-      message: skipped.length
-        ? localize("mediaSkipped", "Skipped: $1.", [skipped.join(", ")])
-        : localize("localizedScreenshotsNoMatchingFiles", "No localized screenshot files match imported listing locales."),
+      message: failed.length
+        ? localize("mediaUploadFailures", "Failed: $1.", [failed.join(", ")])
+        : skipped.length
+          ? localize("mediaSkipped", "Skipped: $1.", [skipped.join(", ")])
+          : localize("localizedScreenshotsNoMatchingFiles", "No localized screenshot files match imported listing locales."),
       uploaded,
       skipped,
       failed,
@@ -1260,131 +1574,35 @@ async function performUploadLocalizedScreenshots(files) {
 
   for (let localeIndex = 0; localeIndex < entries.length; localeIndex++) {
     const entry = entries[localeIndex];
-    const progressMessage = localize("uploadingLocalizedScreenshotsProgress", "Uploading localized screenshots $1/$2: $3 ($4 screenshots)...", [
-      String(localeIndex + 1),
-      String(entries.length),
-      entry.locale,
-      String(entry.files.length)
-    ]);
-    setMediaOperationProgress(progressMessage);
+    let localeUploadedCount = 0;
+    const localeFailures = [];
 
-    if (mediaOperationState.abortRequested) {
-      aborted = true;
-      break;
-    }
+    for (let localeAttempt = 1; localeAttempt <= LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS; localeAttempt++) {
+      const localeResult = await uploadLocalizedScreenshotLocale(entry, localeIndex, entries.length, localeAttempt);
+      localeUploadedCount = Math.max(localeUploadedCount, localeResult.uploadedCount || 0);
 
-    const contextReady = await ensureLocalizedScreenshotUploadContext(entry.locale);
-    if (!contextReady.ok) {
-      failed.push(`${entry.locale}: ${contextReady.message}`);
-      continue;
-    }
-    let localizedUploadTarget = contextReady.fieldReady && contextReady.fieldReady.uploadTarget ||
-      getAvailableMediaUploadInput("localizedScreenshots");
-
-    const clearResult = await performClearDashboardMediaAssets("localizedScreenshots");
-    if (!clearResult.ok) {
-      failed.push(`${entry.locale}: ${clearResult.message || "could not clear localized screenshots"}`);
-      if (mediaOperationState.abortRequested || clearResult.aborted) {
-        aborted = true;
+      if (localeResult.ok) {
+        localeFailures.length = 0;
+        localeUploadedCount = localeResult.uploadedCount || entry.files.length;
         break;
       }
-      continue;
-    }
-    if (mediaOperationState.abortRequested || clearResult.aborted) {
-      aborted = true;
-      break;
-    }
 
-    const clearWait = await waitForVisibleMediaImageCount(
-      "localizedScreenshots",
-      0,
-      LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS
-    );
-    if (!clearWait.ok) {
-      failed.push(`${entry.locale}: CWS still shows ${clearWait.count} localized screenshot(s) after clear`);
-      continue;
-    }
-
-    let uploadedForLocale = 0;
-    for (let fileIndex = 0; fileIndex < entry.files.length; fileIndex++) {
-      if (mediaOperationState.abortRequested) {
+      localeFailures.push(localeResult.message);
+      if (mediaOperationState.abortRequested || localeResult.aborted) {
         aborted = true;
         break;
       }
 
-      const file = entry.files[fileIndex];
-      setMediaOperationProgress(`${progressMessage} ${localize("screenshotNumber", "Screenshot $1", [String(fileIndex + 1)])}/${entry.files.length}`);
-      if (!isDashboardLocaleSelected(entry.locale)) {
-        const uploadContext = await ensureLocalizedScreenshotUploadContext(entry.locale);
-        if (!uploadContext.ok) {
-          failed.push(`${entry.locale} screenshot ${fileIndex + 1}: ${uploadContext.message}`);
-          break;
-        }
-        localizedUploadTarget = uploadContext.fieldReady && uploadContext.fieldReady.uploadTarget ||
-          getAvailableMediaUploadInput("localizedScreenshots");
-      }
-
-      const currentCount = getVisibleMediaImageCount("localizedScreenshots");
-      if (currentCount >= MAX_DASHBOARD_SCREENSHOTS) {
-        failed.push(`${entry.locale}: localized screenshots already show the CWS limit of ${MAX_DASHBOARD_SCREENSHOTS}`);
-        break;
-      }
-
-      const target = localizedUploadTarget && localizedUploadTarget.input && localizedUploadTarget.input.isConnected
-        ? localizedUploadTarget
-        : await waitForAvailableMediaUploadInput("localizedScreenshots");
-      if (!target) {
-        failed.push(`${entry.locale}: localized screenshot upload target not found`);
-        break;
-      }
-      localizedUploadTarget = target;
-
-      try {
-        const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
-        const result = await setUploadInputFile(target.input, [file], "localizedScreenshots", {
-          beforeCount,
-          expectedCount: beforeCount + 1,
-          timeoutMs: LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS
-        });
-        const afterCount = result.afterCount;
-        if (result.ok) {
-          if (afterCount > MAX_DASHBOARD_SCREENSHOTS) {
-            failed.push(`${entry.locale} screenshot ${fileIndex + 1}: CWS exceeded the ${MAX_DASHBOARD_SCREENSHOTS} screenshot limit`);
-            aborted = true;
-            break;
-          }
-          if (afterCount > beforeCount + 1) {
-            failed.push(`${entry.locale} screenshot ${fileIndex + 1}: CWS added ${afterCount - beforeCount} screenshots for one upload; stopped to avoid duplicates`);
-            aborted = true;
-            break;
-          }
-          if (afterCount < beforeCount + 1) {
-            failed.push(`${entry.locale} screenshot ${fileIndex + 1}: CWS shows ${afterCount} screenshot(s) after upload`);
-            break;
-          }
-          if (!isDashboardLocaleSelected(entry.locale)) {
-            failed.push(`${entry.locale} screenshot ${fileIndex + 1}: dashboard locale changed during upload; stopped to avoid writing to the wrong locale`);
-            aborted = true;
-            break;
-          }
-          uploadedForLocale++;
-        } else {
-          failed.push(`${entry.locale} screenshot ${fileIndex + 1}: CWS did not show the uploaded image (${result.method})`);
-          break;
-        }
-      } catch (error) {
-        failed.push(`${entry.locale} screenshot ${fileIndex + 1}: ${error.message || String(error)}`);
-        break;
+      if (localeAttempt < LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS) {
+        dismissVisibleDashboardStatusMessages();
+        await delay(LOCALIZED_SCREENSHOT_RETRY_DELAY_MS);
       }
     }
 
-    const finalLocalizedCount = getVisibleMediaImageCount("localizedScreenshots");
-    if (!aborted && uploadedForLocale && finalLocalizedCount !== uploadedForLocale) {
-      failed.push(`${entry.locale}: CWS shows ${finalLocalizedCount} localized screenshot(s) after ${uploadedForLocale} upload(s)`);
-    }
-
-    if (uploadedForLocale > 0) {
-      uploaded.push(`${entry.locale}: ${uploadedForLocale}`);
+    if (localeFailures.length) {
+      failed.push(`${entry.locale}: ${localeFailures.join(" | ")}`);
+    } else if (localeUploadedCount > 0) {
+      uploaded.push(`${entry.locale}: ${localeUploadedCount}`);
     }
 
     if (aborted) {
@@ -1417,9 +1635,9 @@ async function performUploadLocalizedScreenshots(files) {
   };
 }
 
-async function performUploadDashboardMediaAssets(files, kind = "") {
+async function performUploadDashboardMediaAssets(files, kind = "", options = {}) {
   if (kind === "localizedScreenshots") {
-    return performUploadLocalizedScreenshots(files);
+    return performUploadLocalizedScreenshots(files, options);
   }
 
   const uploaded = [];
@@ -1528,11 +1746,11 @@ async function performUploadDashboardMediaAssets(files, kind = "") {
   };
 }
 
-async function uploadDashboardMediaAssets(files, kind = "") {
+async function uploadDashboardMediaAssets(files, kind = "", options = {}) {
   return runExclusiveMediaOperation(
     kind === "localizedScreenshots"
       ? localize("uploadingLocalizedScreenshots", "Uploading localized screenshots...")
       : localize("uploadingMedia", "Uploading media..."),
-    () => performUploadDashboardMediaAssets(files, kind)
+    () => performUploadDashboardMediaAssets(files, kind, options)
   );
 }

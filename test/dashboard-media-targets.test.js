@@ -33,6 +33,9 @@ const context = vm.createContext({
       .trim()
       .replace(/\s+/g, " ");
   },
+  normalizeLocale(locale) {
+    return String(locale || "").replace("-", "_").toLowerCase();
+  },
   localesMatch(left, right) {
     const normalize = value => String(value || "").replace("-", "_").toLowerCase();
     return normalize(left) === normalize(right);
@@ -365,6 +368,16 @@ context.activateDashboardButton = button => {
     allowUnknownLocaleAfterSelection: true
   });
   assert.equal(unknownSelection.ok, true);
+
+  const startLocaleResult = context.applyLocalizedScreenshotStartLocale([
+    { locale: "am", files: ["am-1"] },
+    { locale: "ar", files: ["ar-1"] },
+    { locale: "pt_BR", files: ["pt-1"] }
+  ], "pt-BR");
+  assert.equal(startLocaleResult.ok, true);
+  assert.deepEqual(Array.from(startLocaleResult.entries, entry => entry.locale), ["pt_BR"]);
+  assert.deepEqual(Array.from(startLocaleResult.skippedBeforeStart), ["2 locale(s) before start locale pt-BR"]);
+  assert.equal(context.applyLocalizedScreenshotStartLocale(startLocaleResult.entries, "de").ok, false);
 
   console.log("Dashboard media target tests passed.");
 })().catch(error => {

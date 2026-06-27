@@ -373,9 +373,29 @@ elements.fillDataUsage.addEventListener("click", async () => {
 
 elements.diagnosePrivacyPage.addEventListener("click", diagnoseActiveTab);
 
+function getLocalizedScreenshotUploadOptions() {
+  if (typeof window.prompt !== "function") {
+    return {};
+  }
+
+  const mediaState = window.storePilotLastPopupMediaState || {};
+  const startLocale = window.prompt(
+    t("localizedScreenshotsStartLocalePrompt", "Start at locale (optional; leave empty for first locale)."),
+    mediaState.currentLocale || ""
+  );
+  if (startLocale === null) return null;
+
+  return {
+    localizedScreenshotsStartLocale: startLocale.trim()
+  };
+}
+
 function bindMediaUploadButton(button, kind) {
   button.addEventListener("click", async () => {
     if (isPopupMediaRunning || isPopupFillAllRunning || button.disabled) return;
+
+    const options = kind === "localizedScreenshots" ? getLocalizedScreenshotUploadOptions() : {};
+    if (options === null) return;
 
     const uploadMessage = kind === "localizedScreenshots"
       ? t("uploadingLocalizedScreenshots", "Uploading localized screenshots...")
@@ -384,7 +404,7 @@ function bindMediaUploadButton(button, kind) {
     setStatus(uploadMessage);
 
     try {
-      showActionResult(await uploadMediaFromPopup(kind));
+      showActionResult(await uploadMediaFromPopup(kind, options));
     } catch (error) {
       setStatus(t("mediaUploadFailed", "Media upload failed: $1", [formatError(error)]), true);
     } finally {

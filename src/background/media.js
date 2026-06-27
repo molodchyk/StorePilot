@@ -165,7 +165,7 @@
     return tabs && tabs[0];
   }
 
-  async function storePilotUploadMediaToDashboard(sender, requestAccess = false, kind = "") {
+  async function storePilotUploadMediaToDashboard(sender, requestAccess = false, kind = "", options = {}) {
     const tab = await getActiveDashboardTab(sender);
     if (!tab || !tab.id) {
       return { ok: false, message: text("noActiveTab", "No active tab.") };
@@ -178,7 +178,8 @@
       type: "storepilot-upload-media-assets",
       files: resolved.files,
       kind,
-      projectName: resolved.projectName
+      projectName: resolved.projectName,
+      options
     });
   }
 

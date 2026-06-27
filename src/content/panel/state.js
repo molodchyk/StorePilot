@@ -190,6 +190,7 @@ function getDashboardMediaState() {
     screenshotsLimitReached: screenshotCount >= MAX_DASHBOARD_SCREENSHOTS,
     maxScreenshots: MAX_DASHBOARD_SCREENSHOTS,
     localizedScreenshotTargetFound,
+    currentLocale: typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() : "",
     storeIconPresent,
     smallPromoPresent,
     marqueePromoPresent,

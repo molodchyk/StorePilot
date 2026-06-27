@@ -166,14 +166,15 @@ async function updateDashboardSectionUi() {
   syncUtilityActionsVisibility();
 }
 
-async function uploadMediaFromPopup(kind) {
+async function uploadMediaFromPopup(kind, options = {}) {
   const injection = await sendToActiveTab("storepilot-reload");
   if (!injection.ok) return injection;
 
   return storePilotRuntimeSendMessage({
     type: "storepilot-upload-media-assets-from-project",
     requestAccess: true,
-    kind
+    kind,
+    options
   });
 }
 
@@ -189,6 +190,7 @@ async function updateMediaActionState() {
 
   const result = await sendToActiveTab("storepilot-get-media-state");
   if (!result.ok || !result.media) return;
+  window.storePilotLastPopupMediaState = result.media;
 
   if (result.media.running) {
     setPopupMediaRunning(true, result.media.runningLabel || t("mediaOperationInProgress", "Media operation in progress."));

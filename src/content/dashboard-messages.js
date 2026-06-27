@@ -111,7 +111,7 @@ storePilotRuntimeOnMessageAddListener((message, _sender, sendResponse) => {
         sendResponse(createWrongDashboardSectionResult());
         return;
       }
-      sendResponse(await uploadDashboardMediaAssets(message.files || {}, message.kind || ""));
+      sendResponse(await uploadDashboardMediaAssets(message.files || {}, message.kind || "", message.options || {}));
       return;
     }
 

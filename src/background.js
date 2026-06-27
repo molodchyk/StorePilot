@@ -6,7 +6,7 @@
   }
 
   function handleUploadMediaMessage(message, sender, sendResponse) {
-    storePilotUploadMediaToDashboard(sender, Boolean(message.requestAccess), message.kind || "")
+    storePilotUploadMediaToDashboard(sender, Boolean(message.requestAccess), message.kind || "", message.options || {})
       .then(sendResponse)
       .catch(error => sendResponse({
         ok: false,

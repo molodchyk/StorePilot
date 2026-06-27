@@ -280,15 +280,36 @@ function renderPanel(locales) {
   closeButton.title = localize("closePanel", "Close panel");
   closeButton.setAttribute("aria-label", closeButton.title);
 
+  function getLocalizedScreenshotUploadOptions() {
+    if (typeof window.prompt !== "function") {
+      return {};
+    }
+
+    const currentLocale = typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() : "";
+    const startLocale = window.prompt(
+      localize("localizedScreenshotsStartLocalePrompt", "Start at locale (optional; leave empty for first locale)."),
+      currentLocale || ""
+    );
+    if (startLocale === null) return null;
+
+    return {
+      localizedScreenshotsStartLocale: startLocale.trim()
+    };
+  }
+
   function createMediaUploadButton(kind, labelKey, fallback) {
     const button = createButton(localize(labelKey, fallback), async () => {
+      const options = kind === "localizedScreenshots" ? getLocalizedScreenshotUploadOptions() : {};
+      if (options === null) return;
+
       setPanelMediaButtonsDisabled(true, localize("uploadingMedia", "Uploading media..."));
       status.textContent = localize("uploadingMedia", "Uploading media...");
       try {
         const response = await storePilotRuntimeSendMessage({
           type: "storepilot-upload-media-assets-from-project",
           requestAccess: false,
-          kind
+          kind,
+          options
         });
         status.textContent = response && response.message || localize("mediaUploadFailed", "Media upload failed: $1", [localize("unknown", "Unknown")]);
       } finally {
