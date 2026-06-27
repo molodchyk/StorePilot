@@ -107,6 +107,30 @@ const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot(
   initialSkipped: [],
   initialSkippedLocales: 0,
   message: "",
+  localeStatusOrder: ["am", "ar"],
+  localeStatuses: {
+    am: {
+      locale: "am",
+      status: "completed",
+      phase: "uploading",
+      operation: "uploadOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 3,
+      totalScreenshots: 3,
+      message: "localized screenshots uploaded"
+    },
+    ar: {
+      locale: "ar",
+      status: "failed",
+      phase: "uploading",
+      operation: "uploadOnly",
+      workerId: "worker-2",
+      uploadedScreenshots: 1,
+      totalScreenshots: 3,
+      message: "failed"
+    }
+  },
+  timeline: [],
   workers: [
     {
       workerId: "worker-1",
@@ -147,3 +171,74 @@ assert.equal(snapshot.totals.completedLocales, 1);
 assert.equal(snapshot.totals.failedLocales, 1);
 assert.equal(snapshot.totals.uploadedScreenshots, 4);
 assert.equal(snapshot.totals.totalScreenshots, 6);
+assert.deepEqual(hostValue(snapshot.localeStatuses).map(item => [item.locale, item.status]), [
+  ["am", "completed"],
+  ["ar", "failed"]
+]);
+assert.equal(snapshot.timeline.length, 1);
+assert.equal(snapshot.timeline[0].completedLocales, 1);
+assert.equal(snapshot.timeline[0].failedLocales, 1);
+assert.equal(snapshot.timeline[0].remainingLocales, 0);
+assert.equal(snapshot.timeline[0].uploadedScreenshots, 4);
+
+const clearOnlySnapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot({
+  runId: "run-2",
+  status: "running",
+  mode: "clearOnly",
+  phase: "clearOnly",
+  parentTabId: 1,
+  parentUrl: "https://chrome.google.com/webstore/devconsole/item/edit/listing",
+  startedAt: Date.now() - 61000,
+  closeSuccessfulWorkers: true,
+  abortRequested: false,
+  totalLocales: 2,
+  totalScreenshots: 6,
+  initialSkipped: [],
+  initialSkippedLocales: 0,
+  message: "",
+  localeStatusOrder: ["am", "ar"],
+  localeStatuses: {
+    am: {
+      locale: "am",
+      status: "completed",
+      phase: "clearOnly",
+      operation: "clearOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 0,
+      totalScreenshots: 3,
+      message: "localized screenshots cleared"
+    },
+    ar: {
+      locale: "ar",
+      status: "clearing",
+      phase: "clearOnly",
+      operation: "clearOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 0,
+      totalScreenshots: 3,
+      message: "clearing existing screenshots"
+    }
+  },
+  timeline: [],
+  workers: [
+    {
+      workerId: "worker-1",
+      tabId: 2,
+      status: "running",
+      closed: false,
+      operation: "clearOnly",
+      assignedLocales: ["am", "ar"],
+      totalScreenshots: 6,
+      completedLocales: 1,
+      failedLocales: 0,
+      skippedLocales: 0,
+      uploadedScreenshots: 0,
+      elapsedMs: 61000
+    }
+  ]
+});
+assert.equal(clearOnlySnapshot.elapsedLabel, "1m 01s");
+assert.equal(clearOnlySnapshot.workers[0].elapsedLabel, "1m 01s");
+assert.equal(clearOnlySnapshot.timeline[0].completedLocales, 1);
+assert.equal(clearOnlySnapshot.timeline[0].remainingLocales, 1);
+assert.equal(clearOnlySnapshot.timeline[0].uploadedScreenshots, 0);

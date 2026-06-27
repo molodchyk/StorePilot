@@ -337,6 +337,8 @@ function renderPanel(locales) {
     const board = document.createElement("div");
     const titleElement = document.createElement("div");
     const summary = document.createElement("div");
+    const chart = document.createElement("div");
+    const localeStatuses = document.createElement("div");
     const workers = document.createElement("div");
     const boardActions = document.createElement("div");
     const abortParallelButton = createButton(localize("abortParallelLocalizedScreenshots", "Abort parallel run"), async () => {
@@ -375,6 +377,8 @@ function renderPanel(locales) {
     board.className = "storepilot-parallel-board";
     titleElement.className = "storepilot-parallel-board-title";
     summary.className = "storepilot-parallel-board-summary";
+    chart.className = "storepilot-parallel-chart";
+    localeStatuses.className = "storepilot-parallel-locales";
     workers.className = "storepilot-parallel-workers";
     boardActions.className = "storepilot-parallel-board-actions";
     titleElement.textContent = localize("parallelLocalizedScreenshotsTitle", "Parallel localized screenshots");
@@ -385,7 +389,7 @@ function renderPanel(locales) {
     retryFailedButton.hidden = true;
     board.hidden = true;
     boardActions.append(abortParallelButton, retryFailedButton);
-    board.append(titleElement, summary, workers, boardActions);
+    board.append(titleElement, summary, chart, localeStatuses, workers, boardActions);
     return board;
   }
 

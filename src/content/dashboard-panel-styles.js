@@ -176,6 +176,122 @@
         gap: 2px;
       }
 
+      #${panelId} .storepilot-parallel-chart {
+        height: 88px;
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 5px;
+        background: rgba(248, 250, 252, 0.82);
+      }
+
+      #${panelId} .storepilot-parallel-chart[hidden] {
+        display: none;
+      }
+
+      #${panelId} .storepilot-parallel-chart svg {
+        display: block;
+        width: 100%;
+        height: 88px;
+      }
+
+      #${panelId} .storepilot-parallel-chart-grid {
+        stroke: rgba(148, 163, 184, 0.36);
+        stroke-width: 1;
+      }
+
+      #${panelId} .storepilot-parallel-chart-completed {
+        stroke: #0f766e;
+      }
+
+      #${panelId} .storepilot-parallel-chart-remaining {
+        stroke: #64748b;
+      }
+
+      #${panelId} .storepilot-parallel-chart-failed {
+        stroke: #dc2626;
+      }
+
+      #${panelId} .storepilot-parallel-chart-label {
+        fill: #64748b;
+        font-size: 9px;
+        font-weight: 700;
+      }
+
+      #${panelId} .storepilot-parallel-chart-done-label {
+        fill: #0f766e;
+      }
+
+      #${panelId} .storepilot-parallel-chart-remaining-label {
+        fill: #64748b;
+      }
+
+      #${panelId} .storepilot-parallel-locales {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        max-height: 76px;
+        overflow: auto;
+        padding: 2px 0;
+      }
+
+      #${panelId} .storepilot-parallel-locales[hidden] {
+        display: none;
+      }
+
+      #${panelId} .storepilot-locale-status {
+        min-width: 28px;
+        padding: 2px 4px;
+        border: 1px solid rgba(100, 116, 139, 0.35);
+        border-radius: 4px;
+        background: #f8fafc;
+        color: #334155;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.15;
+        text-align: center;
+      }
+
+      #${panelId} .storepilot-locale-status[data-status="pendingClear"],
+      #${panelId} .storepilot-locale-status[data-status="pendingUpload"],
+      #${panelId} .storepilot-locale-status[data-status="pending"] {
+        background: #f8fafc;
+        color: #64748b;
+      }
+
+      #${panelId} .storepilot-locale-status[data-status="clearing"],
+      #${panelId} .storepilot-locale-status[data-status="uploading"],
+      #${panelId} .storepilot-locale-status[data-status="replacing"],
+      #${panelId} .storepilot-locale-status[data-status="running"] {
+        border-color: #2563eb;
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+
+      #${panelId} .storepilot-locale-status[data-status="cleared"] {
+        border-color: #0891b2;
+        background: #ecfeff;
+        color: #0e7490;
+      }
+
+      #${panelId} .storepilot-locale-status[data-status="completed"] {
+        border-color: #0f766e;
+        background: #ecfdf5;
+        color: #047857;
+      }
+
+      #${panelId} .storepilot-locale-status[data-status="failed"],
+      #${panelId} .storepilot-locale-status[data-status="aborted"] {
+        border-color: #dc2626;
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+
+      #${panelId} .storepilot-locale-status[data-status="skipped"] {
+        border-color: #94a3b8;
+        background: #f1f5f9;
+        color: #475569;
+      }
+
       #${panelId} .storepilot-parallel-workers {
         display: grid;
         gap: 4px;
@@ -233,6 +349,74 @@
         background: rgba(32, 38, 51, 0.78);
       }
 
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart {
+        border-color: #343b4a;
+        background: rgba(17, 24, 39, 0.72);
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-grid {
+        stroke: rgba(148, 163, 184, 0.22);
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-label,
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-remaining-label {
+        fill: #94a3b8;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-completed,
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-done-label {
+        stroke: #2dd4bf;
+        fill: #2dd4bf;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-remaining {
+        stroke: #94a3b8;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-failed {
+        stroke: #fb7185;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-locale-status {
+        border-color: #475569;
+        background: #111827;
+        color: #cbd5e1;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="clearing"],
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="uploading"],
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="replacing"],
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="running"] {
+        border-color: #60a5fa;
+        background: #172554;
+        color: #bfdbfe;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="cleared"] {
+        border-color: #22d3ee;
+        background: #083344;
+        color: #a5f3fc;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="completed"] {
+        border-color: #2dd4bf;
+        background: #042f2e;
+        color: #99f6e4;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="failed"],
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="aborted"] {
+        border-color: #fb7185;
+        background: #3f111a;
+        color: #fecdd3;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="skipped"] {
+        border-color: #64748b;
+        background: #1e293b;
+        color: #cbd5e1;
+      }
+
       @media (prefers-color-scheme: dark) {
         #${panelId}:not([data-theme="light"]) {
           border-color: #343b4a;
@@ -279,6 +463,74 @@
         #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker {
           border-color: #343b4a;
           background: rgba(32, 38, 51, 0.78);
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart {
+          border-color: #343b4a;
+          background: rgba(17, 24, 39, 0.72);
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-grid {
+          stroke: rgba(148, 163, 184, 0.22);
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-label,
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-remaining-label {
+          fill: #94a3b8;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-completed,
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-done-label {
+          stroke: #2dd4bf;
+          fill: #2dd4bf;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-remaining {
+          stroke: #94a3b8;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-failed {
+          stroke: #fb7185;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status {
+          border-color: #475569;
+          background: #111827;
+          color: #cbd5e1;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="clearing"],
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="uploading"],
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="replacing"],
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="running"] {
+          border-color: #60a5fa;
+          background: #172554;
+          color: #bfdbfe;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="cleared"] {
+          border-color: #22d3ee;
+          background: #083344;
+          color: #a5f3fc;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="completed"] {
+          border-color: #2dd4bf;
+          background: #042f2e;
+          color: #99f6e4;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="failed"],
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="aborted"] {
+          border-color: #fb7185;
+          background: #3f111a;
+          color: #fecdd3;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="skipped"] {
+          border-color: #64748b;
+          background: #1e293b;
+          color: #cbd5e1;
         }
       }
 
