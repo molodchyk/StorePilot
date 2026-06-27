@@ -1027,43 +1027,10 @@ async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDI
       }
     }
 
-    await delay(150);
+    await delay(75);
   }
 
   return false;
-}
-
-async function waitForMediaRemovalAfterBatchClick(kind, beforeCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS) {
-  const startedAt = Date.now();
-  let confirmed = false;
-  let lastCount = beforeCount;
-  let lastDecreaseAt = 0;
-
-  while (Date.now() - startedAt < timeoutMs) {
-    const currentCount = getVisibleMediaImageCount(kind);
-    if (currentCount === 0) {
-      return { ok: true, count: currentCount };
-    }
-    if (currentCount < lastCount) {
-      lastCount = currentCount;
-      lastDecreaseAt = Date.now();
-    }
-    if (currentCount < beforeCount && Date.now() - lastDecreaseAt > 150) {
-      return { ok: true, count: currentCount };
-    }
-
-    if (!confirmed) {
-      const confirmButton = getVisibleDialogConfirmButton();
-      if (confirmButton) {
-        activateDashboardButton(confirmButton);
-        confirmed = true;
-      }
-    }
-
-    await delay(100);
-  }
-
-  return { ok: false, count: getVisibleMediaImageCount(kind) };
 }
 
 async function performClearLocalizedScreenshotAssets() {
@@ -1089,22 +1056,21 @@ async function performClearLocalizedScreenshotAssets() {
       break;
     }
 
-    const buttonLabels = buttons.map(button => button.getAttribute("aria-label") || label);
-    buttons.forEach(button => {
-      if (!mediaOperationState.abortRequested && button.isConnected !== false) {
-        activateDashboardButton(button);
-      }
-    });
+    const button = buttons[buttons.length - 1];
+    const buttonLabel = button.getAttribute("aria-label") || label;
+    scrollMediaActionTargetIntoView(button);
+    activateDashboardButton(button);
 
-    const result = await waitForMediaRemovalAfterBatchClick("localizedScreenshots", beforeCount);
-    if (!result.ok) {
-      failed.push(`${label}: CWS still shows ${result.count} screenshot(s) after delete`);
+    const changed = await waitForMediaRemovalAfterClick("localizedScreenshots", beforeCount);
+    const afterCount = getVisibleMediaImageCount("localizedScreenshots");
+    if (!changed) {
+      failed.push(`${buttonLabel}: CWS did not remove the image`);
       break;
     }
 
-    const removedCount = Math.max(1, beforeCount - result.count);
+    const removedCount = Math.max(1, beforeCount - afterCount);
     for (let index = 0; index < removedCount; index++) {
-      removed.push(buttonLabels[index] || label);
+      removed.push(buttonLabel);
     }
   }
 

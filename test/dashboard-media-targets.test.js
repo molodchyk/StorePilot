@@ -128,6 +128,7 @@ class FakeElement {
     if (selector === "[role='button'][jsname='DagSrd']") return this.attributes.role === "button" && this.attributes.jsname === "DagSrd";
     if (selector === "[jsname='LCoeQd']") return this.attributes.jsname === "LCoeQd";
     if (selector === "[aria-label]") return Boolean(this.attributes["aria-label"]);
+    if (selector === "button[data-mdc-dialog-action='ok']") return this.tagName === "BUTTON" && this.attributes["data-mdc-dialog-action"] === "ok";
     if (selector === "[data-image-upload-type]") return Boolean(this.dataset.imageUploadType);
     if (selector === ".aQzcYd") return this.className.split(/\s+/).includes("aQzcYd");
     return false;
@@ -250,9 +251,19 @@ const allContainers = [
   marqueeField.uploadWidget
 ];
 const allElements = flatten(allLabels.concat(allContainers));
+const confirmButton = new FakeElement("button", {
+  textContent: "Remove",
+  attributes: { "data-mdc-dialog-action": "ok" },
+  rect: { top: 400, bottom: 440, left: 760, right: 840, width: 80, height: 40 },
+  hidden: true
+});
+let pendingDeleteButton = null;
 
 context.document = {
   querySelectorAll(selector) {
+    if (selector === "[role='dialog'] button,.VfPpkd-Sx9Kwc button,button[data-mdc-dialog-action='ok']") {
+      return [confirmButton];
+    }
     if (selector === "input[type='file']") return allInputs;
     if (selector === "h1,h2,h3,h4,span,p,div,label") return allLabels;
     if (selector === "div,section,article,c-wiz") return allContainers;
@@ -285,10 +296,21 @@ assert.deepEqual(
 
 context.activateDashboardButton = button => {
   button.clickCount += 1;
-  if ((button.getAttribute("aria-label") || "").startsWith("Remove image Screenshot")) {
-    button.hidden = true;
-    const previous = button.previousElementSibling;
+  if (button === confirmButton) {
+    assert.ok(pendingDeleteButton, "confirmation was clicked without a pending localized delete");
+    pendingDeleteButton.hidden = true;
+    const previous = pendingDeleteButton.previousElementSibling;
     if (previous && previous.tagName === "IMG") previous.hidden = true;
+    pendingDeleteButton = null;
+    confirmButton.hidden = true;
+    return;
+  }
+
+  if ((button.getAttribute("aria-label") || "").startsWith("Remove image Screenshot") &&
+    context.isElementInsideLocalizedScreenshotField(button)) {
+    assert.equal(pendingDeleteButton, null, "clicked another localized delete while confirmation dialog was open");
+    pendingDeleteButton = button;
+    confirmButton.hidden = false;
   }
 };
 
@@ -298,6 +320,8 @@ context.activateDashboardButton = button => {
   assert.equal(result.removed.length, 2);
   assert.equal(context.getVisibleMediaImageCount("localizedScreenshots"), 0);
   assert.equal(context.getVisibleMediaImageCount("screenshots"), 1);
+  assert.equal(confirmButton.clickCount, 2);
+  assert.equal(pendingDeleteButton, null);
   const globalRemoveButtons = context.getMediaRemoveButtons("screenshots");
   assert.equal(globalRemoveButtons.length, 1);
   assert.equal(globalRemoveButtons[0].getAttribute("aria-label"), "Remove image Screenshot 1");
