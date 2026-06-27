@@ -506,6 +506,96 @@ function getLocalizedScreenshotProgressElements() {
     .filter(element => isElementInsideLocalizedScreenshotBounds(element, bounds));
 }
 
+function queryDashboardElementsAny(selectors) {
+  const elements = new Set();
+  selectors.forEach(selector => {
+    try {
+      Array.from(document.querySelectorAll(selector)).forEach(element => elements.add(element));
+    } catch (_error) {
+      // Ignore selectors unsupported by a test shim or browser quirk.
+    }
+  });
+  return Array.from(elements);
+}
+
+function isLocalizedScreenshotUploadErrorText(text) {
+  const normalized = normalizeLanguageText(text);
+  return /error|unknown error|failed|could not upload|couldn t upload|image upload failed|fehler|unbekannter fehler/.test(normalized);
+}
+
+function getLocalizedScreenshotUploadErrorMessage() {
+  const bounds = getLocalizedScreenshotFieldBounds();
+  if (!bounds) return "";
+
+  return queryDashboardElementsAny([
+    "[role='alert']",
+    "[aria-live]",
+    ".e16bl",
+    ".J5br2e"
+  ])
+    .filter(isVisible)
+    .filter(element => isElementInsideLocalizedScreenshotBounds(element, bounds))
+    .map(getVisibleText)
+    .map(text => String(text || "").trim())
+    .filter(text => text && text.length <= 260)
+    .find(isLocalizedScreenshotUploadErrorText) || "";
+}
+
+function hasDashboardCloseIconSvg(element) {
+  if (!element || typeof element.querySelectorAll !== "function") return false;
+  return Array.from(element.querySelectorAll("svg")).some(svg => {
+    const viewBox = svg.getAttribute && svg.getAttribute("viewBox");
+    const className = typeof svg.className === "string"
+      ? svg.className
+      : svg.className && typeof svg.className.baseVal === "string"
+        ? svg.className.baseVal
+        : "";
+    return viewBox === "0 0 48 48" || /\bl3jvA\b/.test(className);
+  });
+}
+
+function getLocalizedScreenshotUploadErrorDismissButtons() {
+  const bounds = getLocalizedScreenshotFieldBounds();
+  if (!bounds) return [];
+
+  const buttons = queryDashboardElementsAny([
+    "button",
+    "[role='button']",
+    "[aria-label]",
+    "[jsname='P0Jxu']"
+  ]);
+  queryDashboardElementsAny([
+    "svg.l3jvA",
+    "svg[viewBox='0 0 48 48']"
+  ]).forEach(svg => {
+    const button = svg.closest && svg.closest("button,[role='button'],[aria-label]");
+    if (button) buttons.push(button);
+  });
+
+  return Array.from(new Set(buttons))
+    .filter(isVisible)
+    .filter(element => isElementInsideLocalizedScreenshotBounds(element, bounds))
+    .filter(element => element.tagName === "BUTTON" || element.matches("[role='button']") || element.getAttribute("aria-label"))
+    .filter(element => {
+      const label = normalizeLanguageText([
+        element.getAttribute("aria-label") || "",
+        getVisibleText(element)
+      ].filter(Boolean).join(" "));
+      return element.getAttribute("jsname") === "P0Jxu" ||
+        /close|dismiss|ok|schliessen|schlie en/.test(label) ||
+        hasDashboardCloseIconSvg(element);
+    });
+}
+
+function dismissLocalizedScreenshotUploadErrors() {
+  const message = getLocalizedScreenshotUploadErrorMessage();
+  if (!message) return "";
+
+  getLocalizedScreenshotUploadErrorDismissButtons()
+    .forEach(button => activateDashboardButton(button));
+  return message;
+}
+
 function getLocalizedScreenshotActionElement() {
   const uploadTarget = getAvailableMediaUploadInput("localizedScreenshots");
   if (uploadTarget && uploadTarget.input) {
@@ -588,6 +678,17 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
       getVisibleDashboardStatusMessageText(/failed.*(upload|add)|upload.*failed|could not upload|couldn t upload|image upload failed/)) {
       dismissVisibleDashboardStatusMessages();
       return false;
+    }
+
+    if (kind === "localizedScreenshots" && nextCount <= beforeCount) {
+      const localizedUploadError = getLocalizedScreenshotUploadErrorMessage();
+      if (localizedUploadError) {
+        if (options.errorState) {
+          options.errorState.message = localizedUploadError;
+        }
+        dismissLocalizedScreenshotUploadErrors();
+        return false;
+      }
     }
 
     if (reachedExpectedCount && !hasMediaUploadInProgress(kind)) {
@@ -984,6 +1085,7 @@ async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
     ? LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS
     : DEFAULT_MEDIA_UPLOAD_TIMEOUT_MS);
   const targetId = markUploadTargetForBridge(input);
+  const errorState = options.errorState || {};
   let method = "page bridge";
 
   try {
@@ -994,14 +1096,16 @@ async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
       const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount, {
         expectedCount,
         timeoutMs,
-        progress: options.progress || null
+        progress: options.progress || null,
+        errorState
       });
       return {
         ok: uiChanged,
         method,
         bridgeResult,
         beforeCount,
-        afterCount: getVisibleMediaImageCount(kind)
+        afterCount: getVisibleMediaImageCount(kind),
+        errorMessage: errorState.message || ""
       };
     }
 
@@ -1010,7 +1114,8 @@ async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
     const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount, {
       expectedCount,
       timeoutMs,
-      progress: options.progress || null
+      progress: options.progress || null,
+      errorState
     });
 
     return {
@@ -1018,7 +1123,8 @@ async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
       method,
       bridgeResult,
       beforeCount,
-      afterCount: getVisibleMediaImageCount(kind)
+      afterCount: getVisibleMediaImageCount(kind),
+      errorMessage: errorState.message || ""
     };
   } finally {
     clearUploadTargetBridgeMarker(input, targetId);
@@ -1521,12 +1627,15 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
 
     try {
       dismissVisibleDashboardStatusMessages();
+      dismissLocalizedScreenshotUploadErrors();
       const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
+      const errorState = {};
       const result = await setUploadInputFile(target.input, [file], "localizedScreenshots", {
         beforeCount,
         expectedCount: beforeCount + 1,
         timeoutMs: LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS,
-        progress
+        progress,
+        errorState
       });
       const afterCount = result.afterCount;
       const addedCount = afterCount - beforeCount;
@@ -1560,12 +1669,15 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
         return { ok: true, target };
       }
 
-      lastMessage = `${entry.locale} screenshot ${fileIndex + 1}: CWS still shows ${afterCount} screenshot(s) after upload (${result.method})`;
+      lastMessage = result.errorMessage
+        ? `${entry.locale} screenshot ${fileIndex + 1}: ${result.errorMessage}`
+        : `${entry.locale} screenshot ${fileIndex + 1}: CWS still shows ${afterCount} screenshot(s) after upload (${result.method})`;
     } catch (error) {
       lastMessage = `${entry.locale} screenshot ${fileIndex + 1}: ${error.message || String(error)}`;
     }
 
     dismissVisibleDashboardStatusMessages();
+    dismissLocalizedScreenshotUploadErrors();
     target = null;
     if (uploadAttempt < LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE) {
       await delay(LOCALIZED_SCREENSHOT_RETRY_DELAY_MS);

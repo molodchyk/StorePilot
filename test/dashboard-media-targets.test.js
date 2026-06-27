@@ -257,6 +257,18 @@ const storeIconField = createUploadField({
   removePrefix: "Remove image Store icon"
 });
 const localizedField = createUploadField({ top: 100, text: "Localised screenshots *", imageCount: 2 });
+const localizedUploadError = new FakeElement("div", {
+  textContent: "Error: An unknown error occurred.",
+  attributes: { role: "alert" },
+  rect: { top: 240, bottom: 270, left: 520, right: 720, width: 200, height: 30 },
+  hidden: true
+});
+const localizedUploadErrorClose = new FakeElement("div", {
+  attributes: { role: "button", jsname: "P0Jxu", "aria-label": "Close image upload status" },
+  rect: { top: 270, bottom: 300, left: 690, right: 720, width: 30, height: 30 },
+  hidden: true
+});
+localizedField.field.append(localizedUploadError, localizedUploadErrorClose);
 const globalField = createUploadField({ top: 420, text: "Global screenshots *", isGlobal: true, imageCount: 1 });
 const marqueeField = createUploadField({
   top: 680,
@@ -295,6 +307,14 @@ context.document = {
     if (selector === "div,section,article,c-wiz") return allContainers;
     if (selector === "[data-image-upload-type]") return [globalField.field];
     if (selector === "img") return allElements.filter(element => element.matches("img"));
+    if (selector === "[role='alert']") return allElements.filter(element => element.getAttribute("role") === "alert");
+    if (selector === "[aria-live]") return [];
+    if (selector === ".e16bl" || selector === ".J5br2e") return [];
+    if (selector === "button") return allElements.filter(element => element.tagName === "BUTTON");
+    if (selector === "[role='button']") return allElements.filter(element => element.getAttribute("role") === "button");
+    if (selector === "[aria-label]") return allElements.filter(element => Boolean(element.getAttribute("aria-label")));
+    if (selector === "[jsname='P0Jxu']") return allElements.filter(element => element.getAttribute("jsname") === "P0Jxu");
+    if (selector === "svg.l3jvA" || selector === "svg[viewBox='0 0 48 48']") return [];
     if (selector === "[role='button'][aria-label], [jsname='LCoeQd']") {
       return allElements.filter(element => element.matches("[role='button'][aria-label]") || element.matches("[jsname='LCoeQd']"));
     }
@@ -339,6 +359,17 @@ context.activateDashboardButton = button => {
     confirmButton.hidden = false;
   }
 };
+
+localizedUploadError.hidden = false;
+localizedUploadErrorClose.hidden = false;
+assert.equal(context.getLocalizedScreenshotUploadErrorMessage(), "Error: An unknown error occurred.");
+const localizedUploadErrorDismissButtons = Array.from(context.getLocalizedScreenshotUploadErrorDismissButtons());
+assert.equal(localizedUploadErrorDismissButtons.length, 1);
+assert.equal(localizedUploadErrorDismissButtons[0], localizedUploadErrorClose);
+assert.equal(context.dismissLocalizedScreenshotUploadErrors(), "Error: An unknown error occurred.");
+assert.equal(localizedUploadErrorClose.clickCount, 1);
+localizedUploadError.hidden = true;
+localizedUploadErrorClose.hidden = true;
 
 (async () => {
   const result = await context.performClearLocalizedScreenshotAssets();
