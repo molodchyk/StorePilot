@@ -1,7 +1,6 @@
 const MEDIA_UPLOAD_BRIDGE_SCRIPT = "src/content/media-upload-main-world.js";
 const MAX_DASHBOARD_SCREENSHOTS = 5;
 const MEDIA_UPLOAD_TARGET_ID_ATTRIBUTE = "data-storepilot-upload-target-id";
-const MEDIA_OPERATION_SHIELD_ID = "storepilot-dashboard-operation-shield";
 const DEFAULT_MEDIA_UPLOAD_TIMEOUT_MS = 20000;
 const LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS = 90000;
 const MEDIA_REMOVAL_TIMEOUT_MS = 30000;
@@ -9,67 +8,10 @@ const LOCALIZED_SCREENSHOT_TARGET_READY_TIMEOUT_MS = 45000;
 const LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS = 45000;
 
 let mediaUploadBridgePromise = null;
-let mediaOperationShieldController = null;
 
 function isStorePilotOwnedElement(element) {
   const panelId = typeof PANEL_ID === "string" ? PANEL_ID : "storepilot-panel";
   return Boolean(element && typeof element.closest === "function" && element.closest(`#${panelId}`));
-}
-
-function installMediaOperationInteractionShield(label = "") {
-  removeMediaOperationInteractionShield();
-
-  mediaOperationShieldController = new AbortController();
-  const shield = document.createElement("div");
-  shield.id = MEDIA_OPERATION_SHIELD_ID;
-  shield.setAttribute("aria-hidden", "true");
-  shield.title = label || localize("mediaOperationRunning", "Media operation running.");
-  Object.assign(shield.style, {
-    position: "fixed",
-    inset: "0",
-    zIndex: "2147483600",
-    background: "transparent",
-    cursor: "progress",
-    pointerEvents: "auto"
-  });
-
-  const blockTrustedPageEvent = event => {
-    if (!event.isTrusted) return;
-    if (isStorePilotOwnedElement(event.target)) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  };
-
-  ["keydown", "keypress", "keyup", "beforeinput", "input", "wheel"].forEach(type => {
-    document.addEventListener(type, blockTrustedPageEvent, {
-      capture: true,
-      passive: false,
-      signal: mediaOperationShieldController.signal
-    });
-  });
-
-  shield.addEventListener("pointerdown", blockTrustedPageEvent, {
-    capture: true,
-    passive: false,
-    signal: mediaOperationShieldController.signal
-  });
-  shield.addEventListener("click", blockTrustedPageEvent, {
-    capture: true,
-    passive: false,
-    signal: mediaOperationShieldController.signal
-  });
-
-  (document.documentElement || document.body).append(shield);
-}
-
-function removeMediaOperationInteractionShield() {
-  if (mediaOperationShieldController) {
-    mediaOperationShieldController.abort();
-    mediaOperationShieldController = null;
-  }
-
-  const shield = document.getElementById(MEDIA_OPERATION_SHIELD_ID);
-  if (shield) shield.remove();
 }
 
 function getMediaUploadTypeName(widget) {
@@ -208,6 +150,35 @@ function getLocalizedAssetsLabelElements() {
 
 function getGlobalMediaBoundaryElements() {
   return getMediaLabelTextElements().filter(element => isGlobalMediaBoundaryText(getVisibleText(element)));
+}
+
+function getLocalizedScreenshotFieldBounds() {
+  const labels = getLocalizedScreenshotLabelElements()
+    .map(label => ({ label, rect: getSafeElementRect(label) }))
+    .filter(candidate => candidate.rect)
+    .sort((a, b) => a.rect.top - b.rect.top);
+  if (!labels.length) return null;
+
+  const label = labels[0];
+  const bottomBoundary = getGlobalMediaBoundaryElements()
+    .map(element => getSafeElementRect(element))
+    .filter(Boolean)
+    .filter(rect => rect.top > label.rect.top + 24)
+    .sort((a, b) => a.top - b.top)[0];
+
+  return {
+    top: label.rect.top - 8,
+    bottom: bottomBoundary ? bottomBoundary.top - 4 : label.rect.top + 900,
+    label: label.label
+  };
+}
+
+function isElementInsideLocalizedScreenshotField(element) {
+  if (!element || isStorePilotOwnedElement(element)) return false;
+  const bounds = getLocalizedScreenshotFieldBounds();
+  const rect = getSafeElementRect(element);
+  if (!bounds || !rect) return false;
+  return rect.top >= bounds.top && rect.top <= bounds.bottom;
 }
 
 function hasBoundaryBetween(topA, topB) {
@@ -368,6 +339,7 @@ function getLocalizedScreenshotFieldWidgetsFromLabels() {
     .filter(candidate => candidate.rect);
 
   return candidateElements
+    .filter(candidate => isElementInsideLocalizedScreenshotField(candidate.element))
     .filter(candidate => labels.some(label => {
       if (candidate.rect.bottom < label.rect.top - 40) return false;
       if (candidate.rect.top - label.rect.top > 1100) return false;
@@ -397,6 +369,8 @@ function getLocalizedScreenshotUploadTargets() {
         )
       };
     })
+    .filter(candidate => isElementInsideLocalizedScreenshotField(candidate.input) ||
+      isElementInsideLocalizedScreenshotField(candidate.uploadWidget))
     .filter(candidate => candidate.widget && candidate.input && candidate.score >= 100)
     .sort((a, b) => b.score - a.score);
 }
@@ -464,7 +438,42 @@ function getMediaUploadWidgets(kind) {
   return globalWidgets.length ? globalWidgets : widgets;
 }
 
+function getLocalizedScreenshotMediaImages() {
+  return Array.from(document.querySelectorAll("img"))
+    .filter(image => isVisible(image) && image.getAttribute("src"))
+    .filter(isElementInsideLocalizedScreenshotField);
+}
+
+function isMediaRemoveButton(button) {
+  if (!button || button.getAttribute("aria-disabled") === "true") return false;
+  if (!isVisible(button)) return false;
+  const label = normalizeLanguageText(button.getAttribute("aria-label") || "");
+  return button.getAttribute("jsname") === "LCoeQd" ||
+    /remove|delete|entfernen|loschen/.test(label);
+}
+
+function getLocalizedScreenshotRemoveButtons() {
+  return Array.from(document.querySelectorAll("[role='button'][aria-label], [jsname='LCoeQd']"))
+    .filter(isMediaRemoveButton)
+    .filter(isElementInsideLocalizedScreenshotField);
+}
+
+function getLocalizedScreenshotProgressElements() {
+  const progressBars = Array.from(document.querySelectorAll("[role='progressbar']"))
+    .filter(isVisible)
+    .filter(isElementInsideLocalizedScreenshotField);
+  const progressText = Array.from(document.querySelectorAll("*"))
+    .filter(isVisible)
+    .filter(isElementInsideLocalizedScreenshotField)
+    .filter(element => /in bearbeitung|processing|uploading|hochlad|in progress/i.test(element.textContent || ""));
+  return progressBars.concat(progressText);
+}
+
 function getVisibleMediaImageCount(kind) {
+  if (kind === "localizedScreenshots") {
+    return getLocalizedScreenshotMediaImages().length;
+  }
+
   const images = new Set();
   getMediaUploadWidgets(kind).forEach(widget => {
     Array.from(widget.querySelectorAll("img"))
@@ -475,6 +484,10 @@ function getVisibleMediaImageCount(kind) {
 }
 
 function hasMediaUploadInProgress(kind) {
+  if (kind === "localizedScreenshots") {
+    return getLocalizedScreenshotProgressElements().length > 0;
+  }
+
   return getMediaUploadWidgets(kind).some(widget => {
     const hasVisibleProgress = Array.from(widget.querySelectorAll("[role='progressbar']"))
       .some(isVisible);
@@ -887,9 +900,11 @@ function setMediaOperationProgress(message) {
 }
 
 async function revealMediaRemoveControls(kind) {
-  const targets = getMediaUploadWidgets(kind)
-    .flatMap(widget => Array.from(widget.querySelectorAll("img")))
-    .filter(image => isVisible(image) && image.getAttribute("src"))
+  const targets = (kind === "localizedScreenshots"
+    ? getLocalizedScreenshotMediaImages()
+    : getMediaUploadWidgets(kind)
+      .flatMap(widget => Array.from(widget.querySelectorAll("img")))
+      .filter(image => isVisible(image) && image.getAttribute("src")))
     .map(image => image.closest("div") || image);
 
   for (const target of targets) {
@@ -938,6 +953,10 @@ async function confirmVisibleDialog() {
 }
 
 function getMediaRemoveButtons(kind) {
+  if (kind === "localizedScreenshots") {
+    return getLocalizedScreenshotRemoveButtons();
+  }
+
   const buttons = new Set();
   getMediaUploadWidgets(kind).forEach(widget => {
     Array.from(widget.querySelectorAll("[role='button'][aria-label], [jsname='LCoeQd']"))
@@ -945,13 +964,7 @@ function getMediaRemoveButtons(kind) {
   });
 
   return Array.from(buttons)
-    .filter(button => {
-      if (button.getAttribute("aria-disabled") === "true") return false;
-      if (!isVisible(button)) return false;
-      const label = normalizeLanguageText(button.getAttribute("aria-label") || "");
-      return button.getAttribute("jsname") === "LCoeQd" ||
-        /remove|delete|entfernen|loschen/.test(label);
-    });
+    .filter(isMediaRemoveButton);
 }
 
 function hasClearableMedia(kind) {

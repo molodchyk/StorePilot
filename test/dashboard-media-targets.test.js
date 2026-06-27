@@ -91,9 +91,18 @@ class FakeElement {
   }
 
   matches(selector) {
+    if (selector === "*") return true;
+    if (selector === "div") return this.tagName === "DIV";
+    if (selector === "section") return this.tagName === "SECTION";
+    if (selector === "article") return this.tagName === "ARTICLE";
+    if (selector === "c-wiz") return this.tagName === "C-WIZ";
+    if (selector === "img") return this.tagName === "IMG";
     if (selector === "input[type='file']") return this.tagName === "INPUT" && this.attributes.type === "file";
     if (selector === "[role='button']") return this.attributes.role === "button";
+    if (selector === "[role='button'][aria-label]") return this.attributes.role === "button" && Boolean(this.attributes["aria-label"]);
     if (selector === "[role='button'][jsname='DagSrd']") return this.attributes.role === "button" && this.attributes.jsname === "DagSrd";
+    if (selector === "[jsname='LCoeQd']") return this.attributes.jsname === "LCoeQd";
+    if (selector === "[aria-label]") return Boolean(this.attributes["aria-label"]);
     if (selector === "[data-image-upload-type]") return Boolean(this.dataset.imageUploadType);
     if (selector === ".aQzcYd") return this.className.split(/\s+/).includes("aQzcYd");
     return false;
@@ -112,10 +121,7 @@ class FakeElement {
     const selectors = selector.split(",").map(part => part.trim());
     const results = [];
     const visit = element => {
-      if (selectors.some(part => element.matches(part) ||
-        part === "img" && element.tagName === "IMG" ||
-        part === "[aria-label]" && Boolean(element.attributes["aria-label"]) ||
-        part === "[jsname='LCoeQd']" && element.attributes.jsname === "LCoeQd")) {
+      if (selectors.some(part => element.matches(part))) {
         results.push(element);
       }
       element.children.forEach(visit);
@@ -133,7 +139,7 @@ class FakeElement {
   }
 }
 
-function createUploadField({ top, text, isGlobal = false, imageCount = 0 }) {
+function createUploadField({ top, text, isGlobal = false, imageCount = 0, removePrefix = "Remove image Screenshot" }) {
   const label = new FakeElement("div", {
     textContent: text,
     rect: { top, bottom: top + 24, left: 40, right: 260, width: 220, height: 24 }
@@ -163,6 +169,10 @@ function createUploadField({ top, text, isGlobal = false, imageCount = 0 }) {
       attributes: { src: `image-${index}.png` },
       rect: { top: top + 50, bottom: top + 100, left: 310 + index * 60, right: 360 + index * 60, width: 50, height: 50 }
     }));
+    field.append(new FakeElement("div", {
+      attributes: { role: "button", jsname: "LCoeQd", "aria-label": `${removePrefix} ${index + 1}` },
+      rect: { top: top + 45, bottom: top + 75, left: 340 + index * 60, right: 370 + index * 60, width: 30, height: 30 }
+    }));
   }
   uploadWidget.append(button, input);
   field.append(uploadWidget);
@@ -170,11 +180,43 @@ function createUploadField({ top, text, isGlobal = false, imageCount = 0 }) {
   return { label, field, uploadWidget, input };
 }
 
+function flatten(elements) {
+  const output = [];
+  const visit = element => {
+    output.push(element);
+    element.children.forEach(visit);
+  };
+  elements.forEach(visit);
+  return output;
+}
+
+const storeIconField = createUploadField({
+  top: 20,
+  text: "Store icon *",
+  imageCount: 1,
+  removePrefix: "Remove image Store icon"
+});
 const localizedField = createUploadField({ top: 100, text: "Localised screenshots *", imageCount: 2 });
 const globalField = createUploadField({ top: 420, text: "Global screenshots *", isGlobal: true, imageCount: 1 });
+const marqueeField = createUploadField({
+  top: 680,
+  text: "Marquee promo tile",
+  imageCount: 1,
+  removePrefix: "Remove image Marquee promo"
+});
 const allInputs = [localizedField.input, globalField.input];
-const allLabels = [localizedField.label, globalField.label];
-const allContainers = [localizedField.field, localizedField.uploadWidget, globalField.field, globalField.uploadWidget];
+const allLabels = [storeIconField.label, localizedField.label, globalField.label, marqueeField.label];
+const allContainers = [
+  storeIconField.field,
+  storeIconField.uploadWidget,
+  localizedField.field,
+  localizedField.uploadWidget,
+  globalField.field,
+  globalField.uploadWidget,
+  marqueeField.field,
+  marqueeField.uploadWidget
+];
+const allElements = flatten(allLabels.concat(allContainers));
 
 context.document = {
   querySelectorAll(selector) {
@@ -182,6 +224,11 @@ context.document = {
     if (selector === "h1,h2,h3,h4,span,p,div,label") return allLabels;
     if (selector === "div,section,article,c-wiz") return allContainers;
     if (selector === "[data-image-upload-type]") return [globalField.field];
+    if (selector === "img") return allElements.filter(element => element.matches("img"));
+    if (selector === "[role='button'][aria-label], [jsname='LCoeQd']") {
+      return allElements.filter(element => element.matches("[role='button'][aria-label]") || element.matches("[jsname='LCoeQd']"));
+    }
+    if (selector === "*") return allElements;
     return [];
   },
   querySelector() {
@@ -195,5 +242,12 @@ assert.equal(localizedTargets.length, 1);
 assert.equal(localizedTargets[0].input, localizedField.input);
 assert.equal(context.getVisibleMediaImageCount("localizedScreenshots"), 2);
 assert.equal(context.getVisibleMediaImageCount("screenshots"), 1);
+
+const localizedRemoveButtons = context.getMediaRemoveButtons("localizedScreenshots");
+assert.equal(localizedRemoveButtons.length, 2);
+assert.deepEqual(
+  Array.from(localizedRemoveButtons, button => button.getAttribute("aria-label")),
+  ["Remove image Screenshot 1", "Remove image Screenshot 2"]
+);
 
 console.log("Dashboard media target tests passed.");

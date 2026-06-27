@@ -300,16 +300,10 @@ async function runExclusiveMediaOperation(label, operation) {
   };
   updatePanelMediaUi();
   updatePanelFillAllUi();
-  if (typeof installMediaOperationInteractionShield === "function") {
-    installMediaOperationInteractionShield(label);
-  }
 
   try {
     return await operation();
   } finally {
-    if (typeof removeMediaOperationInteractionShield === "function") {
-      removeMediaOperationInteractionShield();
-    }
     mediaOperationState = {
       running: false,
       label: "",
