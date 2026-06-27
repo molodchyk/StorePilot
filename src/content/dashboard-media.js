@@ -6,8 +6,10 @@ const LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS = 90000;
 const MEDIA_REMOVAL_TIMEOUT_MS = 30000;
 const LOCALIZED_SCREENSHOT_TARGET_READY_TIMEOUT_MS = 45000;
 const LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS = 45000;
+const MEDIA_UPLOAD_BRIDGE_TIMEOUT_MS = 500;
 
 let mediaUploadBridgePromise = null;
+let mediaUploadBridgeBypassed = false;
 
 function isStorePilotOwnedElement(element) {
   const panelId = typeof PANEL_ID === "string" ? PANEL_ID : "storepilot-panel";
@@ -517,9 +519,9 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
   const expectedCount = Number.isFinite(options.expectedCount) ? options.expectedCount : beforeCount + 1;
   const startedAt = Date.now();
   let firstIncreaseAt = 0;
+  const pollIntervalMs = kind === "localizedScreenshots" ? 100 : 500;
 
   while (Date.now() - startedAt < timeoutMs) {
-    await delay(500);
     const nextCount = getVisibleMediaImageCount(kind);
     const reachedExpectedCount = nextCount >= expectedCount || nextCount > beforeCount;
 
@@ -538,6 +540,8 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
     if (reachedExpectedCount && Date.now() - firstIncreaseAt > 5000) {
       return true;
     }
+
+    await delay(pollIntervalMs);
   }
 
   return false;
@@ -565,9 +569,10 @@ function getAvailableMediaUploadInput(kind) {
 async function waitForAvailableMediaUploadInput(kind, timeoutMs = LOCALIZED_SCREENSHOT_TARGET_READY_TIMEOUT_MS) {
   const startedAt = Date.now();
   let target = getAvailableMediaUploadInput(kind);
+  const pollIntervalMs = kind === "localizedScreenshots" ? 100 : 500;
 
   while (!target && Date.now() - startedAt < timeoutMs) {
-    await delay(500);
+    await delay(pollIntervalMs);
     target = getAvailableMediaUploadInput(kind);
   }
 
@@ -601,6 +606,7 @@ async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = ME
   const startedAt = Date.now();
   let matchedAt = 0;
   let currentCount = getVisibleMediaImageCount(kind);
+  const pollIntervalMs = kind === "localizedScreenshots" ? 100 : 300;
 
   while (Date.now() - startedAt < timeoutMs) {
     currentCount = getVisibleMediaImageCount(kind);
@@ -615,7 +621,7 @@ async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = ME
     } else {
       matchedAt = 0;
     }
-    await delay(300);
+    await delay(pollIntervalMs);
   }
 
   return { ok: false, count: getVisibleMediaImageCount(kind) };
@@ -780,7 +786,12 @@ function clearUploadTargetBridgeMarker(input, targetId) {
 }
 
 async function uploadFilesInMainWorld(kind, files, options = {}) {
+  if (mediaUploadBridgeBypassed) {
+    return { ok: false, message: "page bridge bypassed after timeout" };
+  }
+
   if (!(await ensureMediaUploadBridge())) {
+    mediaUploadBridgeBypassed = true;
     return { ok: false, message: "page bridge unavailable" };
   }
 
@@ -790,8 +801,9 @@ async function uploadFilesInMainWorld(kind, files, options = {}) {
   return new Promise(resolve => {
     const timeoutId = window.setTimeout(() => {
       window.removeEventListener("message", handleMessage);
+      mediaUploadBridgeBypassed = true;
       resolve({ ok: false, message: "page bridge timed out" });
-    }, 4000);
+    }, options.timeoutMs || MEDIA_UPLOAD_BRIDGE_TIMEOUT_MS);
 
     function handleMessage(event) {
       const message = event.data;
@@ -848,7 +860,6 @@ async function uploadFilesInContentWorld(input, files) {
   input.files = dataTransfer.files;
   input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
   input.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
-  await delay(100);
 }
 
 async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
@@ -909,8 +920,6 @@ function setMediaOperationProgress(message) {
   if (panelStatus) {
     panelStatus.textContent = message;
   }
-  updatePanelMediaUi();
-  updatePanelFillAllUi();
 }
 
 async function revealMediaRemoveControls(kind) {
@@ -1125,6 +1134,8 @@ async function performUploadLocalizedScreenshots(files) {
       failed.push(`${entry.locale}: ${contextReady.message}`);
       continue;
     }
+    let localizedUploadTarget = contextReady.fieldReady && contextReady.fieldReady.uploadTarget ||
+      getAvailableMediaUploadInput("localizedScreenshots");
 
     const clearResult = await performClearDashboardMediaAssets("localizedScreenshots");
     if (!clearResult.ok) {
@@ -1159,10 +1170,14 @@ async function performUploadLocalizedScreenshots(files) {
 
       const file = entry.files[fileIndex];
       setMediaOperationProgress(`${progressMessage} ${localize("screenshotNumber", "Screenshot $1", [String(fileIndex + 1)])}/${entry.files.length}`);
-      const uploadContext = await ensureLocalizedScreenshotUploadContext(entry.locale);
-      if (!uploadContext.ok) {
-        failed.push(`${entry.locale} screenshot ${fileIndex + 1}: ${uploadContext.message}`);
-        break;
+      if (!isDashboardLocaleSelected(entry.locale)) {
+        const uploadContext = await ensureLocalizedScreenshotUploadContext(entry.locale);
+        if (!uploadContext.ok) {
+          failed.push(`${entry.locale} screenshot ${fileIndex + 1}: ${uploadContext.message}`);
+          break;
+        }
+        localizedUploadTarget = uploadContext.fieldReady && uploadContext.fieldReady.uploadTarget ||
+          getAvailableMediaUploadInput("localizedScreenshots");
       }
 
       const currentCount = getVisibleMediaImageCount("localizedScreenshots");
@@ -1171,11 +1186,14 @@ async function performUploadLocalizedScreenshots(files) {
         break;
       }
 
-      const target = await waitForAvailableMediaUploadInput("localizedScreenshots");
+      const target = localizedUploadTarget && localizedUploadTarget.input && localizedUploadTarget.input.isConnected
+        ? localizedUploadTarget
+        : await waitForAvailableMediaUploadInput("localizedScreenshots");
       if (!target) {
         failed.push(`${entry.locale}: localized screenshot upload target not found`);
         break;
       }
+      localizedUploadTarget = target;
 
       try {
         const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
