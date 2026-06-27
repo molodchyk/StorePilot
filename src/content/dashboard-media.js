@@ -82,6 +82,18 @@ function getMediaUploadAnchorElement(input) {
   return getMediaUploadDropButton(widget) || widget || input;
 }
 
+function scrollMediaActionTargetIntoView(inputOrWidget) {
+  const target = inputOrWidget && inputOrWidget.matches && inputOrWidget.matches("input[type='file']")
+    ? getMediaUploadAnchorElement(inputOrWidget)
+    : getMediaUploadDropButton(inputOrWidget) || inputOrWidget;
+  if (!target || typeof target.scrollIntoView !== "function") return;
+
+  target.scrollIntoView({ block: "center", inline: "center" });
+  if (typeof target.focus === "function") {
+    target.focus({ preventScroll: true });
+  }
+}
+
 function getNearbyMediaContext(element) {
   if (!element) return "";
 
@@ -478,6 +490,22 @@ function getLocalizedScreenshotProgressElements() {
     .filter(element => isElementInsideLocalizedScreenshotBounds(element, bounds));
 }
 
+function getLocalizedScreenshotActionElement() {
+  const uploadTarget = getAvailableMediaUploadInput("localizedScreenshots");
+  if (uploadTarget && uploadTarget.input) {
+    return getMediaUploadAnchorElement(uploadTarget.input);
+  }
+
+  const removeButton = getLocalizedScreenshotRemoveButtons()[0];
+  if (removeButton) return removeButton;
+
+  const image = getLocalizedScreenshotMediaImages()[0];
+  if (image) return image.closest("div") || image;
+
+  const bounds = getLocalizedScreenshotFieldBounds();
+  return bounds && bounds.label || null;
+}
+
 function getVisibleMediaImageCount(kind) {
   if (kind === "localizedScreenshots") {
     return getLocalizedScreenshotMediaImages().length;
@@ -844,7 +872,7 @@ async function uploadFilesInContentWorld(input, files) {
   const dropTarget = button || widget || input;
   const dataTransfer = new DataTransfer();
 
-  dropTarget.scrollIntoView({ block: "center", inline: "center" });
+  scrollMediaActionTargetIntoView(input);
   if (typeof dropTarget.focus === "function") {
     dropTarget.focus({ preventScroll: true });
   }
@@ -876,6 +904,7 @@ async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
   let method = "page bridge";
 
   try {
+    scrollMediaActionTargetIntoView(input);
     let bridgeResult = await uploadFilesInMainWorld(kind, files, { targetId });
 
     if (bridgeResult.ok) {
@@ -1004,7 +1033,106 @@ async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDI
   return false;
 }
 
+async function waitForMediaRemovalAfterBatchClick(kind, beforeCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS) {
+  const startedAt = Date.now();
+  let confirmed = false;
+  let lastCount = beforeCount;
+  let lastDecreaseAt = 0;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const currentCount = getVisibleMediaImageCount(kind);
+    if (currentCount === 0) {
+      return { ok: true, count: currentCount };
+    }
+    if (currentCount < lastCount) {
+      lastCount = currentCount;
+      lastDecreaseAt = Date.now();
+    }
+    if (currentCount < beforeCount && Date.now() - lastDecreaseAt > 150) {
+      return { ok: true, count: currentCount };
+    }
+
+    if (!confirmed) {
+      const confirmButton = getVisibleDialogConfirmButton();
+      if (confirmButton) {
+        activateDashboardButton(confirmButton);
+        confirmed = true;
+      }
+    }
+
+    await delay(100);
+  }
+
+  return { ok: false, count: getVisibleMediaImageCount(kind) };
+}
+
+async function performClearLocalizedScreenshotAssets() {
+  const removed = [];
+  const failed = [];
+  let aborted = false;
+  const label = getMediaUploadKindLabel("localizedScreenshots");
+
+  for (let attempt = 0; attempt < 8; attempt++) {
+    if (mediaOperationState.abortRequested) {
+      aborted = true;
+      break;
+    }
+
+    const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
+    if (!beforeCount) break;
+
+    scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
+    await revealMediaRemoveControls("localizedScreenshots");
+    const buttons = getMediaRemoveButtons("localizedScreenshots");
+    if (!buttons.length) {
+      failed.push(`${label}: remove button not found`);
+      break;
+    }
+
+    const buttonLabels = buttons.map(button => button.getAttribute("aria-label") || label);
+    buttons.forEach(button => {
+      if (!mediaOperationState.abortRequested && button.isConnected !== false) {
+        activateDashboardButton(button);
+      }
+    });
+
+    const result = await waitForMediaRemovalAfterBatchClick("localizedScreenshots", beforeCount);
+    if (!result.ok) {
+      failed.push(`${label}: CWS still shows ${result.count} screenshot(s) after delete`);
+      break;
+    }
+
+    const removedCount = Math.max(1, beforeCount - result.count);
+    for (let index = 0; index < removedCount; index++) {
+      removed.push(buttonLabels[index] || label);
+    }
+  }
+
+  const messageParts = [
+    removed.length
+      ? localize("mediaClearedKind", "Cleared $1: $2.", [label, String(removed.length)])
+      : localize("mediaAlreadyClearKind", "$1 already clear.", [label]),
+    aborted ? localize("operationStopped", "Stopped.") : "",
+    failed.length ? localize("mediaUploadFailures", "Failed: $1.", [failed.join(", ")]) : ""
+  ].filter(Boolean);
+
+  return {
+    ok: failed.length === 0,
+    aborted,
+    message: messageParts.join(" "),
+    removed,
+    failed,
+    diagnostics: {
+      mediaUploadTargets: getMediaUploadDiagnostics()
+    }
+  };
+}
+
 async function performClearDashboardMediaAssets(kind) {
+  if (kind === "localizedScreenshots") {
+    return performClearLocalizedScreenshotAssets();
+  }
+
   const removed = [];
   const failed = [];
   let aborted = false;

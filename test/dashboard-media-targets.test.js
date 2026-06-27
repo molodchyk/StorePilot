@@ -11,6 +11,18 @@ const context = vm.createContext({
       return [];
     }
   },
+  setTimeout,
+  Date,
+  window: {},
+  MouseEvent: class FakeMouseEvent {
+    constructor(type, options = {}) {
+      this.type = type;
+      Object.assign(this, options);
+    }
+  },
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
   normalizeLanguageText(text) {
     return String(text || "")
       .normalize("NFD")
@@ -23,6 +35,18 @@ const context = vm.createContext({
   },
   getVisibleText(element) {
     return element && element.textContent || "";
+  },
+  localize(_key, fallback, substitutions) {
+    return String(fallback || "").replace(/\$(\d+)/g, (_match, index) => {
+      const value = substitutions && substitutions[Number(index) - 1];
+      return value === undefined || value === null ? "" : String(value);
+    });
+  },
+  getMediaUploadDiagnostics() {
+    return {};
+  },
+  mediaOperationState: {
+    abortRequested: false
   }
 });
 
@@ -68,6 +92,7 @@ class FakeElement {
     this.nextElementSibling = null;
     this.rect = options.rect || { top: 0, bottom: 20, left: 0, right: 200, width: 200, height: 20 };
     this.hidden = Boolean(options.hidden);
+    this.clickCount = 0;
   }
 
   append(...children) {
@@ -136,6 +161,14 @@ class FakeElement {
 
   getBoundingClientRect() {
     return this.rect;
+  }
+
+  scrollIntoView() {}
+
+  focus() {}
+
+  dispatchEvent() {
+    return true;
   }
 }
 
@@ -250,4 +283,28 @@ assert.deepEqual(
   ["Remove image Screenshot 1", "Remove image Screenshot 2"]
 );
 
-console.log("Dashboard media target tests passed.");
+context.activateDashboardButton = button => {
+  button.clickCount += 1;
+  if ((button.getAttribute("aria-label") || "").startsWith("Remove image Screenshot")) {
+    button.hidden = true;
+    const previous = button.previousElementSibling;
+    if (previous && previous.tagName === "IMG") previous.hidden = true;
+  }
+};
+
+(async () => {
+  const result = await context.performClearLocalizedScreenshotAssets();
+  assert.equal(result.ok, true);
+  assert.equal(result.removed.length, 2);
+  assert.equal(context.getVisibleMediaImageCount("localizedScreenshots"), 0);
+  assert.equal(context.getVisibleMediaImageCount("screenshots"), 1);
+  const globalRemoveButtons = context.getMediaRemoveButtons("screenshots");
+  assert.equal(globalRemoveButtons.length, 1);
+  assert.equal(globalRemoveButtons[0].getAttribute("aria-label"), "Remove image Screenshot 1");
+  assert.equal(globalRemoveButtons[0].clickCount, 0);
+
+  console.log("Dashboard media target tests passed.");
+})().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});
