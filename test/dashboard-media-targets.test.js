@@ -86,6 +86,25 @@ globalAssets.textContent = "Graphic assets Global assets Global screenshots Drop
 assert.ok(context.scoreLocalizedScreenshotUploadWidget(localizedWidget) >= 100);
 assert.ok(context.scoreLocalizedScreenshotUploadWidget(globalWidget) < 100);
 
+const localizedProgressStatus = context.formatLocalizedScreenshotProgressStatus({
+  localeIndex: 1,
+  totalLocales: 66,
+  locale: "ar",
+  localeScreenshotCount: 3,
+  completedLocales: 1,
+  failedLocales: 0,
+  skippedLocales: 0,
+  uploadedScreenshots: 5,
+  totalScreenshots: 198
+}, "uploading screenshot 3/3 (attempt 1/3, visible 2)");
+assert.deepEqual(localizedProgressStatus.split("\n"), [
+  "Localized screenshots",
+  "Locale: 2/66 - ar (3 expected)",
+  "Run locales: 1/66 completed, 0 failed, 0 skipped",
+  "Screenshots: 5/198 uploaded",
+  "Current step: uploading screenshot 3/3 (attempt 1/3, visible 2)"
+]);
+
 class FakeElement {
   constructor(tagName, options = {}) {
     this.tagName = tagName.toUpperCase();

@@ -149,6 +149,8 @@
       #${panelId} .storepilot-status {
         color: #475569;
         font-size: 12px;
+        overflow-wrap: anywhere;
+        white-space: pre-line;
       }
 
       #${panelId}[data-panel-mode="minimized"] .storepilot-meta,

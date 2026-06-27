@@ -1058,10 +1058,13 @@ function createLocalizedScreenshotProgress(entry, localeIndex, totalLocales, sta
 }
 
 function formatLocalizedScreenshotProgressStatus(progress, phase) {
-  const localePart = `${progress.localeIndex + 1}/${progress.totalLocales}: ${progress.locale}`;
-  const outcomePart = `${progress.completedLocales || 0} done, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`;
-  const imagePart = `${progress.uploadedScreenshots || 0}/${progress.totalScreenshots || 0} screenshots`;
-  return `Localized screenshots ${localePart} (${progress.localeScreenshotCount} expected; ${outcomePart}; ${imagePart}) - ${phase}`;
+  return [
+    "Localized screenshots",
+    `Locale: ${progress.localeIndex + 1}/${progress.totalLocales} - ${progress.locale} (${progress.localeScreenshotCount} expected)`,
+    `Run locales: ${progress.completedLocales || 0}/${progress.totalLocales} completed, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`,
+    `Screenshots: ${progress.uploadedScreenshots || 0}/${progress.totalScreenshots || 0} uploaded`,
+    `Current step: ${phase}`
+  ].join("\n");
 }
 
 function setLocalizedScreenshotProgress(progress, phase) {
@@ -1103,7 +1106,7 @@ async function waitForMediaAutomationVisible(progress = null) {
       return { ok: false, aborted: true };
     }
 
-    const message = "waiting for this dashboard tab to be visible; minimized/background tabs pause CWS upload processing";
+    const message = "paused; dashboard tab is hidden/minimized, waiting for it to be visible";
     if (progress) {
       setLocalizedScreenshotProgress(progress, message);
     } else {
@@ -1252,7 +1255,7 @@ async function removeOneLocalizedScreenshotWithRetries(progress = null) {
     }
 
     if (progress) {
-      setLocalizedScreenshotProgress(progress, `clearing ${beforeCount} existing screenshot(s); delete attempt ${attempt}/${LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE}`);
+      setLocalizedScreenshotProgress(progress, `clearing existing screenshots (visible ${beforeCount}, delete attempt ${attempt}/${LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE})`);
     }
     scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
     await revealMediaRemoveControls("localizedScreenshots");
@@ -1486,7 +1489,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
     }
 
     let currentCount = getVisibleMediaImageCount("localizedScreenshots");
-    setLocalizedScreenshotProgress(progress, `uploading screenshot ${fileIndex + 1}/${entry.files.length}; attempt ${uploadAttempt}/${LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE}; visible count ${currentCount}`);
+    setLocalizedScreenshotProgress(progress, `uploading screenshot ${fileIndex + 1}/${entry.files.length} (attempt ${uploadAttempt}/${LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE}, visible ${currentCount})`);
 
     if (!isDashboardLocaleSelected(entry.locale)) {
       setLocalizedScreenshotProgress(progress, `dashboard locale changed; re-selecting ${entry.locale} before screenshot ${fileIndex + 1}/${entry.files.length}`);
@@ -1553,7 +1556,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
             target
           };
         }
-        setLocalizedScreenshotProgress(progress, `uploaded screenshot ${fileIndex + 1}/${entry.files.length}; visible count ${afterCount}`);
+        setLocalizedScreenshotProgress(progress, `uploaded screenshot ${fileIndex + 1}/${entry.files.length} (visible ${afterCount})`);
         return { ok: true, target };
       }
 
@@ -1579,7 +1582,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
 async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, localeAttempt, stats) {
   let progress = createLocalizedScreenshotProgress(entry, localeIndex, total, stats);
   const attemptPrefix = localeAttempt > 1
-    ? `retrying locale; attempt ${localeAttempt}/${LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS}; `
+    ? `retrying locale (attempt ${localeAttempt}/${LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS}); `
     : "";
   setLocalizedScreenshotProgress(progress, `${attemptPrefix}selecting locale`);
 
