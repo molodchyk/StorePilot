@@ -193,6 +193,29 @@ async function openLanguageDropdown(preferredLocale = "", expectedMode = "", opt
   };
 }
 
+async function waitForLanguageDropdownMenuClosed(dropdown, attempts = 4, delayMs = 50) {
+  if (typeof isLanguageDropdownMenuOpen !== "function") return true;
+  if (!isLanguageDropdownMenuOpen(dropdown)) return true;
+
+  if (typeof closeLanguageDropdownMenu === "function") {
+    closeLanguageDropdownMenu(dropdown);
+  }
+
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    await delay(delayMs);
+    if (!isLanguageDropdownMenuOpen(dropdown)) return true;
+  }
+
+  return false;
+}
+
+function formatLanguageSelectionMismatch(option, normalizedTarget) {
+  return localize("clickedButDashboardShows", "Clicked $1, but the dashboard still shows $2.", [
+    formatLanguageOption(option),
+    getCurrentDashboardLocale() || normalizedTarget || localize("unknownLocale", "an unknown locale")
+  ]);
+}
+
 async function selectDashboardLanguage(locale, selectionOptions = {}) {
   const normalizedTarget = normalizeLocale(locale);
   const expectedMode = getExpectedLanguageDropdownMode();
@@ -233,22 +256,47 @@ async function selectDashboardLanguage(locale, selectionOptions = {}) {
     activateDropdownOption(option.element);
   }
 
+  let retriedActivation = false;
+  let pressedEnter = false;
   for (let attempt = 0; attempt <= confirmationAttempts; attempt++) {
     const currentDropdown = findLanguageDropdown(locale, expectedMode) || opened.dropdown;
     const currentLocale = currentDropdown ? getLanguageDropdownLocale(currentDropdown) : "";
+    const menuOpen = typeof isLanguageDropdownMenuOpen === "function" && isLanguageDropdownMenuOpen(currentDropdown);
     if (currentLocale && localesMatch(currentLocale, normalizedTarget)) {
+      if (menuOpen) {
+        const closed = await waitForLanguageDropdownMenuClosed(currentDropdown);
+        if (!closed) {
+          return {
+            ok: false,
+            message: formatLanguageSelectionMismatch(option, normalizedTarget)
+          };
+        }
+      }
       return {
         ok: true,
         verified: true,
         message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)])
       };
     }
-    if (!currentLocale && currentDropdown && !isLanguageDropdownPlaceholder(currentDropdown)) {
+    if (!currentLocale && currentDropdown && !isLanguageDropdownPlaceholder(currentDropdown) && !menuOpen) {
       return {
         ok: true,
         verified: false,
         message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)])
       };
+    }
+    if (menuOpen && !retriedActivation) {
+      retriedActivation = true;
+      scrollDropdownOptionIntoView(option.element);
+      if (typeof activateDropdownOptionLegacy === "function") {
+        activateDropdownOptionLegacy(option.element);
+      }
+      activateDropdownOption(option.element);
+    } else if (menuOpen && !pressedEnter) {
+      pressedEnter = true;
+      if (typeof pressDropdownOptionEnter === "function") {
+        pressDropdownOptionEnter(option.element);
+      }
     }
     if (attempt < confirmationAttempts && confirmationDelayMs) {
       await delay(confirmationDelayMs);
@@ -256,6 +304,28 @@ async function selectDashboardLanguage(locale, selectionOptions = {}) {
   }
 
   if (acceptUnverifiedClick) {
+    const currentDropdown = findLanguageDropdown(locale, expectedMode) || opened.dropdown;
+    const currentLocale = currentDropdown ? getLanguageDropdownLocale(currentDropdown) : "";
+    if (currentLocale && !localesMatch(currentLocale, normalizedTarget)) {
+      return {
+        ok: false,
+        message: formatLanguageSelectionMismatch(option, normalizedTarget)
+      };
+    }
+    if (typeof isLanguageDropdownMenuOpen === "function" && isLanguageDropdownMenuOpen(currentDropdown)) {
+      activateDropdownOption(option.element);
+      if (typeof pressDropdownOptionEnter === "function") {
+        pressDropdownOptionEnter(option.element);
+      }
+      const closed = await waitForLanguageDropdownMenuClosed(currentDropdown);
+      if (!closed) {
+        return {
+          ok: false,
+          message: formatLanguageSelectionMismatch(option, normalizedTarget)
+        };
+      }
+    }
+
     return {
       ok: true,
       verified: false,
@@ -265,10 +335,7 @@ async function selectDashboardLanguage(locale, selectionOptions = {}) {
 
   return {
     ok: false,
-    message: localize("clickedButDashboardShows", "Clicked $1, but the dashboard still shows $2.", [
-      formatLanguageOption(option),
-      getCurrentDashboardLocale() || localize("unknownLocale", "an unknown locale")
-    ])
+    message: formatLanguageSelectionMismatch(option, normalizedTarget)
   };
 }
 

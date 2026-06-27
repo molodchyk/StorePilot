@@ -342,6 +342,24 @@ function activateDropdownOption(optionElement) {
   }
 }
 
+function pressDropdownOptionEnter(optionElement) {
+  if (!optionElement) return;
+
+  if (typeof optionElement.focus === "function") {
+    optionElement.focus({ preventScroll: true });
+  }
+
+  ["keydown", "keyup"].forEach(type => {
+    optionElement.dispatchEvent(new KeyboardEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      key: "Enter",
+      code: "Enter"
+    }));
+  });
+}
+
 function activateDropdownOptionLegacy(optionElement) {
   if (!optionElement) return;
 
@@ -360,11 +378,37 @@ function getLanguageOptionsForMode(opened, mode) {
 }
 
 function activateLanguageOptionForMode(optionElement, mode) {
+  scrollDropdownOptionIntoView(optionElement);
+
   if (mode === "one-language") {
-    scrollDropdownOptionIntoView(optionElement);
     return "scrolled";
   }
 
-  activateDropdownOptionLegacy(optionElement);
-  return "legacy";
+  activateDropdownOption(optionElement);
+  return "activated";
+}
+
+function isLanguageDropdownMenuOpen(dropdown = null) {
+  return getLanguageOptionElements(dropdown, true).length > 0;
+}
+
+function closeLanguageDropdownMenu(dropdown = null) {
+  const targets = Array.from(new Set([
+    document.activeElement,
+    dropdown,
+    document.body,
+    document
+  ].filter(Boolean)));
+
+  targets.forEach(target => {
+    ["keydown", "keyup"].forEach(type => {
+      target.dispatchEvent(new KeyboardEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+        key: "Escape",
+        code: "Escape"
+      }));
+    });
+  });
 }
