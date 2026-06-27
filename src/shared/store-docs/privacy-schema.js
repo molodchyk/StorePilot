@@ -55,9 +55,9 @@ function storePilotGetPrivacyDocFieldKeys(fields) {
   ));
   const permissionKeys = keys.filter(key => key.startsWith("permission.")).sort((a, b) => a.localeCompare(b));
   const preferredOrder = [
-    "single_purpose",
-    "host_permission"
+    "single_purpose"
   ];
+  const hostPermissionOrder = keys.includes("host_permission") ? ["host_permission"] : [];
 
   const remoteCodeOrder = [];
   if (Object.prototype.hasOwnProperty.call(privacyFields, "remote_code")) {
@@ -69,9 +69,11 @@ function storePilotGetPrivacyDocFieldKeys(fields) {
 
   const ordered = preferredOrder.filter(key => keys.includes(key))
     .concat(permissionKeys)
+    .concat(hostPermissionOrder)
     .concat(keys.filter(key => (
       !preferredOrder.includes(key) &&
       !permissionKeys.includes(key) &&
+      key !== "host_permission" &&
       key !== "privacy_policy_url"
     )).sort((a, b) => a.localeCompare(b)))
     .concat(remoteCodeOrder);

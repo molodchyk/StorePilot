@@ -1,6 +1,6 @@
 # StorePilot Storage Ownership
 
-Last reviewed: 2026-06-18.
+Last reviewed: 2026-06-26.
 
 This document records StorePilot's persistent storage keys and ownership boundaries. It exists because the Firefox Extension Modularization Playbook requires every storage key to have an owner, shape, migration path, retention rule, quota risk, and privacy classification.
 
@@ -10,7 +10,7 @@ StorePilot is local-first. These records stay in the user's browser profile and 
 
 | Key | Owner | Shape | Migration | Retention / pruning | Quota risk | Privacy classification |
 | --- | --- | --- | --- | --- | --- | --- |
-| `storePilotProjects` | Projects and import workflow | Array of project records. Each project can contain imported listings, source metadata, category, Additional fields, Graphic Assets metadata, privacy document values, last sync time, and folder-handle flags. | Current primary state. Older `storePilotListings` data is migrated into a project when no projects exist. | Retained until the user deletes a project or uses Reset local data. Project deletion also removes related handles and bindings. | Medium to high for many locales and large imported metadata, which is why `unlimitedStorage` is requested. | Imported local project metadata and user configuration. |
+| `storePilotProjects` | Projects and import workflow | Array of project records. Each project can contain imported listings, source metadata, detected WebExtension localization metadata for CWS picker mode, category, Additional fields, Graphic Assets metadata, privacy document values, last sync time, and folder-handle flags. | Current primary state. Older `storePilotListings` data is migrated into a project when no projects exist. | Retained until the user deletes a project or uses Reset local data. Project deletion also removes related handles and bindings. | Medium to high for many locales and large imported metadata, which is why `unlimitedStorage` is requested. | Imported local project metadata and user configuration. |
 | `storePilotActiveProjectId` | Projects and active-project selection | String project id. | Reconciled to the first available project when missing or stale. | Retained until the active project changes, the project is deleted, or Reset local data runs. | Low. | User configuration. |
 | `storePilotDashboardProjectBindings` | Dashboard project resolution | Object keyed by Chrome Web Store extension id. Values contain project id, normalized extension id, optional dashboard title/source, and update timestamp. | Supports old string values by treating them as `{ projectId }`. | Updated when the user manually links a project or StorePilot confidently resolves a dashboard title. Entries for deleted projects are pruned on project deletion. Reset local data clears all bindings. | Low. | Imported local metadata and user configuration. |
 | `storePilotSettings` | Preferences | Object with UI preferences such as `theme` and `showAdvancedFillActions`. | Defaults are applied when keys are missing. | Retained until changed by the user or Reset local data runs. | Low. | User configuration. |
@@ -24,7 +24,7 @@ Database version: `2`.
 | Object store | Owner | Shape | Migration | Retention / pruning | Quota risk | Privacy classification |
 | --- | --- | --- | --- | --- | --- | --- |
 | `handles` | Project file access | Keyed by project id. Values are browser-managed `FileSystemDirectoryHandle` objects granted by the user. | Created if missing during database upgrade. | Saved after folder import. Removed when the project is deleted or Reset local data runs. | Low metadata size, but browser permission state is sensitive. | Browser-managed local file/folder permission. |
-| `mediaFiles` | Graphic Assets upload workflow | Keyed by project id. Values contain resolved `File` objects for store icon, screenshots, small promo, marquee promo, and a save timestamp. | Created in database version 2 if missing. | Saved when media files are selected or resolved from a project folder. Removed when the project is deleted or Reset local data runs. | Medium to high because screenshots and promo images can be large. | Browser-managed local file references for user-selected media. |
+| `mediaFiles` | Graphic Assets upload workflow | Keyed by project id. Values contain resolved `File` objects for store icon, global screenshots, locale-keyed localized screenshot arrays, small promo, marquee promo, and a save timestamp. | Created in database version 2 if missing. Existing records without `localizedScreenshots` are treated as having an empty localized screenshot map. | Saved when media files are selected or resolved from a project folder. Removed when the project is deleted or Reset local data runs. | High for projects with many localized screenshot locales because CWS can support dozens of locales with up to five screenshots each. | Browser-managed local file references for user-selected media. |
 
 ## Dashboard Page `window.localStorage`
 

@@ -174,9 +174,12 @@ function getDashboardMediaState() {
   const storeIconPresent = hasExistingOrProcessingMedia("storeIcon");
   const smallPromoPresent = hasExistingOrProcessingMedia("smallPromo");
   const marqueePromoPresent = hasExistingOrProcessingMedia("marqueePromo");
+  const localizedScreenshotTargetFound = getMediaUploadWidgets("localizedScreenshots").length > 0 ||
+    hasClearableMedia("localizedScreenshots");
 
   return {
     screenshots: screenshotCount,
+    localizedScreenshots: getVisibleMediaImageCount("localizedScreenshots"),
     storeIcon: getVisibleMediaImageCount("storeIcon"),
     smallPromo: getVisibleMediaImageCount("smallPromo"),
     marqueePromo: getVisibleMediaImageCount("marqueePromo"),
@@ -186,6 +189,7 @@ function getDashboardMediaState() {
     clearableMarqueePromo: hasClearableMedia("marqueePromo"),
     screenshotsLimitReached: screenshotCount >= MAX_DASHBOARD_SCREENSHOTS,
     maxScreenshots: MAX_DASHBOARD_SCREENSHOTS,
+    localizedScreenshotTargetFound,
     storeIconPresent,
     smallPromoPresent,
     marqueePromoPresent,
@@ -199,6 +203,7 @@ function getPanelMediaButtons(panel = document.getElementById(PANEL_ID)) {
   return Array.from(panel.querySelectorAll([
     "[data-storepilot-action='upload-storeIcon']",
     "[data-storepilot-action='upload-screenshots']",
+    "[data-storepilot-action='upload-localizedScreenshots']",
     "[data-storepilot-action='upload-smallPromo']",
     "[data-storepilot-action='upload-marqueePromo']",
     "[data-storepilot-action='clear-screenshots']",
@@ -267,6 +272,16 @@ function updatePanelMediaUi() {
       ? localize("screenshotsLimitReached", "screenshots: CWS limit of $1 already reached", [String(MAX_DASHBOARD_SCREENSHOTS)])
       : "";
   }
+
+  const uploadLocalizedScreenshotsButton = panel.querySelector("[data-storepilot-action='upload-localizedScreenshots']");
+  if (uploadLocalizedScreenshotsButton) {
+    const targetFound = getMediaUploadWidgets("localizedScreenshots").length > 0 ||
+      hasClearableMedia("localizedScreenshots");
+    uploadLocalizedScreenshotsButton.disabled = !targetFound;
+    uploadLocalizedScreenshotsButton.title = targetFound
+      ? ""
+      : localize("localizedScreenshotTargetNotFound", "Localized screenshots upload target not found on this page.");
+  }
 }
 
 async function runExclusiveMediaOperation(label, operation) {
@@ -285,10 +300,16 @@ async function runExclusiveMediaOperation(label, operation) {
   };
   updatePanelMediaUi();
   updatePanelFillAllUi();
+  if (typeof installMediaOperationInteractionShield === "function") {
+    installMediaOperationInteractionShield(label);
+  }
 
   try {
     return await operation();
   } finally {
+    if (typeof removeMediaOperationInteractionShield === "function") {
+      removeMediaOperationInteractionShield();
+    }
     mediaOperationState = {
       running: false,
       label: "",

@@ -2,19 +2,19 @@
 
 Use this file when submitting StorePilot to Firefox Add-ons.
 
-## Version 1.3.1.2 Fields
+## Version 1.3.1.3 Fields
 
 Release Notes:
 
 ```text
-StorePilot 1.3.1.2 is a small options-workflow update. It adds keyboard shortcuts for switching the options tabs, lets users choose which shortcut styles are active from Preferences, and adds keyboard/button navigation inside the Graphic Assets preview dialog.
+StorePilot 1.3.1.3 is a release-readiness update for Chrome Web Store automation accuracy and accessibility. It fixes privacy-field routing, aligns the Privacy Document review order with the Chrome Web Store page, adds Preferences-only appearance modes/styles including high contrast, and detects localized WebExtension project structure so one imported listing locale still uses the correct multi-locale CWS language picker when the project has manifest localization.
 
 What's changed:
-- Number keys select options tabs directly.
-- W/S and Up/Down arrow keys move between options tabs.
-- Preferences now lets users enable or disable number-key, W/S, and arrow-key tab navigation separately.
-- Shortcuts are ignored while editing inputs, selects, textareas, contenteditable fields, or media previews.
-- Graphic Assets previews now have left/right arrow buttons and support A/D or Left/Right arrow keys to move between previewable assets.
+- Privacy field matching now prevents missing `permission.*` fields from falling back to and overwriting Host permission justification.
+- Privacy Document review and fill order now follows the Chrome Web Store privacy page by listing individual permission justifications before Host permission.
+- Preferences now has separate Mode and Style appearance controls, including High contrast; the popup and dashboard panel inherit the saved appearance without exposing theme controls in the popup.
+- System mode styled themes now follow the operating system brightness correctly.
+- StorePilot now detects `default_locale`, `__MSG_*__`, and root `_locales/<locale>/messages.json` project structure so localized extensions use the multi-locale CWS language picker even with one imported listing file.
 - No permissions, data collection behavior, host permissions, or automatic submit/review behavior changed.
 ```
 
@@ -23,13 +23,13 @@ Notes to Reviewer:
 ```text
 StorePilot is a local-first tool for extension publishers. It imports user-selected local project files/folders (localized listing text, CWS category, Additional fields, graphic asset references, privacy-form text, and Data usage choices) and helps fill CWS Developer Dashboard fields only when the user clicks an action.
 
-Version 1.3.1.2 reviewer notes:
-- Adds options-tab keyboard navigation so users can move through Product Details, Graphic Assets, Additional Fields, Privacy Document, Data Usage, Projects, Preferences, and Reference without clicking each tab.
-- Supports number keys for direct tab selection and W/S or Up/Down arrows for previous/next tab navigation.
-- Adds Preferences checkboxes so each shortcut style can be enabled or disabled independently.
-- Keeps shortcuts inactive while the user is typing in fields, changing selects, editing contenteditable text, or using the media-preview dialog.
-- Adds previous/next arrow buttons to the Graphic Assets preview dialog, plus A/D and Left/Right arrow-key navigation between previewable graphic assets.
-- Retains the 1.3.x category, Additional fields, Data Usage, remote-code radio, Graphic Assets, and project-binding features.
+Version 1.3.1.3 reviewer notes:
+- Fixes Chrome Web Store privacy-form routing so permission justifications and Host permission justification are matched by label/key semantics instead of fragile field position assumptions.
+- Aligns StorePilot's Privacy Document review order with the Chrome Web Store privacy form order.
+- Adds Preferences-only appearance controls: Mode (`System`, `Light`, `Dark`) and Style (`Default`, `Slate`, `Ocean`, `Forest`, `High contrast`). Popup and dashboard panel surfaces inherit the saved appearance.
+- Fixes System-mode styled themes so they do not mix a light style with dark system controls.
+- Detects WebExtension localization in imported project roots so extensions with `default_locale` / `_locales` use the correct multi-locale Chrome Web Store language picker even if StorePilot imports only one listing locale.
+- Retains the 1.3.x category, Additional fields, Data Usage, remote-code radio, Graphic Assets, project-binding, tab shortcut, and Graphic Assets preview-navigation features.
 - No extension permissions, host permissions, remote-code behavior, data collection behavior, or final submit/review behavior changed. StorePilot never clicks final submit/publish/review.
 
 Privacy/data:
@@ -41,10 +41,10 @@ Privacy/data:
 Build/source:
 - Source is not bundled, minified, transpiled, or obfuscated.
 - Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-- Expected extension package: artifacts/storepilot-1.3.1.2.zip
+- Expected extension package: artifacts/storepilot-1.3.1.3.zip
 - The build copies source, locales, icons, and manifest into dist, then creates the zip with forward-slash archive entries for AMO validation.
 - Node.js is used only for tests, not to build the submitted extension package.
-- If source code is requested, upload artifacts/source/storepilot-source-1.3.1.2.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
+- If source code is requested, upload artifacts/source/storepilot-source-1.3.1.3.zip, generated with: powershell -ExecutionPolicy Bypass -File scripts\build-amo-source.ps1
 - Source package uses git ls-files, so generated/untracked local files are excluded.
 ```
 
@@ -65,7 +65,7 @@ storepilot
 Summary:
 
 ```text
-Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, screenshots, additional fields, and privacy forms.
+Automate Chrome extension store listings: autofill Chrome Web Store fields, descriptions, global and localized screenshots, additional fields, and privacy forms.
 ```
 
 Description:
@@ -79,7 +79,7 @@ StorePilot can help with:
 
 - Filling matching Chrome Web Store detailed description fields with progress and abort support.
 - Selecting an imported category decision.
-- Uploading screenshots, icons, and promo tiles, then clearing uploaded assets when needed.
+- Uploading global screenshots, localized screenshots, icons, and promo tiles, then clearing uploaded assets when needed.
 - Filling Additional fields, privacy fields, remote-code choices, and Data usage disclosures from project documents.
 - Reviewing imported Product Details, Graphic Assets, Additional Fields, Privacy Document, and Data Usage values before filling the dashboard.
 
@@ -186,7 +186,7 @@ Fill listing languages, select category, fill Additional fields, and manage uplo
 Caption:
 
 ```text
-Review detected store icons, screenshots, small promo tiles, and marquee promo tiles before uploading.
+Review detected store icons, global screenshots, localized screenshots, small promo tiles, and marquee promo tiles before uploading.
 ```
 
 4. `artifacts/screenshots/04-storepilot-privacy-dashboard-panel.png`
@@ -224,7 +224,7 @@ automation
 
 Do not use unrelated tags such as ad blocker, privacy, security, vpn, shopping, or video downloader. StorePilot is a publishing/localization workflow tool, and AMO only allows up to 10 tags.
 
-After uploading 1.3.1.2, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
+After uploading 1.3.1.3, confirm the AMO API tags use the set above instead of the old `google`, `translate`, and `user scripts` set.
 
 ## Language Coverage Notes
 
@@ -297,7 +297,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 Expected output:
 
 ```text
-artifacts/storepilot-1.3.1.2.zip
+artifacts/storepilot-1.3.1.3.zip
 ```
 
 ## Source Code Upload
@@ -305,7 +305,7 @@ artifacts/storepilot-1.3.1.2.zip
 Upload this source package when AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.3.1.2.zip
+artifacts/source/storepilot-source-1.3.1.3.zip
 ```
 
 Create it with:
@@ -324,12 +324,12 @@ Required programs: PowerShell and Git.
 Node.js/npm: not required to build the submitted extension package.
 External dependencies: none.
 Build command: powershell -ExecutionPolicy Bypass -File scripts\build.ps1
-Expected output: artifacts/storepilot-1.3.1.2.zip
+Expected output: artifacts/storepilot-1.3.1.3.zip
 ```
 
 ## Validation Requirements Learned
 
-- Submit `artifacts/storepilot-1.3.1.2.zip`.
+- Submit `artifacts/storepilot-1.3.1.3.zip`.
 - AMO rejects zip entries with Windows backslashes. The build script must preserve forward-slash archive names such as `src/background.js`.
 - The manifest declares:
 
@@ -402,7 +402,7 @@ Open StorePilot options and smoke-check project import, the popup, and one Chrom
 ```powershell
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.3.1.2.zip))
+$zip = [IO.Compression.ZipFile]::OpenRead((Resolve-Path artifacts\storepilot-1.3.1.3.zip))
 $entries = $zip.Entries | Select-Object -ExpandProperty FullName
 if ($entries | Where-Object { $_ -match '\\' }) { throw 'zip contains backslash paths' }
 $zip.Dispose()
@@ -411,11 +411,11 @@ $zip.Dispose()
 6. Upload extension package:
 
 ```text
-artifacts/storepilot-1.3.1.2.zip
+artifacts/storepilot-1.3.1.3.zip
 ```
 
 7. Upload source package if AMO asks for source code:
 
 ```text
-artifacts/source/storepilot-source-1.3.1.2.zip
+artifacts/source/storepilot-source-1.3.1.3.zip
 ```

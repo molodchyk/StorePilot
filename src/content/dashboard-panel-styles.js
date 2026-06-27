@@ -194,6 +194,149 @@
           color: #cbd5e1;
         }
       }
+
+      #${panelId}:not([data-theme="dark"])[data-theme-style="slate"] {
+        border-color: #94a3b8;
+        background: #f3f5f8;
+      }
+
+      #${panelId}:not([data-theme="dark"])[data-theme-style="ocean"] {
+        border-color: #8ecfe0;
+        background: #eef8fb;
+        color: #102033;
+        box-shadow: 0 12px 32px rgba(20, 91, 115, 0.22);
+      }
+
+      #${panelId}:not([data-theme="dark"])[data-theme-style="forest"] {
+        border-color: #a7caa1;
+        background: #f3f8f2;
+        color: #132018;
+        box-shadow: 0 12px 32px rgba(52, 83, 48, 0.2);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #${panelId}:not([data-theme="light"])[data-theme-style="slate"] {
+          border-color: #34445f;
+          background: #0f172a;
+          color: #f4f6fa;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="ocean"] {
+          border-color: #0e7490;
+          background: #0c1e26;
+          color: #f4f6fa;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="forest"] {
+          border-color: #2f7d46;
+          background: #102015;
+          color: #f4f6fa;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="slate"] {
+        border-color: #34445f;
+        background: #0f172a;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="ocean"] {
+        border-color: #0e7490;
+        background: #0c1e26;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="forest"] {
+        border-color: #2f7d46;
+        background: #102015;
+      }
+
+      #${panelId}[data-theme-style="high-contrast"] {
+        border-color: #000000;
+        background: #ffffff;
+        color: #000000;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+      }
+
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-meta,
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-status {
+        color: #000000;
+      }
+
+      #${panelId}[data-theme-style="high-contrast"] select,
+      #${panelId}[data-theme-style="high-contrast"] button {
+        border-color: #000000;
+        background: #ffffff;
+        color: #000000;
+      }
+
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-danger {
+        border-color: #b00020;
+        color: #b00020;
+      }
+
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-action-group {
+        border-top-color: #000000;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] {
+          border-color: #ffffff;
+          background: #000000;
+          color: #ffffff;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-meta,
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-status {
+          color: #ffffff;
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] select,
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] button {
+          border-color: #ffffff;
+          background: #000000;
+          color: #ffffff;
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-danger {
+          border-color: #ffb4b4;
+          color: #ffb4b4;
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-action-group {
+          border-top-color: #ffffff;
+        }
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] {
+        border-color: #ffffff;
+        background: #000000;
+        color: #ffffff;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-meta,
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-status {
+        color: #ffffff;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] select,
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] button {
+        border-color: #ffffff;
+        background: #000000;
+        color: #ffffff;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-danger {
+        border-color: #ffb4b4;
+        color: #ffb4b4;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-action-group {
+        border-top-color: #ffffff;
+      }
     `;
     document.documentElement.append(style);
   }

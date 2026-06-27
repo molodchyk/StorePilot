@@ -82,6 +82,32 @@ assert.deepEqual(
   "remote_code_justification should be visible only when remote_code resolves to yes."
 );
 
+const chromeWebStorePrivacyOrderFields = {
+  single_purpose: "Does one thing.",
+  host_permission: "Only uses supported host permissions.",
+  "permission.storage": "Stores extension settings.",
+  "permission.alarms": "Refreshes a badge after midnight.",
+  "permission.tabs": "Opens supported tabs.",
+  "permission.scripting": "Injects extension packaged scripts.",
+  remote_code: "no",
+  privacy_policy_url: "https://example.com/privacy"
+};
+
+assert.deepEqual(
+  Array.from(context.storePilotGetPrivacyDocFieldKeys(chromeWebStorePrivacyOrderFields)),
+  [
+    "single_purpose",
+    "permission.alarms",
+    "permission.scripting",
+    "permission.storage",
+    "permission.tabs",
+    "host_permission",
+    "remote_code",
+    "privacy_policy_url"
+  ],
+  "Privacy Document rows should mirror the Chrome Web Store permission section: individual permissions before Host permission."
+);
+
 const summary = context.storePilotCreatePrivacyDocSummary([
   {
     path: "docs/chrome-web-store-privacy-form.md",

@@ -1,6 +1,6 @@
 # StorePilot: Chrome Web Store Automation
 
-StorePilot is a local-first Firefox extension for automating Chrome extension store listings by autofilling Chrome Web Store fields, descriptions, screenshots, additional product fields, and privacy forms from local project files.
+StorePilot is a local-first Firefox extension for automating Chrome extension store listings by autofilling Chrome Web Store fields, descriptions, global and localized screenshots, additional product fields, and privacy forms from local project files.
 
 ## What It Does
 
@@ -14,7 +14,7 @@ StorePilot is a local-first Firefox extension for automating Chrome extension st
 - Can expose an advanced Fill current language action for debugging or one-off manual fills.
 - Selects the Chrome Web Store category from a detected project category document.
 - Fills Chrome Web Store Additional fields values such as Homepage URL, Support URL, Official URL, and Mature content from a detected project document.
-- Uploads discovered graphic assets for screenshots, icon, small promo, and marquee promo where the dashboard allows it, with preview navigation through arrow buttons or A/D.
+- Uploads discovered graphic assets for global screenshots, localized screenshots, icon, small promo, and marquee promo where the dashboard allows it, with preview navigation through arrow buttons or A/D.
 - Fills Chrome Web Store privacy-form text from a detected project privacy document.
 - Fills Chrome Web Store Data usage disclosure checkboxes from explicit yes values in a detected privacy document.
 
@@ -97,6 +97,9 @@ store-listing/
       screenshots/
         01-main.png
         02-settings.png
+        de/
+          01-main.png
+          02-settings.png
       promo/
         small-promo.png
         marquee-promo.png
@@ -122,7 +125,7 @@ Alternative single-draft import: StorePilot also accepts `docs/chrome-web-store.
 
 Fields not imported from `listing/en.txt`: name, summary, category, homepage URL, support URL, official URL, mature content, and privacy fields. These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files.
 
-Graphic assets should use `.png`, `.jpg`, or `.jpeg`: icon `128 x 128`, screenshots `1280 x 800` or `640 x 400` up to five files, small promo `440 x 280`, and marquee promo `1400 x 560`.
+Graphic assets should use `.png`, `.jpg`, or `.jpeg`: icon `128 x 128`, direct files under `media/screenshots/` are global screenshots `1280 x 800` or `640 x 400` up to five files, `media/screenshots/<locale>/01-name.png` files are localized screenshots up to five per locale, small promo `440 x 280`, and marquee promo `1400 x 560`. `media/screenshots/en/` is English localized screenshots only, not a global fallback.
 
 Category automation uses `docs/chrome-web-store-category.md` with an explicit selected category line:
 

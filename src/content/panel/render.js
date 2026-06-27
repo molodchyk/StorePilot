@@ -46,6 +46,9 @@ function createPanelBase() {
   if (currentTheme !== "system") {
     panel.dataset.theme = currentTheme;
   }
+  if (currentThemeStyle !== "default") {
+    panel.dataset.themeStyle = currentThemeStyle;
+  }
   header.className = "storepilot-header";
   title.className = "storepilot-title";
   meta.className = "storepilot-meta";
@@ -164,6 +167,9 @@ function renderPanel(locales) {
   panel.id = PANEL_ID;
   if (currentTheme !== "system") {
     panel.dataset.theme = currentTheme;
+  }
+  if (currentThemeStyle !== "default") {
+    panel.dataset.themeStyle = currentThemeStyle;
   }
   header.className = "storepilot-header";
   title.className = "storepilot-title";
@@ -317,6 +323,7 @@ function renderPanel(locales) {
 
   const uploadStoreIconButton = createMediaUploadButton("storeIcon", "uploadStoreIcon", "Upload store icon");
   const uploadScreenshotsButton = createMediaUploadButton("screenshots", "uploadScreenshots", "Upload screenshots");
+  const uploadLocalizedScreenshotsButton = createMediaUploadButton("localizedScreenshots", "uploadLocalizedScreenshots", "Upload localized screenshots");
   const uploadSmallPromoButton = createMediaUploadButton("smallPromo", "uploadSmallPromo", "Upload small promo");
   const uploadMarqueePromoButton = createMediaUploadButton("marqueePromo", "uploadMarqueePromo", "Upload marquee promo");
   const clearScreenshotsButton = createMediaClearButton("screenshots", "clearScreenshots", "Clear screenshots");
@@ -330,6 +337,7 @@ function renderPanel(locales) {
     createPanelActionGroup(
       uploadStoreIconButton,
       uploadScreenshotsButton,
+      uploadLocalizedScreenshotsButton,
       uploadSmallPromoButton,
       uploadMarqueePromoButton
     ),

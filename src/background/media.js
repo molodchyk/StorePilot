@@ -37,9 +37,28 @@
     if (!kind || kind === "screenshots") {
       if ((files.screenshots || []).length) return true;
     }
+    if (!kind || kind === "localizedScreenshots") {
+      if (Object.values(files.localizedScreenshots || {}).some(localeFiles => (localeFiles || []).length)) return true;
+    }
     if ((!kind || kind === "smallPromo") && files.smallPromo) return true;
     if ((!kind || kind === "marqueePromo") && files.marqueePromo) return true;
     return false;
+  }
+
+  function filterLocalizedScreenshotFilesForProject(files, project) {
+    const listingLocales = new Set(Object.keys(project && project.listings || {})
+      .map(locale => typeof storePilotNormalizeLocaleCode === "function" ? storePilotNormalizeLocaleCode(locale) : locale));
+    const localizedScreenshots = Object.fromEntries(Object.entries(files.localizedScreenshots || {})
+      .filter(([locale, localeFiles]) => {
+        const normalizedLocale = typeof storePilotNormalizeLocaleCode === "function" ? storePilotNormalizeLocaleCode(locale) : locale;
+        return listingLocales.has(normalizedLocale) && (localeFiles || []).length;
+      })
+      .map(([locale, localeFiles]) => [locale, Array.from(localeFiles || [])]));
+
+    return {
+      ...files,
+      localizedScreenshots
+    };
   }
 
   async function resolveMediaFilesForActiveProject(requestAccess = false, kind = "", dashboardUrl = "") {
@@ -66,12 +85,15 @@
     const filteredStoredMediaFiles = typeof storePilotFilterMediaFilesByKind === "function"
       ? storePilotFilterMediaFilesByKind(storedMediaFiles, kind)
       : storedMediaFiles;
+    const projectFilteredStoredMediaFiles = filteredStoredMediaFiles
+      ? filterLocalizedScreenshotFilesForProject(filteredStoredMediaFiles, project)
+      : filteredStoredMediaFiles;
 
-    if (hasResolvedMediaFiles(filteredStoredMediaFiles, kind)) {
+    if (hasResolvedMediaFiles(projectFilteredStoredMediaFiles, kind)) {
       return {
         ok: true,
         projectName: project.name,
-        files: filteredStoredMediaFiles
+        files: projectFilteredStoredMediaFiles
       };
     }
 
@@ -85,8 +107,10 @@
     }
 
     const screenshots = [];
+    const localizedScreenshots = {};
     const wantedStoreIcon = !kind || kind === "storeIcon";
     const wantedScreenshots = !kind || kind === "screenshots";
+    const wantedLocalizedScreenshots = !kind || kind === "localizedScreenshots";
     const wantedSmallPromo = !kind || kind === "smallPromo";
     const wantedMarqueePromo = !kind || kind === "marqueePromo";
 
@@ -96,6 +120,20 @@
 
     for (const asset of wantedScreenshots ? project.mediaAssets.screenshots || [] : []) {
       screenshots.push(await getFileFromProjectPath(directoryHandle, asset.path));
+    }
+
+    const listingLocales = new Set(Object.keys(project.listings || {})
+      .map(locale => typeof storePilotNormalizeLocaleCode === "function" ? storePilotNormalizeLocaleCode(locale) : locale));
+    for (const [locale, assets] of Object.entries(wantedLocalizedScreenshots ? project.mediaAssets.localizedScreenshots || {} : {})) {
+      const normalizedLocale = typeof storePilotNormalizeLocaleCode === "function" ? storePilotNormalizeLocaleCode(locale) : locale;
+      if (!listingLocales.has(normalizedLocale)) continue;
+      localizedScreenshots[locale] = [];
+      for (const asset of assets || []) {
+        localizedScreenshots[locale].push(await getFileFromProjectPath(directoryHandle, asset.path));
+      }
+      if (!localizedScreenshots[locale].length) {
+        delete localizedScreenshots[locale];
+      }
     }
 
     const smallPromo = wantedSmallPromo && project.mediaAssets.smallPromo
@@ -111,6 +149,7 @@
       files: {
         storeIcon,
         screenshots,
+        localizedScreenshots,
         smallPromo,
         marqueePromo
       }

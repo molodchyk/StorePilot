@@ -16,6 +16,7 @@ async function injectContentScript(tabId) {
       "src/platform/webextension/i18n.js",
       "src/shared/constants.js",
       "src/shared/i18n.js",
+      "src/shared/theme.js",
       "src/shared/projects.js",
       "src/shared/dashboard-url.js",
       "src/shared/storage.js",
@@ -201,6 +202,7 @@ async function updateMediaActionState() {
   const clearableMarqueePromo = Boolean(result.media.clearableMarqueePromo || Number(result.media.marqueePromo || 0) > 0);
   const screenshotsLimitReached = Boolean(result.media.screenshotsLimitReached);
   const maxScreenshots = String(result.media.maxScreenshots || 5);
+  const localizedScreenshotTargetFound = Boolean(result.media.localizedScreenshotTargetFound);
   const storeIconPresent = Boolean(result.media.storeIconPresent || Number(result.media.storeIcon || 0) > 0);
   const smallPromoPresent = Boolean(result.media.smallPromoPresent || Number(result.media.smallPromo || 0) > 0);
   const marqueePromoPresent = Boolean(result.media.marqueePromoPresent || Number(result.media.marqueePromo || 0) > 0);
@@ -209,6 +211,10 @@ async function updateMediaActionState() {
   elements.uploadScreenshots.title = screenshotsLimitReached
     ? t("screenshotsLimitReached", "screenshots: CWS limit of $1 already reached", [maxScreenshots])
     : "";
+  elements.uploadLocalizedScreenshots.disabled = !localizedScreenshotTargetFound;
+  elements.uploadLocalizedScreenshots.title = localizedScreenshotTargetFound
+    ? ""
+    : t("localizedScreenshotTargetNotFound", "Localized screenshots upload target not found on this page.");
   elements.uploadStoreIcon.disabled = storeIconPresent;
   elements.uploadStoreIcon.title = storeIconPresent
     ? t("mediaAlreadyPresentOrProcessing", "$1 already present or processing.", [t("storeIcon", "Store icon")])

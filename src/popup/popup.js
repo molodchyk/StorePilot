@@ -26,6 +26,7 @@ const elements = {
   fillAdditionalFields: document.getElementById("fillAdditionalFields"),
   uploadStoreIcon: document.getElementById("uploadStoreIcon"),
   uploadScreenshots: document.getElementById("uploadScreenshots"),
+  uploadLocalizedScreenshots: document.getElementById("uploadLocalizedScreenshots"),
   uploadSmallPromo: document.getElementById("uploadSmallPromo"),
   uploadMarqueePromo: document.getElementById("uploadMarqueePromo"),
   clearStoreIcon: document.getElementById("clearStoreIcon"),
@@ -43,8 +44,7 @@ const elements = {
   diagnostics: document.getElementById("diagnostics"),
   diagnosticsText: document.getElementById("diagnosticsText"),
   listingGroups: Array.from(document.querySelectorAll("[data-popup-section='listing']")),
-  privacyGroups: Array.from(document.querySelectorAll("[data-popup-section='privacy']")),
-  themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]"))
+  privacyGroups: Array.from(document.querySelectorAll("[data-popup-section='privacy']"))
 };
 
 let isPopupFillAllRunning = false;
@@ -79,6 +79,7 @@ function getPopupMediaButtons() {
   return [
     elements.uploadStoreIcon,
     elements.uploadScreenshots,
+    elements.uploadLocalizedScreenshots,
     elements.uploadSmallPromo,
     elements.uploadMarqueePromo,
     elements.clearStoreIcon,
@@ -96,6 +97,7 @@ function getPopupListingActionControls() {
     elements.fillAdditionalFields,
     elements.uploadStoreIcon,
     elements.uploadScreenshots,
+    elements.uploadLocalizedScreenshots,
     elements.uploadSmallPromo,
     elements.uploadMarqueePromo,
     elements.clearStoreIcon,
@@ -375,8 +377,11 @@ function bindMediaUploadButton(button, kind) {
   button.addEventListener("click", async () => {
     if (isPopupMediaRunning || isPopupFillAllRunning || button.disabled) return;
 
-    setPopupMediaRunning(true, t("uploadingMedia", "Uploading media..."));
-    setStatus(t("uploadingMedia", "Uploading media..."));
+    const uploadMessage = kind === "localizedScreenshots"
+      ? t("uploadingLocalizedScreenshots", "Uploading localized screenshots...")
+      : t("uploadingMedia", "Uploading media...");
+    setPopupMediaRunning(true, uploadMessage);
+    setStatus(uploadMessage);
 
     try {
       showActionResult(await uploadMediaFromPopup(kind));
@@ -392,6 +397,7 @@ function bindMediaUploadButton(button, kind) {
 
 bindMediaUploadButton(elements.uploadStoreIcon, "storeIcon");
 bindMediaUploadButton(elements.uploadScreenshots, "screenshots");
+bindMediaUploadButton(elements.uploadLocalizedScreenshots, "localizedScreenshots");
 bindMediaUploadButton(elements.uploadSmallPromo, "smallPromo");
 bindMediaUploadButton(elements.uploadMarqueePromo, "marqueePromo");
 
@@ -448,13 +454,6 @@ function openOptionsPageFromPopup() {
 }
 
 elements.openOptionsShortcut.addEventListener("click", openOptionsPageFromPopup);
-
-elements.themeChoices.forEach(button => {
-  button.addEventListener("click", async () => {
-    const settings = await storePilotPopupUpdateSettings({ theme: button.dataset.themeChoice });
-    storePilotPopupApplySettings(settings, elements);
-  });
-});
 
 storePilotStorageOnChangedAddListener((changes, areaName) => {
   if (areaName !== "local") return;

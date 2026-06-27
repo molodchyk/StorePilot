@@ -87,6 +87,7 @@ for (const [label, files] of [
   for (const required of [
     "src/shared/constants.js",
     "src/shared/i18n.js",
+    "src/shared/theme.js",
     "src/shared/projects.js",
     "src/shared/dashboard-url.js",
     "src/shared/storage.js",
@@ -101,6 +102,7 @@ for (const [label, files] of [
 
   assertBefore(files, "src/shared/constants.js", "src/shared/storage.js", label);
   assertBefore(files, "src/shared/i18n.js", "src/shared/storage.js", label);
+  assertBefore(files, "src/shared/theme.js", "src/content/dashboard-helper.js", label);
   assertBefore(files, "src/shared/projects.js", "src/shared/storage.js", label);
   assertBefore(files, "src/shared/dashboard-url.js", "src/shared/storage.js", label);
   assertBefore(files, "src/shared/store-docs/privacy-schema.js", "src/shared/store-docs/privacy-doc.js", label);
@@ -114,6 +116,7 @@ assert.deepEqual(injectionFiles, contentFiles, "Popup fallback injection should 
 for (const required of [
   "src/shared/store-docs/privacy-schema.js",
   "src/shared/store-docs/privacy-doc.js",
+  "src/shared/theme.js",
   "src/popup/dashboard-page.js",
   "src/popup/settings.js",
   "src/popup/popup.js"
@@ -122,10 +125,12 @@ for (const required of [
 }
 assertPlatformFiles(popupHtmlFiles, "popup HTML scripts");
 assertBefore(popupHtmlFiles, "src/shared/store-docs/privacy-schema.js", "src/shared/store-docs/privacy-doc.js", "popup HTML scripts");
+assertBefore(popupHtmlFiles, "src/shared/theme.js", "src/popup/settings.js", "popup HTML scripts");
 assertBefore(popupHtmlFiles, "src/popup/settings.js", "src/popup/popup.js", "popup HTML scripts");
 for (const required of [
   "src/shared/store-docs/privacy-schema.js",
   "src/shared/store-docs/privacy-doc.js",
+  "src/shared/theme.js",
   "src/options/options-media.js",
   "src/options/options-review-ui.js",
   "src/options/options-privacy-review.js",
@@ -140,6 +145,7 @@ assertBefore(optionsHtmlFiles, "src/shared/store-docs/privacy-schema.js", "src/s
 assertBefore(optionsHtmlFiles, "src/options/options-review-ui.js", "src/options/options-privacy-review.js", "options HTML scripts");
 assertBefore(optionsHtmlFiles, "src/options/options-review-ui.js", "src/options/options-review-tables.js", "options HTML scripts");
 assertBefore(optionsHtmlFiles, "src/options/options-privacy-review.js", "src/options/options.js", "options HTML scripts");
+assertBefore(optionsHtmlFiles, "src/shared/theme.js", "src/options/options-settings.js", "options HTML scripts");
 assertBefore(optionsHtmlFiles, "src/options/options-settings.js", "src/options/options.js", "options HTML scripts");
 
 console.log("Runtime load surface tests passed.");

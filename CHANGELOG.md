@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Added first-class Chrome Web Store localized screenshot support: scanner separation between global and per-locale screenshots, Graphic Assets review totals/table/preview traversal, and popup/panel upload actions that replace localized screenshots per matching locale.
+
+## 1.3.1.3 - 2026-06-24
+
+- Fixed Chrome Web Store privacy-field matching so missing `permission.*` dashboard fields cannot fall back to and overwrite the Host permission justification field.
+- Aligned Privacy Document review and fill order with the Chrome Web Store privacy page by listing individual permission justifications before Host permission.
+- Split appearance preferences into brightness Mode (`System`, `Light`, `Dark`) and visual Style (`Default`, `Slate`, `Ocean`, `Forest`, `High contrast`) in Preferences, with the popup and dashboard panel inheriting the saved appearance.
+- Detect localized WebExtension project structure during import so CWS picker mode uses the multi-locale dashboard language picker for `default_locale` / `_locales` projects even when only one listing locale is imported.
+
 ## 1.3.1.2 - 2026-06-24
 
 - Added keyboard shortcuts for switching options tabs: number keys select tabs directly, while `W`/`S` and Up/Down arrows move between tabs.

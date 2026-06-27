@@ -64,6 +64,11 @@ function storePilotGetMediaAssetEntries(mediaAssets, kind = "") {
   if (!kind || kind === "screenshots") {
     (mediaAssets.screenshots || []).forEach(asset => entries.push({ kind: "screenshots", asset }));
   }
+  if (!kind || kind === "localizedScreenshots") {
+    Object.entries(mediaAssets.localizedScreenshots || {}).forEach(([locale, assets]) => {
+      (assets || []).forEach(asset => entries.push({ kind: "localizedScreenshots", locale, asset }));
+    });
+  }
   if ((!kind || kind === "smallPromo") && mediaAssets.smallPromo) {
     entries.push({ kind: "smallPromo", asset: mediaAssets.smallPromo });
   }
@@ -82,15 +87,19 @@ function storePilotCreateEmptyMediaFiles() {
   return {
     storeIcon: null,
     screenshots: [],
+    localizedScreenshots: {},
     smallPromo: null,
     marqueePromo: null
   };
 }
 
-function storePilotAssignMediaFile(mediaFiles, kind, file) {
+function storePilotAssignMediaFile(mediaFiles, kind, file, locale = "") {
   if (!file) return;
   if (kind === "screenshots") {
     mediaFiles.screenshots.push(file);
+  } else if (kind === "localizedScreenshots" && locale) {
+    mediaFiles.localizedScreenshots[locale] = mediaFiles.localizedScreenshots[locale] || [];
+    mediaFiles.localizedScreenshots[locale].push(file);
   } else {
     mediaFiles[kind] = file;
   }
@@ -196,8 +205,8 @@ async function storePilotSaveProjectMediaFilesFromFileList(projectId, mediaAsset
   ]));
   const mediaFiles = storePilotCreateEmptyMediaFiles();
 
-  for (const { kind, asset } of entries) {
-    storePilotAssignMediaFile(mediaFiles, kind, fileByPath.get(storePilotNormalizeStoredMediaPath(asset.path)));
+  for (const { kind, locale, asset } of entries) {
+    storePilotAssignMediaFile(mediaFiles, kind, fileByPath.get(storePilotNormalizeStoredMediaPath(asset.path)), locale);
   }
 
   await storePilotSaveProjectMediaFiles(projectId, mediaFiles);
@@ -209,9 +218,9 @@ async function storePilotSaveProjectMediaFilesFromDirectory(projectId, mediaAsse
 
   const mediaFiles = storePilotCreateEmptyMediaFiles();
 
-  for (const { kind, asset } of entries) {
+  for (const { kind, locale, asset } of entries) {
     const file = await storePilotGetMediaFileFromDirectory(directoryHandle, asset.path);
-    storePilotAssignMediaFile(mediaFiles, kind, file);
+    storePilotAssignMediaFile(mediaFiles, kind, file, locale);
   }
 
   await storePilotSaveProjectMediaFiles(projectId, mediaFiles);
@@ -223,6 +232,12 @@ function storePilotFilterMediaFilesByKind(mediaFiles, kind = "") {
 
   if (!kind || kind === "screenshots") {
     filtered.screenshots = Array.from(mediaFiles.screenshots || []);
+  }
+  if (!kind || kind === "localizedScreenshots") {
+    filtered.localizedScreenshots = Object.fromEntries(Object.entries(mediaFiles.localizedScreenshots || {}).map(([locale, files]) => [
+      locale,
+      Array.from(files || [])
+    ]));
   }
   if (!kind || kind === "storeIcon") {
     filtered.storeIcon = mediaFiles.storeIcon || null;

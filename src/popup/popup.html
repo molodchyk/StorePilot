@@ -34,6 +34,7 @@
         <div class="action-group" data-popup-section="listing">
           <button id="uploadStoreIcon" type="button" data-i18n="uploadStoreIcon">Upload store icon</button>
           <button id="uploadScreenshots" type="button" data-i18n="uploadScreenshots">Upload screenshots</button>
+          <button id="uploadLocalizedScreenshots" type="button" data-i18n="uploadLocalizedScreenshots">Upload localized screenshots</button>
           <button id="uploadSmallPromo" type="button" data-i18n="uploadSmallPromo">Upload small promo</button>
           <button id="uploadMarqueePromo" type="button" data-i18n="uploadMarqueePromo">Upload marquee promo</button>
         </div>
@@ -57,11 +58,6 @@
           <button id="openPanel" type="button" hidden data-i18n="openPanel">Open panel</button>
         </div>
       </div>
-      <div class="theme-control" aria-label="Theme" data-i18n-aria-label="theme">
-        <button type="button" data-theme-choice="system" data-i18n="themeSystem">System</button>
-        <button type="button" data-theme-choice="light" data-i18n="themeLight">Light</button>
-        <button type="button" data-theme-choice="dark" data-i18n="themeDark">Dark</button>
-      </div>
     </main>
     <script src="../platform/webextension/core.js"></script>
     <script src="../platform/webextension/storage.js"></script>
@@ -72,6 +68,7 @@
     <script src="../platform/webextension/i18n.js"></script>
     <script src="../shared/constants.js"></script>
     <script src="../shared/i18n.js"></script>
+    <script src="../shared/theme.js"></script>
     <script src="../shared/files.js"></script>
     <script src="../shared/projects.js"></script>
     <script src="../shared/handles.js"></script>

@@ -10,7 +10,7 @@
 
 .media-review-dialog {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(280px, auto) auto;
   gap: 12px;
   width: min(1180px, calc(100vw - 48px));
   max-height: calc(100vh - 48px);
@@ -22,10 +22,10 @@
 }
 
 .media-review-header {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, auto) auto;
+  gap: 12px;
+  align-items: center;
   min-width: 0;
   padding: 14px 16px 0;
 }
@@ -52,15 +52,36 @@
 .media-review-close {
   flex: 0 0 auto;
   padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.media-review-order {
+  display: inline-grid;
+  grid-template-columns: auto minmax(190px, 250px);
+  gap: 8px;
+  align-items: center;
+  color: #5d6472;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.media-review-order[hidden] {
+  display: none;
+}
+
+.media-review-order select {
+  min-height: 34px;
+  font-size: 13px;
 }
 
 .media-review-image-frame {
   display: grid;
   place-items: center;
   position: relative;
-  min-height: 0;
+  height: clamp(280px, calc(100vh - 220px), 680px);
+  min-height: 280px;
   margin: 0 16px;
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid #d9dee7;
   border-radius: 6px;
   background: #f7f9fc;
@@ -68,8 +89,12 @@
 
 .media-review-image-frame img {
   display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
   max-width: 100%;
-  max-height: calc(100vh - 190px);
+  max-height: 100%;
   object-fit: contain;
 }
 

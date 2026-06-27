@@ -164,6 +164,7 @@ $requiredFiles = @(
   "src\options\options-privacy-review.js",
   "src\options\options-review-tables.js",
   "src\options\options-settings.js",
+  "src\shared\theme.js",
   "src\shared\dashboard-url.js",
   "src\shared\store-docs\privacy-schema.js",
   "src\shared\store-docs\privacy-doc.js",
@@ -204,6 +205,8 @@ $requiredFiles = @(
   "scripts\test-reference-sync.ps1",
   "scripts\test-firefox-temporary-load.ps1",
   "test\project-resolution.test.js",
+  "test\privacy-field-matching.test.js",
+  "test\theme-settings.test.js",
   "test\runtime-load-surfaces.test.js"
 )
 
@@ -522,6 +525,7 @@ Assert-ZipEntries $extensionZip @(
   "src/options/options-privacy-review.js",
   "src/options/options-review-tables.js",
   "src/options/options-settings.js",
+  "src/shared/theme.js",
   "src/shared/dashboard-url.js",
   "src/shared/store-docs/privacy-schema.js",
   "src/shared/store-docs/privacy-doc.js",
@@ -576,6 +580,7 @@ Assert-ZipEntries $sourceZip @(
   "src/options/options-privacy-review.js",
   "src/options/options-review-tables.js",
   "src/options/options-settings.js",
+  "src/shared/theme.js",
   "src/shared/dashboard-url.js",
   "src/shared/store-docs/privacy-schema.js",
   "src/shared/store-docs/privacy-doc.js",
@@ -617,6 +622,11 @@ Assert-ZipEntries $sourceZip @(
   "scripts/test-firefox-release.ps1",
   "scripts/test-firefox-temporary-load.ps1",
   "test/project-resolution.test.js",
+  "test/media-assets.test.js",
+  "test/dashboard-media-targets.test.js",
+  "test/media-review-order.test.js",
+  "test/privacy-field-matching.test.js",
+  "test/theme-settings.test.js",
   "test/runtime-load-surfaces.test.js"
 )
 Assert-SourceZipMatchesTrackedFiles $sourceZip

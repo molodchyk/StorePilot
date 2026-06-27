@@ -77,7 +77,7 @@ Project fields currently include:
 - `projectRootPath`: canonical root when known.
 - `listingPath`: detected folder that contains locale listing files.
 - `listingSignature`: stable signature of imported locale text, used to merge duplicates.
-- `mediaAssets`: detected store icon, screenshots, small promo, and marquee promo.
+- `mediaAssets`: detected store icon, global screenshots, localized screenshots, small promo, and marquee promo.
 - `privacyDoc`: detected privacy document summary and parsed fields.
 - `categoryDoc`: detected Chrome Web Store category decision summary.
 - `additionalFieldsDoc`: detected Chrome Web Store Additional fields summary and parsed values.
@@ -143,6 +143,9 @@ store-listing/
       screenshots/
         01-main.png
         02-settings.png
+        de/
+          01-main.png
+          02-settings.png
       promo/
         small-promo.png
         marquee-promo.png
@@ -180,7 +183,8 @@ Media rules:
 
 - Accepted media extensions are `.png`, `.jpg`, and `.jpeg`.
 - Store icon: 128 x 128.
-- Screenshots: 1280 x 800 or 640 x 400, maximum five, ordered by filename.
+- Global screenshots: direct files under `media/screenshots/`, 1280 x 800 or 640 x 400, maximum five, ordered by filename.
+- Localized screenshots: files under `media/screenshots/<locale>/01-name.png`, 1280 x 800 or 640 x 400, maximum five per locale, ordered by filename. `media/screenshots/en/` is English localized screenshots only, not a global fallback.
 - Small promo tile: 440 x 280.
 - Marquee promo tile: 1400 x 560.
 - Helpful folder/file names include `media`, `screenshots`, `promo`, `assets`, `store-assets`, `icons`, `icon`, `logo`, `small`, `tile`, `marquee`, `large`, and `banner`.
@@ -327,21 +331,31 @@ Known Chrome Web Store language picker modes:
 - One-language / no-internationalization mode: Chrome Web Store can instead show the language picker inside Product details, below the Description and Category fields and immediately above the Graphic assets section. The left Product details header still shows the current language, such as `English – en`, but the editable `Language*` combobox is lower on the page and may initially show `Select a language`.
 - Do not conflate these modes. A selector that finds the top "Current editing language" picker in multi-locale mode may miss the lower Product details language picker in one-language mode. Conversely, a selector that assumes the lower Product details picker exists can choose the wrong control on localized listings.
 - The one-language picker observed in Chrome Web Store is a Material combobox with `role="combobox"`, `aria-required="true"`, `aria-labelledby` pointing at a label whose text is `Language`, and an associated `role="listbox"` whose options have locale `data-value` values such as `en`, `en_US`, `de`, `pt_BR`, etc. It appeared around `section[1]/div[2]/div[4]` in the listing article (`div.TVM7Wc:nth-child(5) ...`) and below the Category field. Treat these paths as diagnostic context only; prefer semantic detection from the label text, combobox/listbox roles, option locale values, and nearby Product details / Graphic assets section boundaries.
-- When only one locale was imported, StorePilot should still know the imported locale from the project listing key and must select the matching one-language Product details language option before or while filling the description. It should not assume the visible Product details language label is enough if the lower `Language*` combobox still says `Select a language`.
+- StorePilot derives expected picker mode from imported project localization metadata before it considers imported listing count. Projects with `manifest.json` localization signals such as `default_locale`, `__MSG_*__` values, or root `_locales/<locale>/messages.json` use the multi-locale top picker even when StorePilot imported only one listing locale. Known non-localized projects use the one-language Product details picker. Legacy or partial imports with unknown project localization fall back to the imported locale count.
+- In one-language mode, StorePilot should still know the imported locale from the project listing key and must select the matching Product details language option before or while filling the description. It should not assume the visible Product details language label is enough if the lower `Language*` combobox still says `Select a language`.
 
 ## Media Automation
 
 StorePilot detects Chrome Web Store graphic assets during project import/re-import:
 
 - store icon: 128 x 128
-- screenshots: 1280 x 800 or 640 x 400, ordered by filename
+- global screenshots: direct files under `media/screenshots/`, 1280 x 800 or 640 x 400, ordered by filename
+- localized screenshots: files under `media/screenshots/<locale>/`, 1280 x 800 or 640 x 400, ordered by filename per locale
 - small promo tile: 440 x 280
 - marquee promo tile: 1400 x 560
 
 Rules:
 
 - Accepted image extensions are `.png`, `.jpg`, and `.jpeg`.
-- Never upload more than five screenshots.
+- Never upload more than five global screenshots or five localized screenshots per locale.
+- `mediaAssets.screenshots` contains only direct global screenshot files.
+- `mediaAssets.localizedScreenshots` is keyed by normalized locale and contains ordered asset metadata arrays.
+- `mediaFiles.localizedScreenshots` is keyed by locale and contains resolved `File[]` values for upload.
+- Localized screenshot upload uses replace semantics per locale: select the dashboard language, clear only the localized screenshot field, upload that locale's files in order, and continue through the intersection of imported listing locales and localized screenshot folders.
+- Localized screenshot field detection must use Graphic assets section and label context such as `Localized screenshots`, `Localised screenshots`, `Localized assets`, or `Localised assets`; it must not choose the Global screenshots field.
+- Chrome Web Store localized screenshot upload widgets may expose only an image-only file input next to a generated drop button such as `Drop image here`, without reliable `data-image-upload-type` metadata. StorePilot must not depend on generated ids like `i40-button`, CSS paths, or XPath. It should detect the field from the local label/section context, mark the selected hidden file input for the page-world bridge, and send one upload signal per file. Do not dispatch both drop and input/change for the same file in the page-world bridge; CWS can process that as duplicate uploads.
+- Uploading localized screenshots is intentionally slow. CWS can take roughly several seconds per screenshot, so StorePilot must wait for the localized field to clear to zero before replacement, then wait for exactly one screenshot preview/progress state per file before uploading the next file or moving to the next locale. A full 66-locale run with three screenshots per locale can take many minutes.
+- While localized screenshot upload is running, StorePilot shields the CWS page below its own panel so the user cannot manually switch dashboard locales or click dashboard fields mid-operation. The selected dashboard locale must still be verified before clearing and before each screenshot upload.
 - Do not attempt a second upload for single-slot media when the dashboard already has or is processing that media.
 - Clear actions are disabled when no matching media is visible.
 - Upload and clear actions are mutually exclusive with fill-all and each other.

@@ -20,6 +20,30 @@
   "themeDark": {
     "message": "Madilim"
   },
+  "themeHint": {
+    "message": "Choose brightness and visual style separately."
+  },
+  "themeMode": {
+    "message": "Mode"
+  },
+  "themeStyle": {
+    "message": "Style"
+  },
+  "themeStyleDefault": {
+    "message": "Default"
+  },
+  "themeSlate": {
+    "message": "Slate"
+  },
+  "themeOcean": {
+    "message": "Ocean"
+  },
+  "themeForest": {
+    "message": "Forest"
+  },
+  "themeHighContrast": {
+    "message": "High contrast"
+  },
   "clear": {
     "message": "Maaliwalas"
   },
@@ -399,7 +423,7 @@
     "message": "Nakakita ng $1 na folder ng kandidato."
   },
   "mediaAssetsSummary": {
-    "message": "$1 (mga) screenshot, icon: $2, maliit na promo: $3, marquee promo: $4."
+    "message": "$1 global screenshot(s), $2 localized screenshot locale(s), icon: $3, small promo: $4, marquee promo: $5."
   },
   "mediaAssetsNone": {
     "message": "No graphic assets found."
@@ -498,7 +522,7 @@
     "message": "Mga kandidato"
   },
   "mediaCandidateCountsValue": {
-    "message": "Icon: $1; mga screenshot: $2; maliit na promo: $3; marquee promo: $4."
+    "message": "Icon: $1; global screenshots: $2; localized screenshots: $3; small promo: $4; marquee promo: $5."
   },
   "uploadingMedia": {
     "message": "Nag-a-upload ng media..."
@@ -994,5 +1018,101 @@
   },
   "privacyDocRemoteCodeRule": {
     "message": "For remote code, use remote_code as the Chrome Web Store yes/no answer. Use no when all code is packaged locally, and do not include remote_code_justification for that case. Use yes only when the extension uses remote code, and then provide remote_code_justification for the required justification textarea."
+  },
+  "uploadLocalizedScreenshots": {
+    "message": "Upload localized screenshots"
+  },
+  "localizedScreenshots": {
+    "message": "Localized screenshots"
+  },
+  "uploadingLocalizedScreenshots": {
+    "message": "Uploading localized screenshots..."
+  },
+  "uploadingLocalizedScreenshotsProgress": {
+    "message": "Uploading localized screenshots $1/$2: $3 ($4 screenshots)..."
+  },
+  "localizedScreenshotsUploaded": {
+    "message": "Uploaded localized screenshots for $1 locale(s)."
+  },
+  "localizedScreenshotsNoMatchingFiles": {
+    "message": "No localized screenshot files match imported listing locales."
+  },
+  "localizedScreenshotTargetNotFound": {
+    "message": "Localized screenshots upload target not found on this page."
+  },
+  "localizedScreenshotExtraFiles": {
+    "message": "Extra localized screenshot file(s) ignored after the first five."
+  },
+  "localizedScreenshotSlotMismatch": {
+    "message": "Screenshot filenames differ from the first localized screenshot set."
+  },
+  "localizedScreenshotMissingListing": {
+    "message": "Localized screenshot folder has no matching imported listing text."
+  },
+  "mediaAlphaNotAllowed": {
+    "message": "PNG alpha channel is not allowed for this CWS asset."
+  },
+  "mediaCardValueWithLocalizedScreenshots": {
+    "message": "$1/5 global, $2 localized locale(s)"
+  },
+  "localizedScreenshotSummary": {
+    "message": "$1 locale(s), $2 screenshot(s), $3 issue(s)."
+  },
+  "localizedScreenshotLocale": {
+    "message": "Locale"
+  },
+  "localizedScreenshotCount": {
+    "message": "Count"
+  },
+  "localizedScreenshotDimensionsIssues": {
+    "message": "Dimensions / issues"
+  },
+  "localizedScreenshotPreview": {
+    "message": "Preview"
+  },
+  "localizedScreenshotSourcePath": {
+    "message": "Source path"
+  },
+  "localizedScreenshotIssueCount": {
+    "message": "$1 issue(s): $2"
+  },
+  "localizedScreenshotNoFiles": {
+    "message": "No localized screenshots found."
+  },
+  "localizedScreenshotNumber": {
+    "message": "$1 screenshot $2"
+  },
+  "mediaReviewTraversal": {
+    "message": "Traversal"
+  },
+  "mediaReviewByLocale": {
+    "message": "By locale"
+  },
+  "mediaReviewBySlot": {
+    "message": "By screenshot slot"
+  },
+  "mediaReviewPreviewOrder": {
+    "message": "Preview order"
+  },
+  "mediaReviewLocaleByLocale": {
+    "message": "Locale by locale"
+  },
+  "mediaReviewSlotAcrossLocales": {
+    "message": "Screenshot number across locales"
+  },
+  "mediaReviewPosition": {
+    "message": "$1 of $2"
+  },
+  "noIssues": {
+    "message": "No issues"
+  },
+  "previousMediaPreview": {
+    "message": "Previous graphic asset"
+  },
+  "nextMediaPreview": {
+    "message": "Next graphic asset"
+  },
+  "previewUnavailable": {
+    "message": "Preview unavailable"
   }
 }

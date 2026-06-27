@@ -154,10 +154,11 @@ function renderLanguageDiagnostics(project) {
     return;
   }
 
-  const pickerMode = locales.length === 1
+  const expectedMode = storePilotGetExpectedLanguageDropdownModeForProject(project, listings);
+  const pickerMode = expectedMode === "one-language"
     ? t("languagePickerOneLanguageMode", "One-language CWS listing")
     : t("languagePickerMultiLocaleMode", "Multi-locale CWS listing");
-  const pickerTarget = locales.length === 1
+  const pickerTarget = expectedMode === "one-language"
     ? t("languagePickerOneLanguageTarget", "Product details Language picker below Category; select $1 before filling.", [locales[0]])
     : t("languagePickerMultiLocaleTarget", "Current editing language picker at the top; fill each matched CWS locale.");
   elements.languageDiagnosticsTable.replaceChildren(

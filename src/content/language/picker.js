@@ -162,6 +162,11 @@ function getLanguageDropdownMode(dropdown) {
 }
 
 function getExpectedLanguageDropdownMode() {
+  if (typeof activeProjectLanguagePickerMode !== "undefined") {
+    const projectMode = storePilotNormalizeLanguagePickerMode(activeProjectLanguagePickerMode);
+    if (projectMode) return projectMode;
+  }
+
   return Object.keys(listings).length === 1 ? "one-language" : "multi-locale";
 }
 

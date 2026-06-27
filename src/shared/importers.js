@@ -55,6 +55,7 @@ async function storePilotImportListingFiles(files) {
     ...project,
     listings: nextListings,
     sourcePath: project.sourcePath || storePilotText("manualFileImport", "Manual file import"),
+    localization: project.localization || null,
     privacyDoc,
     categoryDoc,
     additionalFieldsDoc,
@@ -205,6 +206,9 @@ async function storePilotImportListingFileList(files, projectId = "") {
   const mediaAssets = typeof storePilotDiscoverMediaAssetsFromFileList === "function"
     ? await storePilotDiscoverMediaAssetsFromFileList(files)
     : project.mediaAssets || null;
+  const annotatedMediaAssets = typeof storePilotAddLocalizedScreenshotListingWarnings === "function"
+    ? storePilotAddLocalizedScreenshotListingWarnings(mediaAssets, result.listings)
+    : mediaAssets;
   const privacyDoc = typeof storePilotDiscoverPrivacyDocFromFileList === "function"
     ? await storePilotDiscoverPrivacyDocFromFileList(files)
     : project.privacyDoc || null;
@@ -214,12 +218,19 @@ async function storePilotImportListingFileList(files, projectId = "") {
   const additionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromFileList === "function"
     ? await storePilotDiscoverAdditionalFieldsDocFromFileList(files)
     : project.additionalFieldsDoc || null;
+  const projectRootPath = best.projectRootPath || project.projectRootPath || "";
+  const detectedLocalization = typeof storePilotDetectProjectLocalizationFromFileList === "function"
+    ? await storePilotDetectProjectLocalizationFromFileList(files, projectRootPath)
+    : project.localization || null;
+  const localization = storePilotMergeProjectLocalization(detectedLocalization, project.localization);
   const nextProject = {
     ...project,
     name: project.name || rootName,
     listings: result.listings,
     sourcePath: best.path,
-    mediaAssets,
+    projectRootPath,
+    localization,
+    mediaAssets: annotatedMediaAssets,
     privacyDoc,
     categoryDoc,
     additionalFieldsDoc,
@@ -232,14 +243,15 @@ async function storePilotImportListingFileList(files, projectId = "") {
 
   await storePilotUpsertProject(nextProject);
   if (typeof storePilotSaveProjectMediaFilesFromFileList === "function") {
-    await storePilotSaveProjectMediaFilesFromFileList(nextProject.id, mediaAssets, files);
+    await storePilotSaveProjectMediaFilesFromFileList(nextProject.id, annotatedMediaAssets, files);
   }
 
   return {
     ...result,
     project: nextProject,
     sourcePath: best.path,
-    mediaAssets,
+    localization,
+    mediaAssets: annotatedMediaAssets,
     privacyDoc,
     categoryDoc,
     additionalFieldsDoc,
@@ -281,6 +293,9 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
   const mediaAssets = typeof storePilotDiscoverMediaAssetsFromDirectory === "function"
     ? await storePilotDiscoverMediaAssetsFromDirectory(directoryHandle)
     : project.mediaAssets || null;
+  const annotatedMediaAssets = typeof storePilotAddLocalizedScreenshotListingWarnings === "function"
+    ? storePilotAddLocalizedScreenshotListingWarnings(mediaAssets, result.listings)
+    : mediaAssets;
   const privacyDoc = typeof storePilotDiscoverPrivacyDocFromDirectory === "function"
     ? await storePilotDiscoverPrivacyDocFromDirectory(directoryHandle)
     : project.privacyDoc || null;
@@ -290,12 +305,19 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
   const additionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromDirectory === "function"
     ? await storePilotDiscoverAdditionalFieldsDocFromDirectory(directoryHandle)
     : project.additionalFieldsDoc || null;
+  const projectRootPath = best.projectRootPath || project.projectRootPath || "";
+  const detectedLocalization = typeof storePilotDetectProjectLocalizationFromDirectory === "function"
+    ? await storePilotDetectProjectLocalizationFromDirectory(directoryHandle, projectRootPath)
+    : project.localization || null;
+  const localization = storePilotMergeProjectLocalization(detectedLocalization, project.localization);
   const nextProject = {
     ...project,
     name: project.name || directoryHandle.name,
     listings: result.listings,
     sourcePath: best.path,
-    mediaAssets,
+    projectRootPath,
+    localization,
+    mediaAssets: annotatedMediaAssets,
     privacyDoc,
     categoryDoc,
     additionalFieldsDoc,
@@ -308,7 +330,7 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
 
   await storePilotSaveProjectHandle(nextProject.id, directoryHandle);
   if (typeof storePilotSaveProjectMediaFilesFromDirectory === "function") {
-    await storePilotSaveProjectMediaFilesFromDirectory(nextProject.id, mediaAssets, directoryHandle);
+    await storePilotSaveProjectMediaFilesFromDirectory(nextProject.id, annotatedMediaAssets, directoryHandle);
   }
   await storePilotUpsertProject(nextProject);
 
@@ -316,7 +338,8 @@ async function storePilotImportListingDirectory(directoryHandle, projectId = "")
     ...result,
     project: nextProject,
     sourcePath: best.path,
-    mediaAssets,
+    localization,
+    mediaAssets: annotatedMediaAssets,
     privacyDoc,
     categoryDoc,
     additionalFieldsDoc,

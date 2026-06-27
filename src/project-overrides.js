@@ -195,6 +195,7 @@
       projectRootPath: merged.projectRootPath || duplicate.projectRootPath,
       listingPath: merged.listingPath || duplicate.listingPath,
       listingSignature: merged.listingSignature || duplicate.listingSignature,
+      localization: storePilotMergeProjectLocalization(merged.localization, duplicate.localization),
       mediaAssets: merged.mediaAssets || duplicate.mediaAssets || null,
       privacyDoc: merged.privacyDoc || duplicate.privacyDoc || null,
       categoryDoc: merged.categoryDoc || duplicate.categoryDoc || null,
@@ -228,8 +229,11 @@
     return mergedProject;
   }
 
-  async function upsertProjectImport({ best, candidates, directoryName, projectId, hasFolderHandle, mediaAssets = null, privacyDoc = null, categoryDoc = null, additionalFieldsDoc = null }) {
+  async function upsertProjectImport({ best, candidates, directoryName, projectId, hasFolderHandle, localization = null, mediaAssets = null, privacyDoc = null, categoryDoc = null, additionalFieldsDoc = null }) {
     const result = await storePilotReadListingFiles(best.files);
+    const annotatedMediaAssets = typeof storePilotAddLocalizedScreenshotListingWarnings === "function"
+      ? storePilotAddLocalizedScreenshotListingWarnings(mediaAssets, result.listings)
+      : mediaAssets;
     const rootInfo = getProjectRootInfo(best, directoryName);
     const listingSignature = createListingSignature(result.listings);
     const state = await storePilotGetProjectsState();
@@ -260,7 +264,8 @@
       projectRootPath,
       listingPath: best.path,
       listingSignature,
-      mediaAssets: mediaAssets || project.mediaAssets || null,
+      localization: storePilotMergeProjectLocalization(localization, project.localization),
+      mediaAssets: annotatedMediaAssets || project.mediaAssets || null,
       privacyDoc: privacyDoc || project.privacyDoc || null,
       categoryDoc: categoryDoc || project.categoryDoc || null,
       additionalFieldsDoc: additionalFieldsDoc || project.additionalFieldsDoc || null,
@@ -280,6 +285,7 @@
       project: mergedProject,
       sourcePath: mergedProject.sourcePath,
       listingPath: mergedProject.listingPath,
+      localization: mergedProject.localization,
       mediaAssets: mergedProject.mediaAssets,
       privacyDoc: mergedProject.privacyDoc,
       categoryDoc: mergedProject.categoryDoc,
@@ -311,6 +317,10 @@
       ? await storePilotDiscoverAdditionalFieldsDocFromFileList(files)
       : null;
     const directoryName = normalizePathParts(best.path)[0] || text("importedProject", "Imported project");
+    const rootInfo = getProjectRootInfo(best, directoryName);
+    const localization = typeof storePilotDetectProjectLocalizationFromFileList === "function"
+      ? await storePilotDetectProjectLocalizationFromFileList(files, rootInfo.rootPath)
+      : null;
 
     const result = await upsertProjectImport({
       best,
@@ -318,6 +328,7 @@
       directoryName,
       projectId,
       hasFolderHandle: false,
+      localization,
       mediaAssets,
       privacyDoc,
       categoryDoc,
@@ -359,12 +370,17 @@
     const additionalFieldsDoc = typeof storePilotDiscoverAdditionalFieldsDocFromDirectory === "function"
       ? await storePilotDiscoverAdditionalFieldsDocFromDirectory(directoryHandle)
       : null;
+    const rootInfo = getProjectRootInfo(best, directoryHandle.name);
+    const localization = typeof storePilotDetectProjectLocalizationFromDirectory === "function"
+      ? await storePilotDetectProjectLocalizationFromDirectory(directoryHandle, rootInfo.rootPath)
+      : null;
     const result = await upsertProjectImport({
       best,
       candidates,
       directoryName: directoryHandle.name,
       projectId,
       hasFolderHandle: true,
+      localization,
       mediaAssets,
       privacyDoc,
       categoryDoc,

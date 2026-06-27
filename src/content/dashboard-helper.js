@@ -17,10 +17,13 @@ let activeProjectUpdatedAt = "";
 let activeDashboardExtensionId = "";
 let activeDashboardItemTitle = "";
 let activeDashboardProjectSource = "";
+let activeProjectLocalization = null;
+let activeProjectLanguagePickerMode = "";
 let activePrivacyDoc = null;
 let activeCategoryDoc = null;
 let activeAdditionalFieldsDoc = null;
 let currentTheme = "system";
+let currentThemeStyle = "default";
 let showAdvancedFillActions = false;
 let isFillingAllLanguages = false;
 let fillAllAbortRequested = false;
@@ -85,18 +88,24 @@ async function loadSettings() {
   applySettings(stored[SETTINGS_KEY]);
   return {
     theme: currentTheme,
+    themeStyle: currentThemeStyle,
     showAdvancedFillActions
   };
 }
 
 function applySettings(settings = {}) {
+  const rawSettings = settings && typeof settings === "object" ? settings : {};
+  const themePreferences = storePilotNormalizeThemePreferences(rawSettings);
   const normalized = {
     theme: "system",
+    themeStyle: "default",
     showAdvancedFillActions: false,
-    ...(settings || {})
+    ...rawSettings,
+    ...themePreferences
   };
 
-  currentTheme = normalized.theme || "system";
+  currentTheme = normalized.theme;
+  currentThemeStyle = normalized.themeStyle;
   showAdvancedFillActions = Boolean(normalized.showAdvancedFillActions);
 }
 
@@ -121,6 +130,10 @@ async function loadListings() {
   activeDashboardExtensionId = resolved.extensionId || "";
   activeDashboardItemTitle = resolved.dashboardTitle || "";
   activeDashboardProjectSource = resolved.source || "";
+  activeProjectLocalization = activeProject ? storePilotGetProjectLocalization(activeProject) : null;
+  activeProjectLanguagePickerMode = activeProject
+    ? storePilotGetExpectedLanguageDropdownModeForProject(activeProject, listings)
+    : "";
   activePrivacyDoc = activeProject ? activeProject.privacyDoc || null : null;
   activeCategoryDoc = activeProject ? activeProject.categoryDoc || null : null;
   activeAdditionalFieldsDoc = activeProject ? activeProject.additionalFieldsDoc || null : null;
@@ -209,6 +222,7 @@ async function diagnoseDashboardPage() {
     dashboardProjectSource: activeDashboardProjectSource,
     activeProjectId,
     activeProjectName,
+    activeProjectLocalization,
     importedLocaleCount: Object.keys(listings).length,
     selectedLocale,
     languageDropdownFound: Boolean(dropdown),

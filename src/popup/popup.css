@@ -89,12 +89,6 @@ p {
   font-weight: 700;
 }
 
-.theme-control {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-}
-
 button,
 .file-button,
 select {
@@ -192,11 +186,6 @@ select {
   font: 11px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
-.theme-control [aria-pressed="true"] {
-  border-color: #2563eb;
-  color: #1d4ed8;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f4f6fa;
@@ -240,11 +229,6 @@ select {
   color: #ff9b92;
 }
 
-:root[data-theme="dark"] .theme-control [aria-pressed="true"] {
-  border-color: #8ab4ff;
-  color: #8ab4ff;
-}
-
 @media (prefers-color-scheme: dark) {
   p,
   .project-picker {
@@ -282,10 +266,6 @@ select {
     color: #ff9b92;
   }
 
-  .theme-control [aria-pressed="true"] {
-    border-color: #8ab4ff;
-    color: #8ab4ff;
-  }
 }
 
 :root[data-theme="light"] p,
@@ -324,7 +304,143 @@ select {
   color: #b42318;
 }
 
-:root[data-theme="light"] .theme-control [aria-pressed="true"] {
-  border-color: #2563eb;
-  color: #1d4ed8;
+:root:not([data-theme="dark"])[data-theme-style="slate"] {
+  background: #f3f5f8;
+}
+
+:root:not([data-theme="dark"])[data-theme-style="ocean"] {
+  background: #eef8fb;
+  color: #102033;
+}
+
+:root:not([data-theme="dark"])[data-theme-style="forest"] {
+  background: #f3f8f2;
+  color: #132018;
+}
+
+:root[data-theme="dark"][data-theme-style="slate"] {
+  background: #0f172a;
+}
+
+:root[data-theme="dark"][data-theme-style="ocean"] {
+  background: #0c1e26;
+}
+
+:root[data-theme="dark"][data-theme-style="forest"] {
+  background: #102015;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-theme-style="slate"] {
+    background: #0f172a;
+    color: #f4f6fa;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="ocean"] {
+    background: #0c1e26;
+    color: #f4f6fa;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="forest"] {
+    background: #102015;
+    color: #f4f6fa;
+  }
+}
+
+:root[data-theme-style="high-contrast"] {
+  color-scheme: light;
+  background: #ffffff;
+  color: #000000;
+}
+
+:root[data-theme-style="high-contrast"] p,
+:root[data-theme-style="high-contrast"] .project-picker {
+  color: #000000;
+}
+
+:root[data-theme-style="high-contrast"] button,
+:root[data-theme-style="high-contrast"] .file-button,
+:root[data-theme-style="high-contrast"] select,
+:root[data-theme-style="high-contrast"] #status,
+:root[data-theme-style="high-contrast"] .diagnostics {
+  background: #ffffff;
+  border-color: #000000;
+  color: #000000;
+}
+
+:root[data-theme-style="high-contrast"] .action-group {
+  border-top-color: #000000;
+}
+
+:root[data-theme-style="high-contrast"] #status.error,
+:root[data-theme-style="high-contrast"] .danger-action {
+  background: #ffffff;
+  border-color: #b00020;
+  color: #b00020;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] {
+    color-scheme: dark;
+    background: #000000;
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] p,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .project-picker {
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] button,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .file-button,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] select,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] #status,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .diagnostics {
+    background: #000000;
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .action-group {
+    border-top-color: #ffffff;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] #status.error,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .danger-action {
+    background: #000000;
+    border-color: #ffb4b4;
+    color: #ffb4b4;
+  }
+}
+
+:root[data-theme="dark"][data-theme-style="high-contrast"] {
+  color-scheme: dark;
+  background: #000000;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"][data-theme-style="high-contrast"] p,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .project-picker {
+  color: #ffffff;
+}
+
+:root[data-theme="dark"][data-theme-style="high-contrast"] button,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .file-button,
+:root[data-theme="dark"][data-theme-style="high-contrast"] select,
+:root[data-theme="dark"][data-theme-style="high-contrast"] #status,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .diagnostics {
+  background: #000000;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"][data-theme-style="high-contrast"] .action-group {
+  border-top-color: #ffffff;
+}
+
+:root[data-theme="dark"][data-theme-style="high-contrast"] #status.error,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .danger-action {
+  background: #000000;
+  border-color: #ffb4b4;
+  color: #ffb4b4;
 }

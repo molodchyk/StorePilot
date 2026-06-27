@@ -63,15 +63,41 @@ function isNumericPrivacyPayload(payload) {
   return /^\d+$/.test(String(payload || "").trim());
 }
 
+function escapePrivacyRegex(value) {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function splitPrivacyPermissionWords(permission) {
+  return String(permission || "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[._-]+/g, " ")
+    .split(/\s+/)
+    .map(part => normalizePrivacyMatchText(part))
+    .filter(Boolean);
+}
+
+function permissionContextMatches(candidate, permission) {
+  const context = candidate.context;
+  const words = splitPrivacyPermissionWords(permission);
+  const compactPermission = normalizePrivacyPayload(permission);
+  const compactContext = normalizePrivacyPayload(context);
+
+  if (!compactPermission) return false;
+  if (new RegExp(`\\b${escapePrivacyRegex(normalizePrivacyMatchText(permission))}\\b`).test(context)) return true;
+  if (words.length > 1 && new RegExp(`\\b${words.map(escapePrivacyRegex).join("\\s+")}\\b`).test(context)) return true;
+  return compactContext.includes(compactPermission);
+}
+
 function scorePrivacyFieldCandidate(candidate, key) {
   const context = candidate.context;
   const permissionMatch = key.match(/^permission\.(.+)$/);
   const payload = normalizePrivacyPayload(candidate.payload);
   const expectedPayloads = getExpectedPrivacyPayloads(key);
+  const payloadMatched = Boolean(payload && expectedPayloads.includes(payload));
   let score = 0;
 
   if (payload) {
-    if (expectedPayloads.includes(payload)) {
+    if (payloadMatched) {
       score += 300;
     } else if (isNumericPrivacyPayload(candidate.payload)) {
       score += 20;
@@ -104,8 +130,10 @@ function scorePrivacyFieldCandidate(candidate, key) {
     if (/begrundung|justification|erklarung|reason|rationale|explanation/.test(context)) score += 35;
     if (candidate.tagName === "textarea") score += 20;
   } else if (permissionMatch) {
-    const permission = normalizePrivacyMatchText(permissionMatch[1]);
-    if (new RegExp(`\\b${permission.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(context)) score += 110;
+    const permission = permissionMatch[1];
+    if (!payloadMatched && !permissionContextMatches(candidate, permission)) return 0;
+
+    if (permissionContextMatches(candidate, permission)) score += 110;
     if (/permission|berechtigung|berechtigungen/.test(context)) score += 40;
     if (/begrundung|justification|warum|why/.test(context)) score += 25;
     if (candidate.tagName === "textarea") score += 15;
@@ -327,9 +355,9 @@ function getVisiblePrivacyFieldKeys(fields) {
   ));
   const permissionKeys = keys.filter(key => key.startsWith("permission.")).sort((a, b) => a.localeCompare(b));
   const preferredOrder = [
-    "single_purpose",
-    "host_permission"
+    "single_purpose"
   ];
+  const hostPermissionOrder = keys.includes("host_permission") ? ["host_permission"] : [];
 
   const remoteCodeOrder = [];
   if (Object.prototype.hasOwnProperty.call(privacyFields, "remote_code")) {
@@ -341,9 +369,11 @@ function getVisiblePrivacyFieldKeys(fields) {
 
   const ordered = preferredOrder.filter(key => keys.includes(key))
     .concat(permissionKeys)
+    .concat(hostPermissionOrder)
     .concat(keys.filter(key => (
       !preferredOrder.includes(key) &&
       !permissionKeys.includes(key) &&
+      key !== "host_permission" &&
       key !== "privacy_policy_url"
     )).sort((a, b) => a.localeCompare(b)))
     .concat(remoteCodeOrder);
@@ -501,13 +531,7 @@ function fillPrivacyFields(keys) {
 }
 
 function fillDetectedPrivacyFields() {
-  return fillPrivacyFields([
-    "single_purpose",
-    "privacy_policy_url",
-    "host_permission",
-    "remote_code",
-    ...Object.keys(getActivePrivacyFields()).filter(key => key.startsWith("permission."))
-  ]);
+  return fillPrivacyFields(getVisiblePrivacyFieldKeys(getActivePrivacyFields()).filter(key => key !== "remote_code_justification"));
 }
 
 function getPrivacyDiagnostics() {

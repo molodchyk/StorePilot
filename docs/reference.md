@@ -23,6 +23,9 @@ store-listing/
       screenshots/
         01-main.png
         02-settings.png
+        de/
+          01-main.png
+          02-settings.png
       promo/
         small-promo.png
         marquee-promo.png
@@ -98,9 +101,12 @@ These fields belong in the Chrome Web Store dashboard or in dedicated automation
 Use `.png`, `.jpg`, or `.jpeg` files.
 
 - `icon-128.png` or `icon128.png`: 128 x 128
-- `screenshots/01-name.png`: 1280 x 800 or 640 x 400, up to 5
+- `screenshots/01-name.png`: global screenshot, 1280 x 800 or 640 x 400, up to 5 direct files
+- `screenshots/<locale>/01-name.png`: localized screenshot, 1280 x 800 or 640 x 400, up to 5 per locale
 - `promo/small-promo.png`: 440 x 280
 - `promo/marquee-promo.png`: 1400 x 560
+
+Direct files under `media/screenshots/` are global screenshots. Locale folders under `media/screenshots/<locale>/` are localized screenshots only; `media/screenshots/en/` is English localized screenshots, not a global fallback.
 
 ## Additional Fields Document Reference
 

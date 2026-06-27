@@ -20,34 +20,45 @@ function storePilotOptionsNormalizeTabKeyboardShortcuts(value) {
 }
 
 function storePilotOptionsNormalizeSettings(settings = {}) {
+  const rawSettings = settings && typeof settings === "object" ? settings : {};
+  const themePreferences = storePilotNormalizeThemePreferences(rawSettings);
+
   return {
     theme: "system",
+    themeStyle: "default",
     showAdvancedFillActions: false,
-    ...settings,
-    tabKeyboardShortcuts: storePilotOptionsNormalizeTabKeyboardShortcuts(settings.tabKeyboardShortcuts)
+    ...rawSettings,
+    ...themePreferences,
+    tabKeyboardShortcuts: storePilotOptionsNormalizeTabKeyboardShortcuts(rawSettings.tabKeyboardShortcuts)
   };
 }
 
-function storePilotOptionsApplyTheme(theme, themeChoices = []) {
-  const normalized = ["system", "light", "dark"].includes(theme) ? theme : "system";
+function storePilotOptionsApplyTheme(settings = {}, elements = {}) {
+  const normalized = storePilotNormalizeThemePreferences(settings);
+  storePilotApplyThemePreferences(normalized.theme, normalized.themeStyle);
 
-  if (normalized === "system") {
-    document.documentElement.removeAttribute("data-theme");
-  } else {
-    document.documentElement.dataset.theme = normalized;
-  }
-
-  themeChoices.forEach(button => {
-    button.setAttribute("aria-pressed", String(button.dataset.themeChoice === normalized));
+  (elements.themeModeChoices || []).forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.themeModeChoice === normalized.theme));
   });
+  if (elements.themeModePicker) {
+    elements.themeModePicker.value = normalized.theme;
+  }
+  if (elements.themeStylePicker) {
+    elements.themeStylePicker.value = normalized.themeStyle;
+  }
 }
 
 async function storePilotOptionsGetSettings() {
   const stored = await storePilotStorageLocalGet(STOREPILOT_OPTIONS_SETTINGS_KEY);
+  const storedSettings = stored[STOREPILOT_OPTIONS_SETTINGS_KEY] && typeof stored[STOREPILOT_OPTIONS_SETTINGS_KEY] === "object"
+    ? stored[STOREPILOT_OPTIONS_SETTINGS_KEY]
+    : {};
+
   return storePilotOptionsNormalizeSettings({
     theme: "system",
+    themeStyle: "default",
     showAdvancedFillActions: false,
-    ...(stored[STOREPILOT_OPTIONS_SETTINGS_KEY] || {})
+    ...storedSettings
   });
 }
 
@@ -64,7 +75,7 @@ async function storePilotOptionsUpdateSettings(patch) {
 function storePilotOptionsApplySettings(settings = {}, elements = {}) {
   const normalized = storePilotOptionsNormalizeSettings(settings);
 
-  storePilotOptionsApplyTheme(normalized.theme, elements.themeChoices || []);
+  storePilotOptionsApplyTheme(normalized, elements);
   if (elements.showAdvancedFillActions) {
     elements.showAdvancedFillActions.checked = Boolean(normalized.showAdvancedFillActions);
   }

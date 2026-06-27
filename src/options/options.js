@@ -41,7 +41,9 @@ const elements = {
   detailTabButtons: Array.from(document.querySelectorAll("[data-detail-tab]")),
   detailPanels: Array.from(document.querySelectorAll("[data-detail-panel]")),
   statusCards: Array.from(document.querySelectorAll("[data-detail-tab-target]")),
-  themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]")),
+  themeModeChoices: Array.from(document.querySelectorAll("[data-theme-mode-choice]")),
+  themeModePicker: document.querySelector("[data-theme-mode-picker]"),
+  themeStylePicker: document.querySelector("[data-theme-style-picker]"),
   tabShortcutControls: Array.from(document.querySelectorAll("[data-tab-shortcut-setting]")),
   showAdvancedFillActions: document.getElementById("showAdvancedFillActions"),
   resetLocalData: document.getElementById("resetLocalData")
@@ -174,9 +176,14 @@ function updateStatusCards(projects, activeProject) {
     : t("noActiveProject", "No active project");
 
   if (mediaAssets) {
-    elements.mediaCardValue.textContent = t("screenshotsCardValue", "$1/5 screenshot(s)", [String((mediaAssets.screenshots || []).length)]);
+    const localizedStats = mediaAssets.localizedScreenshotStats || {};
+    elements.mediaCardValue.textContent = t("mediaCardValueWithLocalizedScreenshots", "$1/5 global, $2 localized locale(s)", [
+      String((mediaAssets.screenshots || []).length),
+      String(localizedStats.localeCount || Object.keys(mediaAssets.localizedScreenshots || {}).length)
+    ]);
     elements.mediaCardMeta.textContent = [
       `${t("storeIcon", "Store icon")}: ${formatFoundMissing(mediaAssets.storeIcon)}`,
+      `${t("localizedScreenshots", "Localized screenshots")}: ${String(localizedStats.screenshotCount || 0)}`,
       `${t("smallPromoTile", "Small promo tile")}: ${formatFoundMissing(mediaAssets.smallPromo)}`,
       `${t("marqueePromoTile", "Marquee promo tile")}: ${formatFoundMissing(mediaAssets.marqueePromo)}`
     ].join(" | ");
@@ -456,9 +463,23 @@ elements.deleteProject.addEventListener("click", async () => {
   setStatus(t("deletedProject", "Deleted $1.", [project.name]));
 });
 
-elements.themeChoices.forEach(button => {
+if (elements.themeModePicker) {
+  elements.themeModePicker.addEventListener("change", async event => {
+    const settings = await storePilotOptionsUpdateSettings({ theme: event.target.value });
+    applyOptionsSettings(settings);
+  });
+}
+
+if (elements.themeStylePicker) {
+  elements.themeStylePicker.addEventListener("change", async event => {
+    const settings = await storePilotOptionsUpdateSettings({ themeStyle: event.target.value });
+    applyOptionsSettings(settings);
+  });
+}
+
+elements.themeModeChoices.forEach(button => {
   button.addEventListener("click", async () => {
-    const settings = await storePilotOptionsUpdateSettings({ theme: button.dataset.themeChoice });
+    const settings = await storePilotOptionsUpdateSettings({ theme: button.dataset.themeModeChoice });
     applyOptionsSettings(settings);
   });
 });

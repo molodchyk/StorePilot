@@ -81,13 +81,23 @@
 
   .project-actions button,
   .preference-section > button,
-  .theme-control button {
+  .appearance-control,
+  .theme-mode-control,
+  .theme-control,
+  .theme-control select {
     width: 100%;
   }
 
-  .theme-control {
+  .appearance-control {
+    justify-items: stretch;
+  }
+
+  .theme-mode-control {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    width: 100%;
+  }
+
+  .theme-control {
+    grid-template-columns: 1fr;
   }
 
   .detail-tabs {
@@ -113,16 +123,30 @@
   }
 
   .media-review-header {
+    grid-template-columns: minmax(0, 1fr);
     align-items: stretch;
-    flex-direction: column;
+  }
+
+  .media-review-order {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .media-review-order select {
+    width: 100%;
   }
 
   .media-review-close {
     width: 100%;
   }
 
+  .media-review-image-frame {
+    height: clamp(220px, calc(100vh - 250px), 520px);
+    min-height: 220px;
+    margin: 0 10px;
+  }
+
   .media-review-image-frame img {
-    max-height: calc(100vh - 240px);
+    max-height: 100%;
   }
 }
 
