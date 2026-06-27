@@ -169,19 +169,22 @@ function updatePanelFillAllUi() {
   });
 }
 
-async function openLanguageDropdown(preferredLocale = "", expectedMode = "") {
+async function openLanguageDropdown(preferredLocale = "", expectedMode = "", options = {}) {
   const dropdown = findLanguageDropdown(preferredLocale, expectedMode);
   if (!dropdown) {
     return { ok: false, message: localize("languageDropdownNotFound", "Could not find the Chrome Web Store language dropdown.") };
   }
 
+  const openDelayMs = Number.isFinite(options.openDelayMs) ? Math.max(0, options.openDelayMs) : 250;
   dropdown.scrollIntoView({ block: "center", inline: "nearest" });
   dropdown.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
   dropdown.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true, view: window }));
   dropdown.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 1, pointerType: "mouse" }));
   dropdown.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true, view: window }));
   dropdown.click();
-  await delay(250);
+  if (openDelayMs) {
+    await delay(openDelayMs);
+  }
 
   return {
     ok: true,
@@ -190,12 +193,19 @@ async function openLanguageDropdown(preferredLocale = "", expectedMode = "") {
   };
 }
 
-async function selectDashboardLanguage(locale) {
+async function selectDashboardLanguage(locale, selectionOptions = {}) {
   const normalizedTarget = normalizeLocale(locale);
   const expectedMode = getExpectedLanguageDropdownMode();
-  const opened = await openLanguageDropdown(locale, expectedMode);
+  const opened = await openLanguageDropdown(locale, expectedMode, selectionOptions);
   if (!opened.ok) return opened;
   const mode = opened.mode || expectedMode;
+  const confirmationAttempts = Number.isFinite(selectionOptions.confirmationAttempts)
+    ? Math.max(0, Math.floor(selectionOptions.confirmationAttempts))
+    : 16;
+  const confirmationDelayMs = Number.isFinite(selectionOptions.confirmationDelayMs)
+    ? Math.max(0, selectionOptions.confirmationDelayMs)
+    : 150;
+  const acceptUnverifiedClick = Boolean(selectionOptions.acceptUnverifiedClick);
 
   let options = getLanguageOptionsForMode(opened, mode);
   let option = options.find(candidate => normalizeLocale(candidate.locale) === normalizedTarget) ||
@@ -223,16 +233,34 @@ async function selectDashboardLanguage(locale) {
     activateDropdownOption(option.element);
   }
 
-  for (let attempt = 0; attempt < 16; attempt++) {
-    await delay(150);
+  for (let attempt = 0; attempt <= confirmationAttempts; attempt++) {
     const currentDropdown = findLanguageDropdown(locale, expectedMode) || opened.dropdown;
     const currentLocale = currentDropdown ? getLanguageDropdownLocale(currentDropdown) : "";
     if (currentLocale && localesMatch(currentLocale, normalizedTarget)) {
-      return { ok: true, message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)]) };
+      return {
+        ok: true,
+        verified: true,
+        message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)])
+      };
     }
     if (!currentLocale && currentDropdown && !isLanguageDropdownPlaceholder(currentDropdown)) {
-      return { ok: true, message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)]) };
+      return {
+        ok: true,
+        verified: false,
+        message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)])
+      };
     }
+    if (attempt < confirmationAttempts && confirmationDelayMs) {
+      await delay(confirmationDelayMs);
+    }
+  }
+
+  if (acceptUnverifiedClick) {
+    return {
+      ok: true,
+      verified: false,
+      message: localize("selectedDashboardLanguage", "Selected $1.", [formatLanguageOption(option)])
+    };
   }
 
   return {

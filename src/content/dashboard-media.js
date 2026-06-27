@@ -6,6 +6,14 @@ const LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS = 90000;
 const MEDIA_REMOVAL_TIMEOUT_MS = 30000;
 const LOCALIZED_SCREENSHOT_TARGET_READY_TIMEOUT_MS = 45000;
 const LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS = 45000;
+const LOCALIZED_SCREENSHOT_LANGUAGE_SELECTION_OPTIONS = {
+  openDelayMs: 125,
+  confirmationAttempts: 3,
+  confirmationDelayMs: 75,
+  acceptUnverifiedClick: true
+};
+const LOCALIZED_SCREENSHOT_LANGUAGE_VERIFICATION_ATTEMPTS = 8;
+const LOCALIZED_SCREENSHOT_LANGUAGE_VERIFICATION_DELAY_MS = 75;
 const MEDIA_UPLOAD_BRIDGE_TIMEOUT_MS = 500;
 
 let mediaUploadBridgePromise = null;
@@ -620,7 +628,7 @@ async function waitForLocalizedScreenshotFieldReady(timeoutMs = LOCALIZED_SCREEN
         widgets
       };
     }
-    await delay(500);
+    await delay(100);
   }
 
   return {
@@ -655,41 +663,83 @@ async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = ME
   return { ok: false, count: getVisibleMediaImageCount(kind) };
 }
 
-function isDashboardLocaleSelected(locale) {
+function getDashboardLocaleSelectionState(locale) {
   if (typeof getCurrentDashboardLocale !== "function") return true;
   const currentLocale = getCurrentDashboardLocale({ includePageFallback: false }) ||
     getCurrentDashboardLocale();
-  return Boolean(currentLocale && localesMatch(currentLocale, locale));
+  if (!currentLocale) {
+    return {
+      selected: false,
+      known: false,
+      currentLocale: ""
+    };
+  }
+
+  return {
+    selected: localesMatch(currentLocale, locale),
+    known: true,
+    currentLocale
+  };
 }
 
-async function ensureDashboardLanguageSelected(locale) {
-  if (isDashboardLocaleSelected(locale)) {
+function isDashboardLocaleSelected(locale) {
+  const state = getDashboardLocaleSelectionState(locale);
+  return state === true || Boolean(state && state.selected);
+}
+
+function formatDashboardLocaleMismatch(locale) {
+  return localize("clickedButDashboardShows", "Clicked $1, but the dashboard still shows $2.", [
+    locale,
+    typeof getCurrentDashboardLocale === "function"
+      ? getCurrentDashboardLocale() || localize("unknownLocale", "an unknown locale")
+      : localize("unknownLocale", "an unknown locale")
+  ]);
+}
+
+async function ensureDashboardLanguageSelected(locale, options = {}) {
+  const initialState = getDashboardLocaleSelectionState(locale);
+  if (initialState === true || initialState.selected) {
     return { ok: true, message: "" };
   }
 
-  const selection = await selectDashboardLanguage(locale);
+  const selection = await selectDashboardLanguage(locale, options.selectionOptions || {});
   if (!selection.ok) return selection;
 
-  for (let attempt = 0; attempt < 24; attempt++) {
-    if (isDashboardLocaleSelected(locale)) {
+  const verificationAttempts = Number.isFinite(options.verificationAttempts)
+    ? Math.max(0, Math.floor(options.verificationAttempts))
+    : 24;
+  const verificationDelayMs = Number.isFinite(options.verificationDelayMs)
+    ? Math.max(0, options.verificationDelayMs)
+    : 250;
+
+  for (let attempt = 0; attempt <= verificationAttempts; attempt++) {
+    const state = getDashboardLocaleSelectionState(locale);
+    if (state === true || state.selected) {
       return selection;
     }
-    await delay(250);
+    if (attempt < verificationAttempts && verificationDelayMs) {
+      await delay(verificationDelayMs);
+    }
+  }
+
+  const finalState = getDashboardLocaleSelectionState(locale);
+  if (options.allowUnknownLocaleAfterSelection && finalState !== true && !finalState.known) {
+    return selection;
   }
 
   return {
     ok: false,
-    message: localize("clickedButDashboardShows", "Clicked $1, but the dashboard still shows $2.", [
-      locale,
-      typeof getCurrentDashboardLocale === "function"
-        ? getCurrentDashboardLocale() || localize("unknownLocale", "an unknown locale")
-        : localize("unknownLocale", "an unknown locale")
-    ])
+    message: formatDashboardLocaleMismatch(locale)
   };
 }
 
 async function ensureLocalizedScreenshotUploadContext(locale) {
-  const selection = await ensureDashboardLanguageSelected(locale);
+  const selection = await ensureDashboardLanguageSelected(locale, {
+    selectionOptions: LOCALIZED_SCREENSHOT_LANGUAGE_SELECTION_OPTIONS,
+    verificationAttempts: LOCALIZED_SCREENSHOT_LANGUAGE_VERIFICATION_ATTEMPTS,
+    verificationDelayMs: LOCALIZED_SCREENSHOT_LANGUAGE_VERIFICATION_DELAY_MS,
+    allowUnknownLocaleAfterSelection: true
+  });
   if (!selection.ok) return selection;
 
   const fieldReady = await waitForLocalizedScreenshotFieldReady();
@@ -701,14 +751,14 @@ async function ensureLocalizedScreenshotUploadContext(locale) {
   }
 
   if (!isDashboardLocaleSelected(locale)) {
+    const state = getDashboardLocaleSelectionState(locale);
+    if (state !== true && !state.known) {
+      return { ok: true, fieldReady };
+    }
+
     return {
       ok: false,
-      message: localize("clickedButDashboardShows", "Clicked $1, but the dashboard still shows $2.", [
-        locale,
-        typeof getCurrentDashboardLocale === "function"
-          ? getCurrentDashboardLocale() || localize("unknownLocale", "an unknown locale")
-          : localize("unknownLocale", "an unknown locale")
-      ])
+      message: formatDashboardLocaleMismatch(locale)
     };
   }
 

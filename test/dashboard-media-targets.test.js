@@ -33,6 +33,10 @@ const context = vm.createContext({
       .trim()
       .replace(/\s+/g, " ");
   },
+  localesMatch(left, right) {
+    const normalize = value => String(value || "").replace("-", "_").toLowerCase();
+    return normalize(left) === normalize(right);
+  },
   getVisibleText(element) {
     return element && element.textContent || "";
   },
@@ -326,6 +330,41 @@ context.activateDashboardButton = button => {
   assert.equal(globalRemoveButtons.length, 1);
   assert.equal(globalRemoveButtons[0].getAttribute("aria-label"), "Remove image Screenshot 1");
   assert.equal(globalRemoveButtons[0].clickCount, 0);
+
+  let selectedDashboardLocale = "";
+  let capturedSelectionOptions = null;
+  context.getCurrentDashboardLocale = ({ includePageFallback = true } = {}) => (
+    includePageFallback ? selectedDashboardLocale : selectedDashboardLocale
+  );
+  context.selectDashboardLanguage = async (locale, options = {}) => {
+    capturedSelectionOptions = options;
+    selectedDashboardLocale = locale;
+    return { ok: true, verified: false, message: `Selected ${locale}.` };
+  };
+
+  const fastSelection = await context.ensureDashboardLanguageSelected("de", {
+    selectionOptions: { confirmationAttempts: 2, confirmationDelayMs: 0 },
+    verificationAttempts: 0,
+    verificationDelayMs: 0
+  });
+  assert.equal(fastSelection.ok, true);
+  assert.deepEqual(capturedSelectionOptions, { confirmationAttempts: 2, confirmationDelayMs: 0 });
+
+  selectedDashboardLocale = "fr";
+  context.selectDashboardLanguage = async () => ({ ok: true, verified: false, message: "Selected de." });
+  const mismatchedSelection = await context.ensureDashboardLanguageSelected("de", {
+    verificationAttempts: 0,
+    verificationDelayMs: 0
+  });
+  assert.equal(mismatchedSelection.ok, false);
+
+  selectedDashboardLocale = "";
+  const unknownSelection = await context.ensureDashboardLanguageSelected("de", {
+    verificationAttempts: 0,
+    verificationDelayMs: 0,
+    allowUnknownLocaleAfterSelection: true
+  });
+  assert.equal(unknownSelection.ok, true);
 
   console.log("Dashboard media target tests passed.");
 })().catch(error => {
