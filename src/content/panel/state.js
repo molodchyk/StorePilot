@@ -55,15 +55,33 @@ function createParallelSvgElement(name, attributes = {}) {
   return element;
 }
 
+function isParallelClearProgressRun(run) {
+  const mode = String(run && run.mode || "");
+  const phase = String(run && run.phase || "");
+  return mode === "clearOnly" || (mode === "clearThenUpload" && phase === "clearing");
+}
+
+function isParallelClearProgressWorker(worker, run = parallelLocalizedScreenshotRunState) {
+  const operation = String(worker && worker.operation || "");
+  return operation === "clearOnly" || isParallelClearProgressRun(run);
+}
+
 function getParallelTimelineCurrentSample(run, elapsedMs = getPanelParallelRunElapsedMs(run)) {
   const totals = run && run.totals || {};
   const statuses = Array.isArray(run && run.localeStatuses) ? run.localeStatuses : [];
   const totalLocales = Math.max(Number(totals.totalLocales || 0), statuses.length);
-  let completedLocales = Number(totals.completedLocales || 0);
-  let failedLocales = Number(totals.failedLocales || 0);
-  let skippedLocales = Number(totals.skippedLocales || 0);
+  let completedLocales = Math.min(totalLocales, Number(totals.completedLocales || 0));
+  let failedLocales = Math.min(
+    Math.max(0, totalLocales - completedLocales),
+    Number(totals.failedLocales || 0)
+  );
+  const statusSkippedLocales = statuses.filter(status => status.status === "skipped").length;
+  let skippedLocales = Math.min(
+    Math.max(0, totalLocales - completedLocales - failedLocales),
+    statusSkippedLocales
+  );
 
-  if (statuses.length) {
+  if (!completedLocales && !failedLocales && !skippedLocales && statuses.length) {
     const countClearedAsComplete = run &&
       run.mode === "clearThenUpload" &&
       run.phase === "clearing";
@@ -81,6 +99,29 @@ function getParallelTimelineCurrentSample(run, elapsedMs = getPanelParallelRunEl
     skippedLocales,
     remainingLocales: Math.max(0, totalLocales - completedLocales - failedLocales - skippedLocales),
     uploadedScreenshots: Number(totals.uploadedScreenshots || 0),
+    totalLocales
+  };
+}
+
+function getParallelWorkerTimelineCurrentSample(worker, elapsedMs = getPanelParallelWorkerElapsedMs(worker)) {
+  const totalLocales = Math.max(0, Number(worker && worker.assignedCount || 0));
+  const completedLocales = Math.min(totalLocales, Number(worker && worker.completedLocales || 0));
+  const failedLocales = Math.min(
+    Math.max(0, totalLocales - completedLocales),
+    Number(worker && worker.failedLocales || 0)
+  );
+  const skippedLocales = Math.min(
+    Math.max(0, totalLocales - completedLocales - failedLocales),
+    Number(worker && worker.skippedLocales || 0)
+  );
+
+  return {
+    elapsedMs,
+    completedLocales,
+    failedLocales,
+    skippedLocales,
+    remainingLocales: Math.max(0, totalLocales - completedLocales - failedLocales - skippedLocales),
+    uploadedScreenshots: Number(worker && worker.uploadedScreenshots || 0),
     totalLocales
   };
 }
@@ -120,6 +161,46 @@ function getParallelTimelineSamples(run) {
       remainingLocales: totalLocales,
       uploadedScreenshots: 0,
       totalLocales
+    });
+  }
+
+  return samples;
+}
+
+function getParallelWorkerTimelineSamples(worker) {
+  if (!worker) return [];
+
+  const samples = Array.isArray(worker.timeline)
+    ? worker.timeline.map(sample => ({
+      elapsedMs: Number(sample.elapsedMs || 0),
+      completedLocales: Number(sample.completedLocales || 0),
+      failedLocales: Number(sample.failedLocales || 0),
+      skippedLocales: Number(sample.skippedLocales || 0),
+      remainingLocales: Number(sample.remainingLocales || 0),
+      uploadedScreenshots: Number(sample.uploadedScreenshots || 0),
+      totalLocales: Number(sample.totalLocales || worker.assignedCount || 0)
+    })).filter(sample => Number.isFinite(sample.elapsedMs))
+    : [];
+
+  const liveSample = getParallelWorkerTimelineCurrentSample(worker);
+  const lastSample = samples[samples.length - 1];
+  if (!lastSample || liveSample.elapsedMs > lastSample.elapsedMs) {
+    samples.push(liveSample);
+  }
+
+  if (!samples.length) {
+    samples.push(liveSample);
+  }
+
+  if (samples[0].elapsedMs > 0) {
+    samples.unshift({
+      elapsedMs: 0,
+      completedLocales: 0,
+      failedLocales: 0,
+      skippedLocales: 0,
+      remainingLocales: Number(worker.assignedCount || samples[0].totalLocales || 0),
+      uploadedScreenshots: 0,
+      totalLocales: Number(worker.assignedCount || samples[0].totalLocales || 0)
     });
   }
 
@@ -206,6 +287,9 @@ function renderParallelTimelineChart(container, run) {
     "text-anchor": "end"
   });
   doneLabel.textContent = "done";
+  if (isParallelClearProgressRun(run)) {
+    doneLabel.textContent = "cleared";
+  }
   svg.append(doneLabel);
 
   const remainingLabel = createParallelSvgElement("text", {
@@ -216,6 +300,52 @@ function renderParallelTimelineChart(container, run) {
   });
   remainingLabel.textContent = "remaining";
   svg.append(remainingLabel);
+
+  container.hidden = false;
+  container.append(svg);
+}
+
+function renderParallelWorkerTimelineChart(container, worker) {
+  if (!container) return;
+  container.replaceChildren();
+
+  if (!worker) {
+    container.hidden = true;
+    return;
+  }
+
+  const samples = getParallelWorkerTimelineSamples(worker);
+  const width = 260;
+  const height = 34;
+  const padding = { left: 6, right: 6, top: 5, bottom: 5 };
+  const maxElapsed = Math.max(1, ...samples.map(sample => sample.elapsedMs));
+  const maxLocales = Math.max(1, Number(worker.assignedCount || 0), ...samples.map(sample => sample.totalLocales || 0));
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+  const xForSample = sample => padding.left + (Math.max(0, sample.elapsedMs) / maxElapsed) * chartWidth;
+  const yForValue = value => padding.top + (1 - (Math.max(0, value) / maxLocales)) * chartHeight;
+  const svg = createParallelSvgElement("svg", {
+    viewBox: `0 0 ${width} ${height}`,
+    role: "img",
+    "aria-label": `${worker.workerId || "worker"} localized screenshot progress`
+  });
+
+  for (const ratio of [0, 1]) {
+    const y = padding.top + ratio * chartHeight;
+    svg.append(createParallelSvgElement("line", {
+      class: "storepilot-parallel-chart-grid",
+      x1: padding.left,
+      y1: y,
+      x2: width - padding.right,
+      y2: y
+    }));
+  }
+
+  svg.append(createParallelTimelinePolyline(samples, "remainingLocales", xForSample, yForValue, "storepilot-parallel-chart-remaining"));
+  svg.append(createParallelTimelinePolyline(samples, "completedLocales", xForSample, yForValue, "storepilot-parallel-chart-completed"));
+  if (samples.some(sample => sample.failedLocales > 0)) {
+    svg.append(createParallelTimelinePolyline(samples, "failedLocales", xForSample, yForValue, "storepilot-parallel-chart-failed"));
+  }
 
   container.hidden = false;
   container.append(svg);
@@ -310,13 +440,18 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   const elapsed = formatPanelParallelElapsed(getPanelParallelRunElapsedMs(run));
   const failedWorkerCount = (run.workers || []).filter(worker => worker.status === "failed" || (worker.failedLocales || 0) > 0).length;
   const hasFailedLocales = failedWorkerCount > 0 || Number(totals.failedLocales || 0) > 0;
+  const clearProgress = isParallelClearProgressRun(run);
+  const localeProgressVerb = clearProgress ? "cleared" : "completed";
+  const screenshotSummary = clearProgress
+    ? `clear-only, ${totals.totalScreenshots || 0} source screenshot(s)`
+    : `${totals.uploadedScreenshots || 0}/${totals.totalScreenshots || 0} uploaded`;
 
   board.hidden = false;
   summary.replaceChildren(
     createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), `${run.status || "unknown"} - elapsed ${elapsed}`),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsMode", "Mode"), `${run.mode || "coordinated"}${run.phase ? ` - ${run.phase}` : ""}`),
-    createParallelBoardLine(localize("parallelLocalizedScreenshotsLocales", "Locales"), `${totals.completedLocales || 0}/${totals.totalLocales || 0} completed, ${totals.failedLocales || 0} failed, ${totals.skippedLocales || 0} skipped`),
-    createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), `${totals.uploadedScreenshots || 0}/${totals.totalScreenshots || 0} uploaded`)
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsLocales", "Locales"), `${totals.completedLocales || 0}/${totals.totalLocales || 0} ${localeProgressVerb}, ${totals.failedLocales || 0} failed, ${totals.skippedLocales || 0} skipped`),
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), screenshotSummary)
   );
 
   renderParallelTimelineChart(chart, run);
@@ -326,8 +461,10 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     const row = document.createElement("div");
     const title = document.createElement("div");
     const counts = document.createElement("div");
+    const workerChart = document.createElement("div");
     const current = document.createElement("div");
     const elapsedLabel = formatPanelParallelElapsed(getPanelParallelWorkerElapsedMs(worker));
+    const workerClearProgress = isParallelClearProgressWorker(worker, run);
     const currentText = worker.currentLocale
       ? `${worker.currentLocale}${worker.phase ? ` - ${worker.phase}` : ""}`
       : (worker.phase || worker.message || "");
@@ -335,11 +472,15 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     row.className = "storepilot-parallel-worker";
     title.className = "storepilot-parallel-worker-title";
     counts.className = "storepilot-parallel-worker-counts";
+    workerChart.className = "storepilot-parallel-worker-chart";
     current.className = "storepilot-parallel-worker-current";
     title.textContent = `${worker.workerId}: ${worker.operation || "replace"} - ${worker.status}${worker.closed ? " (closed)" : ""}`;
-    counts.textContent = `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}; elapsed ${elapsedLabel}`;
+    counts.textContent = workerClearProgress
+      ? `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; clear-only; elapsed ${elapsedLabel}`
+      : `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}; elapsed ${elapsedLabel}`;
     current.textContent = currentText || "Waiting for progress.";
-    row.append(title, counts, current);
+    renderParallelWorkerTimelineChart(workerChart, worker);
+    row.append(title, counts, workerChart, current);
     return row;
   }));
 

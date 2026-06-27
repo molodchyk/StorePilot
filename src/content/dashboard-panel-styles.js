@@ -184,7 +184,19 @@
         background: rgba(248, 250, 252, 0.82);
       }
 
+      #${panelId} .storepilot-parallel-worker-chart {
+        height: 34px;
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-radius: 4px;
+        background: rgba(241, 245, 249, 0.78);
+      }
+
       #${panelId} .storepilot-parallel-chart[hidden] {
+        display: none;
+      }
+
+      #${panelId} .storepilot-parallel-worker-chart[hidden] {
         display: none;
       }
 
@@ -192,6 +204,12 @@
         display: block;
         width: 100%;
         height: 88px;
+      }
+
+      #${panelId} .storepilot-parallel-worker-chart svg {
+        display: block;
+        width: 100%;
+        height: 34px;
       }
 
       #${panelId} .storepilot-parallel-chart-grid {
@@ -228,10 +246,14 @@
       #${panelId} .storepilot-parallel-locales {
         display: flex;
         flex-wrap: wrap;
+        align-content: flex-start;
         gap: 3px;
-        max-height: 76px;
+        min-height: 58px;
+        height: 116px;
+        max-height: 220px;
         overflow: auto;
         padding: 2px 0;
+        resize: vertical;
       }
 
       #${panelId} .storepilot-parallel-locales[hidden] {
@@ -349,7 +371,8 @@
         background: rgba(32, 38, 51, 0.78);
       }
 
-      #${panelId}[data-theme="dark"] .storepilot-parallel-chart {
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart,
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker-chart {
         border-color: #343b4a;
         background: rgba(17, 24, 39, 0.72);
       }
@@ -465,7 +488,8 @@
           background: rgba(32, 38, 51, 0.78);
         }
 
-        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart {
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart,
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker-chart {
           border-color: #343b4a;
           background: rgba(17, 24, 39, 0.72);
         }

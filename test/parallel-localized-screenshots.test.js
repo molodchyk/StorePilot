@@ -167,6 +167,8 @@ assert.equal(snapshot.phase, "uploading");
 assert.equal(snapshot.workers[0].operation, "uploadOnly");
 assert.equal(snapshot.workers[0].closeable, true);
 assert.equal(snapshot.workers[1].closeable, false);
+assert.equal(snapshot.workers[0].timeline[0].completedLocales, 1);
+assert.equal(snapshot.workers[1].timeline[0].failedLocales, 1);
 assert.equal(snapshot.totals.completedLocales, 1);
 assert.equal(snapshot.totals.failedLocales, 1);
 assert.equal(snapshot.totals.uploadedScreenshots, 4);
@@ -239,9 +241,74 @@ const clearOnlySnapshot = context.storePilotCreateParallelLocalizedScreenshotRun
 });
 assert.equal(clearOnlySnapshot.elapsedLabel, "1m 01s");
 assert.equal(clearOnlySnapshot.workers[0].elapsedLabel, "1m 01s");
+assert.equal(clearOnlySnapshot.workers[0].timeline[0].completedLocales, 1);
+assert.equal(clearOnlySnapshot.workers[0].timeline[0].remainingLocales, 1);
 assert.equal(clearOnlySnapshot.timeline[0].completedLocales, 1);
 assert.equal(clearOnlySnapshot.timeline[0].remainingLocales, 1);
 assert.equal(clearOnlySnapshot.timeline[0].uploadedScreenshots, 0);
+
+const clearOnlyProgressSnapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot({
+  runId: "run-3",
+  status: "running",
+  mode: "clearOnly",
+  phase: "clearOnly",
+  parentTabId: 1,
+  parentUrl: "https://chrome.google.com/webstore/devconsole/item/edit/listing",
+  startedAt: Date.now() - 42000,
+  closeSuccessfulWorkers: true,
+  abortRequested: false,
+  totalLocales: 2,
+  totalScreenshots: 6,
+  initialSkipped: [],
+  initialSkippedLocales: 0,
+  message: "",
+  localeStatusOrder: ["am", "ar"],
+  localeStatuses: {
+    am: {
+      locale: "am",
+      status: "clearing",
+      phase: "clearOnly",
+      operation: "clearOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 0,
+      totalScreenshots: 3,
+      message: "verifying localized screenshot field is clear"
+    },
+    ar: {
+      locale: "ar",
+      status: "pendingClear",
+      phase: "clearOnly",
+      operation: "clearOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 0,
+      totalScreenshots: 3,
+      message: ""
+    }
+  },
+  timeline: [],
+  workers: [
+    {
+      workerId: "worker-1",
+      tabId: 2,
+      status: "running",
+      closed: false,
+      operation: "clearOnly",
+      assignedLocales: ["am", "ar"],
+      totalScreenshots: 6,
+      progress: {
+        completedLocales: 1,
+        failedLocales: 0,
+        skippedLocales: 0,
+        uploadedScreenshots: 0
+      },
+      elapsedMs: 42000
+    }
+  ]
+});
+assert.equal(clearOnlyProgressSnapshot.timeline[0].completedLocales, 1, "clear-only timeline follows worker progress before locale chips are complete");
+assert.equal(clearOnlyProgressSnapshot.timeline[0].remainingLocales, 1);
+assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].completedLocales, 1);
+assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].remainingLocales, 1);
 
 (async () => {
   context.storePilotIsListingDashboardUrl = () => true;
@@ -264,8 +331,22 @@ assert.equal(clearOnlySnapshot.timeline[0].uploadedScreenshots, 0);
   assert.equal(immediateStart.run.phase, "resolvingFiles");
   assert.equal(immediateStart.run.totals.totalLocales, 0);
 
+  const retryWithoutStoredRun = await context.storePilotRetryParallelLocalizedScreenshotFailed({
+    tab: {
+      id: 7,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, "missing-run", {
+    assignedLocales: ["am", "ar"],
+    workerCount: 3,
+    parallelMode: "clear"
+  });
+  assert.equal(retryWithoutStoredRun.ok, true);
+  assert.equal(retryWithoutStoredRun.run.status, "starting");
+  assert.equal(retryWithoutStoredRun.run.mode, "clearOnly");
+
   await new Promise(resolve => setTimeout(resolve, 0));
-  assert.equal(openedTabs, 2);
+  assert.equal(openedTabs, 4);
 })().catch(error => {
   console.error(error);
   process.exitCode = 1;

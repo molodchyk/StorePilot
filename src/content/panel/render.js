@@ -71,6 +71,46 @@ function createPanelActionGroup(...controls) {
   return group;
 }
 
+function getParallelLocalizedScreenshotRetryLocales(run) {
+  const failedLocales = [];
+  const normalize = value => typeof normalizeLocale === "function"
+    ? normalizeLocale(value)
+    : String(value || "").replace(/-/g, "_").toLowerCase();
+
+  for (const status of run && run.localeStatuses || []) {
+    if (status && (status.status === "failed" || status.status === "aborted")) {
+      failedLocales.push(status.locale);
+    }
+  }
+
+  if (!failedLocales.length) {
+    for (const worker of run && run.workers || []) {
+      if ((worker.failedLocaleList || []).length) {
+        failedLocales.push(...worker.failedLocaleList);
+        continue;
+      }
+
+      if (worker.status === "failed" || worker.status === "aborted") {
+        const skippedSet = new Set((worker.skippedLocaleList || []).map(normalize));
+        for (const locale of worker.assignedLocales || []) {
+          if (!skippedSet.has(normalize(locale))) {
+            failedLocales.push(locale);
+          }
+        }
+      }
+    }
+  }
+
+  const seen = new Set();
+  return failedLocales
+    .map(normalize)
+    .filter(locale => {
+      if (!locale || seen.has(locale)) return false;
+      seen.add(locale);
+      return true;
+    });
+}
+
 function attachPanel(panel, title) {
   document.documentElement.append(panel);
   applyPanelMode(panel, getStoredPanelMode());
@@ -366,7 +406,13 @@ function renderPanel(locales) {
 
       const response = await storePilotRuntimeSendMessage({
         type: "storepilot-retry-localized-screenshot-parallel-failed",
-        runId: run.runId
+        runId: run.runId,
+        options: {
+          assignedLocales: getParallelLocalizedScreenshotRetryLocales(run),
+          workerCount: run.workerCount || (run.workers || []).length || 1,
+          parallelMode: run.mode || "clearThenUpload",
+          closeSuccessfulWorkers: run.closeSuccessfulWorkers !== false
+        }
       });
       if (response && response.run) {
         updateParallelLocalizedScreenshotRunState(response.run);

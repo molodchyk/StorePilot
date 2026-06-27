@@ -36,7 +36,7 @@
   }
 
   function handleRetryParallelLocalizedScreenshotUploadMessage(message, sender, sendResponse) {
-    storePilotRetryParallelLocalizedScreenshotFailed(sender, message.runId || "")
+    storePilotRetryParallelLocalizedScreenshotFailed(sender, message.runId || "", message.options || {})
       .then(sendResponse)
       .catch(error => sendResponse({
         ok: false,
