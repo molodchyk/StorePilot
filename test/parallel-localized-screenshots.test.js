@@ -242,3 +242,31 @@ assert.equal(clearOnlySnapshot.workers[0].elapsedLabel, "1m 01s");
 assert.equal(clearOnlySnapshot.timeline[0].completedLocales, 1);
 assert.equal(clearOnlySnapshot.timeline[0].remainingLocales, 1);
 assert.equal(clearOnlySnapshot.timeline[0].uploadedScreenshots, 0);
+
+(async () => {
+  context.storePilotIsListingDashboardUrl = () => true;
+  context.storePilotTabsSendMessage = () => Promise.resolve({ ok: true });
+  let openedTabs = 0;
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 11 + openedTabs++ });
+  context.storePilotGetProjectsState = () => new Promise(() => {});
+
+  const immediateStart = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 7,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    parallelMode: "clear"
+  });
+
+  assert.equal(immediateStart.ok, true);
+  assert.equal(immediateStart.run.status, "starting");
+  assert.equal(immediateStart.run.phase, "resolvingFiles");
+  assert.equal(immediateStart.run.totals.totalLocales, 0);
+
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.equal(openedTabs, 2);
+})().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});
