@@ -174,10 +174,13 @@ function getLocalizedScreenshotFieldBounds() {
 }
 
 function isElementInsideLocalizedScreenshotField(element) {
-  if (!element || isStorePilotOwnedElement(element)) return false;
-  const bounds = getLocalizedScreenshotFieldBounds();
+  return isElementInsideLocalizedScreenshotBounds(element, getLocalizedScreenshotFieldBounds());
+}
+
+function isElementInsideLocalizedScreenshotBounds(element, bounds) {
+  if (!element || !bounds || isStorePilotOwnedElement(element)) return false;
   const rect = getSafeElementRect(element);
-  if (!bounds || !rect) return false;
+  if (!rect) return false;
   return rect.top >= bounds.top && rect.top <= bounds.bottom;
 }
 
@@ -439,9 +442,12 @@ function getMediaUploadWidgets(kind) {
 }
 
 function getLocalizedScreenshotMediaImages() {
+  const bounds = getLocalizedScreenshotFieldBounds();
+  if (!bounds) return [];
+
   return Array.from(document.querySelectorAll("img"))
     .filter(image => isVisible(image) && image.getAttribute("src"))
-    .filter(isElementInsideLocalizedScreenshotField);
+    .filter(image => isElementInsideLocalizedScreenshotBounds(image, bounds));
 }
 
 function isMediaRemoveButton(button) {
@@ -453,20 +459,21 @@ function isMediaRemoveButton(button) {
 }
 
 function getLocalizedScreenshotRemoveButtons() {
+  const bounds = getLocalizedScreenshotFieldBounds();
+  if (!bounds) return [];
+
   return Array.from(document.querySelectorAll("[role='button'][aria-label], [jsname='LCoeQd']"))
     .filter(isMediaRemoveButton)
-    .filter(isElementInsideLocalizedScreenshotField);
+    .filter(button => isElementInsideLocalizedScreenshotBounds(button, bounds));
 }
 
 function getLocalizedScreenshotProgressElements() {
-  const progressBars = Array.from(document.querySelectorAll("[role='progressbar']"))
+  const bounds = getLocalizedScreenshotFieldBounds();
+  if (!bounds) return [];
+
+  return Array.from(document.querySelectorAll("[role='progressbar']"))
     .filter(isVisible)
-    .filter(isElementInsideLocalizedScreenshotField);
-  const progressText = Array.from(document.querySelectorAll("*"))
-    .filter(isVisible)
-    .filter(isElementInsideLocalizedScreenshotField)
-    .filter(element => /in bearbeitung|processing|uploading|hochlad|in progress/i.test(element.textContent || ""));
-  return progressBars.concat(progressText);
+    .filter(element => isElementInsideLocalizedScreenshotBounds(element, bounds));
 }
 
 function getVisibleMediaImageCount(kind) {
@@ -518,6 +525,10 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
 
     if (reachedExpectedCount && !firstIncreaseAt) {
       firstIncreaseAt = Date.now();
+    }
+
+    if (kind === "localizedScreenshots" && nextCount >= expectedCount) {
+      return true;
     }
 
     if (reachedExpectedCount && !hasMediaUploadInProgress(kind)) {
@@ -594,6 +605,9 @@ async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = ME
   while (Date.now() - startedAt < timeoutMs) {
     currentCount = getVisibleMediaImageCount(kind);
     if (currentCount === expectedCount) {
+      if (kind === "localizedScreenshots") {
+        return { ok: true, count: currentCount };
+      }
       if (!matchedAt) matchedAt = Date.now();
       if (!hasMediaUploadInProgress(kind) || Date.now() - matchedAt > 1500) {
         return { ok: true, count: currentCount };
@@ -939,19 +953,6 @@ function getVisibleDialogConfirmButton() {
     null;
 }
 
-async function confirmVisibleDialog() {
-  for (let attempt = 0; attempt < 20; attempt++) {
-    const button = getVisibleDialogConfirmButton();
-    if (button) {
-      activateDashboardButton(button);
-      return true;
-    }
-    await delay(250);
-  }
-
-  return false;
-}
-
 function getMediaRemoveButtons(kind) {
   if (kind === "localizedScreenshots") {
     return getLocalizedScreenshotRemoveButtons();
@@ -971,13 +972,24 @@ function hasClearableMedia(kind) {
   return getVisibleMediaImageCount(kind) > 0 || getMediaRemoveButtons(kind).length > 0;
 }
 
-async function waitForMediaRemovalUiChange(kind, beforeCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS) {
+async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS) {
   const startedAt = Date.now();
+  let confirmed = false;
+
   while (Date.now() - startedAt < timeoutMs) {
-    await delay(300);
     if (getVisibleMediaImageCount(kind) < beforeCount) {
       return true;
     }
+
+    if (!confirmed) {
+      const confirmButton = getVisibleDialogConfirmButton();
+      if (confirmButton) {
+        activateDashboardButton(confirmButton);
+        confirmed = true;
+      }
+    }
+
+    await delay(150);
   }
 
   return false;
@@ -1008,9 +1020,8 @@ async function performClearDashboardMediaAssets(kind) {
     const button = buttons[buttons.length - 1];
     const buttonLabel = button.getAttribute("aria-label") || label;
     activateDashboardButton(button);
-    await confirmVisibleDialog();
 
-    const changed = await waitForMediaRemovalUiChange(kind, beforeCount);
+    const changed = await waitForMediaRemovalAfterClick(kind, beforeCount);
     const afterCount = getVisibleMediaImageCount(kind);
     if (!changed) {
       failed.push(`${buttonLabel}: CWS did not remove the image`);
@@ -1173,18 +1184,8 @@ async function performUploadLocalizedScreenshots(files) {
           expectedCount: beforeCount + 1,
           timeoutMs: LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS
         });
-        const stableCount = result.ok
-          ? await waitForVisibleMediaImageCount("localizedScreenshots", beforeCount + 1, 7000)
-          : { ok: false, count: result.afterCount };
-        const afterCount = stableCount.count;
+        const afterCount = result.afterCount;
         if (result.ok) {
-          if (!stableCount.ok) {
-            failed.push(`${entry.locale} screenshot ${fileIndex + 1}: CWS shows ${afterCount} screenshot(s), expected ${beforeCount + 1}`);
-            if (afterCount > MAX_DASHBOARD_SCREENSHOTS || afterCount > beforeCount + 1) {
-              aborted = true;
-            }
-            break;
-          }
           if (afterCount > MAX_DASHBOARD_SCREENSHOTS) {
             failed.push(`${entry.locale} screenshot ${fileIndex + 1}: CWS exceeded the ${MAX_DASHBOARD_SCREENSHOTS} screenshot limit`);
             aborted = true;
