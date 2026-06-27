@@ -1,3 +1,100 @@
+let parallelLocalizedScreenshotRunState = null;
+
+function isParallelLocalizedScreenshotRunActive(run = parallelLocalizedScreenshotRunState) {
+  return Boolean(run && ["starting", "running", "aborting"].includes(run.status));
+}
+
+function formatPanelParallelElapsed(elapsedMs) {
+  const totalSeconds = Math.max(0, Math.floor(Number(elapsedMs || 0) / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${String(seconds).padStart(2, "0")}s`;
+  }
+  return `${seconds}s`;
+}
+
+function getParallelLocalizedScreenshotRunState() {
+  return parallelLocalizedScreenshotRunState;
+}
+
+function createParallelBoardLine(label, value) {
+  const line = document.createElement("div");
+  line.className = "storepilot-parallel-board-line";
+  line.textContent = `${label}: ${value}`;
+  return line;
+}
+
+function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(PANEL_ID)) {
+  if (!panel) return;
+
+  const board = panel.querySelector(".storepilot-parallel-board");
+  if (!board) return;
+
+  const run = parallelLocalizedScreenshotRunState;
+  const summary = board.querySelector(".storepilot-parallel-board-summary");
+  const workers = board.querySelector(".storepilot-parallel-workers");
+  const abortButton = board.querySelector("[data-storepilot-action='abort-localizedScreenshotsParallel']");
+  const retryButton = board.querySelector("[data-storepilot-action='retry-localizedScreenshotsParallel']");
+  if (!summary || !workers || !abortButton || !retryButton) return;
+
+  if (!run) {
+    board.hidden = true;
+    summary.replaceChildren();
+    workers.replaceChildren();
+    abortButton.hidden = true;
+    retryButton.hidden = true;
+    return;
+  }
+
+  const totals = run.totals || {};
+  const elapsed = run.elapsedLabel || formatPanelParallelElapsed(run.elapsedMs);
+  const failedWorkerCount = (run.workers || []).filter(worker => worker.status === "failed" || (worker.failedLocales || 0) > 0).length;
+  const hasFailedLocales = failedWorkerCount > 0 || Number(totals.failedLocales || 0) > 0;
+
+  board.hidden = false;
+  summary.replaceChildren(
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), `${run.status || "unknown"} - elapsed ${elapsed}`),
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsLocales", "Locales"), `${totals.completedLocales || 0}/${totals.totalLocales || 0} completed, ${totals.failedLocales || 0} failed, ${totals.skippedLocales || 0} skipped`),
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), `${totals.uploadedScreenshots || 0}/${totals.totalScreenshots || 0} uploaded`)
+  );
+
+  workers.replaceChildren(...(run.workers || []).map(worker => {
+    const row = document.createElement("div");
+    const title = document.createElement("div");
+    const counts = document.createElement("div");
+    const current = document.createElement("div");
+    const elapsedLabel = worker.elapsedLabel || formatPanelParallelElapsed(worker.elapsedMs);
+    const currentText = worker.currentLocale
+      ? `${worker.currentLocale}${worker.phase ? ` - ${worker.phase}` : ""}`
+      : (worker.phase || worker.message || "");
+
+    row.className = "storepilot-parallel-worker";
+    title.className = "storepilot-parallel-worker-title";
+    counts.className = "storepilot-parallel-worker-counts";
+    current.className = "storepilot-parallel-worker-current";
+    title.textContent = `${worker.workerId}: ${worker.status}${worker.closed ? " (closed)" : ""}`;
+    counts.textContent = `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}; elapsed ${elapsedLabel}`;
+    current.textContent = currentText || "Waiting for progress.";
+    row.append(title, counts, current);
+    return row;
+  }));
+
+  abortButton.hidden = !isParallelLocalizedScreenshotRunActive(run);
+  retryButton.hidden = isParallelLocalizedScreenshotRunActive(run) || !hasFailedLocales;
+}
+
+function updateParallelLocalizedScreenshotRunState(run) {
+  parallelLocalizedScreenshotRunState = run || null;
+  renderParallelLocalizedScreenshotBoard();
+  updatePanelMediaUi();
+}
+
 function getStoredPanelPosition() {
   try {
     return JSON.parse(window.localStorage.getItem(PANEL_POSITION_STORAGE_KEY) || "null");
@@ -205,6 +302,7 @@ function getPanelMediaButtons(panel = document.getElementById(PANEL_ID)) {
     "[data-storepilot-action='upload-storeIcon']",
     "[data-storepilot-action='upload-screenshots']",
     "[data-storepilot-action='upload-localizedScreenshots']",
+    "[data-storepilot-action='upload-localizedScreenshotsParallel']",
     "[data-storepilot-action='upload-smallPromo']",
     "[data-storepilot-action='upload-marqueePromo']",
     "[data-storepilot-action='clear-screenshots']",
@@ -234,6 +332,12 @@ function updatePanelMediaUi() {
 
   if (fillAllRunning) {
     setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling descriptions..."));
+    return;
+  }
+
+  if (isParallelLocalizedScreenshotRunActive()) {
+    setPanelMediaButtonsDisabled(true, localize("parallelLocalizedScreenshotsRunning", "Parallel localized screenshot upload is running."));
+    renderParallelLocalizedScreenshotBoard(panel);
     return;
   }
 
@@ -283,6 +387,14 @@ function updatePanelMediaUi() {
       ? ""
       : localize("localizedScreenshotTargetNotFound", "Localized screenshots upload target not found on this page.");
   }
+
+  const uploadLocalizedScreenshotsParallelButton = panel.querySelector("[data-storepilot-action='upload-localizedScreenshotsParallel']");
+  if (uploadLocalizedScreenshotsParallelButton) {
+    uploadLocalizedScreenshotsParallelButton.disabled = false;
+    uploadLocalizedScreenshotsParallelButton.title = "";
+  }
+
+  renderParallelLocalizedScreenshotBoard(panel);
 }
 
 async function runExclusiveMediaOperation(label, operation) {

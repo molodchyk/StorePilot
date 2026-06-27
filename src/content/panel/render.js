@@ -297,6 +297,91 @@ function renderPanel(locales) {
     };
   }
 
+  function getParallelLocalizedScreenshotUploadOptions() {
+    if (typeof window.prompt !== "function") {
+      return {
+        workerCount: 2,
+        closeSuccessfulWorkers: true
+      };
+    }
+
+    const workerCountText = window.prompt(
+      localize("parallelLocalizedScreenshotsWorkerCountPrompt", "Parallel worker count (1-6)."),
+      "2"
+    );
+    if (workerCountText === null) return null;
+
+    const workerCount = Math.min(Math.max(Number.parseInt(workerCountText, 10) || 2, 1), 6);
+    const currentLocale = typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() : "";
+    const startLocale = window.prompt(
+      localize("localizedScreenshotsStartLocalePrompt", "Start at locale (optional; leave empty for first locale)."),
+      currentLocale || ""
+    );
+    if (startLocale === null) return null;
+
+    return {
+      workerCount,
+      localizedScreenshotsStartLocale: startLocale.trim(),
+      closeSuccessfulWorkers: true
+    };
+  }
+
+  function createParallelLocalizedScreenshotBoard() {
+    const board = document.createElement("div");
+    const titleElement = document.createElement("div");
+    const summary = document.createElement("div");
+    const workers = document.createElement("div");
+    const boardActions = document.createElement("div");
+    const abortParallelButton = createButton(localize("abortParallelLocalizedScreenshots", "Abort parallel run"), async () => {
+      const run = getParallelLocalizedScreenshotRunState();
+      if (!run || !run.runId) {
+        status.textContent = localize("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.");
+        return;
+      }
+
+      const response = await storePilotRuntimeSendMessage({
+        type: "storepilot-abort-localized-screenshot-parallel-upload",
+        runId: run.runId
+      });
+      if (response && response.run) {
+        updateParallelLocalizedScreenshotRunState(response.run);
+      }
+      status.textContent = response && response.message || localize("fillAllAbortRequested", "Abort requested. StorePilot stops after the current dashboard step.");
+    });
+    const retryFailedButton = createButton(localize("retryFailedLocalizedScreenshots", "Retry failed locales"), async () => {
+      const run = getParallelLocalizedScreenshotRunState();
+      if (!run || !run.runId) {
+        status.textContent = localize("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.");
+        return;
+      }
+
+      const response = await storePilotRuntimeSendMessage({
+        type: "storepilot-retry-localized-screenshot-parallel-failed",
+        runId: run.runId
+      });
+      if (response && response.run) {
+        updateParallelLocalizedScreenshotRunState(response.run);
+      }
+      status.textContent = response && response.message || localize("parallelLocalizedScreenshotsNoFailedLocales", "No failed localized screenshot locales to retry.");
+    });
+
+    board.className = "storepilot-parallel-board";
+    titleElement.className = "storepilot-parallel-board-title";
+    summary.className = "storepilot-parallel-board-summary";
+    workers.className = "storepilot-parallel-workers";
+    boardActions.className = "storepilot-parallel-board-actions";
+    titleElement.textContent = localize("parallelLocalizedScreenshotsTitle", "Parallel localized screenshots");
+    abortParallelButton.dataset.storepilotAction = "abort-localizedScreenshotsParallel";
+    abortParallelButton.className = "storepilot-danger";
+    retryFailedButton.dataset.storepilotAction = "retry-localizedScreenshotsParallel";
+    abortParallelButton.hidden = true;
+    retryFailedButton.hidden = true;
+    board.hidden = true;
+    boardActions.append(abortParallelButton, retryFailedButton);
+    board.append(titleElement, summary, workers, boardActions);
+    return board;
+  }
+
   function createMediaUploadButton(kind, labelKey, fallback) {
     const button = createButton(localize(labelKey, fallback), async () => {
       const options = kind === "localizedScreenshots" ? getLocalizedScreenshotUploadOptions() : {};
@@ -345,6 +430,30 @@ function renderPanel(locales) {
   const uploadStoreIconButton = createMediaUploadButton("storeIcon", "uploadStoreIcon", "Upload store icon");
   const uploadScreenshotsButton = createMediaUploadButton("screenshots", "uploadScreenshots", "Upload screenshots");
   const uploadLocalizedScreenshotsButton = createMediaUploadButton("localizedScreenshots", "uploadLocalizedScreenshots", "Upload localized screenshots");
+  const uploadLocalizedScreenshotsParallelButton = createButton(
+    localize("uploadLocalizedScreenshotsParallel", "Upload localized screenshots in parallel"),
+    async () => {
+      const options = getParallelLocalizedScreenshotUploadOptions();
+      if (options === null) return;
+
+      setPanelMediaButtonsDisabled(true, localize("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload..."));
+      status.textContent = localize("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload...");
+      try {
+        const response = await storePilotRuntimeSendMessage({
+          type: "storepilot-start-localized-screenshot-parallel-upload",
+          requestAccess: false,
+          options
+        });
+        if (response && response.run) {
+          updateParallelLocalizedScreenshotRunState(response.run);
+        }
+        status.textContent = response && response.message || localize("mediaUploadFailed", "Media upload failed: $1", [localize("unknown", "Unknown")]);
+      } finally {
+        updatePanelMediaUi();
+      }
+    }
+  );
+  uploadLocalizedScreenshotsParallelButton.dataset.storepilotAction = "upload-localizedScreenshotsParallel";
   const uploadSmallPromoButton = createMediaUploadButton("smallPromo", "uploadSmallPromo", "Upload small promo");
   const uploadMarqueePromoButton = createMediaUploadButton("marqueePromo", "uploadMarqueePromo", "Upload marquee promo");
   const clearScreenshotsButton = createMediaClearButton("screenshots", "clearScreenshots", "Clear screenshots");
@@ -359,6 +468,7 @@ function renderPanel(locales) {
       uploadStoreIconButton,
       uploadScreenshotsButton,
       uploadLocalizedScreenshotsButton,
+      uploadLocalizedScreenshotsParallelButton,
       uploadSmallPromoButton,
       uploadMarqueePromoButton
     ),
@@ -374,8 +484,10 @@ function renderPanel(locales) {
 
   panelControls.append(toggleModeButton, closeButton);
   header.append(title, panelControls);
-  panel.append(header, meta, actions, status);
+  const parallelBoard = createParallelLocalizedScreenshotBoard();
+  panel.append(header, meta, actions, parallelBoard, status);
   document.documentElement.append(panel);
+  renderParallelLocalizedScreenshotBoard(panel);
   applyPanelMode(panel, panelMode);
   applyStoredPanelPosition(panel);
   clampPanelToViewport(panel, false);

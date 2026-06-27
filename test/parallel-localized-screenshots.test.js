@@ -1,0 +1,136 @@
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
+
+const root = path.resolve(__dirname, "..");
+const context = vm.createContext({
+  console,
+  setTimeout,
+  storePilotText(_key, fallback, substitutions) {
+    return String(fallback || "").replace(/\$(\d+)/g, (_match, index) => {
+      const value = substitutions && substitutions[Number(index) - 1];
+      return value === undefined || value === null ? "" : String(value);
+    });
+  },
+  storePilotNormalizeLocaleCode(value) {
+    const parts = String(value || "")
+      .trim()
+      .replace(/-/g, "_")
+      .split("_")
+      .filter(Boolean);
+    return parts
+      .map((part, index) => index === 0 ? part.toLowerCase() : part.toUpperCase())
+      .join("_");
+  }
+});
+
+vm.runInContext(fs.readFileSync(path.join(root, "src/background/media.js"), "utf8"), context, {
+  filename: "src/background/media.js"
+});
+
+function hostValue(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+const files = {
+  localizedScreenshots: {
+    am: ["am-1", "am-2", "am-3"],
+    ar: ["ar-1", "ar-2", "ar-3"],
+    az: ["az-1", "az-2", "az-3"],
+    bg: ["bg-1", "bg-2", "bg-3"],
+    bn: ["bn-1", "bn-2", "bn-3"],
+    ca: ["ca-1", "ca-2", "ca-3"]
+  }
+};
+
+const assignedPlan = context.storePilotBuildParallelLocalizedScreenshotPlan(files, {
+  assignedLocales: ["bg", "am", "bg"],
+  startLocale: "ca",
+  workerCount: 2
+});
+assert.equal(assignedPlan.ok, true);
+assert.deepEqual(hostValue(assignedPlan.locales), ["am", "bg"], "assigned locales ignore startLocale and preserve source sort order");
+assert.deepEqual(hostValue(assignedPlan.chunks), [["am"], ["bg"]]);
+assert.equal(new Set(assignedPlan.chunks.flat()).size, assignedPlan.chunks.flat().length, "worker chunks do not overlap");
+
+const startPlan = context.storePilotBuildParallelLocalizedScreenshotPlan(files, {
+  startLocale: "az",
+  workerCount: 2
+});
+assert.equal(startPlan.ok, true);
+assert.deepEqual(hostValue(startPlan.locales), ["az", "bg", "bn", "ca"]);
+assert.deepEqual(hostValue(startPlan.chunks), [["az", "bg"], ["bn", "ca"]]);
+assert.deepEqual(hostValue(startPlan.skipped), ["2 locale(s) before start locale az"]);
+
+const largeLocalizedScreenshots = Object.fromEntries(
+  Array.from({ length: 66 }, (_item, index) => [
+    `l${String(index).padStart(2, "0")}`,
+    [`${index}-1`, `${index}-2`, `${index}-3`]
+  ])
+);
+const largePlan = context.storePilotBuildParallelLocalizedScreenshotPlan({
+  localizedScreenshots: largeLocalizedScreenshots
+}, {
+  workerCount: 6
+});
+assert.equal(largePlan.ok, true);
+assert.equal(largePlan.locales.length, 66);
+assert.deepEqual(Array.from(largePlan.chunks).map(chunk => chunk.length), [11, 11, 11, 11, 11, 11]);
+assert.equal(largePlan.totalScreenshots, 198);
+
+const filteredFiles = context.storePilotFilterLocalizedScreenshotFilesForAssignedLocales(files, ["ar", "ca"]);
+assert.equal(filteredFiles.storeIcon, null);
+assert.deepEqual(hostValue(filteredFiles.screenshots), []);
+assert.deepEqual(Object.keys(filteredFiles.localizedScreenshots), ["ar", "ca"]);
+assert.equal(filteredFiles.smallPromo, null);
+assert.equal(filteredFiles.marqueePromo, null);
+
+assert.equal(context.storePilotFormatParallelLocalizedScreenshotElapsed(123456), "2m 03s");
+
+const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot({
+  runId: "run-1",
+  status: "running",
+  parentTabId: 1,
+  parentUrl: "https://chrome.google.com/webstore/devconsole/item/edit/listing",
+  startedAt: Date.now() - 5000,
+  closeSuccessfulWorkers: true,
+  abortRequested: false,
+  initialSkipped: [],
+  initialSkippedLocales: 0,
+  message: "",
+  workers: [
+    {
+      workerId: "worker-1",
+      tabId: 2,
+      status: "completed",
+      closed: false,
+      assignedLocales: ["am"],
+      totalScreenshots: 3,
+      completedLocales: 1,
+      failedLocales: 0,
+      skippedLocales: 0,
+      uploadedScreenshots: 3,
+      elapsedMs: 2000
+    },
+    {
+      workerId: "worker-2",
+      tabId: 3,
+      status: "failed",
+      closed: false,
+      assignedLocales: ["ar"],
+      totalScreenshots: 3,
+      completedLocales: 0,
+      failedLocales: 1,
+      skippedLocales: 0,
+      uploadedScreenshots: 1,
+      elapsedMs: 3000
+    }
+  ]
+});
+assert.equal(snapshot.workers[0].closeable, true);
+assert.equal(snapshot.workers[1].closeable, false);
+assert.equal(snapshot.totals.completedLocales, 1);
+assert.equal(snapshot.totals.failedLocales, 1);
+assert.equal(snapshot.totals.uploadedScreenshots, 4);
+assert.equal(snapshot.totals.totalScreenshots, 6);

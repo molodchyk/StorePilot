@@ -102,7 +102,19 @@ assert.deepEqual(localizedProgressStatus.split("\n"), [
   "Locale: 2/66 - ar (3 expected)",
   "Run locales: 1/66 completed, 0 failed, 0 skipped",
   "Screenshots: 5/198 uploaded",
+  "Elapsed: 0s",
   "Current step: uploading screenshot 3/3 (attempt 1/3, visible 2)"
+]);
+
+const assignedLocalizedEntries = context.applyLocalizedScreenshotAssignedLocales([
+  { locale: "am", files: ["am-1"] },
+  { locale: "ar", files: ["ar-1"] },
+  { locale: "pt_BR", files: ["pt-br-1"] }
+], ["pt-BR", "am", "pt_br", "missing"]);
+assert.deepEqual(Array.from(assignedLocalizedEntries.assignedLocales), ["pt_br", "am", "missing"]);
+assert.deepEqual(Array.from(assignedLocalizedEntries.entries).map(entry => entry.locale), ["am", "pt_BR"]);
+assert.deepEqual(Array.from(assignedLocalizedEntries.skippedAssignedLocales), [
+  "missing: assigned locale has no localized screenshot files"
 ]);
 
 class FakeElement {

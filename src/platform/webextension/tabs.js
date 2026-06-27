@@ -18,6 +18,11 @@ function storePilotTabsUpdate(tabId, updateProperties) {
   return storePilotCallMaybePromise(api.tabs.update, api.tabs, [tabId, updateProperties]);
 }
 
+function storePilotTabsRemove(tabIds) {
+  const api = storePilotGetWebExtensionApi();
+  return storePilotCallMaybePromise(api.tabs.remove, api.tabs, [tabIds]);
+}
+
 function storePilotWindowsUpdate(windowId, updateProperties) {
   const api = storePilotGetWebExtensionApi();
   return api.windows && api.windows.update

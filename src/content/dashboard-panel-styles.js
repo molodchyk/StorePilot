@@ -153,14 +153,84 @@
         white-space: pre-line;
       }
 
+      #${panelId} .storepilot-parallel-board {
+        display: grid;
+        gap: 6px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(148, 163, 184, 0.35);
+        color: #475569;
+        font-size: 12px;
+      }
+
+      #${panelId} .storepilot-parallel-board[hidden] {
+        display: none;
+      }
+
+      #${panelId} .storepilot-parallel-board-title {
+        color: #111827;
+        font-weight: 700;
+      }
+
+      #${panelId} .storepilot-parallel-board-summary {
+        display: grid;
+        gap: 2px;
+      }
+
+      #${panelId} .storepilot-parallel-workers {
+        display: grid;
+        gap: 4px;
+        max-height: 160px;
+        overflow: auto;
+      }
+
+      #${panelId} .storepilot-parallel-worker {
+        display: grid;
+        gap: 2px;
+        padding: 6px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 5px;
+        background: rgba(248, 250, 252, 0.8);
+      }
+
+      #${panelId} .storepilot-parallel-worker-title {
+        color: #111827;
+        font-weight: 700;
+      }
+
+      #${panelId} .storepilot-parallel-worker-current {
+        overflow-wrap: anywhere;
+      }
+
+      #${panelId} .storepilot-parallel-board-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+
       #${panelId}[data-panel-mode="minimized"] .storepilot-meta,
       #${panelId}[data-panel-mode="minimized"] .storepilot-actions,
+      #${panelId}[data-panel-mode="minimized"] .storepilot-parallel-board,
       #${panelId}[data-panel-mode="minimized"] .storepilot-status {
         display: none;
       }
 
       #${panelId}[data-theme="dark"] .storepilot-status {
         color: #cbd5e1;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-board {
+        border-top-color: #343b4a;
+        color: #cbd5e1;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-board-title,
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker-title {
+        color: #f4f6fa;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker {
+        border-color: #343b4a;
+        background: rgba(32, 38, 51, 0.78);
       }
 
       @media (prefers-color-scheme: dark) {
@@ -194,6 +264,21 @@
 
         #${panelId}:not([data-theme="light"]) .storepilot-status {
           color: #cbd5e1;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-board {
+          border-top-color: #343b4a;
+          color: #cbd5e1;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-board-title,
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker-title {
+          color: #f4f6fa;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker {
+          border-color: #343b4a;
+          background: rgba(32, 38, 51, 0.78);
         }
       }
 
@@ -262,6 +347,7 @@
       }
 
       #${panelId}[data-theme-style="high-contrast"] .storepilot-meta,
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-parallel-board,
       #${panelId}[data-theme-style="high-contrast"] .storepilot-status {
         color: #000000;
       }
@@ -282,6 +368,20 @@
         border-top-color: #000000;
       }
 
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-parallel-board {
+        border-top-color: #000000;
+      }
+
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-parallel-board-title,
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-parallel-worker-title {
+        color: #000000;
+      }
+
+      #${panelId}[data-theme-style="high-contrast"] .storepilot-parallel-worker {
+        border-color: #000000;
+        background: #ffffff;
+      }
+
       @media (prefers-color-scheme: dark) {
         #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] {
           border-color: #ffffff;
@@ -291,6 +391,7 @@
         }
 
         #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-meta,
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-parallel-board,
         #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-status {
           color: #ffffff;
         }
@@ -310,6 +411,20 @@
         #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-action-group {
           border-top-color: #ffffff;
         }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-parallel-board {
+          border-top-color: #ffffff;
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-parallel-board-title,
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-parallel-worker-title {
+          color: #ffffff;
+        }
+
+        #${panelId}:not([data-theme="light"])[data-theme-style="high-contrast"] .storepilot-parallel-worker {
+          border-color: #ffffff;
+          background: #000000;
+        }
       }
 
       #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] {
@@ -320,6 +435,7 @@
       }
 
       #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-meta,
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-parallel-board,
       #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-status {
         color: #ffffff;
       }
@@ -338,6 +454,20 @@
 
       #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-action-group {
         border-top-color: #ffffff;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-parallel-board {
+        border-top-color: #ffffff;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-parallel-board-title,
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-parallel-worker-title {
+        color: #ffffff;
+      }
+
+      #${panelId}[data-theme="dark"][data-theme-style="high-contrast"] .storepilot-parallel-worker {
+        border-color: #ffffff;
+        background: #000000;
       }
     `;
     document.documentElement.append(style);

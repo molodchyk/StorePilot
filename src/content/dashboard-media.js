@@ -1148,7 +1148,27 @@ function setMediaOperationProgress(message) {
   }
 }
 
+function formatLocalizedScreenshotElapsedTime(elapsedMs) {
+  const totalSeconds = Math.max(0, Math.floor(Number(elapsedMs || 0) / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, "0")}m ${String(seconds).padStart(2, "0")}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${String(seconds).padStart(2, "0")}s`;
+  }
+  return `${seconds}s`;
+}
+
 function createLocalizedScreenshotProgress(entry, localeIndex, totalLocales, stats = {}, overrides = {}) {
+  const startedAt = stats.startedAt || overrides.startedAt || Date.now();
+  const elapsedMs = Number.isFinite(overrides.elapsedMs)
+    ? overrides.elapsedMs
+    : Math.max(0, Date.now() - startedAt);
+
   return {
     localeIndex,
     totalLocales,
@@ -1159,6 +1179,10 @@ function createLocalizedScreenshotProgress(entry, localeIndex, totalLocales, sta
     skippedLocales: stats.skippedLocales || 0,
     uploadedScreenshots: stats.uploadedScreenshots || 0,
     totalScreenshots: stats.totalScreenshots || 0,
+    startedAt,
+    elapsedMs,
+    runId: stats.runId || overrides.runId || "",
+    workerId: stats.workerId || overrides.workerId || "",
     ...overrides
   };
 }
@@ -1169,12 +1193,38 @@ function formatLocalizedScreenshotProgressStatus(progress, phase) {
     `Locale: ${progress.localeIndex + 1}/${progress.totalLocales} - ${progress.locale} (${progress.localeScreenshotCount} expected)`,
     `Run locales: ${progress.completedLocales || 0}/${progress.totalLocales} completed, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`,
     `Screenshots: ${progress.uploadedScreenshots || 0}/${progress.totalScreenshots || 0} uploaded`,
+    `Elapsed: ${formatLocalizedScreenshotElapsedTime(progress.elapsedMs || 0)}`,
     `Current step: ${phase}`
   ].join("\n");
 }
 
+function publishLocalizedScreenshotProgress(progress, phase) {
+  if (!progress || !progress.runId || !progress.workerId || typeof storePilotRuntimeSendMessage !== "function") {
+    return;
+  }
+
+  try {
+    const response = storePilotRuntimeSendMessage({
+      type: "storepilot-localized-screenshot-progress",
+      runId: progress.runId,
+      workerId: progress.workerId,
+      progress: {
+        ...progress,
+        phase,
+        elapsedMs: Number.isFinite(progress.elapsedMs) ? progress.elapsedMs : 0
+      }
+    });
+    if (response && typeof response.catch === "function") {
+      response.catch(() => {});
+    }
+  } catch (_error) {
+    // Parallel progress is best-effort; upload correctness is local to the worker.
+  }
+}
+
 function setLocalizedScreenshotProgress(progress, phase) {
   setMediaOperationProgress(formatLocalizedScreenshotProgressStatus(progress, phase));
+  publishLocalizedScreenshotProgress(progress, phase);
 }
 
 function isDashboardPageVisibleForMediaAutomation() {
@@ -1564,6 +1614,36 @@ function applyLocalizedScreenshotStartLocale(entries, startLocale) {
   };
 }
 
+function normalizeLocalizedScreenshotAssignedLocales(assignedLocales) {
+  if (!Array.isArray(assignedLocales)) return [];
+
+  const seen = new Set();
+  const normalized = [];
+  for (const locale of assignedLocales) {
+    const normalizedLocale = normalizeLocale(locale);
+    if (!normalizedLocale || seen.has(normalizedLocale)) continue;
+    seen.add(normalizedLocale);
+    normalized.push(normalizedLocale);
+  }
+  return normalized;
+}
+
+function applyLocalizedScreenshotAssignedLocales(entries, assignedLocales) {
+  const normalizedAssignedLocales = normalizeLocalizedScreenshotAssignedLocales(assignedLocales);
+  const assignedSet = new Set(normalizedAssignedLocales);
+  const filteredEntries = entries.filter(entry => assignedSet.has(normalizeLocale(entry.locale)));
+  const foundLocales = new Set(filteredEntries.map(entry => normalizeLocale(entry.locale)));
+  const missingAssignedLocales = normalizedAssignedLocales
+    .filter(locale => !foundLocales.has(locale))
+    .map(locale => `${locale}: assigned locale has no localized screenshot files`);
+
+  return {
+    entries: filteredEntries,
+    skippedAssignedLocales: missingAssignedLocales,
+    assignedLocales: normalizedAssignedLocales
+  };
+}
+
 function countLocalizedScreenshotSkippedLocales(skipped) {
   return skipped.reduce((count, item) => {
     const match = String(item || "").match(/^(\d+) locale\(s\) before start locale\b/);
@@ -1787,6 +1867,7 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
 }
 
 async function performUploadLocalizedScreenshots(files, options = {}) {
+  const startedAt = Date.now();
   const uploaded = [];
   const failed = [];
   const skipped = [];
@@ -1804,16 +1885,26 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     return false;
   });
 
-  const startLocaleResult = applyLocalizedScreenshotStartLocale(entries, options.localizedScreenshotsStartLocale || options.startLocale || "");
-  if (!startLocaleResult.ok) {
-    failed.push(startLocaleResult.message);
-    entries = [];
+  const hasAssignedLocales = Array.isArray(options.assignedLocales);
+  let assignedLocales = [];
+  if (hasAssignedLocales) {
+    const assignedResult = applyLocalizedScreenshotAssignedLocales(entries, options.assignedLocales);
+    assignedLocales = assignedResult.assignedLocales;
+    entries = assignedResult.entries;
+    skipped.push(...assignedResult.skippedAssignedLocales);
   } else {
-    entries = startLocaleResult.entries;
-    skipped.push(...startLocaleResult.skippedBeforeStart);
+    const startLocaleResult = applyLocalizedScreenshotStartLocale(entries, options.localizedScreenshotsStartLocale || options.startLocale || "");
+    if (!startLocaleResult.ok) {
+      failed.push(startLocaleResult.message);
+      entries = [];
+    } else {
+      entries = startLocaleResult.entries;
+      skipped.push(...startLocaleResult.skippedBeforeStart);
+    }
   }
 
   if (!entries.length) {
+    const elapsedMs = Date.now() - startedAt;
     return {
       ok: skipped.length > 0 && failed.length === 0,
       aborted: false,
@@ -1825,6 +1916,8 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
       uploaded,
       skipped,
       failed,
+      elapsedMs,
+      assignedLocales,
       diagnostics: {
         mediaUploadTargets: getMediaUploadDiagnostics()
       }
@@ -1845,7 +1938,10 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
         failedLocales: failed.length,
         skippedLocales: countLocalizedScreenshotSkippedLocales(skipped),
         uploadedScreenshots: uploadedScreenshotCount,
-        totalScreenshots
+        totalScreenshots,
+        startedAt,
+        runId: options.parallelRunId || options.runId || "",
+        workerId: options.parallelWorkerId || options.workerId || ""
       });
       localeUploadedCount = Math.max(localeUploadedCount, localeResult.uploadedCount || 0);
 
@@ -1885,7 +1981,8 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
   }
 
   const skippedLocaleCount = countLocalizedScreenshotSkippedLocales(skipped);
-  const runSummary = `Localized screenshot upload ${aborted ? "stopped" : "finished"}: ${uploaded.length}/${entries.length} run locale(s) completed, ${uploadedScreenshotCount}/${totalScreenshots} screenshot(s) uploaded, ${skippedLocaleCount} locale(s) skipped, ${failed.length} failed.`;
+  const elapsedMs = Date.now() - startedAt;
+  const runSummary = `Localized screenshot upload ${aborted ? "stopped" : "finished"}: ${uploaded.length}/${entries.length} run locale(s) completed, ${uploadedScreenshotCount}/${totalScreenshots} screenshot(s) uploaded, ${skippedLocaleCount} locale(s) skipped, ${failed.length} failed. Elapsed: ${formatLocalizedScreenshotElapsedTime(elapsedMs)}.`;
   const messageParts = [
     runSummary,
     aborted ? localize("operationStopped", "Stopped.") : "",
@@ -1900,6 +1997,8 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     uploaded,
     skipped,
     failed,
+    elapsedMs,
+    assignedLocales,
     diagnostics: {
       mediaUploadTargets: getMediaUploadDiagnostics()
     }

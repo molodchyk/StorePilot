@@ -136,6 +136,12 @@ storePilotRuntimeOnMessageAddListener((message, _sender, sendResponse) => {
       return;
     }
 
+    if (message.type === "storepilot-parallel-localized-screenshot-run-update") {
+      updateParallelLocalizedScreenshotRunState(message.run || null);
+      sendResponse({ ok: true });
+      return;
+    }
+
     if (message.type === "storepilot-get-panel-state") {
       sendResponse({
         ok: true,
