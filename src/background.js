@@ -15,6 +15,40 @@
     return true;
   }
 
+  function handleFocusDashboardTabMessage(sender, sendResponse) {
+    const tab = sender && sender.tab;
+    if (!tab || tab.id === undefined || tab.id === null) {
+      sendResponse({
+        ok: false,
+        message: text("noActiveTab", "No active tab.")
+      });
+      return false;
+    }
+
+    Promise.resolve()
+      .then(async () => {
+        const tasks = [];
+        if (tab.windowId !== undefined && tab.windowId !== null) {
+          tasks.push(
+            storePilotWindowsUpdate(tab.windowId, { focused: true, state: "normal" })
+              .catch(() => storePilotWindowsUpdate(tab.windowId, { focused: true }).catch(() => null))
+          );
+        }
+        tasks.push(storePilotTabsUpdate(tab.id, { active: true }).catch(() => null));
+        await Promise.all(tasks);
+        return {
+          ok: true,
+          message: "Dashboard tab focused."
+        };
+      })
+      .then(sendResponse)
+      .catch(error => sendResponse({
+        ok: false,
+        message: error.message || String(error)
+      }));
+    return true;
+  }
+
   function handleActionClick() {
     storePilotTabsQuery({ active: true, currentWindow: true }).then(async tabs => {
       const tab = tabs && tabs[0];
@@ -47,6 +81,10 @@
 
     if (message && message.type === "storepilot-upload-media-assets-from-project") {
       return handleUploadMediaMessage(message, sender, sendResponse);
+    }
+
+    if (message && message.type === "storepilot-focus-dashboard-tab") {
+      return handleFocusDashboardTabMessage(sender, sendResponse);
     }
   });
 

@@ -19,10 +19,13 @@ const LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE = 3;
 const LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE = 3;
 const LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS = 10000;
 const LOCALIZED_SCREENSHOT_RETRY_DELAY_MS = 250;
+const MEDIA_VISIBILITY_POLL_MS = 1000;
+const MEDIA_VISIBILITY_FOCUS_RETRY_MS = 5000;
 const MEDIA_UPLOAD_BRIDGE_TIMEOUT_MS = 500;
 
 let mediaUploadBridgePromise = null;
 let mediaUploadBridgeBypassed = false;
+let lastMediaVisibilityFocusRequestAt = 0;
 
 function isStorePilotOwnedElement(element) {
   const panelId = typeof PANEL_ID === "string" ? PANEL_ID : "storepilot-panel";
@@ -559,10 +562,16 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
   const timeoutMs = options.timeoutMs || DEFAULT_MEDIA_UPLOAD_TIMEOUT_MS;
   const expectedCount = Number.isFinite(options.expectedCount) ? options.expectedCount : beforeCount + 1;
   const startedAt = Date.now();
+  let visibleElapsedMs = 0;
   let firstIncreaseAt = 0;
   const pollIntervalMs = kind === "localizedScreenshots" ? 100 : 500;
 
-  while (Date.now() - startedAt < timeoutMs) {
+  while (kind === "localizedScreenshots" ? visibleElapsedMs < timeoutMs : Date.now() - startedAt < timeoutMs) {
+    if (kind === "localizedScreenshots") {
+      const visible = await waitForMediaAutomationVisible(options.progress || null);
+      if (!visible.ok) return false;
+    }
+    const visibleTickStartedAt = Date.now();
     const nextCount = getVisibleMediaImageCount(kind);
     const reachedExpectedCount = nextCount >= expectedCount || nextCount > beforeCount;
 
@@ -590,6 +599,9 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
     }
 
     await delay(pollIntervalMs);
+    if (kind === "localizedScreenshots") {
+      visibleElapsedMs += getVisibleAutomationElapsedMs(visibleTickStartedAt, pollIntervalMs);
+    }
   }
 
   return false;
@@ -650,13 +662,19 @@ async function waitForLocalizedScreenshotFieldReady(timeoutMs = LOCALIZED_SCREEN
   };
 }
 
-async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS) {
+async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS, options = {}) {
   const startedAt = Date.now();
+  let visibleElapsedMs = 0;
   let matchedAt = 0;
   let currentCount = getVisibleMediaImageCount(kind);
   const pollIntervalMs = kind === "localizedScreenshots" ? 100 : 300;
 
-  while (Date.now() - startedAt < timeoutMs) {
+  while (kind === "localizedScreenshots" ? visibleElapsedMs < timeoutMs : Date.now() - startedAt < timeoutMs) {
+    if (kind === "localizedScreenshots") {
+      const visible = await waitForMediaAutomationVisible(options.progress || null);
+      if (!visible.ok) return { ok: false, count: getVisibleMediaImageCount(kind) };
+    }
+    const visibleTickStartedAt = Date.now();
     currentCount = getVisibleMediaImageCount(kind);
     if (currentCount === expectedCount) {
       if (kind === "localizedScreenshots") {
@@ -670,6 +688,9 @@ async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = ME
       matchedAt = 0;
     }
     await delay(pollIntervalMs);
+    if (kind === "localizedScreenshots") {
+      visibleElapsedMs += getVisibleAutomationElapsedMs(visibleTickStartedAt, pollIntervalMs);
+    }
   }
 
   return { ok: false, count: getVisibleMediaImageCount(kind) };
@@ -970,7 +991,11 @@ async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
     let bridgeResult = await uploadFilesInMainWorld(kind, files, { targetId });
 
     if (bridgeResult.ok) {
-      const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount, { expectedCount, timeoutMs });
+      const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount, {
+        expectedCount,
+        timeoutMs,
+        progress: options.progress || null
+      });
       return {
         ok: uiChanged,
         method,
@@ -982,7 +1007,11 @@ async function setUploadInputFile(input, files, forcedKind = "", options = {}) {
 
     method = "content script";
     await uploadFilesInContentWorld(input, files);
-    const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount, { expectedCount, timeoutMs });
+    const uiChanged = await waitForMediaUploadUiChange(kind, beforeCount, {
+      expectedCount,
+      timeoutMs,
+      progress: options.progress || null
+    });
 
     return {
       ok: uiChanged,
@@ -1011,6 +1040,80 @@ function setMediaOperationProgress(message) {
   if (panelStatus) {
     panelStatus.textContent = message;
   }
+}
+
+function createLocalizedScreenshotProgress(entry, localeIndex, totalLocales, stats = {}, overrides = {}) {
+  return {
+    localeIndex,
+    totalLocales,
+    locale: entry && entry.locale || "",
+    localeScreenshotCount: entry && entry.files ? entry.files.length : 0,
+    completedLocales: stats.completedLocales || 0,
+    failedLocales: stats.failedLocales || 0,
+    skippedLocales: stats.skippedLocales || 0,
+    uploadedScreenshots: stats.uploadedScreenshots || 0,
+    totalScreenshots: stats.totalScreenshots || 0,
+    ...overrides
+  };
+}
+
+function formatLocalizedScreenshotProgressStatus(progress, phase) {
+  const localePart = `${progress.localeIndex + 1}/${progress.totalLocales}: ${progress.locale}`;
+  const outcomePart = `${progress.completedLocales || 0} done, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`;
+  const imagePart = `${progress.uploadedScreenshots || 0}/${progress.totalScreenshots || 0} screenshots`;
+  return `Localized screenshots ${localePart} (${progress.localeScreenshotCount} expected; ${outcomePart}; ${imagePart}) - ${phase}`;
+}
+
+function setLocalizedScreenshotProgress(progress, phase) {
+  setMediaOperationProgress(formatLocalizedScreenshotProgressStatus(progress, phase));
+}
+
+function isDashboardPageVisibleForMediaAutomation() {
+  const hasVisibilityState = typeof document.visibilityState === "string" || typeof document.hidden === "boolean";
+  const visibilityOk = !hasVisibilityState ||
+    (document.visibilityState !== "hidden" && document.hidden !== true);
+  const hasViewportSize = Number.isFinite(window.innerWidth) && Number.isFinite(window.innerHeight);
+  const viewportOk = !hasViewportSize || (window.innerWidth > 0 && window.innerHeight > 0);
+  return visibilityOk && viewportOk;
+}
+
+function getVisibleAutomationElapsedMs(startedAt, pollIntervalMs) {
+  if (!isDashboardPageVisibleForMediaAutomation()) return 0;
+  return Math.min(Math.max(0, Date.now() - startedAt), pollIntervalMs + 250);
+}
+
+async function requestMediaAutomationFocus() {
+  const now = Date.now();
+  if (now - lastMediaVisibilityFocusRequestAt < MEDIA_VISIBILITY_FOCUS_RETRY_MS) return;
+  lastMediaVisibilityFocusRequestAt = now;
+
+  try {
+    const response = storePilotRuntimeSendMessage({ type: "storepilot-focus-dashboard-tab" });
+    if (response && typeof response.catch === "function") {
+      response.catch(() => {});
+    }
+  } catch (_error) {
+    // Focusing is best-effort; the visible-tab wait below is the real guard.
+  }
+}
+
+async function waitForMediaAutomationVisible(progress = null) {
+  while (!isDashboardPageVisibleForMediaAutomation()) {
+    if (mediaOperationState.abortRequested) {
+      return { ok: false, aborted: true };
+    }
+
+    const message = "waiting for this dashboard tab to be visible; minimized/background tabs pause CWS upload processing";
+    if (progress) {
+      setLocalizedScreenshotProgress(progress, message);
+    } else {
+      setMediaOperationProgress(`Media automation paused - ${message}`);
+    }
+    await requestMediaAutomationFocus();
+    await delay(MEDIA_VISIBILITY_POLL_MS);
+  }
+
+  return { ok: true };
 }
 
 async function revealMediaRemoveControls(kind) {
@@ -1093,11 +1196,17 @@ function hasClearableMedia(kind) {
   return getVisibleMediaImageCount(kind) > 0 || getMediaRemoveButtons(kind).length > 0;
 }
 
-async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS) {
+async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDIA_REMOVAL_TIMEOUT_MS, options = {}) {
   const startedAt = Date.now();
+  let visibleElapsedMs = 0;
   let lastConfirmAt = 0;
 
-  while (Date.now() - startedAt < timeoutMs) {
+  while (kind === "localizedScreenshots" ? visibleElapsedMs < timeoutMs : Date.now() - startedAt < timeoutMs) {
+    if (kind === "localizedScreenshots") {
+      const visible = await waitForMediaAutomationVisible(options.progress || null);
+      if (!visible.ok) return false;
+    }
+    const visibleTickStartedAt = Date.now();
     if (getVisibleMediaImageCount(kind) < beforeCount) {
       return true;
     }
@@ -1115,12 +1224,15 @@ async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDI
     }
 
     await delay(75);
+    if (kind === "localizedScreenshots") {
+      visibleElapsedMs += getVisibleAutomationElapsedMs(visibleTickStartedAt, 75);
+    }
   }
 
   return false;
 }
 
-async function removeOneLocalizedScreenshotWithRetries() {
+async function removeOneLocalizedScreenshotWithRetries(progress = null) {
   const label = getMediaUploadKindLabel("localizedScreenshots");
   let lastButtonLabel = label;
 
@@ -1134,6 +1246,14 @@ async function removeOneLocalizedScreenshotWithRetries() {
       return { ok: true, alreadyClear: true, removedCount: 0, label };
     }
 
+    const visible = await waitForMediaAutomationVisible(progress);
+    if (!visible.ok) {
+      return { ok: false, aborted: Boolean(visible.aborted), message: localize("operationStopped", "Stopped.") };
+    }
+
+    if (progress) {
+      setLocalizedScreenshotProgress(progress, `clearing ${beforeCount} existing screenshot(s); delete attempt ${attempt}/${LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE}`);
+    }
     scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
     await revealMediaRemoveControls("localizedScreenshots");
     const buttons = getMediaRemoveButtons("localizedScreenshots");
@@ -1150,7 +1270,8 @@ async function removeOneLocalizedScreenshotWithRetries() {
     const changed = await waitForMediaRemovalAfterClick(
       "localizedScreenshots",
       beforeCount,
-      LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS
+      LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS,
+      { progress }
     );
     const afterCount = getVisibleMediaImageCount("localizedScreenshots");
     if (changed || afterCount < beforeCount) {
@@ -1173,11 +1294,12 @@ async function removeOneLocalizedScreenshotWithRetries() {
   };
 }
 
-async function performClearLocalizedScreenshotAssets() {
+async function performClearLocalizedScreenshotAssets(options = {}) {
   const removed = [];
   const failed = [];
   let aborted = false;
   const label = getMediaUploadKindLabel("localizedScreenshots");
+  const progress = options.localizedProgress || null;
 
   for (let attempt = 0; attempt < 8; attempt++) {
     if (mediaOperationState.abortRequested) {
@@ -1188,7 +1310,7 @@ async function performClearLocalizedScreenshotAssets() {
     const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
     if (!beforeCount) break;
 
-    const removal = await removeOneLocalizedScreenshotWithRetries();
+    const removal = await removeOneLocalizedScreenshotWithRetries(progress);
     if (removal.aborted) {
       aborted = true;
       break;
@@ -1224,9 +1346,9 @@ async function performClearLocalizedScreenshotAssets() {
   };
 }
 
-async function performClearDashboardMediaAssets(kind) {
+async function performClearDashboardMediaAssets(kind, options = {}) {
   if (kind === "localizedScreenshots") {
-    return performClearLocalizedScreenshotAssets();
+    return performClearLocalizedScreenshotAssets(options);
   }
 
   const removed = [];
@@ -1333,13 +1455,11 @@ function applyLocalizedScreenshotStartLocale(entries, startLocale) {
   };
 }
 
-function formatLocalizedScreenshotProgress(entry, localeIndex, total) {
-  return localize("uploadingLocalizedScreenshotsProgress", "Uploading localized screenshots $1/$2: $3 ($4 screenshots)...", [
-    String(localeIndex + 1),
-    String(total),
-    entry.locale,
-    String(entry.files.length)
-  ]);
+function countLocalizedScreenshotSkippedLocales(skipped) {
+  return skipped.reduce((count, item) => {
+    const match = String(item || "").match(/^(\d+) locale\(s\) before start locale\b/);
+    return count + (match ? Number(match[1]) : 1);
+  }, 0);
 }
 
 async function resolveLocalizedScreenshotUploadTarget(currentTarget) {
@@ -1350,7 +1470,7 @@ async function resolveLocalizedScreenshotUploadTarget(currentTarget) {
   return waitForAvailableMediaUploadInput("localizedScreenshots");
 }
 
-async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, localizedUploadTarget, progressMessage) {
+async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, localizedUploadTarget, progress) {
   const file = entry.files[fileIndex];
   let target = localizedUploadTarget;
   let lastMessage = "";
@@ -1360,12 +1480,16 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
       return { ok: false, aborted: true, message: localize("operationStopped", "Stopped."), target };
     }
 
-    const attemptSuffix = uploadAttempt > 1
-      ? ` attempt ${uploadAttempt}/${LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE}`
-      : "";
-    setMediaOperationProgress(`${progressMessage} ${localize("screenshotNumber", "Screenshot $1", [String(fileIndex + 1)])}/${entry.files.length}${attemptSuffix}`);
+    const visible = await waitForMediaAutomationVisible(progress);
+    if (!visible.ok) {
+      return { ok: false, aborted: Boolean(visible.aborted), message: localize("operationStopped", "Stopped."), target };
+    }
+
+    let currentCount = getVisibleMediaImageCount("localizedScreenshots");
+    setLocalizedScreenshotProgress(progress, `uploading screenshot ${fileIndex + 1}/${entry.files.length}; attempt ${uploadAttempt}/${LOCALIZED_SCREENSHOT_UPLOAD_ATTEMPTS_PER_FILE}; visible count ${currentCount}`);
 
     if (!isDashboardLocaleSelected(entry.locale)) {
+      setLocalizedScreenshotProgress(progress, `dashboard locale changed; re-selecting ${entry.locale} before screenshot ${fileIndex + 1}/${entry.files.length}`);
       const uploadContext = await ensureLocalizedScreenshotUploadContext(entry.locale);
       if (!uploadContext.ok) {
         return {
@@ -1376,9 +1500,9 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
       }
       target = uploadContext.fieldReady && uploadContext.fieldReady.uploadTarget ||
         getAvailableMediaUploadInput("localizedScreenshots");
+      currentCount = getVisibleMediaImageCount("localizedScreenshots");
     }
 
-    const currentCount = getVisibleMediaImageCount("localizedScreenshots");
     if (currentCount >= MAX_DASHBOARD_SCREENSHOTS) {
       return {
         ok: false,
@@ -1398,7 +1522,8 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
       const result = await setUploadInputFile(target.input, [file], "localizedScreenshots", {
         beforeCount,
         expectedCount: beforeCount + 1,
-        timeoutMs: LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS
+        timeoutMs: LOCALIZED_SCREENSHOT_UPLOAD_TIMEOUT_MS,
+        progress
       });
       const afterCount = result.afterCount;
       const addedCount = afterCount - beforeCount;
@@ -1428,6 +1553,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
             target
           };
         }
+        setLocalizedScreenshotProgress(progress, `uploaded screenshot ${fileIndex + 1}/${entry.files.length}; visible count ${afterCount}`);
         return { ok: true, target };
       }
 
@@ -1450,15 +1576,20 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
   };
 }
 
-async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, localeAttempt) {
-  const progressMessage = formatLocalizedScreenshotProgress(entry, localeIndex, total);
-  const attemptSuffix = localeAttempt > 1
-    ? ` retry ${localeAttempt}/${LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS}`
+async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, localeAttempt, stats) {
+  let progress = createLocalizedScreenshotProgress(entry, localeIndex, total, stats);
+  const attemptPrefix = localeAttempt > 1
+    ? `retrying locale; attempt ${localeAttempt}/${LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS}; `
     : "";
-  setMediaOperationProgress(`${progressMessage}${attemptSuffix}`);
+  setLocalizedScreenshotProgress(progress, `${attemptPrefix}selecting locale`);
 
   if (mediaOperationState.abortRequested) {
     return { ok: false, aborted: true, uploadedCount: 0, message: localize("operationStopped", "Stopped.") };
+  }
+
+  const visible = await waitForMediaAutomationVisible(progress);
+  if (!visible.ok) {
+    return { ok: false, aborted: Boolean(visible.aborted), uploadedCount: 0, message: localize("operationStopped", "Stopped.") };
   }
 
   const contextReady = await ensureLocalizedScreenshotUploadContext(entry.locale);
@@ -1468,7 +1599,11 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
   let localizedUploadTarget = contextReady.fieldReady && contextReady.fieldReady.uploadTarget ||
     getAvailableMediaUploadInput("localizedScreenshots");
 
-  const clearResult = await performClearDashboardMediaAssets("localizedScreenshots");
+  scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
+  setLocalizedScreenshotProgress(progress, "localized screenshot field found; clearing existing screenshots");
+  const clearResult = await performClearDashboardMediaAssets("localizedScreenshots", {
+    localizedProgress: progress
+  });
   if (!clearResult.ok) {
     return {
       ok: false,
@@ -1481,10 +1616,12 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
     return { ok: false, aborted: true, uploadedCount: 0, message: localize("operationStopped", "Stopped.") };
   }
 
+  setLocalizedScreenshotProgress(progress, "verifying localized screenshot field is clear");
   const clearWait = await waitForVisibleMediaImageCount(
     "localizedScreenshots",
     0,
-    LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS
+    LOCALIZED_SCREENSHOT_CLEAR_TIMEOUT_MS,
+    { progress }
   );
   if (!clearWait.ok) {
     return {
@@ -1496,11 +1633,14 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
 
   let uploadedForLocale = 0;
   for (let fileIndex = 0; fileIndex < entry.files.length; fileIndex++) {
+    progress = createLocalizedScreenshotProgress(entry, localeIndex, total, stats, {
+      uploadedScreenshots: (stats.uploadedScreenshots || 0) + uploadedForLocale
+    });
     const uploadResult = await uploadLocalizedScreenshotFileWithRetries(
       entry,
       fileIndex,
       localizedUploadTarget,
-      progressMessage
+      progress
     );
     localizedUploadTarget = uploadResult.target || localizedUploadTarget;
 
@@ -1515,6 +1655,10 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
     uploadedForLocale++;
   }
 
+  progress = createLocalizedScreenshotProgress(entry, localeIndex, total, stats, {
+    uploadedScreenshots: (stats.uploadedScreenshots || 0) + uploadedForLocale
+  });
+  setLocalizedScreenshotProgress(progress, "verifying final localized screenshot count");
   const finalLocalizedCount = getVisibleMediaImageCount("localizedScreenshots");
   if (finalLocalizedCount !== entry.files.length) {
     return {
@@ -1572,13 +1716,22 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     };
   }
 
+  const totalScreenshots = entries.reduce((sum, entry) => sum + entry.files.length, 0);
+  let uploadedScreenshotCount = 0;
+
   for (let localeIndex = 0; localeIndex < entries.length; localeIndex++) {
     const entry = entries[localeIndex];
     let localeUploadedCount = 0;
     const localeFailures = [];
 
     for (let localeAttempt = 1; localeAttempt <= LOCALIZED_SCREENSHOT_LOCALE_ATTEMPTS; localeAttempt++) {
-      const localeResult = await uploadLocalizedScreenshotLocale(entry, localeIndex, entries.length, localeAttempt);
+      const localeResult = await uploadLocalizedScreenshotLocale(entry, localeIndex, entries.length, localeAttempt, {
+        completedLocales: uploaded.length,
+        failedLocales: failed.length,
+        skippedLocales: countLocalizedScreenshotSkippedLocales(skipped),
+        uploadedScreenshots: uploadedScreenshotCount,
+        totalScreenshots
+      });
       localeUploadedCount = Math.max(localeUploadedCount, localeResult.uploadedCount || 0);
 
       if (localeResult.ok) {
@@ -1603,6 +1756,7 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
       failed.push(`${entry.locale}: ${localeFailures.join(" | ")}`);
     } else if (localeUploadedCount > 0) {
       uploaded.push(`${entry.locale}: ${localeUploadedCount}`);
+      uploadedScreenshotCount += localeUploadedCount;
     }
 
     if (aborted) {
@@ -1615,8 +1769,10 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     }
   }
 
+  const skippedLocaleCount = countLocalizedScreenshotSkippedLocales(skipped);
+  const runSummary = `Localized screenshot upload ${aborted ? "stopped" : "finished"}: ${uploaded.length}/${entries.length} run locale(s) completed, ${uploadedScreenshotCount}/${totalScreenshots} screenshot(s) uploaded, ${skippedLocaleCount} locale(s) skipped, ${failed.length} failed.`;
   const messageParts = [
-    localize("localizedScreenshotsUploaded", "Uploaded localized screenshots for $1 locale(s).", [String(uploaded.length)]),
+    runSummary,
     aborted ? localize("operationStopped", "Stopped.") : "",
     skipped.length ? localize("mediaSkipped", "Skipped: $1.", [skipped.join(", ")]) : "",
     failed.length ? localize("mediaUploadFailures", "Failed: $1.", [failed.join(", ")]) : ""

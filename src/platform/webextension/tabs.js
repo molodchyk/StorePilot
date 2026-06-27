@@ -12,3 +12,15 @@ function storePilotTabsCreate(createProperties) {
   const api = storePilotGetWebExtensionApi();
   return storePilotCallMaybePromise(api.tabs.create, api.tabs, [createProperties]);
 }
+
+function storePilotTabsUpdate(tabId, updateProperties) {
+  const api = storePilotGetWebExtensionApi();
+  return storePilotCallMaybePromise(api.tabs.update, api.tabs, [tabId, updateProperties]);
+}
+
+function storePilotWindowsUpdate(windowId, updateProperties) {
+  const api = storePilotGetWebExtensionApi();
+  return api.windows && api.windows.update
+    ? storePilotCallMaybePromise(api.windows.update, api.windows, [windowId, updateProperties])
+    : Promise.resolve(null);
+}
