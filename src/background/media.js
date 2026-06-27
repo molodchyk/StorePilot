@@ -2,6 +2,7 @@
   const MAX_PARALLEL_LOCALIZED_SCREENSHOT_WORKERS = 6;
   const PARALLEL_LOCALIZED_SCREENSHOT_WORKER_READY_TIMEOUT_MS = 90000;
   const PARALLEL_LOCALIZED_SCREENSHOT_WORKER_READY_POLL_MS = 1000;
+  const PARALLEL_LOCALIZED_SCREENSHOT_PARENT_UPDATE_TIMEOUT_MS = 1500;
   const PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD = "clearThenUpload";
   const PARALLEL_LOCALIZED_SCREENSHOT_MODE_REPLACE = "replace";
   const PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_ONLY = "clearOnly";
@@ -648,10 +649,13 @@
   function sendParallelLocalizedScreenshotRunUpdate(run) {
     if (!run || !run.parentTabId) return Promise.resolve(null);
 
-    return storePilotTabsSendMessage(run.parentTabId, {
+    const updatePromise = storePilotTabsSendMessage(run.parentTabId, {
       type: "storepilot-parallel-localized-screenshot-run-update",
       run: createParallelLocalizedScreenshotRunSnapshot(run)
     }).catch(() => null);
+    const timeoutPromise = delay(PARALLEL_LOCALIZED_SCREENSHOT_PARENT_UPDATE_TIMEOUT_MS)
+      .then(() => null);
+    return Promise.race([updatePromise, timeoutPromise]);
   }
 
   function finalizeParallelLocalizedScreenshotRunIfDone(run) {

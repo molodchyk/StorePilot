@@ -182,29 +182,40 @@ function renderParallelTimelineChart(container, run) {
     svg.append(createParallelTimelinePolyline(samples, "failedLocales", xForSample, yForValue, "storepilot-parallel-chart-failed"));
   }
 
-  svg.append(createParallelSvgElement("text", {
+  const startLabel = createParallelSvgElement("text", {
     class: "storepilot-parallel-chart-label",
     x: padding.left,
     y: height - 4
-  })).textContent = "0s";
-  svg.append(createParallelSvgElement("text", {
+  });
+  startLabel.textContent = "0s";
+  svg.append(startLabel);
+
+  const endLabel = createParallelSvgElement("text", {
     class: "storepilot-parallel-chart-label storepilot-parallel-chart-label-end",
     x: width - padding.right,
     y: height - 4,
     "text-anchor": "end"
-  })).textContent = formatPanelParallelElapsed(maxElapsed);
-  svg.append(createParallelSvgElement("text", {
+  });
+  endLabel.textContent = formatPanelParallelElapsed(maxElapsed);
+  svg.append(endLabel);
+
+  const doneLabel = createParallelSvgElement("text", {
     class: "storepilot-parallel-chart-label storepilot-parallel-chart-done-label",
     x: width - padding.right,
     y: Math.max(10, yForValue(samples[samples.length - 1].completedLocales || 0) - 4),
     "text-anchor": "end"
-  })).textContent = "done";
-  svg.append(createParallelSvgElement("text", {
+  });
+  doneLabel.textContent = "done";
+  svg.append(doneLabel);
+
+  const remainingLabel = createParallelSvgElement("text", {
     class: "storepilot-parallel-chart-label storepilot-parallel-chart-remaining-label",
     x: width - padding.right,
     y: Math.min(height - padding.bottom - 2, yForValue(samples[samples.length - 1].remainingLocales || 0) + 10),
     "text-anchor": "end"
-  })).textContent = "remaining";
+  });
+  remainingLabel.textContent = "remaining";
+  svg.append(remainingLabel);
 
   container.hidden = false;
   container.append(svg);

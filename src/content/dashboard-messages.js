@@ -245,7 +245,12 @@ storePilotRuntimeOnMessageAddListener((message, _sender, sendResponse) => {
       }
       sendResponse(await diagnoseDashboardPage());
     }
-  })();
+  })().catch(error => {
+    sendResponse({
+      ok: false,
+      message: error && error.message ? error.message : String(error)
+    });
+  });
 
   return true;
 });
