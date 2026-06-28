@@ -144,7 +144,16 @@ const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot(
       failedLocales: 0,
       skippedLocales: 0,
       uploadedScreenshots: 3,
-      elapsedMs: 2000
+      elapsedMs: 2000,
+      actionLog: [
+        {
+          epochMs: 1000,
+          sequence: 1,
+          action: "upload",
+          stage: "attempt",
+          locale: "am"
+        }
+      ]
     },
     {
       workerId: "worker-2",
@@ -160,6 +169,15 @@ const snapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot(
       uploadedScreenshots: 1,
       elapsedMs: 3000
     }
+  ],
+  actionLog: [
+    {
+      epochMs: 1000,
+      sequence: 1,
+      action: "upload",
+      stage: "attempt",
+      locale: "am"
+    }
   ]
 });
 assert.equal(snapshot.mode, "clearThenUpload");
@@ -169,6 +187,8 @@ assert.equal(snapshot.workers[0].closeable, true);
 assert.equal(snapshot.workers[1].closeable, false);
 assert.equal(snapshot.workers[0].timeline[0].completedLocales, 1);
 assert.equal(snapshot.workers[1].timeline[0].failedLocales, 1);
+assert.equal(snapshot.workers[0].actionLogCount, 1);
+assert.equal(snapshot.actionLogCount, 1);
 assert.equal(snapshot.totals.completedLocales, 1);
 assert.equal(snapshot.totals.failedLocales, 1);
 assert.equal(snapshot.totals.uploadedScreenshots, 4);
@@ -347,6 +367,62 @@ assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].remainingLocales, 
 
   await new Promise(resolve => setTimeout(resolve, 0));
   assert.equal(openedTabs, 4);
+
+  const currentRunResponse = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 7,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, retryWithoutStoredRun.run.runId);
+  assert.equal(currentRunResponse.ok, true);
+  assert.equal(currentRunResponse.run.workers.length, 2);
+
+  const worker = currentRunResponse.run.workers[0];
+  const actionLogResult = await context.storePilotHandleLocalizedScreenshotActionLog({
+    tab: {
+      id: worker.tabId
+    }
+  }, {
+    runId: currentRunResponse.run.runId,
+    workerId: worker.workerId,
+    events: [
+      {
+        sequence: 7,
+        epochMs: 2000,
+        isoTime: "2026-06-28T10:00:00.000Z",
+        elapsedMs: 1234,
+        runId: currentRunResponse.run.runId,
+        workerId: worker.workerId,
+        operation: "clearOnly",
+        locale: "am",
+        localeIndex: 0,
+        totalLocales: 2,
+        localeScreenshotCount: 3,
+        action: "delete",
+        stage: "attempt",
+        attempt: 1,
+        targetSlot: 3,
+        visibleBefore: 3,
+        buttonLabel: "Remove image Screenshot 3"
+      }
+    ]
+  });
+  assert.equal(actionLogResult.ok, true);
+  assert.equal(actionLogResult.appended, 1);
+
+  const exportedLog = context.storePilotGetParallelLocalizedScreenshotLog({
+    tab: {
+      id: 7,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, currentRunResponse.run.runId);
+  assert.equal(exportedLog.ok, true);
+  assert.equal(exportedLog.log.actionLog.length, 1);
+  assert.equal(exportedLog.log.actionLog[0].action, "delete");
+  assert.equal(exportedLog.log.actionLog[0].stage, "attempt");
+  assert.equal(exportedLog.log.actionLog[0].locale, "am");
+  assert.equal(exportedLog.log.actionLog[0].tabId, worker.tabId);
+  assert.equal(exportedLog.log.run.actionLogCount, 1);
 })().catch(error => {
   console.error(error);
   process.exitCode = 1;

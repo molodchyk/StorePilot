@@ -479,7 +479,8 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   const workers = board.querySelector(".storepilot-parallel-workers");
   const abortButton = board.querySelector("[data-storepilot-action='abort-localizedScreenshotsParallel']");
   const retryButton = board.querySelector("[data-storepilot-action='retry-localizedScreenshotsParallel']");
-  if (!summary || !workers || !abortButton || !retryButton) return;
+  const downloadButton = board.querySelector("[data-storepilot-action='download-localizedScreenshotsParallelLog']");
+  if (!summary || !workers || !abortButton || !retryButton || !downloadButton) return;
 
   if (!run) {
     board.hidden = true;
@@ -489,6 +490,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     workers.replaceChildren();
     abortButton.hidden = true;
     retryButton.hidden = true;
+    downloadButton.hidden = true;
     updateParallelLocalizedScreenshotRenderTimer();
     return;
   }
@@ -540,6 +542,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
 
   abortButton.hidden = !isParallelLocalizedScreenshotRunActive(run);
   retryButton.hidden = isParallelLocalizedScreenshotRunActive(run) || !hasFailedLocales;
+  downloadButton.hidden = Number(run.actionLogCount || 0) <= 0;
   updateParallelLocalizedScreenshotRenderTimer();
 }
 

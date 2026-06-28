@@ -184,6 +184,67 @@
     return `localized-screenshots-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   }
 
+  function normalizeParallelLocalizedScreenshotActionLogEvent(event, worker, senderTabId = 0) {
+    const epochMs = Number(event && event.epochMs || Date.now());
+    return {
+      sequence: Number(event && event.sequence || 0),
+      epochMs,
+      isoTime: event && event.isoTime || new Date(epochMs).toISOString(),
+      receivedAtMs: Date.now(),
+      receivedAtIso: new Date().toISOString(),
+      elapsedMs: Number(event && event.elapsedMs || 0),
+      runId: event && event.runId || "",
+      workerId: worker && worker.workerId || event && event.workerId || "",
+      tabId: senderTabId || worker && worker.tabId || 0,
+      operation: event && event.operation || worker && worker.operation || "",
+      locale: normalizeParallelLocalizedScreenshotLocale(event && event.locale || ""),
+      localeIndex: Number(event && event.localeIndex || 0),
+      totalLocales: Number(event && event.totalLocales || 0),
+      localeScreenshotCount: Number(event && event.localeScreenshotCount || 0),
+      action: event && event.action || "",
+      stage: event && event.stage || "",
+      attempt: Number(event && event.attempt || 0),
+      screenshotSlot: Number(event && event.screenshotSlot || 0),
+      targetSlot: Number(event && event.targetSlot || 0),
+      visibleBefore: Number.isFinite(Number(event && event.visibleBefore)) ? Number(event.visibleBefore) : null,
+      visibleAfter: Number.isFinite(Number(event && event.visibleAfter)) ? Number(event.visibleAfter) : null,
+      addedCount: Number.isFinite(Number(event && event.addedCount)) ? Number(event.addedCount) : null,
+      removedCount: Number.isFinite(Number(event && event.removedCount)) ? Number(event.removedCount) : null,
+      durationMs: Number.isFinite(Number(event && event.durationMs)) ? Number(event.durationMs) : null,
+      outcome: event && event.outcome || "",
+      method: event && event.method || "",
+      buttonLabel: event && event.buttonLabel || "",
+      fileName: event && event.fileName || "",
+      fileSize: Number(event && event.fileSize || 0),
+      fileType: event && event.fileType || "",
+      errorMessage: event && event.errorMessage || "",
+      message: event && event.message || ""
+    };
+  }
+
+  function appendParallelLocalizedScreenshotActionLog(run, worker, events, senderTabId = 0) {
+    if (!run || !worker || !Array.isArray(events) || !events.length) return [];
+
+    if (!Array.isArray(run.actionLog)) run.actionLog = [];
+    if (!Array.isArray(worker.actionLog)) worker.actionLog = [];
+    const normalizedEvents = events
+      .map(event => normalizeParallelLocalizedScreenshotActionLogEvent(event, worker, senderTabId))
+      .sort((left, right) => left.epochMs - right.epochMs || left.sequence - right.sequence);
+
+    run.actionLog.push(...normalizedEvents);
+    worker.actionLog.push(...normalizedEvents);
+    run.actionLog.sort((left, right) => left.epochMs - right.epochMs || left.sequence - right.sequence);
+    worker.actionLog.sort((left, right) => left.epochMs - right.epochMs || left.sequence - right.sequence);
+
+    if (run.actionLog.length > 10000) {
+      run.actionLog.splice(0, run.actionLog.length - 10000);
+    }
+    if (worker.actionLog.length > 2500) {
+      worker.actionLog.splice(0, worker.actionLog.length - 2500);
+    }
+    return normalizedEvents;
+  }
+
   function formatParallelLocalizedScreenshotElapsed(elapsedMs) {
     const totalSeconds = Math.max(0, Math.floor(Number(elapsedMs || 0) / 1000));
     const minutes = Math.floor(totalSeconds / 60);
@@ -468,6 +529,7 @@
         uploadedScreenshots,
         failedLocaleList: worker.failedLocaleList || [],
         skippedLocaleList: worker.skippedLocaleList || [],
+        actionLogCount: Array.isArray(worker.actionLog) ? worker.actionLog.length : 0,
         message: worker.message || "",
         startedAt: worker.startedAt || 0,
         finishedAt: worker.finishedAt || 0,
@@ -522,6 +584,7 @@
       timeline,
       totals,
       skipped: run.initialSkipped || [],
+      actionLogCount: Array.isArray(run.actionLog) ? run.actionLog.length : 0,
       message: run.message || ""
     };
   }
@@ -1179,6 +1242,7 @@
       initialSkippedLocales: 0,
       message: text("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload."),
       timeline: [],
+      actionLog: [],
       workers: []
     };
 
@@ -1292,6 +1356,29 @@
     return { ok: true };
   }
 
+  async function storePilotHandleLocalizedScreenshotActionLog(sender, message) {
+    const run = message && message.runId ? localizedScreenshotParallelRuns.get(message.runId) : null;
+    if (!run) {
+      return { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
+    }
+
+    const senderTabId = sender && sender.tab && sender.tab.id;
+    const worker = run.workers.find(candidate => (
+      candidate.workerId === message.workerId ||
+      (senderTabId && candidate.tabId === senderTabId)
+    ));
+    if (!worker) {
+      return { ok: false, message: text("parallelLocalizedScreenshotsNoWorker", "No parallel localized screenshot worker found.") };
+    }
+
+    const appended = appendParallelLocalizedScreenshotActionLog(run, worker, message.events || [], senderTabId || 0);
+    return {
+      ok: true,
+      appended: appended.length,
+      actionLogCount: Array.isArray(run.actionLog) ? run.actionLog.length : 0
+    };
+  }
+
   function storePilotGetParallelLocalizedScreenshotRun(sender, runId = "") {
     const run = getParallelLocalizedScreenshotRunForSender(sender, runId);
     return run
@@ -1299,12 +1386,35 @@
       : { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
   }
 
+  function storePilotGetParallelLocalizedScreenshotLog(sender, runId = "") {
+    const run = getParallelLocalizedScreenshotRunForSender(sender, runId);
+    if (!run) {
+      return { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
+    }
+
+    const snapshot = createParallelLocalizedScreenshotRunSnapshot(run);
+    const actionLog = Array.isArray(run.actionLog)
+      ? run.actionLog.slice().sort((left, right) => left.epochMs - right.epochMs || left.sequence - right.sequence)
+      : [];
+    return {
+      ok: true,
+      filename: `storepilot-localized-screenshot-log-${run.runId}.json`,
+      log: {
+        exportedAt: new Date().toISOString(),
+        run: snapshot,
+        actionLog
+      }
+    };
+  }
+
   globalThis.storePilotUploadMediaToDashboard = storePilotUploadMediaToDashboard;
   globalThis.storePilotStartParallelLocalizedScreenshotUpload = storePilotStartParallelLocalizedScreenshotUpload;
   globalThis.storePilotAbortParallelLocalizedScreenshotUpload = storePilotAbortParallelLocalizedScreenshotUpload;
   globalThis.storePilotRetryParallelLocalizedScreenshotFailed = storePilotRetryParallelLocalizedScreenshotFailed;
   globalThis.storePilotHandleLocalizedScreenshotProgress = storePilotHandleLocalizedScreenshotProgress;
+  globalThis.storePilotHandleLocalizedScreenshotActionLog = storePilotHandleLocalizedScreenshotActionLog;
   globalThis.storePilotGetParallelLocalizedScreenshotRun = storePilotGetParallelLocalizedScreenshotRun;
+  globalThis.storePilotGetParallelLocalizedScreenshotLog = storePilotGetParallelLocalizedScreenshotLog;
   globalThis.storePilotSplitParallelLocalizedScreenshotLocales = splitParallelLocalizedScreenshotLocales;
   globalThis.storePilotBuildParallelLocalizedScreenshotPlan = buildParallelLocalizedScreenshotPlan;
   globalThis.storePilotFilterLocalizedScreenshotFilesForAssignedLocales = filterLocalizedScreenshotFilesForAssignedLocales;

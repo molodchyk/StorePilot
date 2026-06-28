@@ -12,6 +12,18 @@ function openOptionsPage() {
   });
 }
 
+function downloadJsonFile(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename || "storepilot-localized-screenshot-log.json";
+  document.documentElement.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function createPanelControls(panel) {
   const panelControls = document.createElement("div");
   const toggleModeButton = createButton("", () => {
@@ -419,6 +431,24 @@ function renderPanel(locales) {
       }
       status.textContent = response && response.message || localize("parallelLocalizedScreenshotsNoFailedLocales", "No failed localized screenshot locales to retry.");
     });
+    const downloadLogButton = createButton(localize("downloadLocalizedScreenshotLog", "Download log"), async () => {
+      const run = getParallelLocalizedScreenshotRunState();
+      if (!run || !run.runId) {
+        status.textContent = localize("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.");
+        return;
+      }
+
+      const response = await storePilotRuntimeSendMessage({
+        type: "storepilot-get-localized-screenshot-parallel-log",
+        runId: run.runId
+      });
+      if (response && response.ok && response.log) {
+        downloadJsonFile(response.filename, response.log);
+        status.textContent = localize("localizedScreenshotLogDownloaded", "Localized screenshot log downloaded.");
+        return;
+      }
+      status.textContent = response && response.message || localize("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.");
+    });
 
     board.className = "storepilot-parallel-board";
     titleElement.className = "storepilot-parallel-board-title";
@@ -431,10 +461,12 @@ function renderPanel(locales) {
     abortParallelButton.dataset.storepilotAction = "abort-localizedScreenshotsParallel";
     abortParallelButton.className = "storepilot-danger";
     retryFailedButton.dataset.storepilotAction = "retry-localizedScreenshotsParallel";
+    downloadLogButton.dataset.storepilotAction = "download-localizedScreenshotsParallelLog";
     abortParallelButton.hidden = true;
     retryFailedButton.hidden = true;
+    downloadLogButton.hidden = true;
     board.hidden = true;
-    boardActions.append(abortParallelButton, retryFailedButton);
+    boardActions.append(abortParallelButton, retryFailedButton, downloadLogButton);
     board.append(titleElement, summary, chart, localeStatuses, workers, boardActions);
     return board;
   }

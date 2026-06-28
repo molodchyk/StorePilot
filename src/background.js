@@ -55,6 +55,16 @@
     return true;
   }
 
+  function handleLocalizedScreenshotActionLogMessage(message, sender, sendResponse) {
+    storePilotHandleLocalizedScreenshotActionLog(sender, message)
+      .then(sendResponse)
+      .catch(error => sendResponse({
+        ok: false,
+        message: error.message || String(error)
+      }));
+    return true;
+  }
+
   function handleFocusDashboardTabMessage(sender, sendResponse) {
     const tab = sender && sender.tab;
     if (!tab || tab.id === undefined || tab.id === null) {
@@ -139,8 +149,17 @@
       return handleLocalizedScreenshotProgressMessage(message, sender, sendResponse);
     }
 
+    if (message && message.type === "storepilot-localized-screenshot-action-log") {
+      return handleLocalizedScreenshotActionLogMessage(message, sender, sendResponse);
+    }
+
     if (message && message.type === "storepilot-get-localized-screenshot-parallel-run") {
       sendResponse(storePilotGetParallelLocalizedScreenshotRun(sender, message.runId || ""));
+      return false;
+    }
+
+    if (message && message.type === "storepilot-get-localized-screenshot-parallel-log") {
+      sendResponse(storePilotGetParallelLocalizedScreenshotLog(sender, message.runId || ""));
       return false;
     }
 

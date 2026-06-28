@@ -1114,5 +1114,11 @@
   },
   "previewUnavailable": {
     "message": "Preview unavailable"
+  },
+  "downloadLocalizedScreenshotLog": {
+    "message": "Download log"
+  },
+  "localizedScreenshotLogDownloaded": {
+    "message": "Localized screenshot log downloaded."
   }
 }
