@@ -1,7 +1,8 @@
 const assert = require("node:assert/strict");
 const {
   analyzeLocalizedScreenshotLog,
-  renderMarkdownReport
+  renderMarkdownReport,
+  renderPerSlotPersistenceReport
 } = require("../scripts/analyze-localized-screenshot-log.js");
 
 const baseTime = Date.UTC(2026, 5, 28, 12, 0, 0, 0);
@@ -69,12 +70,26 @@ assert.equal(riskyHySlot2.observedMissing, true);
 assert.equal(riskyHySlot2.otherWorkerEventsDuringWindow.length, 1);
 assert.ok(riskyHySlot2.riskScore > 20);
 
+const hySlot2Persistence = analysis.perSlotPersistenceRows.find(row => row.locale === "hy" && row.slot === 2);
+assert.ok(hySlot2Persistence);
+assert.equal(hySlot2Persistence.persisted, false);
+assert.equal(hySlot2Persistence.previousAttempt.locale, "nl");
+assert.equal(hySlot2Persistence.previousAttempt.workerId, "worker-2");
+assert.equal(hySlot2Persistence.previousResult.locale, "nl");
+assert.equal(hySlot2Persistence.otherWorkerEventsDuringWindow.length, 1);
+
 const report = renderMarkdownReport(analysis);
 assert.match(report, /## Algorithm/);
 assert.match(report, /## Closest Adjacent Action Events/);
 assert.match(report, /## Highest Risk Result Events/);
 assert.match(report, /Observed Refreshed-State Comparison/);
+assert.match(report, /Per-Slot Persistence Competition/);
+assert.match(report, /Previous global attempt before this attempt/);
 assert.match(report, /hy/);
 assert.match(report, /Missing logged slots/);
+
+const perSlotReport = renderPerSlotPersistenceReport(analysis);
+assert.match(perSlotReport, /--report per-slot/);
+assert.match(perSlotReport, /Previous global result before this result/);
 
 console.log("Localized screenshot log analysis tests passed.");

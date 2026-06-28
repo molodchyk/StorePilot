@@ -8,7 +8,7 @@ const DEFAULT_TOP_LIMIT = 40;
 function usage() {
   return [
     "Usage:",
-    "  node scripts/analyze-localized-screenshot-log.js <log.json> [--out report.md] [--observed observed.json] [--top 40]",
+    "  node scripts/analyze-localized-screenshot-log.js <log.json> [--out report.md] [--observed observed.json] [--top 40] [--report full|per-slot]",
     "",
     "Observed JSON shape:",
     "  { \"hy\": [1, 2], \"nl\": [2] }",
@@ -21,7 +21,8 @@ function parseArgs(argv) {
     logPath: "",
     outPath: "",
     observedPath: "",
-    top: DEFAULT_TOP_LIMIT
+    top: DEFAULT_TOP_LIMIT,
+    report: "full"
   };
 
   for (let index = 0; index < argv.length; index++) {
@@ -32,6 +33,11 @@ function parseArgs(argv) {
       args.observedPath = argv[++index] || "";
     } else if (value === "--top") {
       args.top = Math.max(1, Number.parseInt(argv[++index], 10) || DEFAULT_TOP_LIMIT);
+    } else if (value === "--report") {
+      args.report = argv[++index] || "full";
+      if (!["full", "per-slot"].includes(args.report)) {
+        throw new Error(`Unsupported report type: ${args.report}`);
+      }
     } else if (!args.logPath) {
       args.logPath = value;
     } else {
@@ -145,6 +151,26 @@ function formatEvent(event) {
   ].filter(Boolean).join(" ");
 }
 
+function formatCompactEvent(event) {
+  if (!event) return "";
+  const slot = eventSlot(event);
+  const result = event.stage === "result" && event.outcome
+    ? `/${event.outcome}`
+    : "";
+  return [
+    event.workerId,
+    event.locale,
+    slot ? `#${slot}` : "",
+    `${event.action}:${event.stage}${result}`
+  ].filter(Boolean).join(" ");
+}
+
+function formatSignedGap(reference, event) {
+  if (!reference || !event) return "";
+  const gap = event.epochMs - reference.epochMs;
+  return `${gap >= 0 ? "+" : ""}${gap}ms ${formatCompactEvent(event)}`;
+}
+
 function percentile(values, p) {
   const finite = values.filter(Number.isFinite).sort((left, right) => left - right);
   if (!finite.length) return null;
@@ -214,6 +240,20 @@ function findNearestEvent(events, reference, predicate, direction) {
     }
   }
   return nearest;
+}
+
+function findAdjacentEvent(events, reference, predicate, direction) {
+  const referenceIndex = events.indexOf(reference);
+  if (referenceIndex < 0) return null;
+  for (
+    let index = referenceIndex + direction;
+    index >= 0 && index < events.length;
+    index += direction
+  ) {
+    const event = events[index];
+    if (predicate(event)) return event;
+  }
+  return null;
 }
 
 function findUploadAttemptForResult(events, result) {
@@ -393,6 +433,90 @@ function buildObservedMismatchRows(events, observed) {
   return rows.sort((left, right) => left.locale.localeCompare(right.locale));
 }
 
+function buildPerSlotPersistenceRows(events, observed) {
+  const rows = [];
+  for (const [locale, presentSlots] of Object.entries(observed)) {
+    const localeEvents = events.filter(event => event.locale === locale);
+    const slots = new Set([
+      ...Array.from(presentSlots),
+      ...localeEvents.map(eventSlot).filter(Boolean)
+    ]);
+
+    for (const slot of Array.from(slots).sort((left, right) => left - right)) {
+      const slotResults = localeEvents.filter(event => event.stage === "result" && eventSlot(event) === slot);
+      if (!slotResults.length) continue;
+      const addedResult = slotResults
+        .slice()
+        .reverse()
+        .find(event => event.outcome === "added");
+      const result = addedResult || slotResults[slotResults.length - 1];
+      const attempt = findUploadAttemptForResult(events, result);
+      const windowStart = attempt || result;
+      const previousAttempt = findNearestEvent(
+        events,
+        windowStart,
+        event => event.stage === "attempt",
+        -1
+      );
+      const nextAttempt = findNearestEvent(
+        events,
+        windowStart,
+        event => event.stage === "attempt",
+        1
+      );
+      const previousResult = findNearestEvent(
+        events,
+        result,
+        event => event.stage === "result",
+        -1
+      );
+      const nextResult = findNearestEvent(
+        events,
+        result,
+        event => event.stage === "result",
+        1
+      );
+      const previousAction = findAdjacentEvent(events, result, () => true, -1);
+      const nextAction = findAdjacentEvent(events, result, () => true, 1);
+      const otherWorkerEventsDuringWindow = events.filter(event => (
+        event.workerId !== result.workerId &&
+        event.epochMs >= windowStart.epochMs &&
+        event.epochMs <= result.epochMs
+      ));
+      const errors = slotResults
+        .filter(event => event.errorMessage || event.message)
+        .map(event => `attempt ${event.attempt}: ${event.errorMessage || event.message}`);
+
+      rows.push({
+        locale,
+        slot,
+        persisted: presentSlots.has(slot),
+        workerId: result.workerId,
+        attempt,
+        result,
+        outcome: result.outcome,
+        visibleTransition: `${result.visibleBefore ?? ""}->${result.visibleAfter ?? ""}`,
+        durationMs: result.durationMs,
+        attemptTime: formatTime(windowStart),
+        resultTime: formatTime(result),
+        previousAttempt,
+        nextAttempt,
+        previousResult,
+        nextResult,
+        previousAction,
+        nextAction,
+        otherWorkerEventsDuringWindow,
+        errors
+      });
+    }
+  }
+  return rows.sort((left, right) => (
+    Number(left.persisted) - Number(right.persisted) ||
+    left.locale.localeCompare(right.locale) ||
+    left.slot - right.slot
+  ));
+}
+
 function markdownTable(headers, rows) {
   if (!rows.length) return "_No rows._\n";
   const escape = value => String(value ?? "")
@@ -496,6 +620,68 @@ function renderObservedSection(mismatchRows) {
   ].join("\n");
 }
 
+function renderPerSlotPersistenceSection(rows) {
+  if (!rows.length) return "";
+  const renderRows = persisted => rows
+    .filter(row => row.persisted === persisted)
+    .map(row => [
+      row.locale,
+      row.slot,
+      row.workerId,
+      row.persisted ? "present" : "missing",
+      `${row.outcome || ""} ${row.visibleTransition}`.trim(),
+      row.attemptTime,
+      row.resultTime,
+      formatNumber(row.durationMs),
+      formatSignedGap(row.attempt || row.result, row.previousAttempt),
+      formatSignedGap(row.attempt || row.result, row.nextAttempt),
+      formatSignedGap(row.result, row.previousResult),
+      formatSignedGap(row.result, row.nextResult),
+      formatSignedGap(row.result, row.previousAction),
+      formatSignedGap(row.result, row.nextAction),
+      row.otherWorkerEventsDuringWindow.length
+        ? row.otherWorkerEventsDuringWindow
+          .map(event => formatSignedGap(row.attempt || row.result, event))
+          .join("; ")
+        : "",
+      row.errors.join("; ")
+    ]);
+
+  const headers = [
+    "Locale",
+    "Slot",
+    "Worker",
+    "Refreshed",
+    "UI result",
+    "Attempt time",
+    "Result time",
+    "Duration ms",
+    "Previous global attempt before this attempt",
+    "Next global attempt after this attempt",
+    "Previous global result before this result",
+    "Next global result after this result",
+    "Immediate previous global action before this result",
+    "Immediate next global action after this result",
+    "Other-worker actions during this upload window",
+    "Errors"
+  ];
+
+  return [
+    "## Per-Slot Persistence Competition",
+    "",
+    "This section is produced only when observed refreshed-state data is supplied. It treats `present` as the screenshot slot being present after revisiting/reloading CWS, not merely after StorePilot saw the thumbnail count increase.",
+    "",
+    "The timing columns are global across all workers and all locales. They are intended to test server-side throttling or race behavior where CWS would not care whether the nearby action belongs to the same locale.",
+    "",
+    "### Missing After Refresh",
+    "",
+    markdownTable(headers, renderRows(false)),
+    "### Present After Refresh",
+    "",
+    markdownTable(headers, renderRows(true))
+  ].join("\n");
+}
+
 function renderAlgorithmSection() {
   return [
     "## Algorithm",
@@ -510,8 +696,9 @@ function renderAlgorithmSection() {
     "   - closest previous/next other-worker result gap;",
     "   - count of other-worker events that occurred between attempt and result;",
     "   - gap from this result to the same worker's next attempt.",
-    "6. If observed refreshed-state data is supplied, mark logged added slots missing when the refreshed CWS state does not contain that slot.",
-    "7. Rank result events with a risk score. The biggest weights are observed missing slots, sub-second or sub-three-second gaps, other-worker overlap, immediate same-worker next attempts, and explicit CWS errors.",
+    "6. If observed refreshed-state data is supplied, build a per-slot persistence table with global previous/next attempts, global previous/next results, immediate previous/next action events, and other-worker actions inside each upload window.",
+    "7. Mark logged added slots missing when the refreshed CWS state does not contain that slot.",
+    "8. Rank result events with a risk score. The biggest weights are observed missing slots, sub-second or sub-three-second gaps, other-worker overlap, immediate same-worker next attempts, and explicit CWS errors.",
     ""
   ].join("\n");
 }
@@ -525,6 +712,7 @@ function renderMarkdownReport(analysis) {
     pairs,
     resultRows,
     mismatchRows,
+    perSlotPersistenceRows,
     top
   } = analysis;
   const attempts = events.filter(event => event.stage === "attempt");
@@ -572,11 +760,34 @@ function renderMarkdownReport(analysis) {
     ),
     renderAlgorithmSection(),
     renderObservedSection(mismatchRows),
+    renderPerSlotPersistenceSection(perSlotPersistenceRows),
     renderClosestPairsSection(pairs, top),
     renderRiskRowsSection(resultRows, top),
     "## Recommendation",
     "",
     "Use this report to choose a conservative mutation gate. If missing refreshed-state slots cluster near small cross-worker or same-worker gaps, enforce one background-issued media mutation token at a time and add a cooldown after every delete/upload result before another worker can mutate CWS media."
+  ].filter(Boolean).join("\n");
+}
+
+function renderPerSlotPersistenceReport(analysis) {
+  const {
+    logPath,
+    observedPath,
+    log,
+    perSlotPersistenceRows
+  } = analysis;
+
+  return [
+    `# Localized Screenshot Per-Slot Persistence Competition Report: ${log.run && log.run.runId || path.basename(logPath)}`,
+    "",
+    `Generated from: \`${path.relative(process.cwd(), logPath)}\``,
+    observedPath ? `Observed state: \`${path.relative(process.cwd(), observedPath)}\`` : "Observed state: not supplied",
+    "",
+    "This report is generated by `scripts/analyze-localized-screenshot-log.js --report per-slot`.",
+    "",
+    "The table uses global previous/next media actions across all workers and all locales. It is intended to inspect CWS-wide throttling or race behavior, where the server would not care whether the nearby action belongs to the same locale.",
+    "",
+    renderPerSlotPersistenceSection(perSlotPersistenceRows)
   ].filter(Boolean).join("\n");
 }
 
@@ -586,6 +797,7 @@ function analyzeLocalizedScreenshotLog(log, options = {}) {
   const pairs = createAdjacentPairs(events);
   const resultRows = analyzeResultEvents(events, observed);
   const mismatchRows = buildObservedMismatchRows(events, observed);
+  const perSlotPersistenceRows = buildPerSlotPersistenceRows(events, observed);
   return {
     logPath: options.logPath || "",
     observedPath: options.observedPath || "",
@@ -594,7 +806,8 @@ function analyzeLocalizedScreenshotLog(log, options = {}) {
     events,
     pairs,
     resultRows,
-    mismatchRows
+    mismatchRows,
+    perSlotPersistenceRows
   };
 }
 
@@ -610,15 +823,17 @@ function runCli(argv = process.argv.slice(2)) {
     observed,
     top: args.top
   });
-  const report = renderMarkdownReport(analysis);
+  const report = args.report === "per-slot"
+    ? renderPerSlotPersistenceReport(analysis)
+    : renderMarkdownReport(analysis);
 
   if (args.outPath) {
     const outPath = path.resolve(args.outPath);
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
-    fs.writeFileSync(outPath, `${report}\n`);
+    fs.writeFileSync(outPath, `${report.trimEnd()}\n`);
     console.log(`Wrote ${outPath}`);
   } else {
-    console.log(report);
+    console.log(report.trimEnd());
   }
 }
 
@@ -634,8 +849,10 @@ if (require.main === module) {
 module.exports = {
   analyzeLocalizedScreenshotLog,
   buildObservedMismatchRows,
+  buildPerSlotPersistenceRows,
   createAdjacentPairs,
   loadActionEvents,
   normalizeObservedState,
-  renderMarkdownReport
+  renderMarkdownReport,
+  renderPerSlotPersistenceReport
 };
