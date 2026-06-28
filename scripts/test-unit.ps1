@@ -37,6 +37,11 @@ if ($LASTEXITCODE -ne 0) {
   throw "Unit tests failed."
 }
 
+& $node.Source (Join-Path $root "test\localized-screenshot-log-analysis.test.js")
+if ($LASTEXITCODE -ne 0) {
+  throw "Unit tests failed."
+}
+
 & $node.Source (Join-Path $root "test\runtime-load-surfaces.test.js")
 if ($LASTEXITCODE -ne 0) {
   throw "Unit tests failed."

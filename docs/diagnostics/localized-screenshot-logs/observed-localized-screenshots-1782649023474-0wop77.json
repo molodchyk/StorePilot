@@ -1,0 +1,18 @@
+{
+  "hy": {
+    "presentSlots": [1, 2],
+    "note": "Armenian: only screenshots 1 and 2 present after revisiting the locale."
+  },
+  "mk": {
+    "presentSlots": [2, 3],
+    "note": "Macedonian: only screenshots 2 and 3 present after revisiting the locale."
+  },
+  "nl": {
+    "presentSlots": [2],
+    "note": "Dutch: only screenshot 2 present after revisiting the locale."
+  },
+  "sr": {
+    "presentSlots": [1, 2],
+    "note": "Serbian: only screenshots 1 and 2 present after revisiting the locale."
+  }
+}
