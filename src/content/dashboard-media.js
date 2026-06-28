@@ -1182,6 +1182,7 @@ function createLocalizedScreenshotProgress(entry, localeIndex, totalLocales, sta
     skippedLocales: stats.skippedLocales || 0,
     uploadedScreenshots: stats.uploadedScreenshots || 0,
     totalScreenshots: stats.totalScreenshots || 0,
+    operation: stats.operation || overrides.operation || "",
     startedAt,
     elapsedMs,
     runId: stats.runId || overrides.runId || "",
@@ -1227,6 +1228,9 @@ function publishLocalizedScreenshotProgress(progress, phase) {
 
 function setLocalizedScreenshotProgress(progress, phase) {
   setMediaOperationProgress(formatLocalizedScreenshotProgressStatus(progress, phase));
+  if (typeof updateLocalizedScreenshotWorkerProgressState === "function") {
+    updateLocalizedScreenshotWorkerProgressState(progress, phase);
+  }
   publishLocalizedScreenshotProgress(progress, phase);
 }
 
@@ -1989,6 +1993,7 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
         skippedLocales: countLocalizedScreenshotSkippedLocales(skipped),
         uploadedScreenshots: uploadedScreenshotCount,
         totalScreenshots,
+        operation,
         startedAt,
         runId: options.parallelRunId || options.runId || "",
         workerId: options.parallelWorkerId || options.workerId || ""

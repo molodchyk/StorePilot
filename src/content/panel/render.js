@@ -439,6 +439,22 @@ function renderPanel(locales) {
     return board;
   }
 
+  function createLocalizedScreenshotWorkerProgressBoard() {
+    const board = document.createElement("div");
+    const titleElement = document.createElement("div");
+    const summary = document.createElement("div");
+    const chart = document.createElement("div");
+
+    board.className = "storepilot-localized-worker-board";
+    titleElement.className = "storepilot-localized-worker-title";
+    summary.className = "storepilot-localized-worker-summary";
+    chart.className = "storepilot-localized-worker-chart storepilot-parallel-chart";
+    titleElement.textContent = localize("localizedScreenshotWorkerProgressTitle", "Localized screenshot progress");
+    board.hidden = true;
+    board.append(titleElement, summary, chart);
+    return board;
+  }
+
   function createMediaUploadButton(kind, labelKey, fallback) {
     const button = createButton(localize(labelKey, fallback), async () => {
       const options = kind === "localizedScreenshots" ? getLocalizedScreenshotUploadOptions() : {};
@@ -542,9 +558,11 @@ function renderPanel(locales) {
   panelControls.append(toggleModeButton, closeButton);
   header.append(title, panelControls);
   const parallelBoard = createParallelLocalizedScreenshotBoard();
-  panel.append(header, meta, actions, parallelBoard, status);
+  const workerProgressBoard = createLocalizedScreenshotWorkerProgressBoard();
+  panel.append(header, meta, actions, parallelBoard, workerProgressBoard, status);
   document.documentElement.append(panel);
   renderParallelLocalizedScreenshotBoard(panel);
+  renderLocalizedScreenshotWorkerProgressBoard(panel);
   applyPanelMode(panel, panelMode);
   applyStoredPanelPosition(panel);
   clampPanelToViewport(panel, false);
