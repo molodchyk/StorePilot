@@ -504,13 +504,23 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   const screenshotSummary = clearProgress
     ? `clear-only, ${totals.totalScreenshots || 0} source screenshot(s)`
     : `${totals.uploadedScreenshots || 0}/${totals.totalScreenshots || 0} uploaded`;
+  const mutationGate = run.mutationGate || {};
+  const currentLease = mutationGate.currentLease || null;
+  const gateSummary = mutationGate.enabled
+    ? currentLease
+      ? `${currentLease.workerId || "worker"} ${currentLease.action || "media"} ${currentLease.locale || ""}${currentLease.screenshotSlot ? ` #${currentLease.screenshotSlot}` : ""}; ${mutationGate.queuedCount || 0} queued`
+      : (mutationGate.nextAvailableInMs || 0) > 0
+        ? `cooldown ${Math.ceil((mutationGate.nextAvailableInMs || 0) / 1000)}s; ${mutationGate.queuedCount || 0} queued`
+        : `ready; ${mutationGate.queuedCount || 0} queued`
+    : "off";
 
   board.hidden = false;
   summary.replaceChildren(
     createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), `${run.status || "unknown"} - elapsed ${elapsed}`),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsMode", "Mode"), `${run.mode || "coordinated"}${run.phase ? ` - ${run.phase}` : ""}`),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsLocales", "Locales"), `${totals.completedLocales || 0}/${totals.totalLocales || 0} ${localeProgressVerb}, ${totals.failedLocales || 0} failed, ${totals.skippedLocales || 0} skipped`),
-    createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), screenshotSummary)
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), screenshotSummary),
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsMutationGate", "Media gate"), gateSummary)
   );
 
   renderParallelTimelineChart(chart, run);
@@ -523,9 +533,14 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     const current = document.createElement("div");
     const elapsedLabel = formatPanelParallelElapsed(getPanelParallelWorkerElapsedMs(worker));
     const workerClearProgress = isParallelClearProgressWorker(worker, run);
-    const currentText = worker.currentLocale
+    const gateText = worker.mutationGateWaiting && worker.mutationGateRequest
+      ? `waiting for media gate: ${worker.mutationGateRequest.action || "media"} ${worker.mutationGateRequest.locale || ""}${worker.mutationGateRequest.screenshotSlot ? ` #${worker.mutationGateRequest.screenshotSlot}` : ""}`
+      : worker.currentMutationLease
+        ? `media gate active: ${worker.currentMutationLease.action || "media"} ${worker.currentMutationLease.locale || ""}${worker.currentMutationLease.screenshotSlot ? ` #${worker.currentMutationLease.screenshotSlot}` : ""}`
+        : "";
+    const currentText = gateText || (worker.currentLocale
       ? `${worker.currentLocale}${worker.phase ? ` - ${worker.phase}` : ""}`
-      : (worker.phase || worker.message || "");
+      : (worker.phase || worker.message || ""));
 
     row.className = "storepilot-parallel-worker";
     title.className = "storepilot-parallel-worker-title";
@@ -533,8 +548,8 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     current.className = "storepilot-parallel-worker-current";
     title.textContent = `${worker.workerId}: ${worker.operation || "replace"} - ${worker.status}${worker.closed ? " (closed)" : ""}`;
     counts.textContent = workerClearProgress
-      ? `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; clear-only; elapsed ${elapsedLabel}`
-      : `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}; elapsed ${elapsedLabel}`;
+      ? `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; clear-only${worker.auditedLocales ? `; audited ${worker.auditedLocales}` : ""}; elapsed ${elapsedLabel}`
+      : `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}${worker.auditedLocales ? `; audited ${worker.auditedLocales}` : ""}; elapsed ${elapsedLabel}`;
     current.textContent = currentText || "Waiting for progress.";
     row.append(title, counts, current);
     return row;

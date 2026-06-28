@@ -330,7 +330,7 @@ assert.equal(clearOnlyProgressSnapshot.timeline[0].remainingLocales, 1);
 assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].completedLocales, 1);
 assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].remainingLocales, 1);
 
-(async () => {
+const parallelLocalizedScreenshotAsyncTests = (async () => {
   context.storePilotIsListingDashboardUrl = () => true;
   context.storePilotTabsSendMessage = () => Promise.resolve({ ok: true });
   let openedTabs = 0;
@@ -423,7 +423,182 @@ assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].remainingLocales, 
   assert.equal(exportedLog.log.actionLog[0].locale, "am");
   assert.equal(exportedLog.log.actionLog[0].tabId, worker.tabId);
   assert.equal(exportedLog.log.run.actionLogCount, 1);
-})().catch(error => {
+})();
+
+parallelLocalizedScreenshotAsyncTests.then(async () => {
+  let openedTabs = 0;
+  context.storePilotIsListingDashboardUrl = () => true;
+  context.storePilotGetProjectsState = () => Promise.resolve({
+    activeProjectId: "project-1",
+    projects: [{
+      id: "project-1",
+      name: "Project",
+      mediaAssets: {},
+      listings: {
+        am: {},
+        ar: {}
+      }
+    }]
+  });
+  context.storePilotGetProjectMediaFiles = () => Promise.resolve(files);
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 101 + openedTabs++ });
+  context.storePilotTabsRemove = () => Promise.resolve();
+  context.storePilotTabsSendMessage = (_tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      return new Promise(() => {});
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const start = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 77,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am", "ar"],
+    workerCount: 2,
+    parallelMode: "upload",
+    parallelMutationSuccessCooldownMs: 0,
+    parallelMutationErrorCooldownMs: 0
+  });
+  assert.equal(start.ok, true);
+
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+
+  const startedRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 77,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, start.run.runId).run;
+  assert.equal(startedRun.mutationGate.enabled, true);
+  assert.equal(startedRun.workers.length, 2);
+
+  const firstWorker = startedRun.workers[0];
+  const secondWorker = startedRun.workers[1];
+  const firstLease = await context.storePilotRequestLocalizedScreenshotMutation({
+    tab: { id: firstWorker.tabId }
+  }, {
+    runId: startedRun.runId,
+    workerId: firstWorker.workerId,
+    request: {
+      action: "upload",
+      locale: "am",
+      screenshotSlot: 1,
+      attempt: 1,
+      visibleBefore: 0
+    }
+  });
+  assert.equal(firstLease.ok, true);
+  assert.equal(firstLease.gateEnabled, true);
+
+  let secondResolved = false;
+  const secondLeasePromise = context.storePilotRequestLocalizedScreenshotMutation({
+    tab: { id: secondWorker.tabId }
+  }, {
+    runId: startedRun.runId,
+    workerId: secondWorker.workerId,
+    request: {
+      action: "upload",
+      locale: "ar",
+      screenshotSlot: 1,
+      attempt: 1,
+      visibleBefore: 0
+    }
+  }).then(result => {
+    secondResolved = true;
+    return result;
+  });
+
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.equal(secondResolved, false, "second worker waits while first mutation lease is active");
+
+  const release = await context.storePilotReleaseLocalizedScreenshotMutation({
+    tab: { id: firstWorker.tabId }
+  }, {
+    runId: startedRun.runId,
+    workerId: firstWorker.workerId,
+    leaseId: firstLease.leaseId,
+    request: {
+      action: "upload",
+      locale: "am",
+      screenshotSlot: 1,
+      attempt: 1,
+      visibleBefore: 0
+    },
+    outcome: "added",
+    visibleBefore: 0,
+    visibleAfter: 1,
+    addedCount: 1,
+    durationMs: 123
+  });
+  assert.equal(release.ok, true);
+  assert.equal(release.released, true);
+
+  const secondLease = await secondLeasePromise;
+  assert.equal(secondLease.ok, true);
+  assert.equal(secondLease.gateEnabled, true);
+  assert.notEqual(secondLease.leaseId, firstLease.leaseId);
+
+  const gatedRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 77,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, startedRun.runId).run;
+  assert.equal(gatedRun.mutationGate.currentLease.workerId, secondWorker.workerId);
+  assert.equal(gatedRun.actionLogCount >= 4, true);
+
+  await context.storePilotReleaseLocalizedScreenshotMutation({
+    tab: { id: secondWorker.tabId }
+  }, {
+    runId: startedRun.runId,
+    workerId: secondWorker.workerId,
+    leaseId: secondLease.leaseId,
+    request: {
+      action: "upload",
+      locale: "ar",
+      screenshotSlot: 1,
+      attempt: 1,
+      visibleBefore: 0
+    },
+    outcome: "added",
+    visibleBefore: 0,
+    visibleAfter: 1,
+    addedCount: 1,
+    durationMs: 111
+  });
+
+  await context.storePilotAbortParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 77,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, startedRun.runId);
+
+  const singleWorkerStart = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 78,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am"],
+    workerCount: 1,
+    parallelMode: "upload"
+  });
+  assert.equal(singleWorkerStart.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const singleWorkerRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 78,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, singleWorkerStart.run.runId).run;
+  assert.equal(singleWorkerRun.mutationGate.enabled, false);
+}).catch(error => {
   console.error(error);
   process.exitCode = 1;
 });

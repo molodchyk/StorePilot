@@ -7,6 +7,9 @@
   const PARALLEL_LOCALIZED_SCREENSHOT_MODE_REPLACE = "replace";
   const PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_ONLY = "clearOnly";
   const PARALLEL_LOCALIZED_SCREENSHOT_MODE_UPLOAD_ONLY = "uploadOnly";
+  const PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_SUCCESS_COOLDOWN_MS = 750;
+  const PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_ERROR_COOLDOWN_MS = 4000;
+  const PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_LEASE_TIMEOUT_MS = 120000;
   const localizedScreenshotParallelRuns = new Map();
 
   function text(key, fallback, substitutions) {
@@ -17,6 +20,14 @@
 
   function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function setBackgroundTimer(callback, ms) {
+    const timer = setTimeout(callback, ms);
+    if (timer && typeof timer.unref === "function") {
+      timer.unref();
+    }
+    return timer;
   }
 
   function normalizeParallelLocalizedScreenshotLocale(value) {
@@ -184,6 +195,237 @@
     return `localized-screenshots-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   }
 
+  function isParallelLocalizedScreenshotMutationGateEnabled(run) {
+    return Boolean(run && run.mutationGate && run.mutationGate.enabled);
+  }
+
+  function createParallelLocalizedScreenshotMutationGate(workerCount = 1, options = {}) {
+    const enabled = Number(workerCount || 0) > 1 && options.parallelMutationGate !== false;
+    return {
+      enabled,
+      queue: [],
+      currentLease: null,
+      leaseSequence: 0,
+      nextAvailableAt: 0,
+      lastReleaseAt: 0,
+      lastOutcome: "",
+      successCooldownMs: Number.isFinite(Number(options.successCooldownMs))
+        ? Math.max(0, Number(options.successCooldownMs))
+        : PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_SUCCESS_COOLDOWN_MS,
+      errorCooldownMs: Number.isFinite(Number(options.errorCooldownMs))
+        ? Math.max(0, Number(options.errorCooldownMs))
+        : PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_ERROR_COOLDOWN_MS,
+      leaseTimeoutMs: Number.isFinite(Number(options.leaseTimeoutMs))
+        ? Math.max(1000, Number(options.leaseTimeoutMs))
+        : PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_LEASE_TIMEOUT_MS,
+      aborted: false,
+      grantTimer: 0
+    };
+  }
+
+  function getParallelLocalizedScreenshotMutationGateSnapshot(run, now = Date.now()) {
+    const gate = run && run.mutationGate;
+    if (!gate) {
+      return {
+        enabled: false,
+        queuedCount: 0,
+        currentLease: null,
+        nextAvailableInMs: 0,
+        successCooldownMs: PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_SUCCESS_COOLDOWN_MS,
+        errorCooldownMs: PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_ERROR_COOLDOWN_MS,
+        lastOutcome: ""
+      };
+    }
+
+    const currentLease = gate.currentLease
+      ? {
+        leaseId: gate.currentLease.leaseId,
+        workerId: gate.currentLease.workerId,
+        tabId: gate.currentLease.tabId,
+        action: gate.currentLease.action,
+        locale: gate.currentLease.locale,
+        screenshotSlot: gate.currentLease.screenshotSlot,
+        targetSlot: gate.currentLease.targetSlot,
+        attempt: gate.currentLease.attempt,
+        grantedAtMs: gate.currentLease.grantedAtMs,
+        elapsedMs: Math.max(0, now - gate.currentLease.grantedAtMs),
+        expiresInMs: Math.max(0, gate.currentLease.expiresAtMs - now)
+      }
+      : null;
+
+    return {
+      enabled: Boolean(gate.enabled),
+      queuedCount: gate.queue.length,
+      currentLease,
+      nextAvailableInMs: Math.max(0, gate.nextAvailableAt - now),
+      successCooldownMs: gate.successCooldownMs,
+      errorCooldownMs: gate.errorCooldownMs,
+      lastOutcome: gate.lastOutcome || "",
+      lastReleaseAt: gate.lastReleaseAt || 0
+    };
+  }
+
+  function normalizeParallelLocalizedScreenshotMutationRequest(request = {}) {
+    return {
+      action: request.action || "",
+      locale: normalizeParallelLocalizedScreenshotLocale(request.locale || ""),
+      localeIndex: Number(request.localeIndex || 0),
+      totalLocales: Number(request.totalLocales || 0),
+      localeScreenshotCount: Number(request.localeScreenshotCount || 0),
+      attempt: Number(request.attempt || 0),
+      screenshotSlot: Number(request.screenshotSlot || 0),
+      targetSlot: Number(request.targetSlot || 0),
+      visibleBefore: Number.isFinite(Number(request.visibleBefore)) ? Number(request.visibleBefore) : null,
+      fileName: request.fileName || "",
+      fileSize: Number(request.fileSize || 0),
+      fileType: request.fileType || "",
+      buttonLabel: request.buttonLabel || "",
+      message: request.message || ""
+    };
+  }
+
+  function appendParallelLocalizedScreenshotGateLog(run, worker, request, stage, details = {}) {
+    if (!run || !worker) return;
+    appendParallelLocalizedScreenshotActionLog(run, worker, [{
+      runId: run.runId,
+      workerId: worker.workerId,
+      operation: worker.operation || "",
+      locale: request && request.locale || "",
+      localeIndex: request && request.localeIndex || 0,
+      totalLocales: request && request.totalLocales || 0,
+      localeScreenshotCount: request && request.localeScreenshotCount || 0,
+      action: request && request.action || "",
+      stage,
+      attempt: request && request.attempt || 0,
+      screenshotSlot: request && request.screenshotSlot || 0,
+      targetSlot: request && request.targetSlot || 0,
+      visibleBefore: request && request.visibleBefore,
+      buttonLabel: request && request.buttonLabel || "",
+      fileName: request && request.fileName || "",
+      fileSize: request && request.fileSize || 0,
+      fileType: request && request.fileType || "",
+      method: "mutation-gate",
+      ...details
+    }], worker.tabId || 0);
+  }
+
+  function getParallelLocalizedScreenshotMutationWorker(run, sender, workerId = "") {
+    if (!run) return null;
+    const senderTabId = sender && sender.tab && sender.tab.id;
+    return run.workers.find(candidate => (
+      candidate.workerId === workerId ||
+      (senderTabId && candidate.tabId === senderTabId)
+    )) || null;
+  }
+
+  function settleParallelLocalizedScreenshotMutationRequest(entry, response) {
+    if (!entry || entry.settled) return;
+    entry.settled = true;
+    entry.resolve(response);
+  }
+
+  function scheduleParallelLocalizedScreenshotMutationGate(run) {
+    const gate = run && run.mutationGate;
+    if (!gate || !gate.enabled || gate.currentLease || gate.aborted) return;
+    if (!gate.queue.length) return;
+
+    const now = Date.now();
+    const waitMs = Math.max(0, gate.nextAvailableAt - now);
+    if (waitMs > 0) {
+      if (!gate.grantTimer) {
+        gate.grantTimer = setBackgroundTimer(() => {
+          gate.grantTimer = 0;
+          scheduleParallelLocalizedScreenshotMutationGate(run);
+        }, waitMs);
+      }
+      return;
+    }
+
+    const entry = gate.queue.shift();
+    if (!entry || entry.settled) {
+      scheduleParallelLocalizedScreenshotMutationGate(run);
+      return;
+    }
+
+    if (run.abortRequested) {
+      settleParallelLocalizedScreenshotMutationRequest(entry, {
+        ok: false,
+        aborted: true,
+        message: text("operationStopped", "Stopped.")
+      });
+      scheduleParallelLocalizedScreenshotMutationGate(run);
+      return;
+    }
+
+    const grantedAtMs = Date.now();
+    const lease = {
+      leaseId: `${run.runId}-lease-${++gate.leaseSequence}`,
+      runId: run.runId,
+      workerId: entry.worker.workerId,
+      tabId: entry.worker.tabId,
+      action: entry.request.action,
+      locale: entry.request.locale,
+      screenshotSlot: entry.request.screenshotSlot,
+      targetSlot: entry.request.targetSlot,
+      attempt: entry.request.attempt,
+      requestedAtMs: entry.requestedAtMs,
+      grantedAtMs,
+      expiresAtMs: grantedAtMs + gate.leaseTimeoutMs
+    };
+    gate.currentLease = lease;
+    entry.worker.currentMutationLease = lease;
+    entry.worker.mutationGateWaiting = false;
+    appendParallelLocalizedScreenshotGateLog(run, entry.worker, entry.request, "gate-grant", {
+      leaseId: lease.leaseId,
+      waitMs: grantedAtMs - entry.requestedAtMs,
+      queueDepth: gate.queue.length,
+      cooldownMs: 0
+    });
+    sendParallelLocalizedScreenshotRunUpdate(run);
+
+    setBackgroundTimer(() => {
+      if (!gate.currentLease || gate.currentLease.leaseId !== lease.leaseId) return;
+      gate.lastOutcome = "lease-timeout";
+      gate.lastReleaseAt = Date.now();
+      gate.nextAvailableAt = gate.lastReleaseAt + gate.errorCooldownMs;
+      appendParallelLocalizedScreenshotGateLog(run, entry.worker, entry.request, "gate-timeout", {
+        leaseId: lease.leaseId,
+        outcome: "lease-timeout",
+        durationMs: gate.lastReleaseAt - lease.grantedAtMs,
+        cooldownMs: gate.errorCooldownMs
+      });
+      gate.currentLease = null;
+      if (entry.worker.currentMutationLease && entry.worker.currentMutationLease.leaseId === lease.leaseId) {
+        entry.worker.currentMutationLease = null;
+      }
+      sendParallelLocalizedScreenshotRunUpdate(run);
+      scheduleParallelLocalizedScreenshotMutationGate(run);
+    }, gate.leaseTimeoutMs + 50);
+
+    settleParallelLocalizedScreenshotMutationRequest(entry, {
+      ok: true,
+      gateEnabled: true,
+      leaseId: lease.leaseId,
+      grantedAtMs,
+      waitMs: grantedAtMs - entry.requestedAtMs,
+      queuedCount: gate.queue.length,
+      currentLease: lease
+    });
+  }
+
+  function abortParallelLocalizedScreenshotMutationGate(run) {
+    const gate = run && run.mutationGate;
+    if (!gate) return;
+    gate.aborted = true;
+    for (const entry of gate.queue.splice(0)) {
+      settleParallelLocalizedScreenshotMutationRequest(entry, {
+        ok: false,
+        aborted: true,
+        message: text("operationStopped", "Stopped.")
+      });
+    }
+  }
+
   function normalizeParallelLocalizedScreenshotActionLogEvent(event, worker, senderTabId = 0) {
     const epochMs = Number(event && event.epochMs || Date.now());
     return {
@@ -217,6 +459,10 @@
       fileName: event && event.fileName || "",
       fileSize: Number(event && event.fileSize || 0),
       fileType: event && event.fileType || "",
+      leaseId: event && event.leaseId || "",
+      waitMs: Number.isFinite(Number(event && event.waitMs)) ? Number(event.waitMs) : null,
+      cooldownMs: Number.isFinite(Number(event && event.cooldownMs)) ? Number(event.cooldownMs) : null,
+      queueDepth: Number.isFinite(Number(event && event.queueDepth)) ? Number(event.queueDepth) : null,
       errorMessage: event && event.errorMessage || "",
       message: event && event.message || ""
     };
@@ -529,7 +775,13 @@
         uploadedScreenshots,
         failedLocaleList: worker.failedLocaleList || [],
         skippedLocaleList: worker.skippedLocaleList || [],
+        auditedLocaleList: worker.auditedLocaleList || [],
+        auditedLocales: worker.auditedLocales || 0,
         actionLogCount: Array.isArray(worker.actionLog) ? worker.actionLog.length : 0,
+        mutationGateWaiting: Boolean(worker.mutationGateWaiting),
+        mutationGateWaitingSince: worker.mutationGateWaitingSince || 0,
+        mutationGateRequest: worker.mutationGateRequest || null,
+        currentMutationLease: worker.currentMutationLease || null,
         message: worker.message || "",
         startedAt: worker.startedAt || 0,
         finishedAt: worker.finishedAt || 0,
@@ -580,6 +832,7 @@
       abortRequested: Boolean(run.abortRequested),
       workerCount: workers.length,
       workers,
+      mutationGate: getParallelLocalizedScreenshotMutationGateSnapshot(run, now),
       localeStatuses,
       timeline,
       totals,
@@ -875,13 +1128,16 @@
           assignedLocales: worker.assignedLocales,
           localizedScreenshotsOperation: worker.operation || getParallelLocalizedScreenshotOperationForMode(run.mode),
           parallelRunId: run.runId,
-          parallelWorkerId: worker.workerId
+          parallelWorkerId: worker.workerId,
+          parallelMutationGateEnabled: isParallelLocalizedScreenshotMutationGateEnabled(run),
+          parallelAuditAfterRun: Boolean(run.parallelAuditAfterRun)
         }
       });
 
       const completedLocaleList = uniqueLocales(result && (result.completed || result.uploaded) || []);
       const failedLocaleList = uniqueLocales(result && result.failed || []);
       const skippedLocaleList = uniqueLocales(result && result.skipped || []);
+      const auditedLocaleList = uniqueLocales(result && result.audited || []);
       const uploadedScreenshots = (result && result.uploaded || [])
         .reduce((sum, item) => sum + parseLocalizedUploadedScreenshotCount(item), 0);
 
@@ -889,9 +1145,11 @@
       worker.completedLocaleList = completedLocaleList;
       worker.failedLocaleList = failedLocaleList;
       worker.skippedLocaleList = skippedLocaleList;
+      worker.auditedLocaleList = auditedLocaleList;
       worker.completedLocales = completedLocaleList.length;
       worker.failedLocales = failedLocaleList.length;
       worker.skippedLocales = skippedLocaleList.length;
+      worker.auditedLocales = auditedLocaleList.length;
       worker.uploadedScreenshots = uploadedScreenshots || Number(worker.progress && worker.progress.uploadedScreenshots || 0);
       worker.elapsedMs = Number(result && result.elapsedMs || Date.now() - worker.startedAt);
       worker.message = result && result.message || "";
@@ -916,13 +1174,16 @@
         run.phase === "clearing"
         ? "cleared"
         : "completed";
+      const auditedSet = new Set(worker.auditedLocaleList || []);
       for (const locale of worker.completedLocaleList) {
         updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
           status: completedStatus,
           operation: worker.operation || "",
           workerId: worker.workerId,
           phase: run.phase || "",
-          message: worker.operation === "clearOnly" ? "localized screenshots cleared" : "localized screenshots uploaded"
+          message: auditedSet.has(locale)
+            ? "localized screenshots audited"
+            : worker.operation === "clearOnly" ? "localized screenshots cleared" : "localized screenshots uploaded"
         });
       }
       for (const locale of worker.skippedLocaleList) {
@@ -1180,6 +1441,13 @@
       run.totalScreenshots = plan.totalScreenshots;
       run.initialSkipped = plan.skipped;
       run.initialSkippedLocales = countParallelSkippedLocales(plan.skipped);
+      run.mutationGate = createParallelLocalizedScreenshotMutationGate(plan.workerCount, {
+        parallelMutationGate: options.parallelMutationGate !== false,
+        successCooldownMs: options.parallelMutationSuccessCooldownMs,
+        errorCooldownMs: options.parallelMutationErrorCooldownMs,
+        leaseTimeoutMs: options.parallelMutationLeaseTimeoutMs
+      });
+      run.parallelAuditAfterRun = options.parallelAuditAfterRun !== false && plan.workerCount > 1;
       const localeStatusState = createParallelLocalizedScreenshotLocaleStatusState(resolved.files, plan.locales);
       run.localeStatusOrder = localeStatusState.order;
       run.localeStatuses = localeStatusState.statuses;
@@ -1243,6 +1511,8 @@
       message: text("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload."),
       timeline: [],
       actionLog: [],
+      mutationGate: null,
+      parallelAuditAfterRun: false,
       workers: []
     };
 
@@ -1270,6 +1540,7 @@
     run.abortRequested = true;
     run.status = "aborting";
     run.message = text("operationStopped", "Stopped.");
+    abortParallelLocalizedScreenshotMutationGate(run);
 
     await Promise.all(run.workers
       .filter(worker => !isParallelWorkerTerminal(worker) && worker.tabId)
@@ -1379,6 +1650,112 @@
     };
   }
 
+  async function storePilotRequestLocalizedScreenshotMutation(sender, message) {
+    const run = message && message.runId ? localizedScreenshotParallelRuns.get(message.runId) : null;
+    if (!run) {
+      return { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
+    }
+
+    const worker = getParallelLocalizedScreenshotMutationWorker(run, sender, message.workerId || "");
+    if (!worker) {
+      return { ok: false, message: text("parallelLocalizedScreenshotsNoWorker", "No parallel localized screenshot worker found.") };
+    }
+
+    if (!isParallelLocalizedScreenshotMutationGateEnabled(run)) {
+      return { ok: true, gateEnabled: false, leaseId: "", waitMs: 0, queuedCount: 0 };
+    }
+    if (run.abortRequested) {
+      return { ok: false, aborted: true, message: text("operationStopped", "Stopped.") };
+    }
+
+    const gate = run.mutationGate;
+    const request = normalizeParallelLocalizedScreenshotMutationRequest(message.request || message);
+    const requestedAtMs = Date.now();
+    worker.mutationGateWaiting = true;
+    worker.mutationGateWaitingSince = requestedAtMs;
+    worker.mutationGateRequest = request;
+    appendParallelLocalizedScreenshotGateLog(run, worker, request, "gate-request", {
+      waitMs: 0,
+      queueDepth: gate.queue.length,
+      cooldownMs: Math.max(0, gate.nextAvailableAt - requestedAtMs)
+    });
+    await sendParallelLocalizedScreenshotRunUpdate(run);
+
+    return new Promise(resolve => {
+      gate.queue.push({
+        worker,
+        request,
+        requestedAtMs,
+        resolve,
+        settled: false
+      });
+      scheduleParallelLocalizedScreenshotMutationGate(run);
+    });
+  }
+
+  async function storePilotReleaseLocalizedScreenshotMutation(sender, message) {
+    const run = message && message.runId ? localizedScreenshotParallelRuns.get(message.runId) : null;
+    if (!run) {
+      return { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
+    }
+
+    const worker = getParallelLocalizedScreenshotMutationWorker(run, sender, message.workerId || "");
+    if (!worker) {
+      return { ok: false, message: text("parallelLocalizedScreenshotsNoWorker", "No parallel localized screenshot worker found.") };
+    }
+
+    const gate = run.mutationGate;
+    if (!gate || !gate.enabled) {
+      return { ok: true, gateEnabled: false };
+    }
+
+    const leaseId = message.leaseId || "";
+    const lease = gate.currentLease;
+    const request = normalizeParallelLocalizedScreenshotMutationRequest(message.request || message);
+    const now = Date.now();
+    const currentLeaseMatches = Boolean(lease && lease.leaseId === leaseId);
+    const outcome = message.outcome || "unknown";
+    const successful = ["added", "removed", "cleared", "already-clear", "ok", "success"].includes(outcome);
+    const cooldownMs = successful ? gate.successCooldownMs : gate.errorCooldownMs;
+
+    appendParallelLocalizedScreenshotGateLog(run, worker, request, currentLeaseMatches ? "gate-release" : "gate-release-stale", {
+      leaseId,
+      outcome,
+      visibleBefore: Number.isFinite(Number(message.visibleBefore)) ? Number(message.visibleBefore) : request.visibleBefore,
+      visibleAfter: Number.isFinite(Number(message.visibleAfter)) ? Number(message.visibleAfter) : null,
+      addedCount: Number.isFinite(Number(message.addedCount)) ? Number(message.addedCount) : null,
+      removedCount: Number.isFinite(Number(message.removedCount)) ? Number(message.removedCount) : null,
+      durationMs: Number.isFinite(Number(message.durationMs)) ? Number(message.durationMs) : lease ? now - lease.grantedAtMs : null,
+      errorMessage: message.errorMessage || "",
+      message: message.message || "",
+      cooldownMs,
+      queueDepth: gate.queue.length
+    });
+
+    if (currentLeaseMatches) {
+      gate.currentLease = null;
+      gate.lastOutcome = outcome;
+      gate.lastReleaseAt = now;
+      gate.nextAvailableAt = now + cooldownMs;
+    }
+    if (worker.currentMutationLease && worker.currentMutationLease.leaseId === leaseId) {
+      worker.currentMutationLease = null;
+    }
+    worker.mutationGateWaiting = false;
+    worker.mutationGateRequest = null;
+
+    await sendParallelLocalizedScreenshotRunUpdate(run);
+    scheduleParallelLocalizedScreenshotMutationGate(run);
+
+    return {
+      ok: true,
+      gateEnabled: true,
+      released: currentLeaseMatches,
+      cooldownMs,
+      queuedCount: gate.queue.length
+    };
+  }
+
   function storePilotGetParallelLocalizedScreenshotRun(sender, runId = "") {
     const run = getParallelLocalizedScreenshotRunForSender(sender, runId);
     return run
@@ -1413,6 +1790,8 @@
   globalThis.storePilotRetryParallelLocalizedScreenshotFailed = storePilotRetryParallelLocalizedScreenshotFailed;
   globalThis.storePilotHandleLocalizedScreenshotProgress = storePilotHandleLocalizedScreenshotProgress;
   globalThis.storePilotHandleLocalizedScreenshotActionLog = storePilotHandleLocalizedScreenshotActionLog;
+  globalThis.storePilotRequestLocalizedScreenshotMutation = storePilotRequestLocalizedScreenshotMutation;
+  globalThis.storePilotReleaseLocalizedScreenshotMutation = storePilotReleaseLocalizedScreenshotMutation;
   globalThis.storePilotGetParallelLocalizedScreenshotRun = storePilotGetParallelLocalizedScreenshotRun;
   globalThis.storePilotGetParallelLocalizedScreenshotLog = storePilotGetParallelLocalizedScreenshotLog;
   globalThis.storePilotSplitParallelLocalizedScreenshotLocales = splitParallelLocalizedScreenshotLocales;

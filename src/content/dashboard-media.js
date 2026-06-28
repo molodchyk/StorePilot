@@ -1226,6 +1226,7 @@ function createLocalizedScreenshotProgress(entry, localeIndex, totalLocales, sta
     elapsedMs,
     runId: stats.runId || overrides.runId || "",
     workerId: stats.workerId || overrides.workerId || "",
+    mutationGateEnabled: Boolean(stats.mutationGateEnabled || overrides.mutationGateEnabled),
     ...overrides
   };
 }
@@ -1271,6 +1272,78 @@ function setLocalizedScreenshotProgress(progress, phase) {
     updateLocalizedScreenshotWorkerProgressState(progress, phase);
   }
   publishLocalizedScreenshotProgress(progress, phase);
+}
+
+function isLocalizedScreenshotMutationGateEnabled(progress) {
+  return Boolean(progress && progress.runId && progress.workerId && progress.mutationGateEnabled);
+}
+
+async function acquireLocalizedScreenshotMutationLease(progress, request = {}) {
+  if (!isLocalizedScreenshotMutationGateEnabled(progress)) {
+    return { ok: true, gateEnabled: false, leaseId: "", waitMs: 0 };
+  }
+  if (typeof storePilotRuntimeSendMessage !== "function") {
+    return { ok: false, message: "Localized screenshot mutation gate is unavailable." };
+  }
+
+  const action = request.action || "media";
+  const slot = request.screenshotSlot || request.targetSlot || 0;
+  const label = slot ? `${action} screenshot ${slot}` : action;
+  setLocalizedScreenshotProgress(progress, `waiting for media gate: ${label}`);
+
+  const response = await storePilotRuntimeSendMessage({
+    type: "storepilot-localized-screenshot-mutation-request",
+    runId: progress.runId,
+    workerId: progress.workerId,
+    request: {
+      locale: progress.locale || "",
+      localeIndex: Number(progress.localeIndex || 0),
+      totalLocales: Number(progress.totalLocales || 0),
+      localeScreenshotCount: Number(progress.localeScreenshotCount || 0),
+      ...request
+    }
+  });
+
+  if (!response || !response.ok) {
+    return {
+      ok: false,
+      aborted: Boolean(response && response.aborted),
+      message: response && response.message || "Localized screenshot mutation gate did not grant a lease."
+    };
+  }
+
+  if (response.gateEnabled) {
+    setLocalizedScreenshotProgress(progress, `media gate granted: ${label}`);
+  }
+  return response;
+}
+
+async function releaseLocalizedScreenshotMutationLease(progress, lease, request = {}, result = {}) {
+  if (!lease || !lease.gateEnabled || !lease.leaseId || !progress || !progress.runId || !progress.workerId) {
+    return null;
+  }
+  if (typeof storePilotRuntimeSendMessage !== "function") {
+    return null;
+  }
+
+  try {
+    return await storePilotRuntimeSendMessage({
+      type: "storepilot-localized-screenshot-mutation-release",
+      runId: progress.runId,
+      workerId: progress.workerId,
+      leaseId: lease.leaseId,
+      request: {
+        locale: progress.locale || "",
+        localeIndex: Number(progress.localeIndex || 0),
+        totalLocales: Number(progress.totalLocales || 0),
+        localeScreenshotCount: Number(progress.localeScreenshotCount || 0),
+        ...request
+      },
+      ...result
+    });
+  } catch (_error) {
+    return null;
+  }
 }
 
 function isDashboardPageVisibleForMediaAutomation() {
@@ -1479,55 +1552,104 @@ async function removeOneLocalizedScreenshotWithRetries(progress = null) {
     lastButtonLabel = button.getAttribute("aria-label") || label;
     scrollMediaActionTargetIntoView(button);
     dismissVisibleDashboardStatusMessages();
-    const actionStartedAt = Date.now();
-    publishLocalizedScreenshotActionLog(progress, {
+    const mutationRequest = {
       action: "delete",
-      stage: "attempt",
       attempt,
       visibleBefore: beforeCount,
       targetSlot: beforeCount,
       buttonLabel: lastButtonLabel
-    });
-    activateDashboardButton(button);
+    };
+    const lease = await acquireLocalizedScreenshotMutationLease(progress, mutationRequest);
+    if (!lease.ok) {
+      return {
+        ok: false,
+        aborted: Boolean(lease.aborted),
+        message: lease.message || `${label}: media mutation gate did not grant a delete lease`
+      };
+    }
+    const actionStartedAt = Date.now();
+    let releaseResult = {
+      outcome: "exception",
+      visibleBefore: beforeCount,
+      targetSlot: beforeCount,
+      buttonLabel: lastButtonLabel,
+      durationMs: 0
+    };
 
-    const changed = await waitForMediaRemovalAfterClick(
-      "localizedScreenshots",
-      beforeCount,
-      LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS,
-      { progress }
-    );
-    const afterCount = getVisibleMediaImageCount("localizedScreenshots");
-    if (changed || afterCount < beforeCount) {
+    try {
+      publishLocalizedScreenshotActionLog(progress, {
+        action: "delete",
+        stage: "attempt",
+        attempt,
+        visibleBefore: beforeCount,
+        targetSlot: beforeCount,
+        buttonLabel: lastButtonLabel,
+        leaseId: lease.leaseId || "",
+        waitMs: Number.isFinite(Number(lease.waitMs)) ? Number(lease.waitMs) : null
+      });
+      activateDashboardButton(button);
+
+      const changed = await waitForMediaRemovalAfterClick(
+        "localizedScreenshots",
+        beforeCount,
+        LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS,
+        { progress }
+      );
+      const afterCount = getVisibleMediaImageCount("localizedScreenshots");
+      if (changed || afterCount < beforeCount) {
+        releaseResult = {
+          outcome: "removed",
+          visibleBefore: beforeCount,
+          visibleAfter: afterCount,
+          removedCount: Math.max(1, beforeCount - afterCount),
+          targetSlot: beforeCount,
+          buttonLabel: lastButtonLabel,
+          durationMs: Date.now() - actionStartedAt
+        };
+        publishLocalizedScreenshotActionLog(progress, {
+          action: "delete",
+          stage: "result",
+          attempt,
+          outcome: releaseResult.outcome,
+          visibleBefore: releaseResult.visibleBefore,
+          visibleAfter: releaseResult.visibleAfter,
+          removedCount: releaseResult.removedCount,
+          targetSlot: releaseResult.targetSlot,
+          buttonLabel: releaseResult.buttonLabel,
+          leaseId: lease.leaseId || "",
+          durationMs: releaseResult.durationMs
+        });
+        return {
+          ok: true,
+          removedCount: Math.max(1, beforeCount - afterCount),
+          label: lastButtonLabel
+        };
+      }
+
+      releaseResult = {
+        outcome: "unchanged",
+        visibleBefore: beforeCount,
+        visibleAfter: afterCount,
+        targetSlot: beforeCount,
+        buttonLabel: lastButtonLabel,
+        durationMs: Date.now() - actionStartedAt
+      };
       publishLocalizedScreenshotActionLog(progress, {
         action: "delete",
         stage: "result",
         attempt,
-        outcome: "removed",
-        visibleBefore: beforeCount,
-        visibleAfter: afterCount,
-        removedCount: Math.max(1, beforeCount - afterCount),
-        targetSlot: beforeCount,
-        buttonLabel: lastButtonLabel,
-        durationMs: Date.now() - actionStartedAt
+        outcome: releaseResult.outcome,
+        visibleBefore: releaseResult.visibleBefore,
+        visibleAfter: releaseResult.visibleAfter,
+        targetSlot: releaseResult.targetSlot,
+        buttonLabel: releaseResult.buttonLabel,
+        leaseId: lease.leaseId || "",
+        durationMs: releaseResult.durationMs
       });
-      return {
-        ok: true,
-        removedCount: Math.max(1, beforeCount - afterCount),
-        label: lastButtonLabel
-      };
+    } finally {
+      await releaseLocalizedScreenshotMutationLease(progress, lease, mutationRequest, releaseResult);
     }
 
-    publishLocalizedScreenshotActionLog(progress, {
-      action: "delete",
-      stage: "result",
-      attempt,
-      outcome: "unchanged",
-      visibleBefore: beforeCount,
-      visibleAfter: afterCount,
-      targetSlot: beforeCount,
-      buttonLabel: lastButtonLabel,
-      durationMs: Date.now() - actionStartedAt
-    });
     dismissVisibleDashboardStatusMessages();
     if (attempt < LOCALIZED_SCREENSHOT_DELETE_ATTEMPTS_PER_IMAGE) {
       await delay(LOCALIZED_SCREENSHOT_RETRY_DELAY_MS);
@@ -1803,12 +1925,33 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
     }
 
     let actionStartedAt = Date.now();
+    let lease = null;
+    let mutationRequest = null;
+    let releaseResult = null;
     try {
       dismissVisibleDashboardStatusMessages();
       dismissLocalizedScreenshotUploadErrors();
       const beforeCount = getVisibleMediaImageCount("localizedScreenshots");
       const errorState = {};
       actionStartedAt = Date.now();
+      mutationRequest = {
+        action: "upload",
+        attempt: uploadAttempt,
+        screenshotSlot: fileIndex + 1,
+        visibleBefore: beforeCount,
+        fileName: file && file.name || "",
+        fileSize: file && file.size || 0,
+        fileType: file && file.type || ""
+      };
+      lease = await acquireLocalizedScreenshotMutationLease(progress, mutationRequest);
+      if (!lease.ok) {
+        return {
+          ok: false,
+          aborted: Boolean(lease.aborted),
+          message: lease.message || `${entry.locale} screenshot ${fileIndex + 1}: media mutation gate did not grant an upload lease`,
+          target
+        };
+      }
       publishLocalizedScreenshotActionLog(progress, {
         action: "upload",
         stage: "attempt",
@@ -1817,7 +1960,9 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
         visibleBefore: beforeCount,
         fileName: file && file.name || "",
         fileSize: file && file.size || 0,
-        fileType: file && file.type || ""
+        fileType: file && file.type || "",
+        leaseId: lease.leaseId || "",
+        waitMs: Number.isFinite(Number(lease.waitMs)) ? Number(lease.waitMs) : null
       });
       const result = await setUploadInputFile(target.input, [file], "localizedScreenshots", {
         beforeCount,
@@ -1830,11 +1975,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
       const addedCount = afterCount - beforeCount;
 
       if (afterCount > MAX_DASHBOARD_SCREENSHOTS) {
-        publishLocalizedScreenshotActionLog(progress, {
-          action: "upload",
-          stage: "result",
-          attempt: uploadAttempt,
-          screenshotSlot: fileIndex + 1,
+        releaseResult = {
           outcome: "limit-exceeded",
           visibleBefore: beforeCount,
           visibleAfter: afterCount,
@@ -1842,6 +1983,14 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
           method: result.method || "",
           errorMessage: result.errorMessage || "",
           durationMs: Date.now() - actionStartedAt
+        };
+        publishLocalizedScreenshotActionLog(progress, {
+          action: "upload",
+          stage: "result",
+          attempt: uploadAttempt,
+          screenshotSlot: fileIndex + 1,
+          leaseId: lease.leaseId || "",
+          ...releaseResult
         });
         return {
           ok: false,
@@ -1851,11 +2000,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
         };
       }
       if (addedCount > 1) {
-        publishLocalizedScreenshotActionLog(progress, {
-          action: "upload",
-          stage: "result",
-          attempt: uploadAttempt,
-          screenshotSlot: fileIndex + 1,
+        releaseResult = {
           outcome: "duplicate-add",
           visibleBefore: beforeCount,
           visibleAfter: afterCount,
@@ -1863,6 +2008,14 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
           method: result.method || "",
           errorMessage: result.errorMessage || "",
           durationMs: Date.now() - actionStartedAt
+        };
+        publishLocalizedScreenshotActionLog(progress, {
+          action: "upload",
+          stage: "result",
+          attempt: uploadAttempt,
+          screenshotSlot: fileIndex + 1,
+          leaseId: lease.leaseId || "",
+          ...releaseResult
         });
         return {
           ok: false,
@@ -1873,11 +2026,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
       }
       if (addedCount === 1) {
         if (!isDashboardLocaleSelected(entry.locale)) {
-          publishLocalizedScreenshotActionLog(progress, {
-            action: "upload",
-            stage: "result",
-            attempt: uploadAttempt,
-            screenshotSlot: fileIndex + 1,
+          releaseResult = {
             outcome: "wrong-locale-after-upload",
             visibleBefore: beforeCount,
             visibleAfter: afterCount,
@@ -1885,6 +2034,14 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
             method: result.method || "",
             errorMessage: result.errorMessage || "",
             durationMs: Date.now() - actionStartedAt
+          };
+          publishLocalizedScreenshotActionLog(progress, {
+            action: "upload",
+            stage: "result",
+            attempt: uploadAttempt,
+            screenshotSlot: fileIndex + 1,
+            leaseId: lease.leaseId || "",
+            ...releaseResult
           });
           return {
             ok: false,
@@ -1893,11 +2050,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
             target
           };
         }
-        publishLocalizedScreenshotActionLog(progress, {
-          action: "upload",
-          stage: "result",
-          attempt: uploadAttempt,
-          screenshotSlot: fileIndex + 1,
+        releaseResult = {
           outcome: "added",
           visibleBefore: beforeCount,
           visibleAfter: afterCount,
@@ -1905,6 +2058,14 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
           method: result.method || "",
           errorMessage: result.errorMessage || "",
           durationMs: Date.now() - actionStartedAt
+        };
+        publishLocalizedScreenshotActionLog(progress, {
+          action: "upload",
+          stage: "result",
+          attempt: uploadAttempt,
+          screenshotSlot: fileIndex + 1,
+          leaseId: lease.leaseId || "",
+          ...releaseResult
         });
         setLocalizedScreenshotProgress(progress, `uploaded screenshot ${fileIndex + 1}/${entry.files.length} (visible ${afterCount})`);
         return { ok: true, target };
@@ -1913,11 +2074,7 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
       lastMessage = result.errorMessage
         ? `${entry.locale} screenshot ${fileIndex + 1}: ${result.errorMessage}`
         : `${entry.locale} screenshot ${fileIndex + 1}: CWS still shows ${afterCount} screenshot(s) after upload (${result.method})`;
-      publishLocalizedScreenshotActionLog(progress, {
-        action: "upload",
-        stage: "result",
-        attempt: uploadAttempt,
-        screenshotSlot: fileIndex + 1,
+      releaseResult = {
         outcome: "unchanged",
         visibleBefore: beforeCount,
         visibleAfter: afterCount,
@@ -1926,17 +2083,34 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
         errorMessage: result.errorMessage || "",
         message: lastMessage,
         durationMs: Date.now() - actionStartedAt
-      });
-    } catch (error) {
-      lastMessage = `${entry.locale} screenshot ${fileIndex + 1}: ${error.message || String(error)}`;
+      };
       publishLocalizedScreenshotActionLog(progress, {
         action: "upload",
         stage: "result",
         attempt: uploadAttempt,
         screenshotSlot: fileIndex + 1,
+        leaseId: lease.leaseId || "",
+        ...releaseResult
+      });
+    } catch (error) {
+      lastMessage = `${entry.locale} screenshot ${fileIndex + 1}: ${error.message || String(error)}`;
+      releaseResult = {
         outcome: "exception",
-        durationMs: Date.now() - actionStartedAt,
-        message: lastMessage
+        message: lastMessage,
+        durationMs: Date.now() - actionStartedAt
+      };
+      publishLocalizedScreenshotActionLog(progress, {
+        action: "upload",
+        stage: "result",
+        attempt: uploadAttempt,
+        screenshotSlot: fileIndex + 1,
+        leaseId: lease && lease.leaseId || "",
+        ...releaseResult
+      });
+    } finally {
+      await releaseLocalizedScreenshotMutationLease(progress, lease, mutationRequest || {}, releaseResult || {
+        outcome: "unknown",
+        durationMs: Date.now() - actionStartedAt
       });
     }
 
@@ -2083,12 +2257,80 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
   return { ok: true, uploadedCount: uploadedForLocale, completed: true, message: "" };
 }
 
+async function auditCompletedLocalizedScreenshotLocales(entries, completedLocales, stats, operation) {
+  const completedSet = new Set((completedLocales || []).map(normalizeLocale));
+  const audited = [];
+  const failed = [];
+  const failedLocales = [];
+  const normalizedOperation = normalizeLocalizedScreenshotOperation(operation);
+  const completedEntries = entries.filter(entry => completedSet.has(normalizeLocale(entry.locale)));
+
+  for (let index = 0; index < completedEntries.length; index++) {
+    if (mediaOperationState.abortRequested) {
+      return { audited, failed, failedLocales, aborted: true };
+    }
+
+    const entry = completedEntries[index];
+    const expectedCount = normalizedOperation === LOCALIZED_SCREENSHOT_OPERATION_CLEAR_ONLY
+      ? 0
+      : entry.files.length;
+    const progress = createLocalizedScreenshotProgress(entry, index, completedEntries.length, stats, {
+      completedLocales: audited.length,
+      failedLocales: failed.length,
+      uploadedScreenshots: stats.uploadedScreenshots || 0
+    });
+    setLocalizedScreenshotProgress(progress, `auditing persisted localized screenshot count (${expectedCount} expected)`);
+
+    const visible = await waitForMediaAutomationVisible(progress);
+    if (!visible.ok) {
+      return { audited, failed, failedLocales, aborted: Boolean(visible.aborted) };
+    }
+
+    const contextReady = await ensureLocalizedScreenshotUploadContext(entry.locale);
+    if (!contextReady.ok) {
+      const message = `${entry.locale}: audit could not select localized screenshot field: ${contextReady.message}`;
+      failed.push(message);
+      failedLocales.push(entry.locale);
+      continue;
+    }
+
+    scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
+    const auditWait = await waitForVisibleMediaImageCount("localizedScreenshots", expectedCount, 8000, { progress });
+    if (!auditWait.ok) {
+      const visibleCount = getVisibleMediaImageCount("localizedScreenshots");
+      const message = `${entry.locale}: audit expected ${expectedCount} localized screenshot(s), CWS shows ${visibleCount}`;
+      publishLocalizedScreenshotActionLog(progress, {
+        action: "audit",
+        stage: "result",
+        outcome: "mismatch",
+        visibleAfter: visibleCount,
+        message
+      });
+      failed.push(message);
+      failedLocales.push(entry.locale);
+      continue;
+    }
+
+    publishLocalizedScreenshotActionLog(progress, {
+      action: "audit",
+      stage: "result",
+      outcome: "matched",
+      visibleAfter: auditWait.count,
+      message: `${entry.locale}: audit matched ${expectedCount} localized screenshot(s)`
+    });
+    audited.push(entry.locale);
+  }
+
+  return { audited, failed, failedLocales, aborted: false };
+}
+
 async function performUploadLocalizedScreenshots(files, options = {}) {
   const startedAt = Date.now();
   const uploaded = [];
   const failed = [];
   const skipped = [];
   const completed = [];
+  const audited = [];
   let aborted = false;
   const operation = normalizeLocalizedScreenshotOperation(options.localizedScreenshotsOperation || options.operation || "");
 
@@ -2163,7 +2405,8 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
         operation,
         startedAt,
         runId: options.parallelRunId || options.runId || "",
-        workerId: options.parallelWorkerId || options.workerId || ""
+        workerId: options.parallelWorkerId || options.workerId || "",
+        mutationGateEnabled: Boolean(options.parallelMutationGateEnabled)
       }, operation);
       localeUploadedCount = Math.max(localeUploadedCount, localeResult.uploadedCount || 0);
 
@@ -2206,6 +2449,34 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     }
   }
 
+  if (!aborted && options.parallelAuditAfterRun && completed.length) {
+    const audit = await auditCompletedLocalizedScreenshotLocales(entries, completed, {
+      completedLocales: completed.length,
+      failedLocales: failed.length,
+      skippedLocales: countLocalizedScreenshotSkippedLocales(skipped),
+      uploadedScreenshots: uploadedScreenshotCount,
+      totalScreenshots,
+      operation,
+      startedAt,
+      runId: options.parallelRunId || options.runId || "",
+      workerId: options.parallelWorkerId || options.workerId || "",
+      mutationGateEnabled: Boolean(options.parallelMutationGateEnabled)
+    }, operation);
+    audited.push(...audit.audited);
+    if (audit.aborted) {
+      aborted = true;
+    }
+    if (audit.failed.length) {
+      const failedAuditSet = new Set(audit.failedLocales.map(normalizeLocale));
+      for (let index = completed.length - 1; index >= 0; index--) {
+        if (failedAuditSet.has(normalizeLocale(completed[index]))) {
+          completed.splice(index, 1);
+        }
+      }
+      failed.push(...audit.failed);
+    }
+  }
+
   const skippedLocaleCount = countLocalizedScreenshotSkippedLocales(skipped);
   const elapsedMs = Date.now() - startedAt;
   const operationLabel = operation === LOCALIZED_SCREENSHOT_OPERATION_CLEAR_ONLY
@@ -2213,7 +2484,10 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     : operation === LOCALIZED_SCREENSHOT_OPERATION_UPLOAD_ONLY
       ? "upload-only"
       : "upload";
-  const runSummary = `Localized screenshot ${operationLabel} ${aborted ? "stopped" : "finished"}: ${completed.length}/${entries.length} run locale(s) completed, ${uploadedScreenshotCount}/${totalScreenshots} screenshot(s) uploaded, ${skippedLocaleCount} locale(s) skipped, ${failed.length} failed. Elapsed: ${formatLocalizedScreenshotElapsedTime(elapsedMs)}.`;
+  const auditSummary = options.parallelAuditAfterRun
+    ? `, ${audited.length} audited`
+    : "";
+  const runSummary = `Localized screenshot ${operationLabel} ${aborted ? "stopped" : "finished"}: ${completed.length}/${entries.length} run locale(s) completed${auditSummary}, ${uploadedScreenshotCount}/${totalScreenshots} screenshot(s) uploaded, ${skippedLocaleCount} locale(s) skipped, ${failed.length} failed. Elapsed: ${formatLocalizedScreenshotElapsedTime(elapsedMs)}.`;
   const messageParts = [
     runSummary,
     aborted ? localize("operationStopped", "Stopped.") : "",
@@ -2229,6 +2503,7 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     skipped,
     failed,
     completed,
+    audited,
     elapsedMs,
     assignedLocales,
     operation,
