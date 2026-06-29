@@ -68,6 +68,35 @@ function isParallelClearProgressWorker(worker, run = parallelLocalizedScreenshot
   return operation === "clearOnly" || isParallelClearProgressRun(run);
 }
 
+function isParallelAuditPhaseText(value) {
+  return /auditing persisted localized screenshot count/i.test(String(value || ""));
+}
+
+function getParallelAuditTotals(run) {
+  const workers = Array.isArray(run && run.workers) ? run.workers : [];
+  const totals = run && run.totals || {};
+  const auditedLocales = Number(totals.auditedLocales || 0) || workers
+    .reduce((sum, worker) => sum + Number(worker.auditedLocales || 0), 0);
+  const auditTotalLocales = Number(totals.auditTotalLocales || 0) || workers
+    .reduce((sum, worker) => {
+      const workerAuditTotal = Number(worker.auditTotalLocales || 0);
+      if (workerAuditTotal) return sum + workerAuditTotal;
+      return sum + (worker.auditedLocales ? Number(worker.completedLocales || worker.assignedCount || 0) : 0);
+    }, 0);
+
+  return {
+    auditedLocales,
+    auditTotalLocales
+  };
+}
+
+function isParallelRunAuditing(run) {
+  return Boolean(run && (
+    isParallelAuditPhaseText(run.phase) ||
+    (Array.isArray(run.workers) && run.workers.some(worker => isParallelAuditPhaseText(worker.phase)))
+  ));
+}
+
 function getParallelTimelineCurrentSample(run, elapsedMs = getPanelParallelRunElapsedMs(run)) {
   const totals = run && run.totals || {};
   const statuses = Array.isArray(run && run.localeStatuses) ? run.localeStatuses : [];
@@ -210,13 +239,36 @@ function normalizeParallelTimelineSamples(samples, run) {
   });
 }
 
-function createParallelTimelinePolyline(samples, field, xForSample, yForValue, className) {
-  const points = samples
-    .map(sample => `${xForSample(sample).toFixed(1)},${yForValue(sample[field] || 0).toFixed(1)}`)
-    .join(" ");
-  return createParallelSvgElement("polyline", {
+function buildParallelTimelineStepPathData(samples, field, xForSample, yForValue) {
+  if (!Array.isArray(samples) || !samples.length) return "";
+
+  const first = samples[0];
+  let previousX = xForSample(first);
+  let previousY = yForValue(first[field] || 0);
+  const parts = [`M ${previousX.toFixed(1)} ${previousY.toFixed(1)}`];
+
+  for (const sample of samples.slice(1)) {
+    const nextX = xForSample(sample);
+    const nextY = yForValue(sample[field] || 0);
+
+    if (nextX !== previousX) {
+      parts.push(`L ${nextX.toFixed(1)} ${previousY.toFixed(1)}`);
+    }
+    if (nextY !== previousY) {
+      parts.push(`L ${nextX.toFixed(1)} ${nextY.toFixed(1)}`);
+    }
+
+    previousX = nextX;
+    previousY = nextY;
+  }
+
+  return parts.join(" ");
+}
+
+function createParallelTimelineStepPath(samples, field, xForSample, yForValue, className) {
+  return createParallelSvgElement("path", {
     class: className,
-    points,
+    d: buildParallelTimelineStepPathData(samples, field, xForSample, yForValue),
     fill: "none",
     "stroke-width": "2.5",
     "stroke-linecap": "round",
@@ -260,10 +312,10 @@ function renderParallelTimelineChart(container, run) {
     }));
   }
 
-  svg.append(createParallelTimelinePolyline(samples, "remainingLocales", xForSample, yForValue, "storepilot-parallel-chart-remaining"));
-  svg.append(createParallelTimelinePolyline(samples, "completedLocales", xForSample, yForValue, "storepilot-parallel-chart-completed"));
+  svg.append(createParallelTimelineStepPath(samples, "remainingLocales", xForSample, yForValue, "storepilot-parallel-chart-remaining"));
+  svg.append(createParallelTimelineStepPath(samples, "completedLocales", xForSample, yForValue, "storepilot-parallel-chart-completed"));
   if (samples.some(sample => sample.failedLocales > 0)) {
-    svg.append(createParallelTimelinePolyline(samples, "failedLocales", xForSample, yForValue, "storepilot-parallel-chart-failed"));
+    svg.append(createParallelTimelineStepPath(samples, "failedLocales", xForSample, yForValue, "storepilot-parallel-chart-failed"));
   }
 
   const startLabel = createParallelSvgElement("text", {
@@ -562,7 +614,14 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   const failedWorkerCount = (run.workers || []).filter(worker => worker.status === "failed" || (worker.failedLocales || 0) > 0).length;
   const hasFailedLocales = failedWorkerCount > 0 || Number(totals.failedLocales || 0) > 0;
   const clearProgress = isParallelClearProgressRun(run);
-  const localeProgressVerb = clearProgress ? "cleared" : "completed";
+  const auditTotals = getParallelAuditTotals(run);
+  const auditing = isParallelRunAuditing(run) ||
+    (auditTotals.auditTotalLocales > 0 && auditTotals.auditedLocales < auditTotals.auditTotalLocales);
+  const localeProgressVerb = clearProgress
+    ? "cleared"
+    : auditing && Number(totals.uploadedScreenshots || 0) >= Number(totals.totalScreenshots || 0)
+      ? "uploaded"
+      : "completed";
   const screenshotSummary = clearProgress
     ? `clear-only, ${totals.totalScreenshots || 0} source screenshot(s)`
     : `${totals.uploadedScreenshots || 0}/${totals.totalScreenshots || 0} uploaded`;
@@ -575,15 +634,25 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
         ? `cooldown ${Math.ceil((mutationGate.nextAvailableInMs || 0) / 1000)}s; ${mutationGate.queuedCount || 0} queued`
         : `ready; ${mutationGate.queuedCount || 0} queued`
     : "off";
-
-  board.hidden = false;
-  summary.replaceChildren(
-    createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), `${run.status || "unknown"} - elapsed ${elapsed}`),
+  const statusSummary = auditing
+    ? `${run.status || "unknown"} - auditing persisted screenshots - elapsed ${elapsed}`
+    : `${run.status || "unknown"} - elapsed ${elapsed}`;
+  const summaryLines = [
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), statusSummary),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsMode", "Mode"), `${run.mode || "coordinated"}${run.phase ? ` - ${run.phase}` : ""}`),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsLocales", "Locales"), `${totals.completedLocales || 0}/${totals.totalLocales || 0} ${localeProgressVerb}, ${totals.failedLocales || 0} failed, ${totals.skippedLocales || 0} skipped`),
-    createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), screenshotSummary),
-    createParallelBoardLine(localize("parallelLocalizedScreenshotsMutationGate", "Media gate"), gateSummary)
-  );
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), screenshotSummary)
+  ];
+  if (auditing || auditTotals.auditTotalLocales > 0) {
+    summaryLines.push(createParallelBoardLine(
+      localize("parallelLocalizedScreenshotsAudit", "Audit"),
+      `${auditTotals.auditedLocales || 0}/${auditTotals.auditTotalLocales || totals.completedLocales || totals.totalLocales || 0} verified`
+    ));
+  }
+  summaryLines.push(createParallelBoardLine(localize("parallelLocalizedScreenshotsMutationGate", "Media gate"), gateSummary));
+
+  board.hidden = false;
+  summary.replaceChildren(...summaryLines);
 
   renderParallelTimelineChart(chart, run);
   renderParallelLocaleStatuses(localeStatuses, run);
@@ -595,6 +664,11 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     const current = document.createElement("div");
     const elapsedLabel = formatPanelParallelElapsed(getPanelParallelWorkerElapsedMs(worker));
     const workerClearProgress = isParallelClearProgressWorker(worker, run);
+    const workerAuditTotal = Number(worker.auditTotalLocales || 0) ||
+      (worker.auditedLocales ? Number(worker.completedLocales || worker.assignedCount || 0) : 0);
+    const workerAuditText = workerAuditTotal
+      ? `; audit ${worker.auditedLocales || 0}/${workerAuditTotal}`
+      : "";
     const gateText = worker.mutationGateWaiting && worker.mutationGateRequest
       ? `waiting for media gate: ${worker.mutationGateRequest.action || "media"} ${worker.mutationGateRequest.locale || ""}${worker.mutationGateRequest.screenshotSlot ? ` #${worker.mutationGateRequest.screenshotSlot}` : ""}`
       : worker.currentMutationLease
@@ -610,8 +684,8 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     current.className = "storepilot-parallel-worker-current";
     title.textContent = `${worker.workerId}: ${worker.operation || "replace"} - ${worker.status}${worker.closed ? " (closed)" : ""}`;
     counts.textContent = workerClearProgress
-      ? `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; clear-only${worker.auditedLocales ? `; audited ${worker.auditedLocales}` : ""}; elapsed ${elapsedLabel}`
-      : `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}${worker.auditedLocales ? `; audited ${worker.auditedLocales}` : ""}; elapsed ${elapsedLabel}`;
+      ? `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; clear-only${workerAuditText}; elapsed ${elapsedLabel}`
+      : `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}${workerAuditText}; elapsed ${elapsedLabel}`;
     current.textContent = currentText || "Waiting for progress.";
     row.append(title, counts, current);
     return row;

@@ -653,6 +653,9 @@
     const operation = worker && worker.operation || "";
     const phase = String(progress && progress.phase || "").toLowerCase();
 
+    if (isParallelLocalizedScreenshotAuditPhase(phase)) {
+      return "auditing";
+    }
     if (/final localized screenshot count|uploaded screenshot|uploading screenshot|upload-only/.test(phase)) {
       return "uploading";
     }
@@ -663,6 +666,10 @@
     if (operation === "uploadOnly") return "uploading";
     if (operation === "replace") return "replacing";
     return "running";
+  }
+
+  function isParallelLocalizedScreenshotAuditPhase(phase) {
+    return /auditing persisted localized screenshot count/.test(String(phase || "").toLowerCase());
   }
 
   function getParallelRunElapsedMs(run, now = Date.now()) {
@@ -814,9 +821,12 @@
     const now = Date.now();
     const workers = run.workers.map(worker => {
       const progress = worker.progress || {};
+      const progressIsAudit = isParallelLocalizedScreenshotAuditPhase(progress.phase);
       const completedLocales = Number.isFinite(worker.completedLocales)
         ? worker.completedLocales
-        : Number(progress.completedLocales || 0);
+        : progressIsAudit
+          ? Number(progress.totalLocales || 0)
+          : Number(progress.completedLocales || 0);
       const failedLocales = Number.isFinite(worker.failedLocales)
         ? worker.failedLocales
         : Number(progress.failedLocales || 0);
@@ -826,6 +836,16 @@
       const uploadedScreenshots = Number.isFinite(worker.uploadedScreenshots)
         ? worker.uploadedScreenshots
         : Number(progress.uploadedScreenshots || 0);
+      const auditedLocales = Number.isFinite(worker.auditedLocales)
+        ? worker.auditedLocales
+        : progressIsAudit
+          ? Number(progress.completedLocales || 0)
+          : 0;
+      const auditTotalLocales = Number.isFinite(worker.auditTotalLocales)
+        ? worker.auditTotalLocales
+        : progressIsAudit
+          ? Number(progress.totalLocales || 0)
+          : auditedLocales ? completedLocales : 0;
 
       const snapshotWorker = {
         workerId: worker.workerId,
@@ -846,7 +866,8 @@
         failedLocaleList: worker.failedLocaleList || [],
         skippedLocaleList: worker.skippedLocaleList || [],
         auditedLocaleList: worker.auditedLocaleList || [],
-        auditedLocales: worker.auditedLocales || 0,
+        auditedLocales,
+        auditTotalLocales,
         actionLogCount: Array.isArray(worker.actionLog) ? worker.actionLog.length : 0,
         mutationGateWaiting: Boolean(worker.mutationGateWaiting),
         mutationGateWaitingSince: worker.mutationGateWaitingSince || 0,
@@ -867,6 +888,8 @@
       summary.failedLocales += worker.failedLocales;
       summary.skippedLocales += worker.skippedLocales;
       summary.uploadedScreenshots += worker.uploadedScreenshots;
+      summary.auditedLocales += worker.auditedLocales || 0;
+      summary.auditTotalLocales += worker.auditTotalLocales || (worker.auditedLocales ? worker.completedLocales : 0);
       if (!run.totalScreenshots) {
         summary.totalScreenshots += worker.totalScreenshots;
       }
@@ -879,6 +902,8 @@
       failedLocales: 0,
       skippedLocales: run.initialSkippedLocales || 0,
       uploadedScreenshots: 0,
+      auditedLocales: 0,
+      auditTotalLocales: 0,
       totalScreenshots: run.totalScreenshots || 0,
       totalLocales: run.totalLocales || 0
     });
@@ -1670,6 +1695,12 @@
     }
 
     const progress = message.progress || {};
+    const progressCompletedLocales = Number(progress.completedLocales || 0);
+    const progressFailedLocales = Number(progress.failedLocales || 0);
+    const progressSkippedLocales = Number(progress.skippedLocales || 0);
+    const progressUploadedScreenshots = Number(progress.uploadedScreenshots || 0);
+    const progressTotalLocales = Number(progress.totalLocales || 0);
+    const progressIsAudit = isParallelLocalizedScreenshotAuditPhase(progress.phase);
     worker.status = run.abortRequested ? "aborting" : "running";
     worker.progress = {
       ...progress,
@@ -1680,6 +1711,22 @@
     worker.currentLocale = progress.locale || worker.currentLocale || "";
     worker.phase = progress.phase || worker.phase || "";
     worker.lastUpdatedAt = Date.now();
+    if (progressIsAudit) {
+      worker.auditedLocales = Math.max(Number(worker.auditedLocales || 0), progressCompletedLocales);
+      worker.auditTotalLocales = Math.max(Number(worker.auditTotalLocales || 0), progressTotalLocales);
+      worker.completedLocales = Math.max(
+        Number.isFinite(worker.completedLocales) ? worker.completedLocales : 0,
+        progressTotalLocales
+      );
+      worker.failedLocales = Math.max(Number(worker.failedLocales || 0), progressFailedLocales);
+      worker.skippedLocales = Math.max(Number(worker.skippedLocales || 0), progressSkippedLocales);
+      worker.uploadedScreenshots = Math.max(Number(worker.uploadedScreenshots || 0), progressUploadedScreenshots);
+    } else {
+      worker.completedLocales = progressCompletedLocales;
+      worker.failedLocales = progressFailedLocales;
+      worker.skippedLocales = progressSkippedLocales;
+      worker.uploadedScreenshots = progressUploadedScreenshots;
+    }
     if (progress.locale) {
       updateParallelLocalizedScreenshotLocaleStatus(run, progress.locale, {
         status: getParallelLocalizedScreenshotProgressLocaleStatus(worker, progress),

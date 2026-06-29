@@ -40,4 +40,16 @@ assert.deepEqual(hostValue(samples.map(sample => sample.elapsedMs)), [1000, 3000
 assert.deepEqual(hostValue(samples.map(sample => sample.completedLocales)), [1, 2, 2, 6], "completed count is monotonic");
 assert.deepEqual(hostValue(samples.map(sample => sample.remainingLocales)), [5, 4, 4, 0], "remaining count is monotonic");
 
+const stepPath = context.buildParallelTimelineStepPathData([
+  { elapsedMs: 0, completedLocales: 0 },
+  { elapsedMs: 1000, completedLocales: 1 },
+  { elapsedMs: 5000, completedLocales: 1 },
+  { elapsedMs: 6000, completedLocales: 2 }
+], "completedLocales", sample => sample.elapsedMs / 100, value => 10 - (value * 5));
+assert.equal(
+  stepPath,
+  "M 0.0 10.0 L 10.0 10.0 L 10.0 5.0 L 50.0 5.0 L 60.0 5.0 L 60.0 0.0",
+  "timeline chart uses horizontal-then-vertical steps instead of shortcut diagonals"
+);
+
 console.log("Parallel timeline chart tests passed.");

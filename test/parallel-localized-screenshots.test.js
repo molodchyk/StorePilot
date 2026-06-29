@@ -203,6 +203,53 @@ assert.equal(snapshot.timeline[0].failedLocales, 1);
 assert.equal(snapshot.timeline[0].remainingLocales, 0);
 assert.equal(snapshot.timeline[0].uploadedScreenshots, 4);
 
+const auditProgressSnapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot({
+  runId: "run-audit",
+  status: "running",
+  mode: "replace",
+  phase: "replace",
+  parentTabId: 1,
+  parentUrl: "https://chrome.google.com/webstore/devconsole/item/edit/listing",
+  startedAt: Date.now() - 120000,
+  closeSuccessfulWorkers: true,
+  abortRequested: false,
+  totalLocales: 3,
+  totalScreenshots: 9,
+  initialSkipped: [],
+  initialSkippedLocales: 0,
+  message: "",
+  localeStatusOrder: ["am", "ar", "az"],
+  localeStatuses: {},
+  timeline: [],
+  workers: [
+    {
+      workerId: "worker-1",
+      tabId: 2,
+      status: "running",
+      closed: false,
+      operation: "replace",
+      assignedLocales: ["am", "ar", "az"],
+      totalScreenshots: 9,
+      progress: {
+        locale: "ar",
+        phase: "auditing persisted localized screenshot count (3 expected)",
+        completedLocales: 2,
+        failedLocales: 0,
+        skippedLocales: 0,
+        uploadedScreenshots: 9,
+        totalLocales: 3
+      },
+      elapsedMs: 120000
+    }
+  ]
+});
+assert.equal(auditProgressSnapshot.workers[0].completedLocales, 3, "audit progress keeps upload completion stable");
+assert.equal(auditProgressSnapshot.workers[0].auditedLocales, 2, "audit progress is tracked separately");
+assert.equal(auditProgressSnapshot.workers[0].auditTotalLocales, 3);
+assert.equal(auditProgressSnapshot.totals.completedLocales, 3);
+assert.equal(auditProgressSnapshot.totals.auditedLocales, 2);
+assert.equal(auditProgressSnapshot.totals.uploadedScreenshots, 9);
+
 const clearOnlySnapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot({
   runId: "run-2",
   status: "running",

@@ -1232,13 +1232,19 @@ function createLocalizedScreenshotProgress(entry, localeIndex, totalLocales, sta
 }
 
 function formatLocalizedScreenshotProgressStatus(progress, phase) {
+  const phaseText = String(phase || "");
+  const auditing = /auditing persisted localized screenshot count/i.test(phaseText);
+  const runLocaleLine = auditing
+    ? `Audit: ${progress.completedLocales || 0}/${progress.totalLocales} verified, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`
+    : `Run locales: ${progress.completedLocales || 0}/${progress.totalLocales} completed, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`;
+
   return [
     "Localized screenshots",
     `Locale: ${progress.localeIndex + 1}/${progress.totalLocales} - ${progress.locale} (${progress.localeScreenshotCount} expected)`,
-    `Run locales: ${progress.completedLocales || 0}/${progress.totalLocales} completed, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`,
+    runLocaleLine,
     `Screenshots: ${progress.uploadedScreenshots || 0}/${progress.totalScreenshots || 0} uploaded`,
     `Elapsed: ${formatLocalizedScreenshotElapsedTime(progress.elapsedMs || 0)}`,
-    `Current step: ${phase}`
+    `Current step: ${phaseText}`
   ].join("\n");
 }
 
