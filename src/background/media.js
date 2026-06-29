@@ -10,6 +10,8 @@
   const PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_SUCCESS_COOLDOWN_MS = 750;
   const PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_ERROR_COOLDOWN_MS = 4000;
   const PARALLEL_LOCALIZED_SCREENSHOT_MUTATION_LEASE_TIMEOUT_MS = 120000;
+  const PARALLEL_LOCALIZED_SCREENSHOT_LOG_STORAGE_KEY = "storePilotParallelLocalizedScreenshotLogs";
+  const PARALLEL_LOCALIZED_SCREENSHOT_STORED_LOG_LIMIT = 5;
   const localizedScreenshotParallelRuns = new Map();
 
   function text(key, fallback, substitutions) {
@@ -193,6 +195,74 @@
 
   function createParallelLocalizedScreenshotRunId() {
     return `localized-screenshots-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  function createParallelLocalizedScreenshotLogPayload(run) {
+    const actionLog = Array.isArray(run && run.actionLog)
+      ? run.actionLog.slice().sort((left, right) => left.epochMs - right.epochMs || left.sequence - right.sequence)
+      : [];
+    return {
+      exportedAt: new Date().toISOString(),
+      run: createParallelLocalizedScreenshotRunSnapshot(run),
+      actionLog
+    };
+  }
+
+  async function getStoredParallelLocalizedScreenshotLogs() {
+    if (typeof storePilotStorageLocalGet !== "function") return {};
+    try {
+      const stored = await storePilotStorageLocalGet(PARALLEL_LOCALIZED_SCREENSHOT_LOG_STORAGE_KEY);
+      const value = stored && stored[PARALLEL_LOCALIZED_SCREENSHOT_LOG_STORAGE_KEY];
+      return value && typeof value === "object" ? value : {};
+    } catch (_error) {
+      return {};
+    }
+  }
+
+  async function persistParallelLocalizedScreenshotLog(run) {
+    if (!run || !run.runId || typeof storePilotStorageLocalSet !== "function") return;
+
+    try {
+      const logs = await getStoredParallelLocalizedScreenshotLogs();
+      logs[run.runId] = {
+        runId: run.runId,
+        parentTabId: run.parentTabId || 0,
+        parentUrl: run.parentUrl || "",
+        updatedAt: Date.now(),
+        filename: `storepilot-localized-screenshot-log-${run.runId}.json`,
+        log: createParallelLocalizedScreenshotLogPayload(run)
+      };
+
+      const keepRunIds = Object.values(logs)
+        .sort((left, right) => Number(right.updatedAt || 0) - Number(left.updatedAt || 0))
+        .slice(0, PARALLEL_LOCALIZED_SCREENSHOT_STORED_LOG_LIMIT)
+        .map(item => item.runId)
+        .filter(Boolean);
+      const keepSet = new Set(keepRunIds);
+      for (const runId of Object.keys(logs)) {
+        if (!keepSet.has(runId)) {
+          delete logs[runId];
+        }
+      }
+
+      await storePilotStorageLocalSet({
+        [PARALLEL_LOCALIZED_SCREENSHOT_LOG_STORAGE_KEY]: logs
+      });
+    } catch (_error) {
+      // Export persistence is diagnostic-only; upload correctness must not depend on it.
+    }
+  }
+
+  async function getStoredParallelLocalizedScreenshotLog(sender, runId = "") {
+    const logs = await getStoredParallelLocalizedScreenshotLogs();
+    if (runId && logs[runId]) {
+      return logs[runId];
+    }
+
+    const parentTabId = sender && sender.tab && sender.tab.id;
+    return Object.values(logs)
+      .filter(item => !parentTabId || item.parentTabId === parentTabId)
+      .sort((left, right) => Number(right.updatedAt || 0) - Number(left.updatedAt || 0))[0] || null;
   }
 
   function isParallelLocalizedScreenshotMutationGateEnabled(run) {
@@ -1049,6 +1119,7 @@
       run.message = text("parallelLocalizedScreenshotsFinished", "Parallel localized screenshot upload finished.");
     }
     run.finishedAt = Date.now();
+    persistParallelLocalizedScreenshotLog(run);
   }
 
   function failParallelLocalizedScreenshotRun(run, message, status = "failed") {
@@ -1056,6 +1127,7 @@
     run.status = status;
     run.message = message || text("parallelLocalizedScreenshotsFinishedWithFailures", "Parallel localized screenshot upload finished with failures.");
     run.finishedAt = Date.now();
+    persistParallelLocalizedScreenshotLog(run);
   }
 
   async function sendMessageToWorkerTabWithRetries(worker, message) {
@@ -1643,6 +1715,7 @@
     }
 
     const appended = appendParallelLocalizedScreenshotActionLog(run, worker, message.events || [], senderTabId || 0);
+    await persistParallelLocalizedScreenshotLog(run);
     return {
       ok: true,
       appended: appended.length,
@@ -1679,6 +1752,7 @@
       queueDepth: gate.queue.length,
       cooldownMs: Math.max(0, gate.nextAvailableAt - requestedAtMs)
     });
+    await persistParallelLocalizedScreenshotLog(run);
     await sendParallelLocalizedScreenshotRunUpdate(run);
 
     return new Promise(resolve => {
@@ -1731,6 +1805,7 @@
       cooldownMs,
       queueDepth: gate.queue.length
     });
+    await persistParallelLocalizedScreenshotLog(run);
 
     if (currentLeaseMatches) {
       gate.currentLease = null;
@@ -1763,25 +1838,28 @@
       : { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
   }
 
-  function storePilotGetParallelLocalizedScreenshotLog(sender, runId = "") {
+  async function storePilotGetParallelLocalizedScreenshotLog(sender, runId = "") {
     const run = getParallelLocalizedScreenshotRunForSender(sender, runId);
-    if (!run) {
-      return { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
+    if (run) {
+      await persistParallelLocalizedScreenshotLog(run);
+      return {
+        ok: true,
+        filename: `storepilot-localized-screenshot-log-${run.runId}.json`,
+        log: createParallelLocalizedScreenshotLogPayload(run)
+      };
     }
 
-    const snapshot = createParallelLocalizedScreenshotRunSnapshot(run);
-    const actionLog = Array.isArray(run.actionLog)
-      ? run.actionLog.slice().sort((left, right) => left.epochMs - right.epochMs || left.sequence - right.sequence)
-      : [];
-    return {
-      ok: true,
-      filename: `storepilot-localized-screenshot-log-${run.runId}.json`,
-      log: {
-        exportedAt: new Date().toISOString(),
-        run: snapshot,
-        actionLog
-      }
-    };
+    const storedLog = await getStoredParallelLocalizedScreenshotLog(sender, runId);
+    if (storedLog && storedLog.log) {
+      return {
+        ok: true,
+        filename: storedLog.filename || `storepilot-localized-screenshot-log-${storedLog.runId || runId || "latest"}.json`,
+        log: storedLog.log,
+        restored: true
+      };
+    }
+
+    return { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
   }
 
   globalThis.storePilotUploadMediaToDashboard = storePilotUploadMediaToDashboard;

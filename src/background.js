@@ -85,6 +85,16 @@
     return true;
   }
 
+  function handleGetParallelLocalizedScreenshotLogMessage(message, sender, sendResponse) {
+    storePilotGetParallelLocalizedScreenshotLog(sender, message.runId || "")
+      .then(sendResponse)
+      .catch(error => sendResponse({
+        ok: false,
+        message: error.message || String(error)
+      }));
+    return true;
+  }
+
   function handleFocusDashboardTabMessage(sender, sendResponse) {
     const tab = sender && sender.tab;
     if (!tab || tab.id === undefined || tab.id === null) {
@@ -187,8 +197,7 @@
     }
 
     if (message && message.type === "storepilot-get-localized-screenshot-parallel-log") {
-      sendResponse(storePilotGetParallelLocalizedScreenshotLog(sender, message.runId || ""));
-      return false;
+      return handleGetParallelLocalizedScreenshotLogMessage(message, sender, sendResponse);
     }
 
     if (message && message.type === "storepilot-focus-dashboard-tab") {

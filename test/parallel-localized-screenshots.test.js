@@ -410,7 +410,7 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   assert.equal(actionLogResult.ok, true);
   assert.equal(actionLogResult.appended, 1);
 
-  const exportedLog = context.storePilotGetParallelLocalizedScreenshotLog({
+  const exportedLog = await context.storePilotGetParallelLocalizedScreenshotLog({
     tab: {
       id: 7,
       url: "https://chrome.google.com/webstore/devconsole/item/edit"
@@ -598,6 +598,47 @@ parallelLocalizedScreenshotAsyncTests.then(async () => {
     }
   }, singleWorkerStart.run.runId).run;
   assert.equal(singleWorkerRun.mutationGate.enabled, false);
+
+  let storedLogMap = {
+    "restored-run": {
+      runId: "restored-run",
+      parentTabId: 91,
+      updatedAt: 123456,
+      filename: "storepilot-localized-screenshot-log-restored-run.json",
+      log: {
+        exportedAt: "2026-06-29T10:00:00.000Z",
+        run: {
+          runId: "restored-run",
+          status: "completed"
+        },
+        actionLog: [
+          {
+            action: "upload",
+            stage: "result",
+            locale: "am"
+          }
+        ]
+      }
+    }
+  };
+  context.storePilotStorageLocalGet = key => Promise.resolve({
+    [key]: storedLogMap
+  });
+  context.storePilotStorageLocalSet = values => {
+    storedLogMap = values.storePilotParallelLocalizedScreenshotLogs || storedLogMap;
+    return Promise.resolve();
+  };
+
+  const restoredLog = await context.storePilotGetParallelLocalizedScreenshotLog({
+    tab: {
+      id: 91,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, "restored-run");
+  assert.equal(restoredLog.ok, true);
+  assert.equal(restoredLog.restored, true);
+  assert.equal(restoredLog.log.run.runId, "restored-run");
+  assert.equal(restoredLog.log.actionLog.length, 1);
 }).catch(error => {
   console.error(error);
   process.exitCode = 1;

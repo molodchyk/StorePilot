@@ -132,9 +132,10 @@ function getParallelTimelineSamples(run) {
     samples.push(liveSample);
   }
 
-  if (samples[0].elapsedMs > 0) {
+  const normalizedSamples = normalizeParallelTimelineSamples(samples, run);
+  if (normalizedSamples[0] && normalizedSamples[0].elapsedMs > 0) {
     const totalLocales = Number(run.totals && run.totals.totalLocales || samples[0].totalLocales || 0);
-    samples.unshift({
+    normalizedSamples.unshift({
       elapsedMs: 0,
       completedLocales: 0,
       failedLocales: 0,
@@ -145,7 +146,68 @@ function getParallelTimelineSamples(run) {
     });
   }
 
-  return samples;
+  return normalizedSamples;
+}
+
+function normalizeParallelTimelineSamples(samples, run) {
+  const totalLocales = Math.max(
+    0,
+    Number(run && run.totals && run.totals.totalLocales || 0),
+    ...samples.map(sample => Number(sample.totalLocales || 0))
+  );
+  const byElapsedMs = new Map();
+
+  for (const sample of samples.slice().sort((left, right) => left.elapsedMs - right.elapsedMs)) {
+    const elapsedMs = Math.max(0, Number(sample.elapsedMs || 0));
+    const key = String(elapsedMs);
+    const previous = byElapsedMs.get(key);
+    const normalized = {
+      elapsedMs,
+      completedLocales: Math.max(0, Math.min(totalLocales, Number(sample.completedLocales || 0))),
+      failedLocales: Math.max(0, Math.min(totalLocales, Number(sample.failedLocales || 0))),
+      skippedLocales: Math.max(0, Math.min(totalLocales, Number(sample.skippedLocales || 0))),
+      remainingLocales: Math.max(0, Math.min(totalLocales, Number(sample.remainingLocales || 0))),
+      uploadedScreenshots: Math.max(0, Number(sample.uploadedScreenshots || 0)),
+      totalLocales
+    };
+
+    if (!previous) {
+      byElapsedMs.set(key, normalized);
+      continue;
+    }
+
+    byElapsedMs.set(key, {
+      ...normalized,
+      completedLocales: Math.max(previous.completedLocales, normalized.completedLocales),
+      failedLocales: Math.max(previous.failedLocales, normalized.failedLocales),
+      skippedLocales: Math.max(previous.skippedLocales, normalized.skippedLocales),
+      remainingLocales: Math.min(previous.remainingLocales, normalized.remainingLocales),
+      uploadedScreenshots: Math.max(previous.uploadedScreenshots, normalized.uploadedScreenshots)
+    });
+  }
+
+  const normalizedSamples = Array.from(byElapsedMs.values()).sort((left, right) => left.elapsedMs - right.elapsedMs);
+  let completedLocales = 0;
+  let failedLocales = 0;
+  let skippedLocales = 0;
+
+  return normalizedSamples.map(sample => {
+    completedLocales = Math.max(completedLocales, sample.completedLocales);
+    failedLocales = Math.max(failedLocales, sample.failedLocales);
+    skippedLocales = Math.max(skippedLocales, sample.skippedLocales);
+    const cappedCompleted = Math.min(totalLocales, completedLocales);
+    const cappedFailed = Math.min(Math.max(0, totalLocales - cappedCompleted), failedLocales);
+    const cappedSkipped = Math.min(Math.max(0, totalLocales - cappedCompleted - cappedFailed), skippedLocales);
+
+    return {
+      ...sample,
+      completedLocales: cappedCompleted,
+      failedLocales: cappedFailed,
+      skippedLocales: cappedSkipped,
+      remainingLocales: Math.max(0, totalLocales - cappedCompleted - cappedFailed - cappedSkipped),
+      totalLocales
+    };
+  });
 }
 
 function createParallelTimelinePolyline(samples, field, xForSample, yForValue, className) {
