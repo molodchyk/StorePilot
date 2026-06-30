@@ -470,6 +470,94 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   assert.equal(exportedLog.log.actionLog[0].locale, "am");
   assert.equal(exportedLog.log.actionLog[0].tabId, worker.tabId);
   assert.equal(exportedLog.log.run.actionLogCount, 1);
+
+  context.storePilotGetProjectsState = () => Promise.resolve({
+    activeProjectId: "project-1",
+    projects: [{
+      id: "project-1",
+      name: "Project",
+      mediaAssets: {},
+      listings: {
+        am: {},
+        ar: {},
+        az: {}
+      }
+    }]
+  });
+  context.storePilotGetProjectMediaFiles = () => Promise.resolve(files);
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 51 + openedTabs++ });
+  context.storePilotTabsRemove = () => Promise.resolve();
+  context.storePilotTabsSendMessage = (_tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      return Promise.resolve({
+        ok: false,
+        completed: ["am"],
+        failed: ["ar: dashboard tab stayed hidden/minimized"],
+        skipped: [],
+        uploaded: ["am: 3"],
+        elapsedMs: 1200
+      });
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const partialFailure = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 88,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am", "ar", "az"],
+    workerCount: 1,
+    parallelMode: "upload"
+  });
+  assert.equal(partialFailure.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const partialFailureRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 88,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, partialFailure.run.runId).run;
+  assert.equal(partialFailureRun.status, "failed");
+  assert.deepEqual(
+    hostValue(partialFailureRun.workers[0].failedLocaleList),
+    ["ar", "az"],
+    "failed workers mark explicit failures plus assigned locales that never ran as retryable"
+  );
+
+  let retryAssignedLocales = [];
+  context.storePilotTabsSendMessage = (_tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      retryAssignedLocales = message.options && message.options.assignedLocales || [];
+      return Promise.resolve({
+        ok: true,
+        completed: ["ar", "az"],
+        failed: [],
+        skipped: [],
+        uploaded: ["ar: 3", "az: 3"],
+        elapsedMs: 900
+      });
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const retryWorker = partialFailureRun.workers[0];
+  const retryVisibleWorker = await context.storePilotRetryParallelLocalizedScreenshotWorkerTab({
+    tab: {
+      id: retryWorker.tabId,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, partialFailure.run.runId, retryWorker.workerId);
+  assert.equal(retryVisibleWorker.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.deepEqual(
+    hostValue(retryAssignedLocales),
+    ["ar", "az"],
+    "visible worker retry sends only unfinished locales back to the existing worker tab"
+  );
 })();
 
 parallelLocalizedScreenshotAsyncTests.then(async () => {

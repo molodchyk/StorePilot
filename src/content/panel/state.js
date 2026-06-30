@@ -2,6 +2,8 @@ let parallelLocalizedScreenshotRunState = null;
 let parallelLocalizedScreenshotRenderTimerId = 0;
 let localizedScreenshotWorkerProgressState = null;
 let localizedScreenshotWorkerProgressRenderTimerId = 0;
+let localizedScreenshotWorkerSelfRetryInFlight = false;
+let localizedScreenshotWorkerSelfRetryKey = "";
 
 function isParallelLocalizedScreenshotRunActive(run = parallelLocalizedScreenshotRunState) {
   return Boolean(run && ["starting", "running", "aborting"].includes(run.status));
@@ -395,6 +397,68 @@ function isLocalizedScreenshotWorkerClearProgress(progress) {
   return String(progress && progress.operation || "") === "clearOnly";
 }
 
+function getLocalizedScreenshotWorkerProgressStatus(progress) {
+  const counts = getLocalizedScreenshotWorkerProgressCounts(progress);
+  const phase = String(progress && progress.phase || "").toLowerCase();
+  if (mediaOperationState.running) return "running";
+  if (/hidden|minimized|paused/.test(phase)) return "paused";
+  if (counts.completedLocales + counts.failedLocales + counts.skippedLocales < counts.totalLocales) {
+    return "incomplete";
+  }
+  return "finished";
+}
+
+function isLocalizedScreenshotWorkerSelfRetryVisible() {
+  if (typeof document === "undefined") return true;
+  return document.visibilityState !== "hidden" && document.hidden !== true;
+}
+
+function getLocalizedScreenshotWorkerSelfRetryKey(progress) {
+  return [
+    progress && progress.runId || "",
+    progress && progress.workerId || "",
+    progress && progress.locale || "",
+    progress && progress.localeIndex || 0,
+    progress && progress.completedLocales || 0,
+    progress && progress.failedLocales || 0,
+    progress && progress.skippedLocales || 0,
+    progress && progress.phase || ""
+  ].join("|");
+}
+
+function requestLocalizedScreenshotWorkerSelfRetryIfVisible() {
+  const progress = localizedScreenshotWorkerProgressState;
+  if (!progress || mediaOperationState.running || localizedScreenshotWorkerSelfRetryInFlight) return;
+  if (!progress.runId || !progress.workerId || typeof storePilotRuntimeSendMessage !== "function") return;
+  if (!isLocalizedScreenshotWorkerSelfRetryVisible()) return;
+
+  const phase = String(progress.phase || "").toLowerCase();
+  const status = getLocalizedScreenshotWorkerProgressStatus(progress);
+  if (status !== "paused" && !/hidden|minimized/.test(phase)) return;
+
+  const retryKey = getLocalizedScreenshotWorkerSelfRetryKey(progress);
+  if (retryKey === localizedScreenshotWorkerSelfRetryKey) return;
+  localizedScreenshotWorkerSelfRetryKey = retryKey;
+  localizedScreenshotWorkerSelfRetryInFlight = true;
+
+  storePilotRuntimeSendMessage({
+    type: "storepilot-retry-localized-screenshot-worker-tab",
+    runId: progress.runId,
+    workerId: progress.workerId
+  }).then(response => {
+    if (response && response.run) {
+      updateParallelLocalizedScreenshotRunState(response.run);
+    }
+    if (!response || !response.ok) {
+      localizedScreenshotWorkerSelfRetryKey = "";
+    }
+  }).catch(() => {
+    localizedScreenshotWorkerSelfRetryKey = "";
+  }).finally(() => {
+    localizedScreenshotWorkerSelfRetryInFlight = false;
+  });
+}
+
 function createLocalizedScreenshotWorkerProgressSample(progress, phase = "") {
   const counts = getLocalizedScreenshotWorkerProgressCounts(progress);
   return {
@@ -451,7 +515,7 @@ function recordLocalizedScreenshotWorkerProgressSample(progress, phase = "") {
 function createLocalizedScreenshotWorkerRunForChart(progress) {
   const counts = getLocalizedScreenshotWorkerProgressCounts(progress);
   return {
-    status: mediaOperationState.running ? "running" : "completed",
+    status: getLocalizedScreenshotWorkerProgressStatus(progress),
     mode: isLocalizedScreenshotWorkerClearProgress(progress) ? "clearOnly" : "replace",
     phase: progress && progress.operation || "",
     startedAt: progress && progress.startedAt || 0,
@@ -494,7 +558,7 @@ function renderLocalizedScreenshotWorkerProgressBoard(panel = document.getElemen
     ? `${progress.workerId} localized screenshots`
     : localize("localizedScreenshotWorkerProgressTitle", "Localized screenshot progress");
   summary.replaceChildren(
-    createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), mediaOperationState.running ? "running" : "finished"),
+    createParallelBoardLine(localize("parallelLocalizedScreenshotsStatus", "Status"), getLocalizedScreenshotWorkerProgressStatus(progress)),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsLocales", "Locales"), `${counts.completedLocales}/${counts.totalLocales} ${localeProgressVerb}, ${counts.failedLocales} failed, ${counts.skippedLocales} skipped`),
     createParallelBoardLine(localize("parallelLocalizedScreenshotsScreenshots", "Screenshots"), screenshotSummary),
     createParallelBoardLine("Locale", `${Number(progress.localeIndex || 0) + 1}/${progress.totalLocales || 0} - ${progress.locale || ""} (${progress.localeScreenshotCount || 0} expected)`),
@@ -503,11 +567,23 @@ function renderLocalizedScreenshotWorkerProgressBoard(panel = document.getElemen
   );
   renderParallelTimelineChart(chart, createLocalizedScreenshotWorkerRunForChart(progress));
   updateLocalizedScreenshotWorkerProgressRenderTimer();
+  requestLocalizedScreenshotWorkerSelfRetryIfVisible();
 }
 
 function updateLocalizedScreenshotWorkerProgressState(progress, phase = "") {
   localizedScreenshotWorkerProgressState = recordLocalizedScreenshotWorkerProgressSample(progress, phase);
   renderLocalizedScreenshotWorkerProgressBoard();
+}
+
+if (
+  typeof window !== "undefined" &&
+  typeof window.addEventListener === "function" &&
+  typeof document !== "undefined" &&
+  typeof document.addEventListener === "function"
+) {
+  document.addEventListener("visibilitychange", requestLocalizedScreenshotWorkerSelfRetryIfVisible);
+  window.addEventListener("focus", requestLocalizedScreenshotWorkerSelfRetryIfVisible);
+  window.addEventListener("pageshow", requestLocalizedScreenshotWorkerSelfRetryIfVisible);
 }
 
 function updateLocalizedScreenshotWorkerProgressRenderTimer() {

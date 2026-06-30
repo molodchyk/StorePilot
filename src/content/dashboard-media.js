@@ -21,6 +21,7 @@ const LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS = 10000;
 const LOCALIZED_SCREENSHOT_RETRY_DELAY_MS = 250;
 const MEDIA_VISIBILITY_POLL_MS = 1000;
 const MEDIA_VISIBILITY_FOCUS_RETRY_MS = 5000;
+const MEDIA_VISIBILITY_MAX_HIDDEN_WAIT_MS = 5 * 60 * 1000;
 const MEDIA_UPLOAD_BRIDGE_TIMEOUT_MS = 500;
 const LOCALIZED_SCREENSHOT_OPERATION_REPLACE = "replace";
 const LOCALIZED_SCREENSHOT_OPERATION_CLEAR_ONLY = "clearOnly";
@@ -663,7 +664,13 @@ async function waitForMediaUploadUiChange(kind, beforeCount, options = {}) {
   while (kind === "localizedScreenshots" ? visibleElapsedMs < timeoutMs : Date.now() - startedAt < timeoutMs) {
     if (kind === "localizedScreenshots") {
       const visible = await waitForMediaAutomationVisible(options.progress || null);
-      if (!visible.ok) return false;
+      if (!visible.ok) {
+        if (options.errorState) {
+          options.errorState.hiddenTimeout = Boolean(visible.hiddenTimeout);
+          options.errorState.message = visible.message || "";
+        }
+        return false;
+      }
     }
     const visibleTickStartedAt = Date.now();
     const nextCount = getVisibleMediaImageCount(kind);
@@ -777,7 +784,14 @@ async function waitForVisibleMediaImageCount(kind, expectedCount, timeoutMs = ME
   while (kind === "localizedScreenshots" ? visibleElapsedMs < timeoutMs : Date.now() - startedAt < timeoutMs) {
     if (kind === "localizedScreenshots") {
       const visible = await waitForMediaAutomationVisible(options.progress || null);
-      if (!visible.ok) return { ok: false, count: getVisibleMediaImageCount(kind) };
+      if (!visible.ok) {
+        return {
+          ok: false,
+          count: getVisibleMediaImageCount(kind),
+          hiddenTimeout: Boolean(visible.hiddenTimeout),
+          message: visible.message || ""
+        };
+      }
     }
     const visibleTickStartedAt = Date.now();
     currentCount = getVisibleMediaImageCount(kind);
@@ -1382,12 +1396,30 @@ async function requestMediaAutomationFocus() {
 }
 
 async function waitForMediaAutomationVisible(progress = null) {
+  const hiddenStartedAt = Date.now();
+
   while (!isDashboardPageVisibleForMediaAutomation()) {
     if (mediaOperationState.abortRequested) {
       return { ok: false, aborted: true };
     }
 
-    const message = "paused; dashboard tab is hidden/minimized, waiting for it to be visible";
+    const hiddenElapsedMs = Date.now() - hiddenStartedAt;
+    if (hiddenElapsedMs >= MEDIA_VISIBILITY_MAX_HIDDEN_WAIT_MS) {
+      const timeoutMessage = `dashboard tab stayed hidden/minimized for ${formatLocalizedScreenshotElapsedTime(hiddenElapsedMs)}; retry unfinished locale(s) when visible`;
+      if (progress) {
+        setLocalizedScreenshotProgress(progress, timeoutMessage);
+      } else {
+        setMediaOperationProgress(`Media automation paused - ${timeoutMessage}`);
+      }
+      return {
+        ok: false,
+        aborted: false,
+        hiddenTimeout: true,
+        message: timeoutMessage
+      };
+    }
+
+    const message = `paused; dashboard tab is hidden/minimized, waiting for it to be visible (${formatLocalizedScreenshotElapsedTime(hiddenElapsedMs)})`;
     if (progress) {
       setLocalizedScreenshotProgress(progress, message);
     } else {
@@ -1488,7 +1520,13 @@ async function waitForMediaRemovalAfterClick(kind, beforeCount, timeoutMs = MEDI
   while (kind === "localizedScreenshots" ? visibleElapsedMs < timeoutMs : Date.now() - startedAt < timeoutMs) {
     if (kind === "localizedScreenshots") {
       const visible = await waitForMediaAutomationVisible(options.progress || null);
-      if (!visible.ok) return false;
+      if (!visible.ok) {
+        if (options.errorState) {
+          options.errorState.hiddenTimeout = Boolean(visible.hiddenTimeout);
+          options.errorState.message = visible.message || "";
+        }
+        return false;
+      }
     }
     const visibleTickStartedAt = Date.now();
     if (getVisibleMediaImageCount(kind) < beforeCount) {
@@ -1532,7 +1570,12 @@ async function removeOneLocalizedScreenshotWithRetries(progress = null) {
 
     const visible = await waitForMediaAutomationVisible(progress);
     if (!visible.ok) {
-      return { ok: false, aborted: Boolean(visible.aborted), message: localize("operationStopped", "Stopped.") };
+      return {
+        ok: false,
+        aborted: Boolean(visible.aborted),
+        hiddenTimeout: Boolean(visible.hiddenTimeout),
+        message: visible.message || localize("operationStopped", "Stopped.")
+      };
     }
 
     if (progress) {
@@ -1599,8 +1642,21 @@ async function removeOneLocalizedScreenshotWithRetries(progress = null) {
         "localizedScreenshots",
         beforeCount,
         LOCALIZED_SCREENSHOT_DELETE_ATTEMPT_TIMEOUT_MS,
-        { progress }
+        { progress, errorState: releaseResult }
       );
+      if (!changed && releaseResult.hiddenTimeout) {
+        releaseResult = {
+          ...releaseResult,
+          outcome: "hidden-timeout",
+          durationMs: Date.now() - actionStartedAt
+        };
+        return {
+          ok: false,
+          aborted: false,
+          hiddenTimeout: true,
+          message: releaseResult.message || `${label}: dashboard tab stayed hidden/minimized`
+        };
+      }
       const afterCount = getVisibleMediaImageCount("localizedScreenshots");
       if (changed || afterCount < beforeCount) {
         releaseResult = {
@@ -1672,6 +1728,7 @@ async function performClearLocalizedScreenshotAssets(options = {}) {
   const removed = [];
   const failed = [];
   let aborted = false;
+  let hiddenTimeout = false;
   const label = getMediaUploadKindLabel("localizedScreenshots");
   const progress = options.localizedProgress || null;
 
@@ -1687,6 +1744,11 @@ async function performClearLocalizedScreenshotAssets(options = {}) {
     const removal = await removeOneLocalizedScreenshotWithRetries(progress);
     if (removal.aborted) {
       aborted = true;
+      break;
+    }
+    if (removal.hiddenTimeout) {
+      hiddenTimeout = true;
+      failed.push(removal.message || `${label}: dashboard tab stayed hidden/minimized`);
       break;
     }
     if (!removal.ok) {
@@ -1711,6 +1773,7 @@ async function performClearLocalizedScreenshotAssets(options = {}) {
   return {
     ok: failed.length === 0,
     aborted,
+    hiddenTimeout,
     message: messageParts.join(" "),
     removed,
     failed,
@@ -1896,7 +1959,13 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
 
     const visible = await waitForMediaAutomationVisible(progress);
     if (!visible.ok) {
-      return { ok: false, aborted: Boolean(visible.aborted), message: localize("operationStopped", "Stopped."), target };
+      return {
+        ok: false,
+        aborted: Boolean(visible.aborted),
+        hiddenTimeout: Boolean(visible.hiddenTimeout),
+        message: visible.message || localize("operationStopped", "Stopped."),
+        target
+      };
     }
 
     let currentCount = getVisibleMediaImageCount("localizedScreenshots");
@@ -1979,6 +2048,35 @@ async function uploadLocalizedScreenshotFileWithRetries(entry, fileIndex, locali
       });
       const afterCount = result.afterCount;
       const addedCount = afterCount - beforeCount;
+
+      if (!result.ok && errorState.hiddenTimeout) {
+        lastMessage = `${entry.locale} screenshot ${fileIndex + 1}: ${errorState.message || "dashboard tab stayed hidden/minimized"}`;
+        releaseResult = {
+          outcome: "hidden-timeout",
+          visibleBefore: beforeCount,
+          visibleAfter: afterCount,
+          addedCount,
+          method: result.method || "",
+          errorMessage: errorState.message || "",
+          message: lastMessage,
+          durationMs: Date.now() - actionStartedAt
+        };
+        publishLocalizedScreenshotActionLog(progress, {
+          action: "upload",
+          stage: "result",
+          attempt: uploadAttempt,
+          screenshotSlot: fileIndex + 1,
+          leaseId: lease.leaseId || "",
+          ...releaseResult
+        });
+        return {
+          ok: false,
+          aborted: false,
+          hiddenTimeout: true,
+          message: lastMessage,
+          target
+        };
+      }
 
       if (afterCount > MAX_DASHBOARD_SCREENSHOTS) {
         releaseResult = {
@@ -2149,7 +2247,13 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
 
   const visible = await waitForMediaAutomationVisible(progress);
   if (!visible.ok) {
-    return { ok: false, aborted: Boolean(visible.aborted), uploadedCount: 0, message: localize("operationStopped", "Stopped.") };
+    return {
+      ok: false,
+      aborted: Boolean(visible.aborted),
+      hiddenTimeout: Boolean(visible.hiddenTimeout),
+      uploadedCount: 0,
+      message: visible.message || localize("operationStopped", "Stopped.")
+    };
   }
 
   const contextReady = await ensureLocalizedScreenshotUploadContext(entry.locale);
@@ -2170,6 +2274,7 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
       return {
         ok: false,
         aborted: Boolean(clearResult.aborted),
+        hiddenTimeout: Boolean(clearResult.hiddenTimeout),
         uploadedCount: 0,
         completed: false,
         message: `${entry.locale}: ${clearResult.message || "could not clear localized screenshots"}`
@@ -2189,9 +2294,12 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
     if (!clearWait.ok) {
       return {
         ok: false,
+        hiddenTimeout: Boolean(clearWait.hiddenTimeout),
         uploadedCount: 0,
         completed: false,
-        message: `${entry.locale}: CWS still shows ${clearWait.count} localized screenshot(s) after clear`
+        message: clearWait.hiddenTimeout && clearWait.message
+          ? `${entry.locale}: ${clearWait.message}`
+          : `${entry.locale}: CWS still shows ${clearWait.count} localized screenshot(s) after clear`
       };
     }
 
@@ -2289,7 +2397,16 @@ async function auditCompletedLocalizedScreenshotLocales(entries, completedLocale
 
     const visible = await waitForMediaAutomationVisible(progress);
     if (!visible.ok) {
-      return { audited, failed, failedLocales, aborted: Boolean(visible.aborted) };
+      const message = `${entry.locale}: ${visible.message || localize("operationStopped", "Stopped.")}`;
+      failed.push(message);
+      failedLocales.push(entry.locale);
+      return {
+        audited,
+        failed,
+        failedLocales,
+        aborted: Boolean(visible.aborted),
+        hiddenTimeout: Boolean(visible.hiddenTimeout)
+      };
     }
 
     const contextReady = await ensureLocalizedScreenshotUploadContext(entry.locale);
@@ -2303,6 +2420,12 @@ async function auditCompletedLocalizedScreenshotLocales(entries, completedLocale
     scrollMediaActionTargetIntoView(getLocalizedScreenshotActionElement());
     const auditWait = await waitForVisibleMediaImageCount("localizedScreenshots", expectedCount, 8000, { progress });
     if (!auditWait.ok) {
+      if (auditWait.hiddenTimeout) {
+        const message = `${entry.locale}: ${auditWait.message || "dashboard tab stayed hidden/minimized during audit"}`;
+        failed.push(message);
+        failedLocales.push(entry.locale);
+        return { audited, failed, failedLocales, aborted: false, hiddenTimeout: true };
+      }
       const visibleCount = getVisibleMediaImageCount("localizedScreenshots");
       const message = `${entry.locale}: audit expected ${expectedCount} localized screenshot(s), CWS shows ${visibleCount}`;
       publishLocalizedScreenshotActionLog(progress, {
@@ -2395,6 +2518,7 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
 
   const totalScreenshots = entries.reduce((sum, entry) => sum + entry.files.length, 0);
   let uploadedScreenshotCount = 0;
+  let stopAfterVisibilityTimeout = false;
 
   for (let localeIndex = 0; localeIndex < entries.length; localeIndex++) {
     const entry = entries[localeIndex];
@@ -2423,6 +2547,10 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
       }
 
       localeFailures.push(localeResult.message);
+      if (localeResult.hiddenTimeout) {
+        stopAfterVisibilityTimeout = true;
+        break;
+      }
       if (mediaOperationState.abortRequested || localeResult.aborted) {
         aborted = true;
         break;
@@ -2449,6 +2577,10 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
       break;
     }
 
+    if (stopAfterVisibilityTimeout) {
+      break;
+    }
+
     if (mediaOperationState.abortRequested) {
       aborted = true;
       break;
@@ -2471,6 +2603,17 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
     audited.push(...audit.audited);
     if (audit.aborted) {
       aborted = true;
+    }
+    if (audit.hiddenTimeout) {
+      const auditedSet = new Set(audit.audited.map(normalizeLocale));
+      const failedAuditSet = new Set(audit.failedLocales.map(normalizeLocale));
+      for (const locale of completed) {
+        const normalizedLocale = normalizeLocale(locale);
+        if (auditedSet.has(normalizedLocale) || failedAuditSet.has(normalizedLocale)) continue;
+        audit.failed.push(`${locale}: audit did not finish because the dashboard stayed hidden/minimized`);
+        audit.failedLocales.push(locale);
+        failedAuditSet.add(normalizedLocale);
+      }
     }
     if (audit.failed.length) {
       const failedAuditSet = new Set(audit.failedLocales.map(normalizeLocale));

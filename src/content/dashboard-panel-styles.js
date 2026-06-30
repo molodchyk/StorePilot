@@ -153,6 +153,81 @@
         white-space: pre-line;
       }
 
+      #${panelId} .storepilot-parallel-mode-picker {
+        display: grid;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 6px;
+        background: rgba(248, 250, 252, 0.92);
+        color: #334155;
+        font-size: 12px;
+      }
+
+      #${panelId} .storepilot-parallel-mode-picker-title {
+        color: #111827;
+        font-weight: 700;
+      }
+
+      #${panelId} .storepilot-parallel-mode-form {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 6px 8px;
+        align-items: center;
+      }
+
+      #${panelId} .storepilot-parallel-mode-form label {
+        color: #475569;
+        font-weight: 700;
+      }
+
+      #${panelId} .storepilot-parallel-mode-form input {
+        min-height: 28px;
+        min-width: 0;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+        padding: 0 8px;
+        background: #fff;
+        color: #111827;
+        font: inherit;
+      }
+
+      #${panelId} .storepilot-parallel-mode-choices {
+        display: grid;
+        gap: 6px;
+      }
+
+      #${panelId} .storepilot-parallel-mode-choice {
+        display: grid;
+        gap: 2px;
+        min-height: 0;
+        padding: 7px 8px;
+        text-align: left;
+      }
+
+      #${panelId} .storepilot-parallel-mode-choice[aria-pressed="true"] {
+        border-color: #0f766e;
+        background: #ecfdf5;
+        color: #064e3b;
+      }
+
+      #${panelId} .storepilot-parallel-mode-choice-label {
+        font-weight: 700;
+      }
+
+      #${panelId} .storepilot-parallel-mode-choice-description {
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 1.25;
+      }
+
+      #${panelId} .storepilot-parallel-mode-actions {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 6px;
+      }
+
       #${panelId} .storepilot-parallel-board {
         display: grid;
         gap: 6px;
@@ -224,14 +299,17 @@
 
       #${panelId} .storepilot-parallel-chart-completed {
         stroke: #0f766e;
+        fill: none;
       }
 
       #${panelId} .storepilot-parallel-chart-remaining {
         stroke: #64748b;
+        fill: none;
       }
 
       #${panelId} .storepilot-parallel-chart-failed {
         stroke: #dc2626;
+        fill: none;
       }
 
       #${panelId} .storepilot-parallel-chart-label {
@@ -352,6 +430,7 @@
 
       #${panelId}[data-panel-mode="minimized"] .storepilot-meta,
       #${panelId}[data-panel-mode="minimized"] .storepilot-actions,
+      #${panelId}[data-panel-mode="minimized"] .storepilot-parallel-mode-picker,
       #${panelId}[data-panel-mode="minimized"] .storepilot-parallel-board,
       #${panelId}[data-panel-mode="minimized"] .storepilot-localized-worker-board,
       #${panelId}[data-panel-mode="minimized"] .storepilot-status {
@@ -360,6 +439,33 @@
 
       #${panelId}[data-theme="dark"] .storepilot-status {
         color: #cbd5e1;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-mode-picker {
+        border-color: #343b4a;
+        background: rgba(32, 38, 51, 0.78);
+        color: #cbd5e1;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-mode-picker-title {
+        color: #f4f6fa;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-mode-form label,
+      #${panelId}[data-theme="dark"] .storepilot-parallel-mode-choice-description {
+        color: #a8b0bf;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-mode-form input {
+        border-color: #343b4a;
+        background: #202633;
+        color: #f4f6fa;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-mode-choice[aria-pressed="true"] {
+        border-color: #2dd4bf;
+        background: #042f2e;
+        color: #99f6e4;
       }
 
       #${panelId}[data-theme="dark"] .storepilot-parallel-board,
@@ -393,18 +499,23 @@
         fill: #94a3b8;
       }
 
-      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-completed,
-      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-done-label {
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-completed {
         stroke: #2dd4bf;
+        fill: none;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-chart-done-label {
         fill: #2dd4bf;
       }
 
       #${panelId}[data-theme="dark"] .storepilot-parallel-chart-remaining {
         stroke: #94a3b8;
+        fill: none;
       }
 
       #${panelId}[data-theme="dark"] .storepilot-parallel-chart-failed {
         stroke: #fb7185;
+        fill: none;
       }
 
       #${panelId}[data-theme="dark"] .storepilot-locale-status {
@@ -480,6 +591,33 @@
           color: #cbd5e1;
         }
 
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-mode-picker {
+          border-color: #343b4a;
+          background: rgba(32, 38, 51, 0.78);
+          color: #cbd5e1;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-mode-picker-title {
+          color: #f4f6fa;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-mode-form label,
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-mode-choice-description {
+          color: #a8b0bf;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-mode-form input {
+          border-color: #343b4a;
+          background: #202633;
+          color: #f4f6fa;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-mode-choice[aria-pressed="true"] {
+          border-color: #2dd4bf;
+          background: #042f2e;
+          color: #99f6e4;
+        }
+
         #${panelId}:not([data-theme="light"]) .storepilot-parallel-board,
         #${panelId}:not([data-theme="light"]) .storepilot-localized-worker-board {
           border-top-color: #343b4a;
@@ -511,18 +649,23 @@
           fill: #94a3b8;
         }
 
-        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-completed,
-        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-done-label {
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-completed {
           stroke: #2dd4bf;
+          fill: none;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-done-label {
           fill: #2dd4bf;
         }
 
         #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-remaining {
           stroke: #94a3b8;
+          fill: none;
         }
 
         #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart-failed {
           stroke: #fb7185;
+          fill: none;
         }
 
         #${panelId}:not([data-theme="light"]) .storepilot-locale-status {

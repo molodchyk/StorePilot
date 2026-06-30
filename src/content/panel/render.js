@@ -349,40 +349,120 @@ function renderPanel(locales) {
     };
   }
 
+  function getParallelLocalizedScreenshotModeChoices() {
+    return [
+      {
+        mode: "coordinated",
+        label: "Coordinated replace",
+        description: "Clear assigned locales first, then upload them. Best default when rebuilding a whole range."
+      },
+      {
+        mode: "replace",
+        label: "Per-locale replace",
+        description: "Clear and upload one locale at a time. Easier to inspect, but less coordinated."
+      },
+      {
+        mode: "clear",
+        label: "Clear only",
+        description: "Only delete localized screenshots. Use before a separate upload-only run."
+      },
+      {
+        mode: "upload",
+        label: "Upload only",
+        description: "Add missing screenshots without clearing. Useful for continuing an already-clean range."
+      }
+    ];
+  }
+
   function getParallelLocalizedScreenshotUploadOptions() {
-    if (typeof window.prompt !== "function") {
-      return {
-        workerCount: 2,
-        closeSuccessfulWorkers: true
-      };
-    }
+    return new Promise(resolve => {
+      const existing = panel.querySelector(".storepilot-parallel-mode-picker");
+      if (existing) existing.remove();
 
-    const workerCountText = window.prompt(
-      localize("parallelLocalizedScreenshotsWorkerCountPrompt", "Parallel worker count (1-6)."),
-      "2"
-    );
-    if (workerCountText === null) return null;
+      const picker = document.createElement("div");
+      const titleElement = document.createElement("div");
+      const form = document.createElement("div");
+      const workerLabel = document.createElement("label");
+      const workerInput = document.createElement("input");
+      const startLabel = document.createElement("label");
+      const startInput = document.createElement("input");
+      const choices = document.createElement("div");
+      const actions = document.createElement("div");
+      const startButton = createButton("Start parallel run", () => {
+        cleanup();
+        resolve({
+          workerCount: Math.min(Math.max(Number.parseInt(workerInput.value, 10) || 2, 1), 6),
+          parallelMode: selectedMode,
+          localizedScreenshotsStartLocale: startInput.value.trim(),
+          closeSuccessfulWorkers: true
+        });
+      });
+      const cancelButton = createButton("Cancel", () => {
+        cleanup();
+        resolve(null);
+      });
+      let selectedMode = "coordinated";
 
-    const workerCount = Math.min(Math.max(Number.parseInt(workerCountText, 10) || 2, 1), 6);
-    const mode = window.prompt(
-      localize("parallelLocalizedScreenshotsModePrompt", "Parallel mode: coordinated, replace, clear, or upload."),
-      "coordinated"
-    );
-    if (mode === null) return null;
+      function cleanup() {
+        document.removeEventListener("keydown", onKeyDown);
+        picker.remove();
+      }
 
-    const currentLocale = typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() : "";
-    const startLocale = window.prompt(
-      localize("localizedScreenshotsStartLocalePrompt", "Start at locale (optional; leave empty for first locale)."),
-      currentLocale || ""
-    );
-    if (startLocale === null) return null;
+      function onKeyDown(event) {
+        if (event.key === "Escape") {
+          cleanup();
+          resolve(null);
+        }
+      }
 
-    return {
-      workerCount,
-      parallelMode: mode.trim() || "coordinated",
-      localizedScreenshotsStartLocale: startLocale.trim(),
-      closeSuccessfulWorkers: true
-    };
+      function selectMode(mode) {
+        selectedMode = mode;
+        Array.from(choices.querySelectorAll("button")).forEach(button => {
+          button.setAttribute("aria-pressed", button.dataset.mode === selectedMode ? "true" : "false");
+        });
+      }
+
+      picker.className = "storepilot-parallel-mode-picker";
+      titleElement.className = "storepilot-parallel-mode-picker-title";
+      form.className = "storepilot-parallel-mode-form";
+      choices.className = "storepilot-parallel-mode-choices";
+      actions.className = "storepilot-parallel-mode-actions";
+      titleElement.textContent = "Parallel localized screenshots";
+
+      workerLabel.textContent = "Workers";
+      workerInput.type = "number";
+      workerInput.min = "1";
+      workerInput.max = "6";
+      workerInput.step = "1";
+      workerInput.value = "2";
+
+      startLabel.textContent = "Start locale";
+      startInput.type = "text";
+      startInput.placeholder = "Optional";
+      startInput.value = typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() || "" : "";
+
+      for (const choice of getParallelLocalizedScreenshotModeChoices()) {
+        const button = createButton("", () => selectMode(choice.mode));
+        const label = document.createElement("span");
+        const description = document.createElement("span");
+        button.className = "storepilot-parallel-mode-choice";
+        button.dataset.mode = choice.mode;
+        button.setAttribute("aria-pressed", choice.mode === selectedMode ? "true" : "false");
+        label.className = "storepilot-parallel-mode-choice-label";
+        description.className = "storepilot-parallel-mode-choice-description";
+        label.textContent = choice.label;
+        description.textContent = choice.description;
+        button.append(label, description);
+        choices.append(button);
+      }
+
+      actions.append(startButton, cancelButton);
+      form.append(workerLabel, workerInput, startLabel, startInput);
+      picker.append(titleElement, form, choices, actions);
+      panel.insertBefore(picker, status);
+      document.addEventListener("keydown", onKeyDown);
+      workerInput.focus();
+    });
   }
 
   function createParallelLocalizedScreenshotBoard() {
@@ -538,7 +618,7 @@ function renderPanel(locales) {
   const uploadLocalizedScreenshotsParallelButton = createButton(
     localize("uploadLocalizedScreenshotsParallel", "Upload localized screenshots in parallel"),
     async () => {
-      const options = getParallelLocalizedScreenshotUploadOptions();
+      const options = await getParallelLocalizedScreenshotUploadOptions();
       if (options === null) return;
 
       setPanelMediaButtonsDisabled(true, localize("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload..."));

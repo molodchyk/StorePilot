@@ -45,6 +45,16 @@
     return true;
   }
 
+  function handleRetryParallelLocalizedScreenshotWorkerTabMessage(message, sender, sendResponse) {
+    storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, message.runId || "", message.workerId || "")
+      .then(sendResponse)
+      .catch(error => sendResponse({
+        ok: false,
+        message: error.message || String(error)
+      }));
+    return true;
+  }
+
   function handleLocalizedScreenshotProgressMessage(message, sender, sendResponse) {
     storePilotHandleLocalizedScreenshotProgress(sender, message)
       .then(sendResponse)
@@ -173,6 +183,10 @@
 
     if (message && message.type === "storepilot-retry-localized-screenshot-parallel-failed") {
       return handleRetryParallelLocalizedScreenshotUploadMessage(message, sender, sendResponse);
+    }
+
+    if (message && message.type === "storepilot-retry-localized-screenshot-worker-tab") {
+      return handleRetryParallelLocalizedScreenshotWorkerTabMessage(message, sender, sendResponse);
     }
 
     if (message && message.type === "storepilot-localized-screenshot-progress") {
