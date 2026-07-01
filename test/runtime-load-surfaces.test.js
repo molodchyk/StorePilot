@@ -94,6 +94,14 @@ for (const [label, files] of [
     "src/shared/store-docs/privacy-schema.js",
     "src/content/dashboard-dom.js",
     "src/content/dashboard-project-context.js",
+    "src/content/media/upload-targets.js",
+    "src/content/media/upload-waits.js",
+    "src/content/media/upload-execution.js",
+    "src/content/media/localized-screenshot-progress.js",
+    "src/content/media/clear-operations.js",
+    "src/content/media/localized-screenshot-files.js",
+    "src/content/media/localized-screenshot-upload.js",
+    "src/content/media/localized-screenshot-run.js",
     "src/content/dashboard-helper.js",
     "src/content/dashboard-messages.js"
   ]) {
@@ -108,6 +116,20 @@ for (const [label, files] of [
   assertBefore(files, "src/shared/store-docs/privacy-schema.js", "src/shared/store-docs/privacy-doc.js", label);
   assertBefore(files, "src/content/dashboard-dom.js", "src/content/dashboard-project-context.js", label);
   assertBefore(files, "src/content/dashboard-project-context.js", "src/content/dashboard-helper.js", label);
+  assertBefore(files, "src/content/media/upload-targets.js", "src/content/media/upload-waits.js", label);
+  assertBefore(files, "src/content/media/upload-waits.js", "src/content/media/upload-execution.js", label);
+  assertBefore(files, "src/content/media/upload-execution.js", "src/content/media/localized-screenshot-progress.js", label);
+  assertBefore(files, "src/content/media/upload-execution.js", "src/content/dashboard-media.js", label);
+  assertBefore(files, "src/content/media/localized-screenshot-progress.js", "src/content/media/clear-operations.js", label);
+  assertBefore(files, "src/content/media/clear-operations.js", "src/content/dashboard-media.js", label);
+  assertBefore(files, "src/content/media/clear-operations.js", "src/content/media/localized-screenshot-files.js", label);
+  assertBefore(files, "src/content/media/localized-screenshot-files.js", "src/content/media/localized-screenshot-upload.js", label);
+  assertBefore(files, "src/content/media/localized-screenshot-upload.js", "src/content/media/localized-screenshot-run.js", label);
+  assertBefore(files, "src/content/media/localized-screenshot-run.js", "src/content/dashboard-media.js", label);
+  assertBefore(files, "src/content/media/upload-targets.js", "src/content/media/localized-screenshot-progress.js", label);
+  assertBefore(files, "src/content/media/upload-targets.js", "src/content/dashboard-media.js", label);
+  assertBefore(files, "src/content/media/upload-waits.js", "src/content/dashboard-media.js", label);
+  assertBefore(files, "src/content/media/localized-screenshot-progress.js", "src/content/dashboard-media.js", label);
   assertBefore(files, "src/shared/storage.js", "src/content/dashboard-helper.js", label);
   assertBefore(files, "src/content/dashboard-helper.js", "src/content/dashboard-messages.js", label);
 }

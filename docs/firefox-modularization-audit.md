@@ -1,6 +1,6 @@
 # Firefox Modularization Audit
 
-Last reviewed: 2026-06-21.
+Last reviewed: 2026-07-01.
 
 Result: deferred with reason.
 
@@ -10,7 +10,7 @@ File size and flat folder density are active architecture constraints. New sourc
 
 ## Reason For Deferral
 
-StorePilot now satisfies the current file-size and flat-folder-density budgets, and the former large dashboard, options, popup, style, and document-parser surfaces have been split into focused modules. The remaining gap is architectural shape: StorePilot is still a manifest-loaded global-script extension rather than the modularization playbook's full feature-first ES-module target with thin entry files, feature-owned tests, and generated Firefox output.
+StorePilot has made measurable progress on file-size and flat-folder-density budgets, and the former large dashboard, options, popup, style, and document-parser surfaces have been split into focused modules. It is still not fully compliant with the file-size target: current audit scripts allow named over-budget source files only because they are explicit migration debt. The remaining gap is both architectural shape and several oversized focused modules: StorePilot is still a manifest-loaded global-script extension rather than the modularization playbook's full feature-first ES-module target with thin entry files, feature-owned tests, and generated Firefox output.
 
 Moving to that final shape would require a build/runtime loading migration across background, content, popup, and options surfaces. That is broader than release-prep hygiene and should happen as a separate, behavior-protected migration.
 
@@ -34,7 +34,15 @@ Runtime entry and surface files inspected:
 | `src/content/dashboard-privacy-core.js` | Focused privacy/data-usage normalization and active privacy field access | Acceptable focused dashboard privacy helper. Keep shared privacy form normalization here. |
 | `src/content/dashboard-privacy-data-usage.js` | Focused Chrome Web Store Data Usage checkbox mapping and checked-state changes | Acceptable focused dashboard privacy helper. Keep Data Usage disclosure checkbox changes here. |
 | `src/content/dashboard-privacy-fields.js` | Focused Chrome Web Store privacy field, permission justification, and remote-code radio fill behavior | Acceptable focused dashboard privacy helper. Keep privacy text/radio field changes here. |
-| `src/content/dashboard-media.js` | Focused Chrome Web Store media upload, clear, diagnostics, and page-bridge coordination behavior | Acceptable focused content helper. Keep Graphic Assets upload and removal changes here instead of growing `src/content/dashboard-helper.js`. |
+| `src/content/dashboard-media.js` | Thin Chrome Web Store media upload entry/orchestrator for global assets and localized screenshot delegation | Under the file-size budget after focused `src/content/media/*` splits. Keep localized screenshot internals and upload mechanics in the media helpers instead of regrowing this file. |
+| `src/content/media/upload-targets.js` | Focused Chrome Web Store media upload target detection, localized screenshot field scoring, diagnostics, and visible-count helpers | Acceptable focused content media helper loaded before `src/content/media/upload-waits.js` and `src/content/dashboard-media.js`. |
+| `src/content/media/upload-waits.js` | Focused Chrome Web Store media target availability and visible-count polling helpers | Acceptable focused content media helper loaded after target detection and before `src/content/dashboard-media.js`. |
+| `src/content/media/upload-execution.js` | Focused dashboard language/media context selection, page-world upload bridge coordination, and file-input assignment | Acceptable focused content media helper loaded after target/wait helpers and before `src/content/dashboard-media.js`. |
+| `src/content/media/localized-screenshot-progress.js` | Focused localized screenshot progress formatting, action logging, and parallel mutation-gate message wrappers | Acceptable focused content media helper loaded before `src/content/dashboard-media.js`. |
+| `src/content/media/clear-operations.js` | Focused media operation status, automation visibility/focus checks, remove-dialog handling, and clear operations | Acceptable focused content media helper loaded before `src/content/dashboard-media.js`. |
+| `src/content/media/localized-screenshot-files.js` | Focused localized screenshot file entry filtering, start-locale/assigned-locale filtering, operation normalization, and target resolution | Acceptable focused content media helper loaded before localized screenshot upload/run helpers. |
+| `src/content/media/localized-screenshot-upload.js` | Focused localized screenshot per-file upload retries and per-locale replace/clear/upload flow | Acceptable focused content media helper loaded before localized screenshot run orchestration. |
+| `src/content/media/localized-screenshot-run.js` | Focused localized screenshot run orchestration, completed-locale audit, skipped/failed accounting, and final summary | Acceptable focused content media helper loaded before `src/content/dashboard-media.js`. |
 | `src/content/panel/state.js` | Focused dashboard panel mode, position, viewport clamp, media button state, and media-operation lock behavior | Acceptable focused panel helper. Keep panel state and operation lock mechanics here instead of returning them to `src/content/dashboard-helper.js`. |
 | `src/content/panel/render.js` | Focused dashboard panel DOM construction for listing and privacy pages | Acceptable focused panel helper. Keep panel button layout and per-page panel rendering here. |
 | `src/content/dashboard-panel-styles.js` | Focused dashboard panel CSS injector loaded before the main content helper | Acceptable focused content UI helper. Keep panel styling changes here instead of growing `src/content/dashboard-helper.js`. |
@@ -79,6 +87,14 @@ Feature and shared modules already present:
 - `src/content/dashboard-privacy-core.js`
 - `src/content/dashboard-privacy-data-usage.js`
 - `src/content/dashboard-privacy-fields.js`
+- `src/content/media/upload-targets.js`
+- `src/content/media/upload-waits.js`
+- `src/content/media/upload-execution.js`
+- `src/content/media/localized-screenshot-progress.js`
+- `src/content/media/clear-operations.js`
+- `src/content/media/localized-screenshot-files.js`
+- `src/content/media/localized-screenshot-upload.js`
+- `src/content/media/localized-screenshot-run.js`
 - `src/content/dashboard-media.js`
 - `src/content/panel/state.js`
 - `src/content/panel/render.js`
@@ -133,7 +149,15 @@ Diagnostic artifact folders inspected:
    - Tenth content split done in this pass: dashboard panel state, viewport clamping, media button state, media-operation locking, and listing/privacy panel rendering now live in `src/content/panel/state.js` and `src/content/panel/render.js`.
    - Eleventh content split done in this pass: dashboard extension-id detection, item-title cleanup, and dashboard-project binding resolution now live in `src/content/dashboard-project-context.js`.
    - Twelfth content split done in this pass: popup/panel command routing now lives in `src/content/dashboard-messages.js`.
-   - Remaining work: move selector diagnostics into narrower modules if those surfaces grow again. `src/content/dashboard-helper.js` is now under the current file-size budget.
+   - Thirteenth content split done in this pass: Chrome Web Store media upload target detection, localized screenshot field scoring, diagnostics, and visible-count helpers now live in `src/content/media/upload-targets.js`, loaded before `src/content/dashboard-media.js`.
+   - Fourteenth content split done in this pass: Chrome Web Store media upload target availability and visible-count polling helpers now live in `src/content/media/upload-waits.js`, loaded before `src/content/dashboard-media.js`.
+   - Fifteenth content split done in this pass: dashboard language/media context selection, page-world upload bridge coordination, and file-input assignment now live in `src/content/media/upload-execution.js`, loaded before `src/content/dashboard-media.js`.
+   - Sixteenth content split done in this pass: localized screenshot progress formatting, action logging, and parallel mutation-gate message wrappers now live in `src/content/media/localized-screenshot-progress.js`, loaded before `src/content/dashboard-media.js`.
+   - Seventeenth content split done in this pass: media operation status, automation visibility/focus checks, remove-dialog handling, and clear operations now live in `src/content/media/clear-operations.js`, loaded before `src/content/dashboard-media.js`.
+   - Eighteenth content split done in this pass: localized screenshot file filtering and operation normalization now live in `src/content/media/localized-screenshot-files.js`.
+   - Nineteenth content split done in this pass: localized screenshot per-file upload retries and per-locale replace/clear/upload flow now live in `src/content/media/localized-screenshot-upload.js`.
+   - Twentieth content split done in this pass: localized screenshot run orchestration, completed-locale audit, skipped/failed accounting, and final summary now live in `src/content/media/localized-screenshot-run.js`.
+   - Remaining work: keep extracting cohesive media slices out of `src/content/dashboard-media.js`, then split the remaining named over-budget content/panel/style modules. `src/content/dashboard-helper.js` is now under the current file-size budget.
 
 1a. `Split store document parser modules`
    - First slice done in this pass: privacy canonical keys, label/key normalization, remote-code display decision, and display-field ordering now live in `src/shared/store-docs/privacy-schema.js`; privacy file discovery and parsing remain in `src/shared/store-docs/privacy-doc.js`; `test/privacy-doc.test.js` covers the split's important routing behavior.
@@ -163,7 +187,7 @@ Diagnostic artifact folders inspected:
 The 1.3.1.3 release-prep gate is allowed to continue with this explicit deferral because:
 
 - The extension behavior, manifest, privacy posture, AMO listing text, and package output are already release-validated.
-- The current source tree passes file-size and flat-folder-density checks.
-- The remaining modularization work is the broader ES-module/feature-folder migration, which is behavior-sensitive.
+- The current source tree passes flat-folder-density checks and has explicit, script-enforced exceptions for named oversized migration-debt files.
+- The remaining modularization work includes more file-size reductions plus the broader ES-module/feature-folder migration, which is behavior-sensitive.
 - The debt is now documented in a tracked audit with named follow-ups.
 - Future Codex work has clear ownership targets instead of a passive "use the playbook" reference.

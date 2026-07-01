@@ -57,9 +57,19 @@ const context = vm.createContext({
   }
 });
 
-vm.runInContext(fs.readFileSync(path.join(root, "src/content/dashboard-media.js"), "utf8"), context, {
-  filename: "src/content/dashboard-media.js"
-});
+for (const file of [
+  "src/content/media/upload-targets.js",
+  "src/content/media/upload-waits.js",
+  "src/content/media/upload-execution.js",
+  "src/content/media/localized-screenshot-progress.js",
+  "src/content/media/clear-operations.js",
+  "src/content/media/localized-screenshot-files.js",
+  "src/content/media/localized-screenshot-upload.js",
+  "src/content/media/localized-screenshot-run.js",
+  "src/content/dashboard-media.js"
+]) {
+  vm.runInContext(fs.readFileSync(path.join(root, file), "utf8"), context, { filename: file });
+}
 
 function createElement(text, previous = null, parent = null) {
   const element = {

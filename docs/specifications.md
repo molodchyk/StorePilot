@@ -20,6 +20,14 @@
 - `src/content/dashboard-messages.js`: content-script runtime message routing for popup/panel dashboard commands.
 - `src/content/dashboard-project-context.js`: dashboard extension-id, item-title, and project-binding resolution.
 - `src/content/media-upload-main-world.js`: page-world bridge for dashboard media upload.
+- `src/content/media/upload-targets.js`: Chrome Web Store media upload target detection, localized screenshot field scoring, diagnostics, and visible-count helpers.
+- `src/content/media/upload-waits.js`: Chrome Web Store media upload target availability and visible-count polling helpers.
+- `src/content/media/upload-execution.js`: Chrome Web Store dashboard language/media context selection, page-world upload bridge coordination, and file-input assignment.
+- `src/content/media/localized-screenshot-progress.js`: localized screenshot progress formatting, action logging, and parallel media mutation-gate message wrappers.
+- `src/content/media/clear-operations.js`: Chrome Web Store media operation status, automation visibility/focus checks, remove-dialog handling, and clear operations.
+- `src/content/media/localized-screenshot-files.js`: localized screenshot file entry filtering, start-locale/assigned-locale filtering, operation normalization, and target resolution.
+- `src/content/media/localized-screenshot-upload.js`: localized screenshot per-file upload retries and per-locale replace/clear/upload flow.
+- `src/content/media/localized-screenshot-run.js`: localized screenshot run orchestration, completed-locale audit, skipped/failed locale accounting, and final summary.
 - `src/shared/constants.js`: storage keys, file extension allow/block lists, skipped directories.
 - `src/shared/files.js`: locale filename and file/path helpers.
 - `src/shared/directory-detection.js`: listing-folder detection and scoring.
@@ -513,6 +521,14 @@ node --check src\content\dashboard-helper.js
 node --check src\content\dashboard-messages.js
 node --check src\content\dashboard-project-context.js
 node --check src\content\media-upload-main-world.js
+node --check src\content\media\upload-targets.js
+node --check src\content\media\upload-waits.js
+node --check src\content\media\upload-execution.js
+node --check src\content\media\localized-screenshot-progress.js
+node --check src\content\media\clear-operations.js
+node --check src\content\media\localized-screenshot-files.js
+node --check src\content\media\localized-screenshot-upload.js
+node --check src\content\media\localized-screenshot-run.js
 node --check src\popup\popup.js
 node --check src\options\options.js
 node --check src\options\options-settings.js
