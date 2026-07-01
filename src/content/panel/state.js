@@ -265,13 +265,18 @@ function setPanelParallelScreenshotMode(panel, active) {
   }
 }
 
+function isLocalizedScreenshotWorkerPanelMode() {
+  return Boolean(localizedScreenshotWorkerProgressState);
+}
+
 function updatePanelMediaUi() {
   const panel = document.getElementById(PANEL_ID);
   if (!panel) return;
 
   const fillAllRunning = Boolean(isFillingAllLanguages || fillAllStatus.running);
+  const workerPanelMode = isLocalizedScreenshotWorkerPanelMode();
   if (mediaOperationState.running) {
-    setPanelParallelScreenshotMode(panel, false);
+    setPanelParallelScreenshotMode(panel, workerPanelMode);
     setPanelMediaButtonsDisabled(true, mediaOperationState.label);
     setPanelWorkflowButtonsDisabled(true, mediaOperationState.label);
     updatePanelFillAllUi();
@@ -291,6 +296,14 @@ function updatePanelMediaUi() {
     setPanelWorkflowButtonsDisabled(true, localize("parallelLocalizedScreenshotsRunning", "Parallel localized screenshot upload is running."));
     updatePanelFillAllUi();
     renderParallelLocalizedScreenshotBoard(panel);
+    return;
+  }
+
+  if (workerPanelMode) {
+    setPanelParallelScreenshotMode(panel, true);
+    setPanelMediaButtonsDisabled(true, localize("parallelLocalizedScreenshotsRunning", "Parallel localized screenshot upload is running."));
+    setPanelWorkflowButtonsDisabled(true, localize("parallelLocalizedScreenshotsRunning", "Parallel localized screenshot upload is running."));
+    renderLocalizedScreenshotWorkerProgressBoard(panel);
     return;
   }
 

@@ -107,12 +107,47 @@ function isCoordinatedClearWorker(run, worker) {
     worker.operation === "clearOnly");
 }
 
+function isClearOnlyStatusThatNeedsUpload(status) {
+  if (!status || status.operation !== "clearOnly") return false;
+  if (["cleared", "completed"].includes(status.status)) return true;
+
+  const phase = String(status.phase || "").toLowerCase();
+  const message = String(status.message || "").toLowerCase();
+  if (status.status === "auditing" && /0 expected|matched 0|persisted localized screenshot count/.test(`${phase} ${message}`)) {
+    return true;
+  }
+  if (status.status === "clearing" && /field cleared|screenshots cleared|matched 0/.test(`${phase} ${message}`)) {
+    return true;
+  }
+
+  return false;
+}
+
+function addCompletedClearWorkerPrefix(locales, worker) {
+  if (!worker || !Array.isArray(worker.assignedLocales)) return;
+
+  const prefixCount = Math.max(
+    0,
+    Number(worker.completedLocales || 0),
+    Number(worker.auditedLocales || 0)
+  );
+  for (const locale of worker.assignedLocales.slice(0, prefixCount)) {
+    const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
+    if (normalizedLocale) locales.add(normalizedLocale);
+  }
+}
+
 function getParallelLocalizedScreenshotClearedNeedsUploadLocales(run) {
   const locales = new Set();
 
+  for (const locale of run && run.preClearedLocales || []) {
+    const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
+    if (normalizedLocale) locales.add(normalizedLocale);
+  }
+
   for (const status of run && run.localeStatuses ? Object.values(run.localeStatuses) : []) {
     const locale = normalizeParallelLocalizedScreenshotLocale(status && status.locale || "");
-    if (locale && status.status === "cleared") {
+    if (locale && isClearOnlyStatusThatNeedsUpload(status)) {
       locales.add(locale);
     }
   }
@@ -123,6 +158,11 @@ function getParallelLocalizedScreenshotClearedNeedsUploadLocales(run) {
       const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
       if (normalizedLocale) locales.add(normalizedLocale);
     }
+    for (const locale of worker.auditedLocaleList || []) {
+      const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
+      if (normalizedLocale) locales.add(normalizedLocale);
+    }
+    addCompletedClearWorkerPrefix(locales, worker);
   }
 
   return Array.from(locales);

@@ -139,6 +139,11 @@ async function runParallelLocalizedScreenshotTwoPhase(run, clearChunks, uploadCh
       return;
     }
 
+    run.preClearedLocales = normalizeAssignedParallelLocales([
+      ...(run.preClearedLocales || []),
+      ...getParallelLocalizedScreenshotClearedNeedsUploadLocales(run)
+    ]);
+    run.initialClearedLocales = run.preClearedLocales.length;
     run.message = text("parallelLocalizedScreenshotsUploadPhase", "Uploading localized screenshots after clear phase.");
     const uploadPromises = await startParallelLocalizedScreenshotPhase(
       run,

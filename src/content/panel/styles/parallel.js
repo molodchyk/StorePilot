@@ -189,12 +189,9 @@
         flex-wrap: wrap;
         align-content: flex-start;
         gap: 3px;
-        min-height: 58px;
-        height: 116px;
-        max-height: 220px;
+        max-height: min(260px, 34vh);
         overflow: auto;
         padding: 2px 0;
-        resize: vertical;
       }
 
       #${panelId} .storepilot-parallel-locales[hidden] {
@@ -258,8 +255,10 @@
       #${panelId} .storepilot-parallel-workers {
         display: grid;
         gap: 4px;
-        max-height: 160px;
+        min-height: min(220px, 28vh);
+        max-height: min(520px, 52vh);
         overflow: auto;
+        resize: vertical;
       }
 
       #${panelId} .storepilot-parallel-worker {

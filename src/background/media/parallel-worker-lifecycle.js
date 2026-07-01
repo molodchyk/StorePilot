@@ -178,7 +178,7 @@ function markParallelLocalizedScreenshotWorkerAbortedForResume(run, worker, mess
     const existingStatus = run.localeStatuses && run.localeStatuses[normalizedLocale];
     const keepCleared = run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD &&
       existingStatus &&
-      existingStatus.status === "cleared";
+      isClearOnlyStatusThatNeedsUpload(existingStatus);
     updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
       status: keepCleared ? "cleared" : "aborted",
       operation: keepCleared ? "clearOnly" : worker.operation || "",

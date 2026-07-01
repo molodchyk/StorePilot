@@ -475,6 +475,49 @@ assert.deepEqual(
   "coordinated clearThenUpload resume includes cleared-but-not-uploaded and aborted locales"
 );
 
+const inferredClearedNeedsUpload = context.storePilotGetParallelLocalizedScreenshotClearedNeedsUploadLocales({
+  mode: "clearThenUpload",
+  preClearedLocales: ["am"],
+  localeStatuses: {
+    ar: {
+      locale: "ar",
+      status: "clearing",
+      operation: "clearOnly",
+      phase: "localized screenshot field cleared",
+      message: "localized screenshot field cleared"
+    },
+    az: {
+      locale: "az",
+      status: "auditing",
+      operation: "clearOnly",
+      phase: "auditing persisted localized screenshot count (0 expected)",
+      message: "auditing persisted localized screenshot count (0 expected)"
+    },
+    bg: {
+      locale: "bg",
+      status: "clearing",
+      operation: "clearOnly",
+      phase: "selecting locale",
+      message: "selecting locale"
+    }
+  },
+  workers: [
+    {
+      operation: "clearOnly",
+      assignedLocales: ["am", "ar", "az", "bg"],
+      completedLocaleList: [],
+      auditedLocaleList: [],
+      completedLocales: 3,
+      auditedLocales: 0
+    }
+  ]
+});
+assert.deepEqual(
+  hostValue(inferredClearedNeedsUpload),
+  ["am", "ar", "az"],
+  "coordinated resume preserves clear-progress and audit-progress locales as upload-only work"
+);
+
 const parallelLocalizedScreenshotAsyncTests = (async () => {
   context.storePilotIsListingDashboardUrl = () => true;
   context.storePilotTabsSendMessage = () => Promise.resolve({ ok: true });
@@ -862,6 +905,95 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   assert.equal(retryAbortedWorker.ok, true, "a stopped worker can still be retried explicitly in a fresh tab");
   await new Promise(resolve => setTimeout(resolve, 0));
   await new Promise(resolve => setTimeout(resolve, 0));
+
+  const uploadAbortMessages = [];
+  let abortUploadOnce = true;
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 130 + openedTabs++ });
+  context.storePilotTabsRemove = () => Promise.resolve();
+  context.storePilotTabsSendMessage = (_tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      const operation = message.options && message.options.localizedScreenshotsOperation || "";
+      const assignedLocales = message.options && message.options.assignedLocales || [];
+      uploadAbortMessages.push({ operation, assignedLocales });
+      if (operation === "clearOnly") {
+        return Promise.resolve({
+          ok: true,
+          completed: assignedLocales,
+          failed: [],
+          skipped: [],
+          uploaded: [],
+          audited: assignedLocales,
+          elapsedMs: 500
+        });
+      }
+      if (operation === "uploadOnly" && abortUploadOnce) {
+        abortUploadOnce = false;
+        return Promise.resolve({
+          ok: false,
+          aborted: true,
+          completed: ["am"],
+          failed: [],
+          skipped: [],
+          uploaded: ["am: 3"],
+          audited: ["am"],
+          elapsedMs: 600
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        completed: assignedLocales,
+        failed: [],
+        skipped: [],
+        uploaded: assignedLocales.map(locale => `${locale}: 3`),
+        audited: assignedLocales,
+        elapsedMs: 700
+      });
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const uploadAbortRunStart = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 94,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am", "ar"],
+    workerCount: 1,
+    parallelMode: "coordinated"
+  });
+  assert.equal(uploadAbortRunStart.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const uploadAbortRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 94,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, uploadAbortRunStart.run.runId).run;
+  assert.equal(uploadAbortRun.status, "aborted");
+  assert.deepEqual(hostValue(uploadAbortRun.preClearedLocales), ["am", "ar"]);
+  assert.deepEqual(hostValue(uploadAbortRun.resumeLocales), ["ar"]);
+
+  const resumedUploadAbortRun = await context.storePilotResumeParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 94,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, uploadAbortRun.runId);
+  assert.equal(resumedUploadAbortRun.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.deepEqual(
+    hostValue(uploadAbortMessages),
+    [
+      { operation: "clearOnly", assignedLocales: ["am", "ar"] },
+      { operation: "uploadOnly", assignedLocales: ["am", "ar"] },
+      { operation: "uploadOnly", assignedLocales: ["ar"] }
+    ],
+    "coordinated resume after upload abort keeps clear state and resumes with upload-only work"
+  );
 })();
 
 parallelLocalizedScreenshotAsyncTests.then(async () => {

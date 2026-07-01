@@ -323,6 +323,9 @@ function updateLocalizedScreenshotWorkerProgressState(progress, phase = "") {
     markLocalizedScreenshotWorkerRun(progress.runId, progress.workerId || "");
   }
   localizedScreenshotWorkerProgressState = recordLocalizedScreenshotWorkerProgressSample(progress, phase);
+  if (typeof updatePanelMediaUi === "function") {
+    updatePanelMediaUi();
+  }
   if (
     localizedScreenshotWorkerProgressState &&
     parallelLocalizedScreenshotRunState &&
