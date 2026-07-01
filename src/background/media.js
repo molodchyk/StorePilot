@@ -599,6 +599,34 @@
     }, 0);
   }
 
+  function isCoordinatedClearWorker(run, worker) {
+    return Boolean(run &&
+      run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD &&
+      worker &&
+      worker.operation === "clearOnly");
+  }
+
+  function getParallelLocalizedScreenshotClearedNeedsUploadLocales(run) {
+    const locales = new Set();
+
+    for (const status of run && run.localeStatuses ? Object.values(run.localeStatuses) : []) {
+      const locale = normalizeParallelLocalizedScreenshotLocale(status && status.locale || "");
+      if (locale && status.status === "cleared") {
+        locales.add(locale);
+      }
+    }
+
+    for (const worker of run && run.workers || []) {
+      if (!isCoordinatedClearWorker(run, worker)) continue;
+      for (const locale of worker.completedLocaleList || []) {
+        const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
+        if (normalizedLocale) locales.add(normalizedLocale);
+      }
+    }
+
+    return Array.from(locales);
+  }
+
   function createParallelLocalizedScreenshotLocaleStatusState(files, locales) {
     const order = [];
     const statuses = {};
@@ -892,14 +920,16 @@
       summary.auditedLocales += worker.auditedLocales || 0;
       summary.auditTotalLocales += worker.auditTotalLocales || (worker.auditedLocales ? worker.completedLocales : 0);
       if (!run.totalScreenshots) {
-        summary.totalScreenshots += worker.totalScreenshots;
+      summary.totalScreenshots += worker.totalScreenshots;
       }
       if (!run.totalLocales) {
         summary.totalLocales += worker.assignedCount;
       }
       return summary;
     }, {
-      completedLocales: 0,
+      completedLocales: run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD && run.phase === "clearing"
+        ? (run.preClearedLocales || []).length
+        : 0,
       failedLocales: 0,
       skippedLocales: run.initialSkippedLocales || 0,
       uploadedScreenshots: 0,
@@ -929,6 +959,7 @@
       abortRequested: Boolean(run.abortRequested),
       manualAbortRequested: Boolean(run.manualAbortRequested),
       requestedOptions: run.requestedOptions || {},
+      preClearedLocales: run.preClearedLocales || [],
       resumeLocales,
       canResume: !isParallelLocalizedScreenshotRunActiveStatus(run) && resumeLocales.length > 0,
       workerCount: workers.length,
@@ -1196,9 +1227,7 @@
       }
 
       if (worker.status === "failed" || worker.status === "aborted") {
-        const completedSet = new Set(worker.completedLocaleList || []);
-        const skippedSet = new Set(worker.skippedLocaleList || []);
-        failedLocales.push(...worker.assignedLocales.filter(locale => !completedSet.has(locale) && !skippedSet.has(locale)));
+        failedLocales.push(...getParallelLocalizedScreenshotWorkerRetryLocales(worker, run));
       }
     }
     return Array.from(new Set(failedLocales.filter(Boolean)));
@@ -1224,10 +1253,11 @@
     for (const worker of run && run.workers || []) {
       const workerCompleted = new Set((worker.completedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
       const workerSkipped = new Set((worker.skippedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
+      const completedNeedsUpload = isCoordinatedClearWorker(run, worker);
       for (const localeValue of worker.assignedLocales || []) {
         const locale = normalizeParallelLocalizedScreenshotLocale(localeValue);
         if (!locale || skippedLocales.has(locale) || workerSkipped.has(locale)) continue;
-        if (completedLocales.has(locale) || workerCompleted.has(locale)) continue;
+        if (completedLocales.has(locale) || (!completedNeedsUpload && workerCompleted.has(locale))) continue;
         resumeLocales.push(locale);
       }
     }
@@ -1235,13 +1265,16 @@
     return Array.from(new Set(resumeLocales.filter(Boolean)));
   }
 
-  function getParallelLocalizedScreenshotWorkerRetryLocales(worker) {
+  function getParallelLocalizedScreenshotWorkerRetryLocales(worker, run = null) {
     if (!worker) return [];
-    const completedSet = new Set(worker.completedLocaleList || []);
-    const skippedSet = new Set(worker.skippedLocaleList || []);
-    const failedLocales = new Set(worker.failedLocaleList || []);
-    for (const locale of worker.assignedLocales || []) {
-      if (!completedSet.has(locale) && !skippedSet.has(locale)) {
+    const completedSet = new Set((worker.completedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
+    const skippedSet = new Set((worker.skippedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
+    const failedLocales = new Set((worker.failedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
+    const completedNeedsUpload = isCoordinatedClearWorker(run, worker);
+    for (const localeValue of worker.assignedLocales || []) {
+      const locale = normalizeParallelLocalizedScreenshotLocale(localeValue);
+      if (!locale) continue;
+      if ((completedNeedsUpload || !completedSet.has(locale)) && !skippedSet.has(locale)) {
         failedLocales.add(locale);
       }
     }
@@ -1280,7 +1313,7 @@
             worker.message = text("parallelLocalizedScreenshotsAbortTimeout", "Abort completed after waiting for worker tabs.");
             const resumeSet = new Set([
               ...(worker.failedLocaleList || []),
-              ...getParallelLocalizedScreenshotWorkerRetryLocales(worker)
+              ...getParallelLocalizedScreenshotWorkerRetryLocales(worker, run)
             ].filter(Boolean));
             worker.failedLocaleList = Array.from(resumeSet);
             worker.failedLocales = worker.failedLocaleList.length;
@@ -1559,21 +1592,26 @@
     return run.workers.some(worker => worker.status === "failed" || worker.status === "aborted");
   }
 
-  async function runParallelLocalizedScreenshotTwoPhase(run, chunks, files, projectName) {
+  async function runParallelLocalizedScreenshotTwoPhase(run, clearChunks, uploadChunks, files, projectName) {
     run.deferFinalize = true;
 
     try {
       run.status = "running";
       run.message = text("parallelLocalizedScreenshotsClearingPhase", "Clearing localized screenshots before upload.");
-      const clearPromises = await startParallelLocalizedScreenshotPhase(
-        run,
-        chunks,
-        files,
-        projectName,
-        "clearOnly",
-        "clearing"
-      );
-      await Promise.all(clearPromises);
+      if ((clearChunks || []).length) {
+        const clearPromises = await startParallelLocalizedScreenshotPhase(
+          run,
+          clearChunks,
+          files,
+          projectName,
+          "clearOnly",
+          "clearing"
+        );
+        await Promise.all(clearPromises);
+      } else {
+        run.phase = "clearing";
+        await sendParallelLocalizedScreenshotRunUpdate(run);
+      }
 
       if (run.abortRequested || parallelLocalizedScreenshotPhaseHasFailure(run)) {
         run.deferFinalize = false;
@@ -1585,7 +1623,7 @@
       run.message = text("parallelLocalizedScreenshotsUploadPhase", "Uploading localized screenshots after clear phase.");
       const uploadPromises = await startParallelLocalizedScreenshotPhase(
         run,
-        chunks,
+        uploadChunks,
         files,
         projectName,
         "uploadOnly",
@@ -1653,6 +1691,9 @@
       run.totalScreenshots = plan.totalScreenshots;
       run.initialSkipped = plan.skipped;
       run.initialSkippedLocales = countParallelSkippedLocales(plan.skipped);
+      const planLocaleSet = new Set(plan.locales.map(normalizeParallelLocalizedScreenshotLocale));
+      run.preClearedLocales = normalizeAssignedParallelLocales(options.preClearedLocales || [])
+        .filter(locale => planLocaleSet.has(locale));
       run.mutationGate = createParallelLocalizedScreenshotMutationGate(plan.workerCount, {
         parallelMutationGate: options.parallelMutationGate !== false,
         successCooldownMs: options.parallelMutationSuccessCooldownMs,
@@ -1663,6 +1704,15 @@
       const localeStatusState = createParallelLocalizedScreenshotLocaleStatusState(resolved.files, plan.locales);
       run.localeStatusOrder = localeStatusState.order;
       run.localeStatuses = localeStatusState.statuses;
+      for (const locale of run.preClearedLocales) {
+        updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
+          status: "cleared",
+          operation: "clearOnly",
+          workerId: "",
+          phase: "clearedBeforeResume",
+          message: "localized screenshots cleared in a previous run; upload still needed"
+        });
+      }
 
       if (run.abortRequested) {
         failParallelLocalizedScreenshotRun(run, text("operationStopped", "Stopped."), "aborted");
@@ -1676,7 +1726,10 @@
       await sendParallelLocalizedScreenshotRunUpdate(run);
 
       if (run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD) {
-        await runParallelLocalizedScreenshotTwoPhase(run, plan.chunks, resolved.files, resolved.projectName);
+        const preClearedSet = new Set(run.preClearedLocales || []);
+        const clearLocales = plan.locales.filter(locale => !preClearedSet.has(normalizeParallelLocalizedScreenshotLocale(locale)));
+        const clearChunks = splitParallelLocalizedScreenshotLocales(clearLocales, plan.workerCount);
+        await runParallelLocalizedScreenshotTwoPhase(run, clearChunks, plan.chunks, resolved.files, resolved.projectName);
       } else {
         const operation = getParallelLocalizedScreenshotOperationForMode(run.mode);
         await openParallelLocalizedScreenshotWorkers(run, plan.chunks, resolved.files, operation, run.mode);
@@ -1697,7 +1750,12 @@
   }
 
   async function storePilotStartParallelLocalizedScreenshotUpload(sender, requestAccess = false, options = {}) {
-    const tab = await getActiveDashboardTab(sender);
+    const requestedParentTabId = Number(options.parentTabId || 0);
+    const requestedParentUrl = String(options.parentUrl || "");
+    const activeTab = await getActiveDashboardTab(sender);
+    const tab = requestedParentTabId && requestedParentUrl
+      ? { id: requestedParentTabId, url: requestedParentUrl }
+      : activeTab;
     if (!tab || !tab.id) {
       return { ok: false, message: text("noActiveTab", "No active tab.") };
     }
@@ -1730,6 +1788,7 @@
         parallelMode,
         localizedScreenshotsStartLocale: options.localizedScreenshotsStartLocale || options.startLocale || "",
         assignedLocales: normalizeAssignedParallelLocales(options.assignedLocales),
+        preClearedLocales: normalizeAssignedParallelLocales(options.preClearedLocales),
         closeSuccessfulWorkers: options.closeSuccessfulWorkers !== false
       },
       manualAbortRequested: false,
@@ -1770,17 +1829,24 @@
       if (isParallelWorkerTerminal(worker)) continue;
       worker.status = "aborting";
       worker.message = text("fillAllAbortRequested", "Abort requested. StorePilot stops after the current dashboard step.");
-      const resumeSet = new Set(getParallelLocalizedScreenshotWorkerRetryLocales(worker));
+      const resumeSet = new Set(getParallelLocalizedScreenshotWorkerRetryLocales(worker, run));
       worker.failedLocaleList = Array.from(resumeSet);
       worker.failedLocales = worker.failedLocaleList.length;
     }
     for (const locale of run.resumeLocaleList) {
+      const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
+      const existingStatus = run.localeStatuses && run.localeStatuses[normalizedLocale];
+      const keepCleared = run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD &&
+        existingStatus &&
+        existingStatus.status === "cleared";
       updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
-        status: "aborted",
-        operation: "",
-        workerId: "",
+        status: keepCleared ? "cleared" : "aborted",
+        operation: keepCleared ? "clearOnly" : "",
+        workerId: keepCleared ? existingStatus.workerId || "" : "",
         phase: run.phase || "",
-        message: text("fillAllAbortRequested", "Abort requested. StorePilot stops after the current dashboard step.")
+        message: keepCleared
+          ? "localized screenshots cleared; upload still needed"
+          : text("fillAllAbortRequested", "Abort requested. StorePilot stops after the current dashboard step.")
       });
     }
 
@@ -1826,13 +1892,19 @@
         run: createParallelLocalizedScreenshotRunSnapshot(run)
       };
     }
+    const resumeSet = new Set(resumeLocales);
+    const preClearedLocales = getParallelLocalizedScreenshotClearedNeedsUploadLocales(run)
+      .filter(locale => resumeSet.has(locale));
 
     return storePilotStartParallelLocalizedScreenshotUpload(sender, false, {
+      parentTabId: run.parentTabId,
+      parentUrl: run.parentUrl,
       workerCount: Math.min(
         getRequestedParallelLocalizedScreenshotWorkerCount(options.workerCount || requestedOptions.workerCount || (run.workers || []).length || 1),
         resumeLocales.length
       ),
       assignedLocales: resumeLocales,
+      preClearedLocales,
       parallelMode: options.parallelMode || requestedOptions.parallelMode || run.mode || PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD,
       closeSuccessfulWorkers: requestedOptions.closeSuccessfulWorkers !== false && run.closeSuccessfulWorkers !== false
     });
@@ -1852,13 +1924,20 @@
         run: run ? createParallelLocalizedScreenshotRunSnapshot(run) : null
       };
     }
+    const failedSet = new Set(failedLocales);
+    const preClearedLocales = run
+      ? getParallelLocalizedScreenshotClearedNeedsUploadLocales(run).filter(locale => failedSet.has(locale))
+      : [];
 
     return storePilotStartParallelLocalizedScreenshotUpload(sender, false, {
+      parentTabId: run ? run.parentTabId : options.parentTabId,
+      parentUrl: run ? run.parentUrl : options.parentUrl,
       workerCount: Math.min(
         getRequestedParallelLocalizedScreenshotWorkerCount(options.workerCount || (run && run.workers && run.workers.length) || 1),
         failedLocales.length
       ),
       assignedLocales: failedLocales,
+      preClearedLocales,
       parallelMode: options.parallelMode || options.mode || (run && run.mode) || PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD,
       closeSuccessfulWorkers: run ? run.closeSuccessfulWorkers : options.closeSuccessfulWorkers !== false
     });
@@ -1895,7 +1974,7 @@
       return { ok: false, message: "Localized screenshot worker is already running." };
     }
 
-    const retryLocales = getParallelLocalizedScreenshotWorkerRetryLocales(worker);
+    const retryLocales = getParallelLocalizedScreenshotWorkerRetryLocales(worker, run);
     if (!retryLocales.length) {
       return {
         ok: false,

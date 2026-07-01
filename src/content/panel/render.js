@@ -148,10 +148,13 @@ function getParallelLocalizedScreenshotResumeLocales(run) {
   for (const worker of run && run.workers || []) {
     const workerCompleted = new Set((worker.completedLocaleList || []).map(normalize));
     const workerSkipped = new Set((worker.skippedLocaleList || []).map(normalize));
+    const completedNeedsUpload = run &&
+      run.mode === "clearThenUpload" &&
+      worker.operation === "clearOnly";
     for (const localeValue of worker.assignedLocales || []) {
       const locale = normalize(localeValue);
       if (!locale || skippedLocales.has(locale) || workerSkipped.has(locale)) continue;
-      if (completedLocales.has(locale) || workerCompleted.has(locale)) continue;
+      if (completedLocales.has(locale) || (!completedNeedsUpload && workerCompleted.has(locale))) continue;
       resumeLocales.push(locale);
     }
   }
@@ -640,14 +643,24 @@ function renderPanel(locales) {
     const titleElement = document.createElement("div");
     const summary = document.createElement("div");
     const chart = document.createElement("div");
+    const actions = document.createElement("div");
+    const retryButton = createButton(localize("retryLocalizedScreenshotWorker", "Retry this worker"), async () => {
+      if (typeof retryLocalizedScreenshotWorkerFromPanel === "function") {
+        await retryLocalizedScreenshotWorkerFromPanel();
+      }
+    });
 
     board.className = "storepilot-localized-worker-board";
     titleElement.className = "storepilot-localized-worker-title";
     summary.className = "storepilot-localized-worker-summary";
     chart.className = "storepilot-localized-worker-chart storepilot-parallel-chart";
+    actions.className = "storepilot-localized-worker-actions";
+    retryButton.dataset.storepilotAction = "retry-localizedScreenshotWorker";
+    retryButton.hidden = true;
     titleElement.textContent = localize("localizedScreenshotWorkerProgressTitle", "Localized screenshot progress");
     board.hidden = true;
-    board.append(titleElement, summary, chart);
+    actions.append(retryButton);
+    board.append(titleElement, summary, chart, actions);
     return board;
   }
 

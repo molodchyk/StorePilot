@@ -1127,6 +1127,9 @@
   "resumeLocalizedScreenshotsRun": {
     "message": "Resume run"
   },
+  "retryLocalizedScreenshotWorker": {
+    "message": "Retry this worker"
+  },
   "parallelLocalizedScreenshotsNoResumeLocales": {
     "message": "No unfinished localized screenshot locales to resume."
   },

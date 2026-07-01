@@ -274,6 +274,16 @@
         gap: 2px;
       }
 
+      #${panelId} .storepilot-localized-worker-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      #${panelId} .storepilot-localized-worker-actions:empty {
+        display: none;
+      }
+
       #${panelId} .storepilot-parallel-chart {
         height: 88px;
         overflow: hidden;

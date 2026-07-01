@@ -459,6 +459,36 @@ function requestLocalizedScreenshotWorkerSelfRetryIfVisible() {
   });
 }
 
+async function retryLocalizedScreenshotWorkerFromPanel() {
+  const progress = localizedScreenshotWorkerProgressState;
+  if (!progress || !progress.runId || !progress.workerId || typeof storePilotRuntimeSendMessage !== "function") return;
+  if (mediaOperationState.running || localizedScreenshotWorkerSelfRetryInFlight) return;
+
+  localizedScreenshotWorkerSelfRetryInFlight = true;
+  try {
+    const response = await storePilotRuntimeSendMessage({
+      type: "storepilot-retry-localized-screenshot-worker-tab",
+      runId: progress.runId,
+      workerId: progress.workerId
+    });
+    if (response && response.run) {
+      updateParallelLocalizedScreenshotRunState(response.run);
+    }
+    const panelStatus = document.querySelector(`#${PANEL_ID} .storepilot-status`);
+    if (panelStatus) {
+      panelStatus.textContent = response && response.message || localize("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload.");
+    }
+    if (!response || !response.ok) {
+      localizedScreenshotWorkerSelfRetryKey = "";
+    }
+  } catch (_error) {
+    localizedScreenshotWorkerSelfRetryKey = "";
+  } finally {
+    localizedScreenshotWorkerSelfRetryInFlight = false;
+    renderLocalizedScreenshotWorkerProgressBoard();
+  }
+}
+
 function createLocalizedScreenshotWorkerProgressSample(progress, phase = "") {
   const counts = getLocalizedScreenshotWorkerProgressCounts(progress);
   return {
@@ -534,6 +564,7 @@ function renderLocalizedScreenshotWorkerProgressBoard(panel = document.getElemen
   const title = board.querySelector(".storepilot-localized-worker-title");
   const summary = board.querySelector(".storepilot-localized-worker-summary");
   const chart = board.querySelector(".storepilot-localized-worker-chart");
+  const retryButton = board.querySelector("[data-storepilot-action='retry-localizedScreenshotWorker']");
   if (!title || !summary || !chart) return;
 
   const progress = localizedScreenshotWorkerProgressState;
@@ -541,6 +572,7 @@ function renderLocalizedScreenshotWorkerProgressBoard(panel = document.getElemen
     board.hidden = true;
     summary.replaceChildren();
     chart.replaceChildren();
+    if (retryButton) retryButton.hidden = true;
     updateLocalizedScreenshotWorkerProgressRenderTimer();
     return;
   }
@@ -566,12 +598,30 @@ function renderLocalizedScreenshotWorkerProgressBoard(panel = document.getElemen
     createParallelBoardLine("Step", progress.phase || "")
   );
   renderParallelTimelineChart(chart, createLocalizedScreenshotWorkerRunForChart(progress));
+  if (retryButton) {
+    const hasUnfinishedResponsibility = counts.failedLocales > 0 ||
+      counts.completedLocales + counts.skippedLocales < counts.totalLocales;
+    retryButton.hidden = mediaOperationState.running ||
+      localizedScreenshotWorkerSelfRetryInFlight ||
+      !progress.runId ||
+      !progress.workerId ||
+      !hasUnfinishedResponsibility;
+    retryButton.disabled = retryButton.hidden;
+  }
   updateLocalizedScreenshotWorkerProgressRenderTimer();
   requestLocalizedScreenshotWorkerSelfRetryIfVisible();
 }
 
 function updateLocalizedScreenshotWorkerProgressState(progress, phase = "") {
   localizedScreenshotWorkerProgressState = recordLocalizedScreenshotWorkerProgressSample(progress, phase);
+  if (
+    localizedScreenshotWorkerProgressState &&
+    parallelLocalizedScreenshotRunState &&
+    localizedScreenshotWorkerProgressState.runId === parallelLocalizedScreenshotRunState.runId
+  ) {
+    parallelLocalizedScreenshotRunState = null;
+    renderParallelLocalizedScreenshotBoard();
+  }
   renderLocalizedScreenshotWorkerProgressBoard();
 }
 
@@ -781,6 +831,16 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
 }
 
 function updateParallelLocalizedScreenshotRunState(run) {
+  if (
+    run &&
+    localizedScreenshotWorkerProgressState &&
+    localizedScreenshotWorkerProgressState.runId === run.runId
+  ) {
+    parallelLocalizedScreenshotRunState = null;
+    renderParallelLocalizedScreenshotBoard();
+    updatePanelMediaUi();
+    return;
+  }
   parallelLocalizedScreenshotRunState = run || null;
   renderParallelLocalizedScreenshotBoard();
   updatePanelMediaUi();

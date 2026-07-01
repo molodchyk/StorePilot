@@ -432,7 +432,7 @@ const abortedClearThenUploadSnapshot = context.storePilotCreateParallelLocalized
     parallelMode: "clearThenUpload",
     closeSuccessfulWorkers: true
   },
-  resumeLocaleList: ["am", "ar"],
+  resumeLocaleList: [],
   timeline: [],
   workers: [
     {
@@ -681,6 +681,11 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   }, abortableRunStart.run.runId).run;
   assert.equal(abortableRun.status, "aborted");
   assert.deepEqual(hostValue(abortableRun.resumeLocales), ["am", "ar"]);
+  assert.equal(
+    hostValue(abortableRun.localeStatuses).find(status => status.locale === "am").status,
+    "cleared",
+    "coordinated abort keeps cleared locales visible as needing upload"
+  );
 
   const retryAbortedWorker = await context.storePilotRetryParallelLocalizedScreenshotWorkerTab({
     tab: {
@@ -691,17 +696,19 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   assert.equal(retryAbortedWorker.ok, false);
   assert.equal(retryAbortedWorker.aborted, true);
 
-  let resumeAssignedLocales = [];
+  const resumeWorkerMessages = [];
   context.storePilotTabsSendMessage = (_tabId, message) => {
     if (message && message.type === "storepilot-upload-media-assets") {
-      resumeAssignedLocales = message.options && message.options.assignedLocales || [];
+      const operation = message.options && message.options.localizedScreenshotsOperation || "";
+      const assignedLocales = message.options && message.options.assignedLocales || [];
+      resumeWorkerMessages.push({ operation, assignedLocales });
       return Promise.resolve({
         ok: true,
-        completed: ["am", "ar"],
+        completed: assignedLocales,
         failed: [],
         skipped: [],
-        uploaded: ["am: 3", "ar: 3"],
-        audited: ["am", "ar"],
+        uploaded: operation === "uploadOnly" ? assignedLocales.map(locale => `${locale}: 3`) : [],
+        audited: operation === "uploadOnly" ? assignedLocales : [],
         elapsedMs: 700
       });
     }
@@ -709,17 +716,25 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   };
   const resumedRun = await context.storePilotResumeParallelLocalizedScreenshotUpload({
     tab: {
-      id: 89,
+      id: abortableRun.workers[0].tabId,
       url: "https://chrome.google.com/webstore/devconsole/item/edit"
     }
   }, abortableRun.runId);
   assert.equal(resumedRun.ok, true);
+  assert.equal(
+    resumedRun.run.parentTabId,
+    89,
+    "resuming from a worker tab keeps the original parent tab as coordinator"
+  );
   await new Promise(resolve => setTimeout(resolve, 0));
   await new Promise(resolve => setTimeout(resolve, 0));
   assert.deepEqual(
-    hostValue(resumeAssignedLocales),
-    ["am", "ar"],
-    "resume reopens workers for unfinished locales using the saved coordinated mode"
+    hostValue(resumeWorkerMessages),
+    [
+      { operation: "clearOnly", assignedLocales: ["ar"] },
+      { operation: "uploadOnly", assignedLocales: ["am", "ar"] }
+    ],
+    "coordinated resume skips already-cleared locales during clear and uploads them in the upload phase"
   );
 })();
 
