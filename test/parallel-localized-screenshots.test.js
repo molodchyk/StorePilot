@@ -643,6 +643,115 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
     "visible worker retry sends only unfinished locales back to the existing worker tab"
   );
 
+  const removedTabs = [];
+  const freshRetryMessages = [];
+  let activeClearWorker2Resolve = null;
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 81 + openedTabs++ });
+  context.storePilotTabsRemove = tabId => {
+    removedTabs.push(tabId);
+    return Promise.resolve();
+  };
+  context.storePilotTabsSendMessage = (tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      const operation = message.options && message.options.localizedScreenshotsOperation || "";
+      const assignedLocales = message.options && message.options.assignedLocales || [];
+      if (operation === "clearOnly" && assignedLocales.includes("am")) {
+        return Promise.resolve({
+          ok: false,
+          completed: ["am"],
+          failed: ["ar: dashboard tab stayed hidden/minimized"],
+          skipped: [],
+          uploaded: [],
+          elapsedMs: 500
+        });
+      }
+      if (operation === "clearOnly" && assignedLocales.includes("az")) {
+        return new Promise(resolve => {
+          activeClearWorker2Resolve = () => resolve({
+            ok: true,
+            completed: assignedLocales,
+            failed: [],
+            skipped: [],
+            uploaded: [],
+            elapsedMs: 1500
+          });
+        });
+      }
+      if (operation === "clearOnly" && assignedLocales.length === 1 && assignedLocales[0] === "ar") {
+        freshRetryMessages.push({ tabId, operation, assignedLocales });
+        return Promise.resolve({
+          ok: true,
+          completed: ["ar"],
+          failed: [],
+          skipped: [],
+          uploaded: [],
+          elapsedMs: 400
+        });
+      }
+      if (operation === "uploadOnly") {
+        return Promise.resolve({
+          ok: true,
+          completed: assignedLocales,
+          failed: [],
+          skipped: [],
+          uploaded: assignedLocales.map(locale => `${locale}: 3`),
+          audited: assignedLocales,
+          elapsedMs: 500
+        });
+      }
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const activeClearStart = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 90,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am", "ar", "az"],
+    workerCount: 2,
+    parallelMode: "coordinated"
+  });
+  assert.equal(activeClearStart.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const activeClearRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 90,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, activeClearStart.run.runId).run;
+  const failedClearWorker = activeClearRun.workers.find(worker => worker.status === "failed");
+  assert.ok(failedClearWorker, "clear phase exposes failed workers while other clear workers are still active");
+  const retryFromMaster = await context.storePilotRetryParallelLocalizedScreenshotWorkerTab({
+    tab: {
+      id: 90,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, activeClearRun.runId, failedClearWorker.workerId, {
+    freshTab: true,
+    fromMaster: true
+  });
+  assert.equal(retryFromMaster.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.deepEqual(
+    hostValue(freshRetryMessages).map(message => ({
+      operation: message.operation,
+      assignedLocales: message.assignedLocales
+    })),
+    [{ operation: "clearOnly", assignedLocales: ["ar"] }],
+    "master worker retry reopens a fresh tab and retries only unfinished clear-phase locales"
+  );
+  assert.notEqual(freshRetryMessages[0].tabId, failedClearWorker.tabId);
+  assert.ok(removedTabs.includes(failedClearWorker.tabId), "master retry closes the stale failed worker tab");
+  assert.ok(removedTabs.includes(freshRetryMessages[0].tabId), "successful fresh retry worker tab can still auto-close");
+  assert.equal(typeof activeClearWorker2Resolve, "function");
+  activeClearWorker2Resolve();
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+
   context.storePilotTabsCreate = () => Promise.resolve({ id: 71 + openedTabs++ });
   context.storePilotTabsRemove = () => Promise.resolve();
   context.storePilotTabsSendMessage = (_tabId, message) => {

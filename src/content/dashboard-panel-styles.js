@@ -432,6 +432,16 @@
         overflow-wrap: anywhere;
       }
 
+      #${panelId} .storepilot-parallel-worker-actions {
+        display: grid;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      #${panelId} .storepilot-parallel-worker-actions:empty {
+        display: none;
+      }
+
       #${panelId} .storepilot-parallel-board-actions {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

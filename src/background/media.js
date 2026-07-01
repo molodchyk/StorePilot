@@ -1265,12 +1265,12 @@
     return Array.from(new Set(resumeLocales.filter(Boolean)));
   }
 
-  function getParallelLocalizedScreenshotWorkerRetryLocales(worker, run = null) {
+  function getParallelLocalizedScreenshotWorkerRetryLocales(worker, run = null, retryOperation = "") {
     if (!worker) return [];
     const completedSet = new Set((worker.completedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
     const skippedSet = new Set((worker.skippedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
     const failedLocales = new Set((worker.failedLocaleList || []).map(normalizeParallelLocalizedScreenshotLocale));
-    const completedNeedsUpload = isCoordinatedClearWorker(run, worker);
+    const completedNeedsUpload = isCoordinatedClearWorker(run, worker) && retryOperation !== "clearOnly";
     for (const localeValue of worker.assignedLocales || []) {
       const locale = normalizeParallelLocalizedScreenshotLocale(localeValue);
       if (!locale) continue;
@@ -1293,6 +1293,20 @@
     } catch (error) {
       worker.closeError = error.message || String(error);
     }
+  }
+
+  async function closeParallelLocalizedScreenshotTerminalWorkerTabs(run) {
+    if (!run) return;
+
+    await Promise.all((run.workers || []).map(async worker => {
+      if (!isParallelWorkerTerminal(worker) || worker.closed || !worker.tabId) return;
+      try {
+        await storePilotTabsRemove(worker.tabId);
+        worker.closed = true;
+      } catch (error) {
+        worker.closeError = error.message || String(error);
+      }
+    }));
   }
 
   function scheduleParallelLocalizedScreenshotAbortFinalizer(run) {
@@ -1592,6 +1606,35 @@
     return run.workers.some(worker => worker.status === "failed" || worker.status === "aborted");
   }
 
+  function parallelLocalizedScreenshotPhaseHasActiveWorkers(run, operation = "") {
+    return (run.workers || []).some(worker => (
+      (!operation || worker.operation === operation) &&
+      ["preparing", "opening", "running", "aborting"].includes(worker.status)
+    ));
+  }
+
+  async function waitForParallelLocalizedScreenshotPhaseWorkers(run, operation = "") {
+    while (
+      run &&
+      !run.abortRequested &&
+      parallelLocalizedScreenshotPhaseHasActiveWorkers(run, operation)
+    ) {
+      await delay(250);
+    }
+  }
+
+  function getParallelLocalizedScreenshotWorkerRetryOperation(run, worker) {
+    const activeRun = isParallelLocalizedScreenshotRunActiveStatus(run);
+    if (run && run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD) {
+      if (activeRun && ["clearOnly", "uploadOnly"].includes(worker && worker.operation)) {
+        return worker.operation;
+      }
+      return "replace";
+    }
+
+    return worker && worker.operation || getParallelLocalizedScreenshotOperationForMode(run && run.mode);
+  }
+
   async function runParallelLocalizedScreenshotTwoPhase(run, clearChunks, uploadChunks, files, projectName) {
     run.deferFinalize = true;
 
@@ -1612,6 +1655,7 @@
         run.phase = "clearing";
         await sendParallelLocalizedScreenshotRunUpdate(run);
       }
+      await waitForParallelLocalizedScreenshotPhaseWorkers(run, "clearOnly");
 
       if (run.abortRequested || parallelLocalizedScreenshotPhaseHasFailure(run)) {
         run.deferFinalize = false;
@@ -1630,6 +1674,7 @@
         "uploading"
       );
       await Promise.all(uploadPromises);
+      await waitForParallelLocalizedScreenshotPhaseWorkers(run);
     } catch (error) {
       run.status = "failed";
       run.fatalError = true;
@@ -1896,6 +1941,8 @@
     const preClearedLocales = getParallelLocalizedScreenshotClearedNeedsUploadLocales(run)
       .filter(locale => resumeSet.has(locale));
 
+    await closeParallelLocalizedScreenshotTerminalWorkerTabs(run);
+
     return storePilotStartParallelLocalizedScreenshotUpload(sender, false, {
       parentTabId: run.parentTabId,
       parentUrl: run.parentUrl,
@@ -1929,6 +1976,10 @@
       ? getParallelLocalizedScreenshotClearedNeedsUploadLocales(run).filter(locale => failedSet.has(locale))
       : [];
 
+    if (run) {
+      await closeParallelLocalizedScreenshotTerminalWorkerTabs(run);
+    }
+
     return storePilotStartParallelLocalizedScreenshotUpload(sender, false, {
       parentTabId: run ? run.parentTabId : options.parentTabId,
       parentUrl: run ? run.parentUrl : options.parentUrl,
@@ -1943,8 +1994,9 @@
     });
   }
 
-  async function storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, runId = "", workerId = "") {
+  async function storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, runId = "", workerId = "", options = {}) {
     const senderTabId = sender && sender.tab && sender.tab.id;
+    const forceFreshTab = Boolean(options && (options.freshTab || options.forceFreshTab || options.fromMaster));
     const run = runId && localizedScreenshotParallelRuns.has(runId)
       ? localizedScreenshotParallelRuns.get(runId)
       : Array.from(localizedScreenshotParallelRuns.values())
@@ -1974,7 +2026,8 @@
       return { ok: false, message: "Localized screenshot worker is already running." };
     }
 
-    const retryLocales = getParallelLocalizedScreenshotWorkerRetryLocales(worker, run);
+    const retryOperation = getParallelLocalizedScreenshotWorkerRetryOperation(run, worker);
+    const retryLocales = getParallelLocalizedScreenshotWorkerRetryLocales(worker, run, retryOperation);
     if (!retryLocales.length) {
       return {
         ok: false,
@@ -1992,9 +2045,15 @@
       };
     }
 
-    const retryOperation = run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD
-      ? "replace"
-      : worker.operation || getParallelLocalizedScreenshotOperationForMode(run.mode);
+    if (forceFreshTab || worker.closed || !worker.tabId) {
+      if (forceFreshTab && worker.tabId && !worker.closed) {
+        await storePilotTabsRemove(worker.tabId).catch(() => null);
+        worker.closed = true;
+      }
+      const workerTab = await storePilotTabsCreate({ url: run.parentUrl, active: false });
+      worker.tabId = workerTab && workerTab.id;
+    }
+
     worker.status = "opening";
     worker.closed = false;
     worker.operation = retryOperation;
@@ -2015,7 +2074,9 @@
     worker.startedAt = 0;
     worker.finishedAt = 0;
     worker.elapsedMs = 0;
-    worker.message = "Retrying unfinished localized screenshot locales in this tab.";
+    worker.message = forceFreshTab
+      ? "Retrying unfinished localized screenshot locales in a fresh worker tab."
+      : "Retrying unfinished localized screenshot locales in this tab.";
 
     run.status = "running";
     run.abortRequested = false;
@@ -2039,7 +2100,7 @@
 
     return {
       ok: true,
-      message: "Retrying unfinished localized screenshot locales in this tab.",
+      message: worker.message,
       run: createParallelLocalizedScreenshotRunSnapshot(run)
     };
   }

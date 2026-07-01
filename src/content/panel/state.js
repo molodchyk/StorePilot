@@ -44,6 +44,17 @@ function getParallelLocalizedScreenshotRunState() {
   return parallelLocalizedScreenshotRunState;
 }
 
+function normalizeParallelLocalizedScreenshotPanelLocale(value) {
+  const parts = String(value || "")
+    .trim()
+    .replace(/-/g, "_")
+    .split("_")
+    .filter(Boolean);
+  return parts
+    .map((part, index) => index === 0 ? part.toLowerCase() : part.toUpperCase())
+    .join("_");
+}
+
 function createParallelBoardLine(label, value) {
   const line = document.createElement("div");
   line.className = "storepilot-parallel-board-line";
@@ -489,6 +500,70 @@ async function retryLocalizedScreenshotWorkerFromPanel() {
   }
 }
 
+function getParallelWorkerRetryLocalesForPanel(run, worker) {
+  if (!worker) return [];
+
+  const assignedLocales = (worker.assignedLocales || [])
+    .map(normalizeParallelLocalizedScreenshotPanelLocale)
+    .filter(Boolean);
+  const completedSet = new Set((worker.completedLocaleList || []).map(normalizeParallelLocalizedScreenshotPanelLocale));
+  const skippedSet = new Set((worker.skippedLocaleList || []).map(normalizeParallelLocalizedScreenshotPanelLocale));
+  const retrySet = new Set((worker.failedLocaleList || []).map(normalizeParallelLocalizedScreenshotPanelLocale).filter(Boolean));
+  const activeClearRetry = isParallelLocalizedScreenshotRunActive(run) &&
+    String(run && run.mode || "") === "clearThenUpload" &&
+    String(worker.operation || "") === "clearOnly";
+  const completedNeedsUpload = String(run && run.mode || "") === "clearThenUpload" &&
+    String(worker.operation || "") === "clearOnly" &&
+    !activeClearRetry;
+
+  for (const locale of assignedLocales) {
+    if (skippedSet.has(locale)) continue;
+    if (completedNeedsUpload || !completedSet.has(locale)) {
+      retrySet.add(locale);
+    }
+  }
+
+  return Array.from(retrySet);
+}
+
+function isParallelWorkerRetryVisibleOnMaster(run, worker) {
+  if (!run || !worker || !worker.workerId) return false;
+  if (["preparing", "opening", "running", "aborting", "completed"].includes(String(worker.status || ""))) return false;
+  return getParallelWorkerRetryLocalesForPanel(run, worker).length > 0;
+}
+
+async function retryParallelLocalizedScreenshotWorkerFromMaster(workerId) {
+  const run = getParallelLocalizedScreenshotRunState();
+  if (!run || !run.runId || !workerId || typeof storePilotRuntimeSendMessage !== "function") return;
+
+  const panelStatus = document.querySelector(`#${PANEL_ID} .storepilot-status`);
+  if (panelStatus) {
+    panelStatus.textContent = localize("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload.");
+  }
+
+  try {
+    const response = await storePilotRuntimeSendMessage({
+      type: "storepilot-retry-localized-screenshot-worker-tab",
+      runId: run.runId,
+      workerId,
+      options: {
+        freshTab: true,
+        fromMaster: true
+      }
+    });
+    if (response && response.run) {
+      updateParallelLocalizedScreenshotRunState(response.run);
+    }
+    if (panelStatus) {
+      panelStatus.textContent = response && response.message || localize("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload.");
+    }
+  } catch (error) {
+    if (panelStatus) {
+      panelStatus.textContent = error && error.message || String(error || "");
+    }
+  }
+}
+
 function createLocalizedScreenshotWorkerProgressSample(progress, phase = "") {
   const counts = getLocalizedScreenshotWorkerProgressCounts(progress);
   return {
@@ -794,6 +869,11 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     const title = document.createElement("div");
     const counts = document.createElement("div");
     const current = document.createElement("div");
+    const workerActions = document.createElement("div");
+    const retryWorkerButton = createButton(localize("retryLocalizedScreenshotWorker", "Retry this worker"), async () => {
+      retryWorkerButton.disabled = true;
+      await retryParallelLocalizedScreenshotWorkerFromMaster(worker.workerId);
+    });
     const elapsedLabel = formatPanelParallelElapsed(getPanelParallelWorkerElapsedMs(worker));
     const workerClearProgress = isParallelClearProgressWorker(worker, run);
     const workerAuditTotal = Number(worker.auditTotalLocales || 0) ||
@@ -814,12 +894,18 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     title.className = "storepilot-parallel-worker-title";
     counts.className = "storepilot-parallel-worker-counts";
     current.className = "storepilot-parallel-worker-current";
+    workerActions.className = "storepilot-parallel-worker-actions";
+    retryWorkerButton.dataset.storepilotAction = "retry-localizedScreenshotsParallelWorker";
+    const showWorkerRetry = isParallelWorkerRetryVisibleOnMaster(run, worker);
     title.textContent = `${worker.workerId}: ${worker.operation || "replace"} - ${worker.status}${worker.closed ? " (closed)" : ""}`;
     counts.textContent = workerClearProgress
       ? `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; clear-only${workerAuditText}; elapsed ${elapsedLabel}`
       : `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}${workerAuditText}; elapsed ${elapsedLabel}`;
     current.textContent = currentText || "Waiting for progress.";
-    row.append(title, counts, current);
+    if (showWorkerRetry) {
+      workerActions.append(retryWorkerButton);
+    }
+    row.append(title, counts, current, workerActions);
     return row;
   }));
 

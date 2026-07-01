@@ -56,7 +56,7 @@
   }
 
   function handleRetryParallelLocalizedScreenshotWorkerTabMessage(message, sender, sendResponse) {
-    storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, message.runId || "", message.workerId || "")
+    storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, message.runId || "", message.workerId || "", message.options || {})
       .then(sendResponse)
       .catch(error => sendResponse({
         ok: false,
