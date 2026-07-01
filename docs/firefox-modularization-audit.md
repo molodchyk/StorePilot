@@ -10,7 +10,7 @@ File size and flat folder density are active architecture constraints. New sourc
 
 ## Reason For Deferral
 
-StorePilot has made measurable progress on file-size and flat-folder-density budgets, and the former large dashboard, options, popup, style, and document-parser surfaces have been split into focused modules. It is still not fully compliant with the file-size target: current audit scripts allow named over-budget source files only because they are explicit migration debt. The remaining gap is both architectural shape and several oversized focused modules: StorePilot is still a manifest-loaded global-script extension rather than the modularization playbook's full feature-first ES-module target with thin entry files, feature-owned tests, and generated Firefox output.
+StorePilot has made measurable progress on file-size and flat-folder-density budgets, and the former large dashboard, options, popup, style, background-media, and document-parser surfaces have been split into focused modules. The current source tree passes the scripted file-size and flat-folder-density checks without named over-budget source files. The remaining gap is architectural shape: StorePilot is still a manifest-loaded global-script extension rather than the modularization playbook's full feature-first ES-module target with source-level feature folders, feature-owned tests, and generated Firefox output.
 
 Moving to that final shape would require a build/runtime loading migration across background, content, popup, and options surfaces. That is broader than release-prep hygiene and should happen as a separate, behavior-protected migration.
 
@@ -20,8 +20,9 @@ Runtime entry and surface files inspected:
 
 | File | Current role | Audit result |
 | --- | --- | --- |
-| `src/background.js` | Thin background message/action wiring for options opening, popup opening, and media upload delegation | Under the entry-file budget after media file resolution and dashboard upload orchestration moved to `src/background/media.js`. Keep new background responsibilities out of this entry file. |
-| `src/background/media.js` | Background-owned media file-handle resolution and dashboard upload delegation | Acceptable focused background helper. Keep project media file resolution and active dashboard upload dispatch here. |
+| `src/background.js` | Thin background message/action wiring for options opening, popup opening, and media upload delegation | Under the entry-file budget after media command handling moved out. Keep new background responsibilities out of this entry file. |
+| `src/background/media.js` | Thin background media export boundary | Under the runtime boundary budget after localized screenshot parallel-run command and message handlers moved into `src/background/media/*`. Keep this as the file that exposes background media actions to `src/background.js`. |
+| `src/background/media/*` | Focused classic-script background media helpers for localized screenshot planning, log storage, mutation gating, progress snapshots, file resolution, worker lifecycle, phase orchestration, command handling, and message handling | Acceptable focused background media cluster loaded before `src/background/media.js`. Keep new localized screenshot internals here instead of regrowing the export boundary. |
 | `src/content/dashboard-helper.js` | Dashboard section detection, settings load, abort handling, diagnostics, startup orchestration, and storage-change reactions | Under the file-size budget after focused content splits. Message routing now lives in `src/content/dashboard-messages.js`; selector, project-context, fill, panel, and media behavior belong in focused modules. |
 | `src/content/dashboard-messages.js` | Focused content-script runtime message routing for popup and panel dashboard commands | Acceptable focused content helper. Keep command dispatch here instead of growing `src/content/dashboard-helper.js`. |
 | `src/content/dashboard-dom.js` | Focused content-script DOM visibility, text, form-fill, click activation, and timing helpers loaded before feature modules | Acceptable focused content utility module. Keep generic content DOM/form mechanics here instead of growing `src/content/dashboard-helper.js`. |
@@ -43,9 +44,16 @@ Runtime entry and surface files inspected:
 | `src/content/media/localized-screenshot-files.js` | Focused localized screenshot file entry filtering, start-locale/assigned-locale filtering, operation normalization, and target resolution | Acceptable focused content media helper loaded before localized screenshot upload/run helpers. |
 | `src/content/media/localized-screenshot-upload.js` | Focused localized screenshot per-file upload retries and per-locale replace/clear/upload flow | Acceptable focused content media helper loaded before localized screenshot run orchestration. |
 | `src/content/media/localized-screenshot-run.js` | Focused localized screenshot run orchestration, completed-locale audit, skipped/failed accounting, and final summary | Acceptable focused content media helper loaded before `src/content/dashboard-media.js`. |
-| `src/content/panel/state.js` | Focused dashboard panel mode, position, viewport clamp, media button state, and media-operation lock behavior | Acceptable focused panel helper. Keep panel state and operation lock mechanics here instead of returning them to `src/content/dashboard-helper.js`. |
-| `src/content/panel/render.js` | Focused dashboard panel DOM construction for listing and privacy pages | Acceptable focused panel helper. Keep panel button layout and per-page panel rendering here. |
-| `src/content/dashboard-panel-styles.js` | Focused dashboard panel CSS injector loaded before the main content helper | Acceptable focused content UI helper. Keep panel styling changes here instead of growing `src/content/dashboard-helper.js`. |
+| `src/content/panel/state.js` | Dashboard panel mode, position, viewport clamp, media button state, media-operation lock, and drag behavior | Under the file-size budget after parallel timeline, worker progress, and master board state moved to focused panel modules. |
+| `src/content/panel/parallel-timeline.js` | Parallel localized screenshot elapsed-time formatting, timeline normalization, SVG chart helpers, and audit/clear progress accounting | Acceptable focused panel state helper loaded after base panel state. |
+| `src/content/panel/worker-progress.js` | Localized screenshot worker progress state, worker retry actions, worker timeline samples, and worker progress board rendering | Acceptable focused panel state helper loaded after timeline helpers. |
+| `src/content/panel/parallel-board.js` | Parallel localized screenshot master locale map, worker summaries, board rendering, and run-state updates | Acceptable focused panel state helper loaded before panel render. |
+| `src/content/panel/render.js` | Focused dashboard panel DOM construction for listing and privacy pages | Under the file-size budget after parallel localized screenshot picker and board rendering moved to `src/content/panel/parallel-render.js`. Keep general panel button layout and per-page composition here. |
+| `src/content/panel/parallel-render.js` | Dashboard panel parallel localized screenshot picker, master board, worker board, retry/resume actions, and log download UI | Acceptable focused panel helper loaded alongside the main panel renderer. |
+| `src/content/dashboard-panel-styles.js` | Thin dashboard panel CSS injector loaded after panel style modules | Under the entry-file budget after static panel CSS moved to `src/content/panel/styles/*`. Keep this as the assembler only. |
+| `src/content/panel/styles/base.js` | Dashboard panel base layout, controls, and status styles | Acceptable focused panel style module loaded before the injector. |
+| `src/content/panel/styles/parallel.js` | Dashboard panel parallel localized screenshot board, chart, locale map, and worker-card styles | Acceptable focused panel style module loaded before the injector. |
+| `src/content/panel/styles/theme.js` | Dashboard panel dark/system/accent/high-contrast theme overrides | Acceptable focused panel style module loaded before the injector. |
 | `src/content/media-upload-main-world.js` | Narrow page-world upload bridge | Acceptable as a focused page bridge. |
 | `src/popup/popup.js` | Popup state, project selection, action handlers, and action availability | Second split done. This file is now under the preferred UI-module budget after dashboard page behavior moved to `src/popup/dashboard-page.js` and popup settings/theme behavior moved to `src/popup/settings.js`. |
 | `src/popup/dashboard-page.js` | Popup-owned active-tab messaging, dashboard project binding resolution, panel visibility, and media action state | Acceptable focused popup helper. It now uses shared dashboard URL helpers instead of owning URL parsing directly. Keep this separate from content-script selector and fill logic. |
@@ -59,7 +67,10 @@ Runtime entry and surface files inspected:
 | `src/options/options.css` | Core options-page layout, controls, status cards, tabs, tables, and media cards | First split done. This file is now under the stylesheet budget after modal/reference, responsive, and theme rules moved to focused CSS files. |
 | `src/options/options-reference.css` | Options-page media review modal and Reference tab styles | Acceptable focused stylesheet. |
 | `src/options/options-responsive.css` | Options-page responsive layout rules | Acceptable focused stylesheet. |
-| `src/options/options-theme.css` | Options-page system, dark, and light theme overrides | Acceptable focused stylesheet. |
+| `src/options/options-theme.css` | Options-page system dark theme defaults | Acceptable focused stylesheet. Explicit modes, accent styles, and high contrast live in the adjacent theme stylesheets. |
+| `src/options/options-theme-modes.css` | Options-page explicit light and dark theme overrides | Acceptable focused stylesheet loaded after system defaults. |
+| `src/options/options-theme-styles.css` | Options-page slate, ocean, and forest accent theme overrides | Acceptable focused stylesheet loaded after explicit mode overrides. |
+| `src/options/options-theme-high-contrast.css` | Options-page high contrast theme overrides | Acceptable focused stylesheet loaded last so high contrast wins over mode and accent styles. |
 | `src/shared/store-docs/privacy-schema.js` | Privacy document canonical keys, label/key normalization, remote-code display decision, and display-field ordering | Acceptable focused store-document schema helper. Keep privacy key definitions and label routing here instead of growing `src/shared/store-docs/privacy-doc.js`. |
 | `src/shared/store-docs/privacy-doc.js` | Privacy document file eligibility, scoring, parsing, summary formatting, and discovery | Under the pure-module budget after privacy schema/key normalization moved to `src/shared/store-docs/privacy-schema.js`. Keep file and candidate discovery here. |
 
@@ -75,6 +86,15 @@ Feature and shared modules already present:
 - `src/shared/store-docs/privacy-doc.js`
 - `src/shared/projects.js`
 - `src/shared/storage.js`
+- `src/background/media/parallel-core.js`
+- `src/background/media/parallel-log-storage.js`
+- `src/background/media/parallel-mutation-gate.js`
+- `src/background/media/parallel-progress-state.js`
+- `src/background/media/file-resolution.js`
+- `src/background/media/parallel-worker-lifecycle.js`
+- `src/background/media/parallel-phase-runner.js`
+- `src/background/media/parallel-run-commands.js`
+- `src/background/media/parallel-message-handlers.js`
 - `src/background/media.js`
 - `src/content/dashboard-dom.js`
 - `src/content/dashboard-messages.js`
@@ -97,7 +117,14 @@ Feature and shared modules already present:
 - `src/content/media/localized-screenshot-run.js`
 - `src/content/dashboard-media.js`
 - `src/content/panel/state.js`
+- `src/content/panel/parallel-timeline.js`
+- `src/content/panel/worker-progress.js`
+- `src/content/panel/parallel-board.js`
 - `src/content/panel/render.js`
+- `src/content/panel/parallel-render.js`
+- `src/content/panel/styles/base.js`
+- `src/content/panel/styles/parallel.js`
+- `src/content/panel/styles/theme.js`
 - `src/content/dashboard-panel-styles.js`
 - `src/popup/dashboard-page.js`
 - `src/popup/settings.js`
@@ -112,7 +139,7 @@ Browser/platform boundary inspected:
 - StorePilot uses Firefox's `browser.*` API through the global `STOREPILOT_API`.
 - Focused classic-script wrappers under `src/platform/webextension/` now own direct WebExtension API calls for storage, runtime, tabs, scripting, action, i18n, and extension URL helpers.
 - Existing runtime files now use the platform wrapper for new WebExtension API access.
-- Background media file resolution now lives in `src/background/media.js`, leaving `src/background.js` as a thin listener/action entry.
+- Background localized screenshot run internals, command/message handlers, and media file resolution now live under `src/background/media/*`, leaving `src/background/media.js` as the media export boundary and `src/background.js` as a thin listener/action entry.
 - The dashboard content script now loads shared category and privacy document modules before the main helper so imported metadata constants are not duplicated across options, popup, and content surfaces.
 - Dashboard project binding and project-title resolution now reuse `src/shared/storage.js` and `src/content/dashboard-project-context.js`, keeping the popup and content script on one project-resolution contract.
 - Dashboard URL detection and extension-id extraction now live in `src/shared/dashboard-url.js`, keeping popup, content, and project-resolution tests on one dashboard URL contract.
@@ -146,7 +173,7 @@ Diagnostic artifact folders inspected:
    - Seventh content split done in this pass: privacy form normalization, Data Usage checkbox filling, permission justification filling, and remote-code radio behavior now live in `src/content/dashboard-privacy-core.js`, `src/content/dashboard-privacy-data-usage.js`, and `src/content/dashboard-privacy-fields.js`.
    - Eighth content split done in this pass: Graphic Assets upload, clear, diagnostics, and page-bridge coordination now live in `src/content/dashboard-media.js`.
    - Ninth content split done in this pass: locale normalization, two-mode language picker detection, option activation, description-field detection, and Fill descriptions progress handling now live in `src/content/language/locale.js`, `src/content/language/picker.js`, and `src/content/language/description-fill.js`.
-   - Tenth content split done in this pass: dashboard panel state, viewport clamping, media button state, media-operation locking, and listing/privacy panel rendering now live in `src/content/panel/state.js` and `src/content/panel/render.js`.
+   - Tenth content split done in this pass: dashboard panel state, parallel timeline/chart state, worker progress state, master parallel board rendering, media-operation locking, and listing/privacy panel rendering now live in `src/content/panel/state.js`, `src/content/panel/parallel-timeline.js`, `src/content/panel/worker-progress.js`, `src/content/panel/parallel-board.js`, `src/content/panel/render.js`, and `src/content/panel/parallel-render.js`.
    - Eleventh content split done in this pass: dashboard extension-id detection, item-title cleanup, and dashboard-project binding resolution now live in `src/content/dashboard-project-context.js`.
    - Twelfth content split done in this pass: popup/panel command routing now lives in `src/content/dashboard-messages.js`.
    - Thirteenth content split done in this pass: Chrome Web Store media upload target detection, localized screenshot field scoring, diagnostics, and visible-count helpers now live in `src/content/media/upload-targets.js`, loaded before `src/content/dashboard-media.js`.
@@ -157,14 +184,14 @@ Diagnostic artifact folders inspected:
    - Eighteenth content split done in this pass: localized screenshot file filtering and operation normalization now live in `src/content/media/localized-screenshot-files.js`.
    - Nineteenth content split done in this pass: localized screenshot per-file upload retries and per-locale replace/clear/upload flow now live in `src/content/media/localized-screenshot-upload.js`.
    - Twentieth content split done in this pass: localized screenshot run orchestration, completed-locale audit, skipped/failed accounting, and final summary now live in `src/content/media/localized-screenshot-run.js`.
-   - Remaining work: keep extracting cohesive media slices out of `src/content/dashboard-media.js`, then split the remaining named over-budget content/panel/style modules. `src/content/dashboard-helper.js` is now under the current file-size budget.
+   - Remaining work: continue moving broad classic-script helpers toward feature-owned ES modules. `src/content/dashboard-helper.js`, `src/content/dashboard-panel-styles.js`, `src/content/panel/state.js`, and `src/content/panel/render.js` are now under the current file-size budget.
 
 1a. `Split store document parser modules`
    - First slice done in this pass: privacy canonical keys, label/key normalization, remote-code display decision, and display-field ordering now live in `src/shared/store-docs/privacy-schema.js`; privacy file discovery and parsing remain in `src/shared/store-docs/privacy-doc.js`; `test/privacy-doc.test.js` covers the split's important routing behavior.
 
 2. `Extract options project review modules`
    - First slice done in this pass: Graphic Assets rendering lives in `src/options/options-media.js`; Privacy Document, Data Usage, Additional Fields, Product Details category, and language diagnostics live in `src/options/options-review-tables.js`; `src/options/options.js` is back under the file-size budget.
-   - Second slice done in this pass: options styles are split across `src/options/options.css`, `src/options/options-reference.css`, `src/options/options-responsive.css`, and `src/options/options-theme.css`, and each stylesheet is below the file-size budget. Remaining work: split project cards, reference content, and preferences out of `src/options/options.js` when those surfaces grow again.
+   - Second slice done in this pass: options styles are split across `src/options/options.css`, `src/options/options-reference.css`, `src/options/options-responsive.css`, `src/options/options-theme.css`, `src/options/options-theme-modes.css`, `src/options/options-theme-styles.css`, and `src/options/options-theme-high-contrast.css`, and each stylesheet is below the file-size budget. Remaining work: split project cards, reference content, and preferences out of `src/options/options.js` when those surfaces grow again.
    - Third slice done in this pass: `src/options/options-settings.js` owns settings persistence, theme button state, and advanced fill action preference state. Runtime load tests now require it to load before `src/options/options.js`.
    - Fourth slice done in this pass: shared review row rendering lives in `src/options/options-review-ui.js`, Privacy Document and Data Usage review rendering lives in `src/options/options-privacy-review.js`, and `src/options/options-review-tables.js` now owns Additional Fields, Product Details category, and language diagnostics only.
 
@@ -174,7 +201,7 @@ Diagnostic artifact folders inspected:
 
 4. `Introduce WebExtension platform wrappers`
    - First slice done in this pass: direct WebExtension API access moved behind focused classic-script wrappers under `src/platform/webextension/`, split by core promise normalization, storage, runtime, tabs, scripting, action, and i18n. Later convert these wrappers into imported platform modules when the source tree moves toward bundled or ES-module runtime entries.
-   - Background entry split done in this pass: `src/background/media.js` owns media file-handle traversal and dashboard upload delegation, while `src/background.js` only wires runtime messages and action-click behavior.
+   - Background entry split done in this pass: `src/background/media/*` owns localized screenshot planning, worker lifecycle, phase orchestration, mutation-gate, progress, logging, command/message handling, and media file-handle traversal; `src/background/media.js` exposes the media command handlers; `src/background.js` only wires runtime messages and action-click behavior.
 
 5. `Document storage key ownership`
    - Done in this pass: `docs/storage-ownership.md`.
@@ -187,7 +214,7 @@ Diagnostic artifact folders inspected:
 The 1.3.1.3 release-prep gate is allowed to continue with this explicit deferral because:
 
 - The extension behavior, manifest, privacy posture, AMO listing text, and package output are already release-validated.
-- The current source tree passes flat-folder-density checks and has explicit, script-enforced exceptions for named oversized migration-debt files.
-- The remaining modularization work includes more file-size reductions plus the broader ES-module/feature-folder migration, which is behavior-sensitive.
+- The current source tree passes flat-folder-density and file-size checks without named oversized source-file exceptions.
+- The remaining modularization work is the broader ES-module/feature-folder migration, which is behavior-sensitive.
 - The debt is now documented in a tracked audit with named follow-ups.
 - Future Codex work has clear ownership targets instead of a passive "use the playbook" reference.

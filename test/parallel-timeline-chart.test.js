@@ -19,6 +19,9 @@ const context = vm.createContext({
 vm.runInContext(fs.readFileSync(path.join(root, "src/content/panel/state.js"), "utf8"), context, {
   filename: "src/content/panel/state.js"
 });
+vm.runInContext(fs.readFileSync(path.join(root, "src/content/panel/parallel-timeline.js"), "utf8"), context, {
+  filename: "src/content/panel/parallel-timeline.js"
+});
 
 function hostValue(value) {
   return JSON.parse(JSON.stringify(value));

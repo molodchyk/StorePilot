@@ -70,12 +70,30 @@ function assertPlatformFiles(files, label) {
 
 assertPlatformFiles(backgroundFiles, "manifest background scripts");
 
+const backgroundMediaFiles = [
+  "src/background/media/parallel-core.js",
+  "src/background/media/parallel-log-storage.js",
+  "src/background/media/parallel-mutation-gate.js",
+  "src/background/media/parallel-progress-state.js",
+  "src/background/media/file-resolution.js",
+  "src/background/media/parallel-worker-lifecycle.js",
+  "src/background/media/parallel-phase-runner.js",
+  "src/background/media/parallel-run-commands.js",
+  "src/background/media/parallel-message-handlers.js",
+  "src/background/media.js"
+];
+
 for (const required of [
-  "src/background/media.js",
+  ...backgroundMediaFiles,
   "src/background.js"
 ]) {
   assert.ok(backgroundFiles.includes(required), `manifest background scripts are missing ${required}`);
 }
+
+for (let index = 1; index < backgroundMediaFiles.length; index += 1) {
+  assertBefore(backgroundFiles, backgroundMediaFiles[index - 1], backgroundMediaFiles[index], "manifest background scripts");
+}
+
 assertBefore(backgroundFiles, "src/background/media.js", "src/background.js", "manifest background scripts");
 
 for (const [label, files] of [
@@ -102,6 +120,16 @@ for (const [label, files] of [
     "src/content/media/localized-screenshot-files.js",
     "src/content/media/localized-screenshot-upload.js",
     "src/content/media/localized-screenshot-run.js",
+    "src/content/panel/state.js",
+    "src/content/panel/parallel-timeline.js",
+    "src/content/panel/worker-progress.js",
+    "src/content/panel/parallel-board.js",
+    "src/content/panel/render.js",
+    "src/content/panel/parallel-render.js",
+    "src/content/panel/styles/base.js",
+    "src/content/panel/styles/parallel.js",
+    "src/content/panel/styles/theme.js",
+    "src/content/dashboard-panel-styles.js",
     "src/content/dashboard-helper.js",
     "src/content/dashboard-messages.js"
   ]) {
@@ -130,6 +158,15 @@ for (const [label, files] of [
   assertBefore(files, "src/content/media/upload-targets.js", "src/content/dashboard-media.js", label);
   assertBefore(files, "src/content/media/upload-waits.js", "src/content/dashboard-media.js", label);
   assertBefore(files, "src/content/media/localized-screenshot-progress.js", "src/content/dashboard-media.js", label);
+  assertBefore(files, "src/content/panel/state.js", "src/content/panel/parallel-timeline.js", label);
+  assertBefore(files, "src/content/panel/parallel-timeline.js", "src/content/panel/worker-progress.js", label);
+  assertBefore(files, "src/content/panel/worker-progress.js", "src/content/panel/parallel-board.js", label);
+  assertBefore(files, "src/content/panel/parallel-board.js", "src/content/panel/render.js", label);
+  assertBefore(files, "src/content/panel/render.js", "src/content/panel/parallel-render.js", label);
+  assertBefore(files, "src/content/panel/parallel-render.js", "src/content/dashboard-helper.js", label);
+  assertBefore(files, "src/content/panel/styles/base.js", "src/content/dashboard-panel-styles.js", label);
+  assertBefore(files, "src/content/panel/styles/parallel.js", "src/content/dashboard-panel-styles.js", label);
+  assertBefore(files, "src/content/panel/styles/theme.js", "src/content/dashboard-panel-styles.js", label);
   assertBefore(files, "src/shared/storage.js", "src/content/dashboard-helper.js", label);
   assertBefore(files, "src/content/dashboard-helper.js", "src/content/dashboard-messages.js", label);
 }

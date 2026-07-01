@@ -6,7 +6,8 @@
 - `scripts/build.ps1`: builds `dist` and `artifacts/storepilot-<manifest version>.zip`.
 - `scripts/build-amo-source.ps1`: builds `artifacts/source/storepilot-source-<manifest version>.zip` for AMO source-code upload.
 - `src/background.js`: thin background message/action entry.
-- `src/background/media.js`: background media file-handle resolution and dashboard upload delegation.
+- `src/background/media.js`: thin background media export boundary.
+- `src/background/media/*`: background localized screenshot parallel-run planning, progress state, mutation gate, log storage, worker lifecycle, phase orchestration, command/message handlers, and media file-handle resolution.
 - `src/platform/webextension/*`: focused WebExtension API wrappers for core promise normalization, storage, runtime, tabs, scripting, action, and i18n.
 - `src/import-ui.js`: folder-import UI guidance and options-page import helpers.
 - `src/project-overrides.js`: project identity canonicalization and duplicate import merging.
@@ -507,6 +508,15 @@ After changes, run the narrow checks that match the touched files:
 .\scripts\test-amo-submission.ps1
 .\scripts\test-reference-sync.ps1
 node --check src\background.js
+node --check src\background\media\parallel-core.js
+node --check src\background\media\parallel-log-storage.js
+node --check src\background\media\parallel-mutation-gate.js
+node --check src\background\media\parallel-progress-state.js
+node --check src\background\media\file-resolution.js
+node --check src\background\media\parallel-worker-lifecycle.js
+node --check src\background\media\parallel-phase-runner.js
+node --check src\background\media\parallel-run-commands.js
+node --check src\background\media\parallel-message-handlers.js
 node --check src\background\media.js
 node --check src\platform\webextension\core.js
 node --check src\platform\webextension\storage.js
@@ -555,6 +565,15 @@ Check the generated package:
 node --check dist\src\content\dashboard-helper.js
 node --check dist\src\content\dashboard-messages.js
 node --check dist\src\content\dashboard-project-context.js
+node --check dist\src\background\media\parallel-core.js
+node --check dist\src\background\media\parallel-log-storage.js
+node --check dist\src\background\media\parallel-mutation-gate.js
+node --check dist\src\background\media\parallel-progress-state.js
+node --check dist\src\background\media\file-resolution.js
+node --check dist\src\background\media\parallel-worker-lifecycle.js
+node --check dist\src\background\media\parallel-phase-runner.js
+node --check dist\src\background\media\parallel-run-commands.js
+node --check dist\src\background\media\parallel-message-handlers.js
 node --check dist\src\background\media.js
 node --check dist\src\platform\webextension\core.js
 node --check dist\src\platform\webextension\storage.js

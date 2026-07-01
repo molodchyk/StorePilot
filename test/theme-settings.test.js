@@ -89,11 +89,30 @@ for (const [label, source] of [
 assert.doesNotMatch(popupCss, /theme-control|appearance-control/, "Popup CSS should not keep styles for removed appearance controls.");
 
 for (const [label, relativePath] of [
-  ["options", "src/options/options-theme.css"],
+  [
+    "options",
+    [
+      "src/options/options-theme.css",
+      "src/options/options-theme-modes.css",
+      "src/options/options-theme-styles.css",
+      "src/options/options-theme-high-contrast.css"
+    ]
+  ],
   ["popup", "src/popup/popup.css"],
-  ["dashboard panel", "src/content/dashboard-panel-styles.js"]
+  [
+    "dashboard panel",
+    [
+      "src/content/panel/styles/base.js",
+      "src/content/panel/styles/parallel.js",
+      "src/content/panel/styles/theme.js",
+      "src/content/dashboard-panel-styles.js"
+    ]
+  ]
 ]) {
-  const source = fs.readFileSync(path.join(root, relativePath), "utf8");
+  const paths = Array.isArray(relativePath) ? relativePath : [relativePath];
+  const source = paths
+    .map(filePath => fs.readFileSync(path.join(root, filePath), "utf8"))
+    .join("\n");
   assert.match(
     source,
     /data-theme-style="high-contrast"/,

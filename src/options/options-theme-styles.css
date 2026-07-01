@@ -1,0 +1,117 @@
+:root:not([data-theme="dark"])[data-theme-style="slate"] {
+  background: #f3f5f8;
+}
+
+:root:not([data-theme="dark"])[data-theme-style="ocean"] {
+  background: #eef8fb;
+  color: #102033;
+}
+
+:root:not([data-theme="dark"])[data-theme-style="forest"] {
+  background: #f3f8f2;
+  color: #132018;
+}
+
+:root[data-theme="dark"][data-theme-style="slate"] {
+  background: #0f172a;
+}
+
+:root[data-theme="dark"][data-theme-style="ocean"] {
+  background: #0c1e26;
+}
+
+:root[data-theme="dark"][data-theme-style="forest"] {
+  background: #102015;
+}
+
+:root[data-theme-style="slate"] .theme-mode-control {
+  border-color: #94a3b8;
+}
+
+:root[data-theme-style="ocean"] .theme-mode-control {
+  border-color: #8ecfe0;
+}
+
+:root[data-theme-style="forest"] .theme-mode-control {
+  border-color: #a7caa1;
+}
+
+:root[data-theme-style="slate"] .status,
+:root[data-theme-style="slate"] .theme-control [aria-pressed="true"],
+:root[data-theme-style="slate"] .theme-mode-control [aria-pressed="true"] {
+  border-color: #64748b;
+  color: #475569;
+}
+
+:root[data-theme-style="ocean"] .status,
+:root[data-theme-style="ocean"] .theme-control [aria-pressed="true"],
+:root[data-theme-style="ocean"] .theme-mode-control [aria-pressed="true"] {
+  border-color: #0891b2;
+  color: #0e7490;
+}
+
+:root[data-theme-style="forest"] .status,
+:root[data-theme-style="forest"] .theme-control [aria-pressed="true"],
+:root[data-theme-style="forest"] .theme-mode-control [aria-pressed="true"] {
+  border-color: #3f8f54;
+  color: #2f7d46;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-theme-style="slate"] {
+    background: #0f172a;
+    color: #f4f6fa;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="ocean"] {
+    background: #0c1e26;
+    color: #f4f6fa;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="forest"] {
+    background: #102015;
+    color: #f4f6fa;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="slate"] .status,
+  :root:not([data-theme="light"])[data-theme-style="slate"] .theme-control [aria-pressed="true"],
+  :root:not([data-theme="light"])[data-theme-style="slate"] .theme-mode-control [aria-pressed="true"] {
+    border-color: #93c5fd;
+    color: #93c5fd;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="ocean"] .status,
+  :root:not([data-theme="light"])[data-theme-style="ocean"] .theme-control [aria-pressed="true"],
+  :root:not([data-theme="light"])[data-theme-style="ocean"] .theme-mode-control [aria-pressed="true"] {
+    border-color: #67e8f9;
+    color: #67e8f9;
+  }
+
+  :root:not([data-theme="light"])[data-theme-style="forest"] .status,
+  :root:not([data-theme="light"])[data-theme-style="forest"] .theme-control [aria-pressed="true"],
+  :root:not([data-theme="light"])[data-theme-style="forest"] .theme-mode-control [aria-pressed="true"] {
+    border-color: #86efac;
+    color: #86efac;
+  }
+}
+
+:root[data-theme="dark"][data-theme-style="slate"] .status,
+:root[data-theme="dark"][data-theme-style="slate"] .theme-control [aria-pressed="true"],
+:root[data-theme="dark"][data-theme-style="slate"] .theme-mode-control [aria-pressed="true"] {
+  border-color: #93c5fd;
+  color: #93c5fd;
+}
+
+:root[data-theme="dark"][data-theme-style="ocean"] .status,
+:root[data-theme="dark"][data-theme-style="ocean"] .theme-control [aria-pressed="true"],
+:root[data-theme="dark"][data-theme-style="ocean"] .theme-mode-control [aria-pressed="true"] {
+  border-color: #67e8f9;
+  color: #67e8f9;
+}
+
+:root[data-theme="dark"][data-theme-style="forest"] .status,
+:root[data-theme="dark"][data-theme-style="forest"] .theme-control [aria-pressed="true"],
+:root[data-theme="dark"][data-theme-style="forest"] .theme-mode-control [aria-pressed="true"] {
+  border-color: #86efac;
+  color: #86efac;
+}

@@ -25,9 +25,22 @@ const context = vm.createContext({
   }
 });
 
-vm.runInContext(fs.readFileSync(path.join(root, "src/background/media.js"), "utf8"), context, {
-  filename: "src/background/media.js"
-});
+for (const file of [
+  "src/background/media/parallel-core.js",
+  "src/background/media/parallel-log-storage.js",
+  "src/background/media/parallel-mutation-gate.js",
+  "src/background/media/parallel-progress-state.js",
+  "src/background/media/file-resolution.js",
+  "src/background/media/parallel-worker-lifecycle.js",
+  "src/background/media/parallel-phase-runner.js",
+  "src/background/media/parallel-run-commands.js",
+  "src/background/media/parallel-message-handlers.js",
+  "src/background/media.js"
+]) {
+  vm.runInContext(fs.readFileSync(path.join(root, file), "utf8"), context, {
+    filename: file
+  });
+}
 
 function hostValue(value) {
   return JSON.parse(JSON.stringify(value));
