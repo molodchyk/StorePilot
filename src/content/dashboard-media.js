@@ -1281,6 +1281,13 @@ function publishLocalizedScreenshotProgress(progress, phase) {
     if (response && typeof response.catch === "function") {
       response.catch(() => {});
     }
+    if (response && typeof response.then === "function") {
+      response.then(result => {
+        if (result && result.aborted) {
+          mediaOperationState.abortRequested = true;
+        }
+      }).catch(() => {});
+    }
   } catch (_error) {
     // Parallel progress is best-effort; upload correctness is local to the worker.
   }

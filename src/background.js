@@ -35,6 +35,16 @@
     return true;
   }
 
+  function handleResumeParallelLocalizedScreenshotUploadMessage(message, sender, sendResponse) {
+    storePilotResumeParallelLocalizedScreenshotUpload(sender, message.runId || "", message.options || {})
+      .then(sendResponse)
+      .catch(error => sendResponse({
+        ok: false,
+        message: error.message || String(error)
+      }));
+    return true;
+  }
+
   function handleRetryParallelLocalizedScreenshotUploadMessage(message, sender, sendResponse) {
     storePilotRetryParallelLocalizedScreenshotFailed(sender, message.runId || "", message.options || {})
       .then(sendResponse)
@@ -179,6 +189,10 @@
 
     if (message && message.type === "storepilot-abort-localized-screenshot-parallel-upload") {
       return handleAbortParallelLocalizedScreenshotUploadMessage(message, sender, sendResponse);
+    }
+
+    if (message && message.type === "storepilot-resume-localized-screenshot-parallel-upload") {
+      return handleResumeParallelLocalizedScreenshotUploadMessage(message, sender, sendResponse);
     }
 
     if (message && message.type === "storepilot-retry-localized-screenshot-parallel-failed") {

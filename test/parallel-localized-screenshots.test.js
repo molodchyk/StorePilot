@@ -377,6 +377,90 @@ assert.equal(clearOnlyProgressSnapshot.timeline[0].remainingLocales, 1);
 assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].completedLocales, 1);
 assert.equal(clearOnlyProgressSnapshot.workers[0].timeline[0].remainingLocales, 1);
 
+const abortedClearThenUploadSnapshot = context.storePilotCreateParallelLocalizedScreenshotRunSnapshot({
+  runId: "run-aborted-clear-then-upload",
+  status: "aborted",
+  mode: "clearThenUpload",
+  phase: "clearing",
+  parentTabId: 1,
+  parentUrl: "https://chrome.google.com/webstore/devconsole/item/edit/listing",
+  startedAt: Date.now() - 90000,
+  finishedAt: Date.now() - 1000,
+  closeSuccessfulWorkers: true,
+  abortRequested: true,
+  manualAbortRequested: true,
+  totalLocales: 3,
+  totalScreenshots: 9,
+  initialSkipped: [],
+  initialSkippedLocales: 0,
+  message: "aborted",
+  localeStatusOrder: ["am", "ar", "az"],
+  localeStatuses: {
+    am: {
+      locale: "am",
+      status: "cleared",
+      phase: "clearing",
+      operation: "clearOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 0,
+      totalScreenshots: 3,
+      message: "localized screenshots cleared"
+    },
+    ar: {
+      locale: "ar",
+      status: "aborted",
+      phase: "clearing",
+      operation: "clearOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 0,
+      totalScreenshots: 3,
+      message: "aborted"
+    },
+    az: {
+      locale: "az",
+      status: "skipped",
+      phase: "clearing",
+      operation: "clearOnly",
+      workerId: "worker-1",
+      uploadedScreenshots: 0,
+      totalScreenshots: 3,
+      message: "skipped"
+    }
+  },
+  requestedOptions: {
+    workerCount: 2,
+    parallelMode: "clearThenUpload",
+    closeSuccessfulWorkers: true
+  },
+  resumeLocaleList: ["am", "ar"],
+  timeline: [],
+  workers: [
+    {
+      workerId: "worker-1",
+      tabId: 2,
+      status: "aborted",
+      closed: true,
+      operation: "clearOnly",
+      assignedLocales: ["am", "ar", "az"],
+      completedLocaleList: ["am"],
+      failedLocaleList: ["ar"],
+      skippedLocaleList: ["az"],
+      totalScreenshots: 9,
+      completedLocales: 1,
+      failedLocales: 1,
+      skippedLocales: 1,
+      uploadedScreenshots: 0,
+      elapsedMs: 89000
+    }
+  ]
+});
+assert.equal(abortedClearThenUploadSnapshot.canResume, true);
+assert.deepEqual(
+  hostValue(abortedClearThenUploadSnapshot.resumeLocales),
+  ["am", "ar"],
+  "coordinated clearThenUpload resume includes cleared-but-not-uploaded and aborted locales"
+);
+
 const parallelLocalizedScreenshotAsyncTests = (async () => {
   context.storePilotIsListingDashboardUrl = () => true;
   context.storePilotTabsSendMessage = () => Promise.resolve({ ok: true });
@@ -558,6 +642,85 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
     ["ar", "az"],
     "visible worker retry sends only unfinished locales back to the existing worker tab"
   );
+
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 71 + openedTabs++ });
+  context.storePilotTabsRemove = () => Promise.resolve();
+  context.storePilotTabsSendMessage = (_tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      return Promise.resolve({
+        ok: false,
+        aborted: true,
+        completed: ["am"],
+        failed: [],
+        skipped: [],
+        uploaded: [],
+        elapsedMs: 600
+      });
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const abortableRunStart = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 89,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am", "ar"],
+    workerCount: 1,
+    parallelMode: "coordinated"
+  });
+  assert.equal(abortableRunStart.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const abortableRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 89,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, abortableRunStart.run.runId).run;
+  assert.equal(abortableRun.status, "aborted");
+  assert.deepEqual(hostValue(abortableRun.resumeLocales), ["am", "ar"]);
+
+  const retryAbortedWorker = await context.storePilotRetryParallelLocalizedScreenshotWorkerTab({
+    tab: {
+      id: abortableRun.workers[0].tabId,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, abortableRun.runId, abortableRun.workers[0].workerId);
+  assert.equal(retryAbortedWorker.ok, false);
+  assert.equal(retryAbortedWorker.aborted, true);
+
+  let resumeAssignedLocales = [];
+  context.storePilotTabsSendMessage = (_tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      resumeAssignedLocales = message.options && message.options.assignedLocales || [];
+      return Promise.resolve({
+        ok: true,
+        completed: ["am", "ar"],
+        failed: [],
+        skipped: [],
+        uploaded: ["am: 3", "ar: 3"],
+        audited: ["am", "ar"],
+        elapsedMs: 700
+      });
+    }
+    return Promise.resolve({ ok: true });
+  };
+  const resumedRun = await context.storePilotResumeParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 89,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, abortableRun.runId);
+  assert.equal(resumedRun.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.deepEqual(
+    hostValue(resumeAssignedLocales),
+    ["am", "ar"],
+    "resume reopens workers for unfinished locales using the saved coordinated mode"
+  );
 })();
 
 parallelLocalizedScreenshotAsyncTests.then(async () => {
@@ -733,6 +896,28 @@ parallelLocalizedScreenshotAsyncTests.then(async () => {
     }
   }, singleWorkerStart.run.runId).run;
   assert.equal(singleWorkerRun.mutationGate.enabled, false);
+
+  await context.storePilotAbortParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 78,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, singleWorkerStart.run.runId);
+  const rejectedAfterAbort = await context.storePilotRequestLocalizedScreenshotMutation({
+    tab: { id: singleWorkerRun.workers[0].tabId }
+  }, {
+    runId: singleWorkerStart.run.runId,
+    workerId: singleWorkerRun.workers[0].workerId,
+    request: {
+      action: "upload",
+      locale: "am",
+      screenshotSlot: 1,
+      attempt: 1,
+      visibleBefore: 0
+    }
+  });
+  assert.equal(rejectedAfterAbort.ok, false);
+  assert.equal(rejectedAfterAbort.aborted, true, "aborted single-worker runs reject later media mutations even when the gate is disabled");
 
   let storedLogMap = {
     "restored-run": {

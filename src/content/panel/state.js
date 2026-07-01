@@ -668,9 +668,10 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   const localeStatuses = board.querySelector(".storepilot-parallel-locales");
   const workers = board.querySelector(".storepilot-parallel-workers");
   const abortButton = board.querySelector("[data-storepilot-action='abort-localizedScreenshotsParallel']");
+  const resumeButton = board.querySelector("[data-storepilot-action='resume-localizedScreenshotsParallel']");
   const retryButton = board.querySelector("[data-storepilot-action='retry-localizedScreenshotsParallel']");
   const downloadButton = board.querySelector("[data-storepilot-action='download-localizedScreenshotsParallelLog']");
-  if (!summary || !workers || !abortButton || !retryButton || !downloadButton) return;
+  if (!summary || !workers || !abortButton || !resumeButton || !retryButton || !downloadButton) return;
 
   if (!run) {
     board.hidden = true;
@@ -679,6 +680,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     if (localeStatuses) localeStatuses.replaceChildren();
     workers.replaceChildren();
     abortButton.hidden = true;
+    resumeButton.hidden = true;
     retryButton.hidden = true;
     downloadButton.hidden = true;
     updateParallelLocalizedScreenshotRenderTimer();
@@ -689,6 +691,10 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   const elapsed = formatPanelParallelElapsed(getPanelParallelRunElapsedMs(run));
   const failedWorkerCount = (run.workers || []).filter(worker => worker.status === "failed" || (worker.failedLocales || 0) > 0).length;
   const hasFailedLocales = failedWorkerCount > 0 || Number(totals.failedLocales || 0) > 0;
+  const resumeLocales = typeof getParallelLocalizedScreenshotResumeLocales === "function"
+    ? getParallelLocalizedScreenshotResumeLocales(run)
+    : Array.isArray(run.resumeLocales) ? run.resumeLocales : [];
+  const hasResumeLocales = resumeLocales.length > 0;
   const clearProgress = isParallelClearProgressRun(run);
   const auditTotals = getParallelAuditTotals(run);
   const auditing = isParallelRunAuditing(run) ||
@@ -768,6 +774,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   }));
 
   abortButton.hidden = !isParallelLocalizedScreenshotRunActive(run);
+  resumeButton.hidden = isParallelLocalizedScreenshotRunActive(run) || !hasResumeLocales;
   retryButton.hidden = isParallelLocalizedScreenshotRunActive(run) || !hasFailedLocales;
   downloadButton.hidden = Number(run.actionLogCount || 0) <= 0;
   updateParallelLocalizedScreenshotRenderTimer();

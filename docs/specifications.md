@@ -361,6 +361,7 @@ Rules:
 - Clear actions are disabled when no matching media is visible.
 - Upload and clear actions are mutually exclusive with fill-all and each other.
 - Abort requests should stop after the current in-flight dashboard step.
+- Parallel localized screenshot abort is coordinated: workers receive an abort request, finish or time out their current dashboard action, reject new media mutations, and keep unfinished locales in the run snapshot. The panel can resume those unfinished locales with the saved worker count and mode; in coordinated clear-then-upload mode, a locale that was only cleared is still unfinished and must be included in resume.
 
 ## Privacy Automation
 

@@ -1120,5 +1120,17 @@
   },
   "localizedScreenshotLogDownloaded": {
     "message": "Localized screenshot log downloaded."
+  },
+  "abortParallelLocalizedScreenshotsConfirm": {
+    "message": "Abort the parallel localized screenshot run? Worker tabs finish the current dashboard action, then StorePilot can resume unfinished locales."
+  },
+  "resumeLocalizedScreenshotsRun": {
+    "message": "Resume run"
+  },
+  "parallelLocalizedScreenshotsNoResumeLocales": {
+    "message": "No unfinished localized screenshot locales to resume."
+  },
+  "parallelLocalizedScreenshotsAbortTimeout": {
+    "message": "Abort completed after waiting for worker tabs."
   }
 }
