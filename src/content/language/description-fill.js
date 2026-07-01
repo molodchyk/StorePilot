@@ -141,27 +141,33 @@ function updatePanelFillAllUi() {
 
   const running = Boolean(isFillingAllLanguages || fillAllStatus.running);
   const mediaRunning = Boolean(mediaOperationState.running);
+  const parallelLocalizedScreenshotsRunning = typeof isParallelLocalizedScreenshotRunActive === "function" &&
+    isParallelLocalizedScreenshotRunActive();
   const fillCurrentButton = panel.querySelector("[data-storepilot-action='fill-current']");
   const fillAllButton = panel.querySelector("[data-storepilot-action='fill-all']");
   const selectCategoryButton = panel.querySelector("[data-storepilot-action='select-category']");
   const fillAdditionalFieldsButton = panel.querySelector("[data-storepilot-action='fill-additional-fields']");
   const abortButtons = Array.from(panel.querySelectorAll("[data-storepilot-action='abort-operation'], [data-storepilot-action='abort-fill-all']"));
+  const disabled = running || mediaRunning || parallelLocalizedScreenshotsRunning;
+  const disabledTitle = parallelLocalizedScreenshotsRunning
+    ? localize("parallelLocalizedScreenshotsRunning", "Parallel localized screenshot upload is running.")
+    : mediaRunning ? mediaOperationState.label : "";
 
   if (fillCurrentButton) {
-    fillCurrentButton.disabled = running || mediaRunning;
-    fillCurrentButton.title = mediaRunning ? mediaOperationState.label : "";
+    fillCurrentButton.disabled = disabled;
+    fillCurrentButton.title = disabledTitle;
   }
   if (fillAllButton) {
-    fillAllButton.disabled = running || mediaRunning;
-    fillAllButton.title = mediaRunning ? mediaOperationState.label : "";
+    fillAllButton.disabled = disabled;
+    fillAllButton.title = disabledTitle;
   }
   if (selectCategoryButton) {
-    selectCategoryButton.disabled = running || mediaRunning;
-    selectCategoryButton.title = mediaRunning ? mediaOperationState.label : (running ? localize("fillingAllLanguages", "Filling descriptions...") : "");
+    selectCategoryButton.disabled = disabled;
+    selectCategoryButton.title = disabledTitle || (running ? localize("fillingAllLanguages", "Filling descriptions...") : "");
   }
   if (fillAdditionalFieldsButton) {
-    fillAdditionalFieldsButton.disabled = running || mediaRunning;
-    fillAdditionalFieldsButton.title = mediaRunning ? mediaOperationState.label : (running ? localize("fillingAllLanguages", "Filling descriptions...") : "");
+    fillAdditionalFieldsButton.disabled = disabled;
+    fillAdditionalFieldsButton.title = disabledTitle || (running ? localize("fillingAllLanguages", "Filling descriptions...") : "");
   }
   abortButtons.forEach(button => {
     button.hidden = !running && !mediaRunning;

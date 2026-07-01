@@ -92,6 +92,10 @@
         gap: 8px;
       }
 
+      #${panelId}[data-parallel-localized-screenshots-active="true"] .storepilot-actions {
+        display: none;
+      }
+
       #${panelId} .storepilot-action-group {
         display: grid;
         grid-template-columns: 1fr 1fr;

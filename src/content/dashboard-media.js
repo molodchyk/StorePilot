@@ -1249,7 +1249,7 @@ function formatLocalizedScreenshotProgressStatus(progress, phase) {
   const phaseText = String(phase || "");
   const auditing = /auditing persisted localized screenshot count/i.test(phaseText);
   const runLocaleLine = auditing
-    ? `Audit: ${progress.completedLocales || 0}/${progress.totalLocales} verified, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`
+    ? `Audit: ${progress.auditedLocales || 0}/${progress.totalLocales} verified, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`
     : `Run locales: ${progress.completedLocales || 0}/${progress.totalLocales} completed, ${progress.failedLocales || 0} failed, ${progress.skippedLocales || 0} skipped`;
 
   return [
@@ -2396,7 +2396,8 @@ async function auditCompletedLocalizedScreenshotLocales(entries, completedLocale
       ? 0
       : entry.files.length;
     const progress = createLocalizedScreenshotProgress(entry, index, completedEntries.length, stats, {
-      completedLocales: audited.length,
+      completedLocales: stats.completedLocales || completedEntries.length,
+      auditedLocales: audited.length,
       failedLocales: failed.length,
       uploadedScreenshots: stats.uploadedScreenshots || 0
     });

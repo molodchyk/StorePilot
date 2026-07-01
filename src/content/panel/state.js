@@ -4,6 +4,7 @@ let localizedScreenshotWorkerProgressState = null;
 let localizedScreenshotWorkerProgressRenderTimerId = 0;
 let localizedScreenshotWorkerSelfRetryInFlight = false;
 let localizedScreenshotWorkerSelfRetryKey = "";
+let localizedScreenshotWorkerIdentity = null;
 
 function isParallelLocalizedScreenshotRunActive(run = parallelLocalizedScreenshotRunState) {
   return Boolean(run && ["starting", "running", "aborting"].includes(run.status));
@@ -42,6 +43,34 @@ function getPanelParallelWorkerElapsedMs(worker) {
 
 function getParallelLocalizedScreenshotRunState() {
   return parallelLocalizedScreenshotRunState;
+}
+
+function isLocalizedScreenshotWorkerRun(runId) {
+  const normalizedRunId = String(runId || "");
+  return Boolean(
+    normalizedRunId &&
+    (
+      localizedScreenshotWorkerIdentity &&
+        localizedScreenshotWorkerIdentity.runId === normalizedRunId ||
+      localizedScreenshotWorkerProgressState &&
+        localizedScreenshotWorkerProgressState.runId === normalizedRunId
+    )
+  );
+}
+
+function markLocalizedScreenshotWorkerRun(runId, workerId = "") {
+  const normalizedRunId = String(runId || "");
+  if (!normalizedRunId) return;
+
+  localizedScreenshotWorkerIdentity = {
+    runId: normalizedRunId,
+    workerId: String(workerId || "")
+  };
+  if (parallelLocalizedScreenshotRunState && parallelLocalizedScreenshotRunState.runId === normalizedRunId) {
+    parallelLocalizedScreenshotRunState = null;
+    renderParallelLocalizedScreenshotBoard();
+    updatePanelMediaUi();
+  }
 }
 
 function normalizeParallelLocalizedScreenshotPanelLocale(value) {
@@ -152,8 +181,14 @@ function getParallelTimelineCurrentSample(run, elapsedMs = getPanelParallelRunEl
 function getParallelTimelineSamples(run) {
   if (!run) return [];
 
-  const samples = Array.isArray(run.timeline)
-    ? run.timeline.map(sample => ({
+  const currentPhase = String(run.phase || "");
+  let rawSamples = Array.isArray(run.timeline) ? run.timeline : [];
+  if (currentPhase && rawSamples.some(sample => String(sample && sample.phase || "") === currentPhase)) {
+    rawSamples = rawSamples.filter(sample => String(sample && sample.phase || "") === currentPhase);
+  }
+
+  const samples = rawSamples.length
+    ? rawSamples.map(sample => ({
       elapsedMs: Number(sample.elapsedMs || 0),
       completedLocales: Number(sample.completedLocales || 0),
       failedLocales: Number(sample.failedLocales || 0),
@@ -283,6 +318,7 @@ function createParallelTimelineStepPath(samples, field, xForSample, yForValue, c
     class: className,
     d: buildParallelTimelineStepPathData(samples, field, xForSample, yForValue),
     fill: "none",
+    style: "fill: none;",
     "stroke-width": "2.5",
     "stroke-linecap": "round",
     "stroke-linejoin": "round"
@@ -455,7 +491,10 @@ function requestLocalizedScreenshotWorkerSelfRetryIfVisible() {
   storePilotRuntimeSendMessage({
     type: "storepilot-retry-localized-screenshot-worker-tab",
     runId: progress.runId,
-    workerId: progress.workerId
+    workerId: progress.workerId,
+    options: {
+      freshTab: true
+    }
   }).then(response => {
     if (response && response.run) {
       updateParallelLocalizedScreenshotRunState(response.run);
@@ -480,7 +519,10 @@ async function retryLocalizedScreenshotWorkerFromPanel() {
     const response = await storePilotRuntimeSendMessage({
       type: "storepilot-retry-localized-screenshot-worker-tab",
       runId: progress.runId,
-      workerId: progress.workerId
+      workerId: progress.workerId,
+      options: {
+        freshTab: true
+      }
     });
     if (response && response.run) {
       updateParallelLocalizedScreenshotRunState(response.run);
@@ -688,6 +730,9 @@ function renderLocalizedScreenshotWorkerProgressBoard(panel = document.getElemen
 }
 
 function updateLocalizedScreenshotWorkerProgressState(progress, phase = "") {
+  if (progress && progress.runId) {
+    markLocalizedScreenshotWorkerRun(progress.runId, progress.workerId || "");
+  }
   localizedScreenshotWorkerProgressState = recordLocalizedScreenshotWorkerProgressSample(progress, phase);
   if (
     localizedScreenshotWorkerProgressState &&
@@ -798,7 +843,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
   const downloadButton = board.querySelector("[data-storepilot-action='download-localizedScreenshotsParallelLog']");
   if (!summary || !workers || !abortButton || !resumeButton || !retryButton || !downloadButton) return;
 
-  if (!run) {
+  if (!run || isLocalizedScreenshotWorkerRun(run.runId)) {
     board.hidden = true;
     summary.replaceChildren();
     if (chart) chart.replaceChildren();
@@ -909,19 +954,21 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     return row;
   }));
 
-  abortButton.hidden = !isParallelLocalizedScreenshotRunActive(run);
-  resumeButton.hidden = isParallelLocalizedScreenshotRunActive(run) || !hasResumeLocales;
-  retryButton.hidden = isParallelLocalizedScreenshotRunActive(run) || !hasFailedLocales;
+  const activeRun = isParallelLocalizedScreenshotRunActive(run);
+  const abortingCanResume = Boolean(run.abortRequested || run.status === "aborting");
+  const retryFailedWouldDiscardResumeContext = Boolean(
+    run.manualAbortRequested &&
+    run.mode === "clearThenUpload"
+  );
+  abortButton.hidden = !activeRun || abortingCanResume;
+  resumeButton.hidden = !hasResumeLocales || (activeRun && !abortingCanResume);
+  retryButton.hidden = activeRun || !hasFailedLocales || retryFailedWouldDiscardResumeContext;
   downloadButton.hidden = Number(run.actionLogCount || 0) <= 0;
   updateParallelLocalizedScreenshotRenderTimer();
 }
 
 function updateParallelLocalizedScreenshotRunState(run) {
-  if (
-    run &&
-    localizedScreenshotWorkerProgressState &&
-    localizedScreenshotWorkerProgressState.runId === run.runId
-  ) {
+  if (run && isLocalizedScreenshotWorkerRun(run.runId)) {
     parallelLocalizedScreenshotRunState = null;
     renderParallelLocalizedScreenshotBoard();
     updatePanelMediaUi();
@@ -1165,29 +1212,67 @@ function setPanelMediaButtonsDisabled(disabled, title = "") {
   }
 }
 
+function getPanelWorkflowButtons(panel = document.getElementById(PANEL_ID)) {
+  if (!panel) return [];
+  return Array.from(panel.querySelectorAll([
+    "[data-storepilot-action='fill-current']",
+    "[data-storepilot-action='fill-all']",
+    "[data-storepilot-action='select-category']",
+    "[data-storepilot-action='fill-additional-fields']"
+  ].join(",")));
+}
+
+function setPanelWorkflowButtonsDisabled(disabled, title = "") {
+  for (const button of getPanelWorkflowButtons()) {
+    button.disabled = disabled;
+    button.title = title;
+  }
+}
+
+function setPanelParallelScreenshotMode(panel, active) {
+  if (!panel) return;
+  if (active) {
+    panel.dataset.parallelLocalizedScreenshotsActive = "true";
+  } else {
+    delete panel.dataset.parallelLocalizedScreenshotsActive;
+  }
+}
+
 function updatePanelMediaUi() {
   const panel = document.getElementById(PANEL_ID);
   if (!panel) return;
 
   const fillAllRunning = Boolean(isFillingAllLanguages || fillAllStatus.running);
   if (mediaOperationState.running) {
+    setPanelParallelScreenshotMode(panel, false);
     setPanelMediaButtonsDisabled(true, mediaOperationState.label);
+    setPanelWorkflowButtonsDisabled(true, mediaOperationState.label);
     updatePanelFillAllUi();
     return;
   }
 
   if (fillAllRunning) {
+    setPanelParallelScreenshotMode(panel, false);
     setPanelMediaButtonsDisabled(true, localize("fillingAllLanguages", "Filling descriptions..."));
+    setPanelWorkflowButtonsDisabled(true, localize("fillingAllLanguages", "Filling descriptions..."));
     return;
   }
 
   if (isParallelLocalizedScreenshotRunActive()) {
+    setPanelParallelScreenshotMode(panel, true);
     setPanelMediaButtonsDisabled(true, localize("parallelLocalizedScreenshotsRunning", "Parallel localized screenshot upload is running."));
+    setPanelWorkflowButtonsDisabled(true, localize("parallelLocalizedScreenshotsRunning", "Parallel localized screenshot upload is running."));
+    updatePanelFillAllUi();
     renderParallelLocalizedScreenshotBoard(panel);
     return;
   }
 
+  setPanelParallelScreenshotMode(panel, false);
   for (const button of getPanelMediaButtons(panel)) {
+    button.disabled = false;
+    button.title = "";
+  }
+  for (const button of getPanelWorkflowButtons(panel)) {
     button.disabled = false;
     button.title = "";
   }

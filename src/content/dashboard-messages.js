@@ -111,7 +111,15 @@ storePilotRuntimeOnMessageAddListener((message, _sender, sendResponse) => {
         sendResponse(createWrongDashboardSectionResult());
         return;
       }
-      sendResponse(await uploadDashboardMediaAssets(message.files || {}, message.kind || "", message.options || {}));
+      const options = message.options || {};
+      if (
+        message.kind === "localizedScreenshots" &&
+        options.parallelRunId &&
+        typeof markLocalizedScreenshotWorkerRun === "function"
+      ) {
+        markLocalizedScreenshotWorkerRun(options.parallelRunId, options.parallelWorkerId || "");
+      }
+      sendResponse(await uploadDashboardMediaAssets(message.files || {}, message.kind || "", options));
       return;
     }
 

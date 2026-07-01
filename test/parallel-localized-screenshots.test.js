@@ -233,7 +233,8 @@ const auditProgressSnapshot = context.storePilotCreateParallelLocalizedScreensho
       progress: {
         locale: "ar",
         phase: "auditing persisted localized screenshot count (3 expected)",
-        completedLocales: 2,
+        completedLocales: 3,
+        auditedLocales: 2,
         failedLocales: 0,
         skippedLocales: 0,
         uploadedScreenshots: 9,
@@ -796,15 +797,6 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
     "coordinated abort keeps cleared locales visible as needing upload"
   );
 
-  const retryAbortedWorker = await context.storePilotRetryParallelLocalizedScreenshotWorkerTab({
-    tab: {
-      id: abortableRun.workers[0].tabId,
-      url: "https://chrome.google.com/webstore/devconsole/item/edit"
-    }
-  }, abortableRun.runId, abortableRun.workers[0].workerId);
-  assert.equal(retryAbortedWorker.ok, false);
-  assert.equal(retryAbortedWorker.aborted, true);
-
   const resumeWorkerMessages = [];
   context.storePilotTabsSendMessage = (_tabId, message) => {
     if (message && message.type === "storepilot-upload-media-assets") {
@@ -845,6 +837,18 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
     ],
     "coordinated resume skips already-cleared locales during clear and uploads them in the upload phase"
   );
+
+  const retryAbortedWorker = await context.storePilotRetryParallelLocalizedScreenshotWorkerTab({
+    tab: {
+      id: abortableRun.workers[0].tabId,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, abortableRun.runId, abortableRun.workers[0].workerId, {
+    freshTab: true
+  });
+  assert.equal(retryAbortedWorker.ok, true, "a stopped worker can still be retried explicitly in a fresh tab");
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
 })();
 
 parallelLocalizedScreenshotAsyncTests.then(async () => {
