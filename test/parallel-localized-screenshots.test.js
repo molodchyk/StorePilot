@@ -725,7 +725,15 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
 
 parallelLocalizedScreenshotAsyncTests.then(async () => {
   let openedTabs = 0;
+  let gatePersistedLogMap = {};
   context.storePilotIsListingDashboardUrl = () => true;
+  context.storePilotStorageLocalGet = key => Promise.resolve({
+    [key]: gatePersistedLogMap
+  });
+  context.storePilotStorageLocalSet = values => {
+    gatePersistedLogMap = values.storePilotParallelLocalizedScreenshotLogs || gatePersistedLogMap;
+    return Promise.resolve();
+  };
   context.storePilotGetProjectsState = () => Promise.resolve({
     activeProjectId: "project-1",
     projects: [{
@@ -834,6 +842,11 @@ parallelLocalizedScreenshotAsyncTests.then(async () => {
   });
   assert.equal(release.ok, true);
   assert.equal(release.released, true);
+  assert.equal(
+    gatePersistedLogMap[startedRun.runId].log.run.mutationGate.currentLease,
+    null,
+    "persisted logs are saved after a released media gate lease is cleared"
+  );
 
   const secondLease = await secondLeasePromise;
   assert.equal(secondLease.ok, true);

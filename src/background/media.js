@@ -2157,7 +2157,6 @@
       cooldownMs,
       queueDepth: gate.queue.length
     });
-    await persistParallelLocalizedScreenshotLog(run);
 
     if (currentLeaseMatches) {
       gate.currentLease = null;
@@ -2172,6 +2171,7 @@
     worker.mutationGateRequest = null;
 
     await sendParallelLocalizedScreenshotRunUpdate(run);
+    await persistParallelLocalizedScreenshotLog(run);
     scheduleParallelLocalizedScreenshotMutationGate(run);
 
     return {

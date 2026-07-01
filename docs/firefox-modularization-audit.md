@@ -114,6 +114,10 @@ Test coverage inspected:
 - Release scripts validate manifest paths, locale shape, privacy/AMO text, packaging, zip paths, remote-code-like patterns, source upload contents, reference sync, and Firefox temporary load.
 - There is not yet enough feature-owned coverage to safely convert the classic global-script runtime into ES modules and generated Firefox output in one broad refactor.
 
+Diagnostic artifact folders inspected:
+
+- `docs/diagnostics/localized-screenshot-logs` intentionally keeps captured localized screenshot run logs and generated timing analysis reports together. It is dense by design so CWS media automation failures can be compared across runs without losing source logs or derived reports.
+
 ## Named Follow-Ups
 
 1. `Split dashboard fill feature modules`
