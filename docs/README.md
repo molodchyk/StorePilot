@@ -11,6 +11,7 @@ This folder contains StorePilot-specific references plus reusable Firefox add-on
 - [Project Scope and Philosophy](project-scope-and-philosophy.md): product boundaries, design intent, and safety principles.
 - [Specifications](specifications.md): implementation details, data model, build flow, dashboard automation, and future-Codex context.
 - [Roadmap](roadmap.md): future automation ideas and prioritization notes.
+- [Localized Screenshot Performance Observations](diagnostics/localized-screenshot-performance.md): measured CWS localized screenshot upload timings and parallel-worker efficiency notes.
 
 ## Firefox References
 
