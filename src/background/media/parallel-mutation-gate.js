@@ -252,3 +252,24 @@ function abortParallelLocalizedScreenshotMutationGate(run) {
     });
   }
 }
+
+function resetAbortedParallelLocalizedScreenshotMutationGateForRetry(run) {
+  const gate = run && run.mutationGate;
+  if (!gate || !gate.aborted) return;
+
+  if (gate.grantTimer && typeof clearTimeout === "function") {
+    clearTimeout(gate.grantTimer);
+  }
+  gate.grantTimer = 0;
+  for (const entry of gate.queue.splice(0)) {
+    settleParallelLocalizedScreenshotMutationRequest(entry, {
+      ok: false,
+      aborted: true,
+      message: text("operationStopped", "Stopped.")
+    });
+  }
+  gate.currentLease = null;
+  gate.aborted = false;
+  gate.nextAvailableAt = Date.now();
+  gate.lastOutcome = "retry-reset";
+}

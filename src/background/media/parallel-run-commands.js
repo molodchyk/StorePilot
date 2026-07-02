@@ -226,6 +226,8 @@ async function storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, runId
     };
   }
 
+  resetAbortedParallelLocalizedScreenshotMutationGateForRetry(run);
+
   if (forceFreshTab || worker.closed || !worker.tabId) {
     if (forceFreshTab && worker.tabId && !worker.closed) {
       await storePilotTabsRemove(worker.tabId).catch(() => null);
@@ -255,6 +257,10 @@ async function storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, runId
   worker.startedAt = 0;
   worker.finishedAt = 0;
   worker.elapsedMs = 0;
+  worker.currentMutationLease = null;
+  worker.mutationGateWaiting = false;
+  worker.mutationGateWaitingSince = 0;
+  worker.mutationGateRequest = null;
   worker.message = forceFreshTab
     ? "Retrying unfinished localized screenshot locales in a fresh worker tab."
     : "Retrying unfinished localized screenshot locales in this tab.";

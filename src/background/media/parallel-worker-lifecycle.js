@@ -155,6 +155,20 @@ async function closeParallelLocalizedScreenshotTerminalWorkerTabs(run) {
   }));
 }
 
+async function closeParallelLocalizedScreenshotWorkerTabsForAbort(run) {
+  if (!run) return;
+
+  await Promise.all((run.workers || []).map(async worker => {
+    if (!worker || worker.closed || !worker.tabId || worker.tabId === run.parentTabId) return;
+    try {
+      await storePilotTabsRemove(worker.tabId);
+      worker.closed = true;
+    } catch (error) {
+      worker.closeError = error.message || String(error);
+    }
+  }));
+}
+
 function markParallelLocalizedScreenshotWorkerAbortedForResume(run, worker, message = "") {
   if (!run || !worker || isParallelWorkerTerminal(worker)) return;
 
@@ -221,7 +235,7 @@ function scheduleParallelLocalizedScreenshotAbortFinalizer(run) {
 }
 
 async function forceStopParallelLocalizedScreenshotRunForResume(run) {
-  if (!run || !isParallelLocalizedScreenshotRunActiveStatus(run)) return;
+  if (!run) return;
 
   run.abortRequested = true;
   run.manualAbortRequested = true;
@@ -243,8 +257,14 @@ async function forceStopParallelLocalizedScreenshotRunForResume(run) {
     await closeTerminalParallelLocalizedScreenshotWorker(run, worker);
   }
 
+  await closeParallelLocalizedScreenshotWorkerTabsForAbort(run);
   run.resumeLocaleList = getParallelLocalizedScreenshotResumeLocales(run);
   finalizeParallelLocalizedScreenshotRunIfDone(run);
+  if (run.status === "aborting") {
+    run.status = "aborted";
+    run.finishedAt = Date.now();
+    run.message = text("parallelLocalizedScreenshotsAborted", "Parallel localized screenshot upload stopped.");
+  }
   await sendParallelLocalizedScreenshotRunUpdate(run);
   await persistParallelLocalizedScreenshotLog(run);
 }

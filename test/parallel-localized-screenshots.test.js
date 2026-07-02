@@ -973,6 +973,94 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   await new Promise(resolve => setTimeout(resolve, 0));
   await new Promise(resolve => setTimeout(resolve, 0));
 
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 180 + openedTabs++ });
+  context.storePilotTabsRemove = () => Promise.resolve();
+  context.storePilotTabsSendMessage = (_tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      return new Promise(() => {});
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const gateAbortRunStart = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 97,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am", "ar"],
+    workerCount: 2,
+    parallelMode: "replace",
+    parallelMutationSuccessCooldownMs: 0,
+    parallelMutationErrorCooldownMs: 0
+  });
+  assert.equal(gateAbortRunStart.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const gateAbortResponse = await context.storePilotAbortParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 97,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, gateAbortRunStart.run.runId);
+  assert.equal(gateAbortResponse.ok, true);
+  const abortedGateWorker = gateAbortResponse.run.workers[0];
+  const retryGateWorker = await context.storePilotRetryParallelLocalizedScreenshotWorkerTab({
+    tab: {
+      id: 97,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, gateAbortRunStart.run.runId, abortedGateWorker.workerId, {
+    freshTab: true,
+    fromMaster: true
+  });
+  assert.equal(retryGateWorker.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const retryGateRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 97,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, gateAbortRunStart.run.runId).run;
+  const retriedGateWorker = retryGateRun.workers.find(worker => worker.workerId === abortedGateWorker.workerId);
+  const gateRequest = {
+    action: "delete",
+    locale: retriedGateWorker.assignedLocales[0],
+    screenshotSlot: 1,
+    attempt: 1
+  };
+  const gateLease = await Promise.race([
+    context.storePilotRequestLocalizedScreenshotMutation({
+      tab: {
+        id: retriedGateWorker.tabId,
+        url: "https://chrome.google.com/webstore/devconsole/item/edit"
+      }
+    }, {
+      runId: retryGateRun.runId,
+      workerId: retriedGateWorker.workerId,
+      request: gateRequest
+    }),
+    new Promise(resolve => setTimeout(() => resolve({ timeout: true }), 50))
+  ]);
+  assert.equal(
+    gateLease.timeout,
+    undefined,
+    "retrying one worker after abort resets the aborted mutation gate so delete/upload leases can be granted"
+  );
+  assert.equal(gateLease.ok, true);
+  await context.storePilotReleaseLocalizedScreenshotMutation({
+    tab: {
+      id: retriedGateWorker.tabId,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, {
+    runId: retryGateRun.runId,
+    workerId: retriedGateWorker.workerId,
+    leaseId: gateLease.leaseId,
+    request: gateRequest,
+    outcome: "ok"
+  });
+
   const uploadAbortMessages = [];
   let abortUploadOnce = true;
   context.storePilotTabsCreate = () => Promise.resolve({ id: 130 + openedTabs++ });
