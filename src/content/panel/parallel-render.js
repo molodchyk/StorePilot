@@ -144,6 +144,21 @@ function getParallelLocalizedScreenshotUploadOptions(panel, status) {
       picker.remove();
     }
 
+    function focusPicker() {
+      try {
+        picker.scrollIntoView({ block: "nearest", inline: "nearest" });
+      } catch (error) {
+        // Older extension contexts can ignore scroll options.
+        picker.scrollIntoView();
+      }
+
+      try {
+        workerInput.focus({ preventScroll: true });
+      } catch (error) {
+        workerInput.focus();
+      }
+    }
+
     function onKeyDown(event) {
       if (event.key === "Escape") {
         cleanup();
@@ -154,7 +169,8 @@ function getParallelLocalizedScreenshotUploadOptions(panel, status) {
     function selectMode(mode) {
       selectedMode = mode;
       Array.from(choices.querySelectorAll("button")).forEach(button => {
-        button.setAttribute("aria-pressed", button.dataset.mode === selectedMode ? "true" : "false");
+        const isSelected = button.dataset.mode === selectedMode;
+        button.setAttribute("aria-pressed", isSelected ? "true" : "false");
       });
     }
 
@@ -174,8 +190,9 @@ function getParallelLocalizedScreenshotUploadOptions(panel, status) {
 
     startLabel.textContent = "Start locale";
     startInput.type = "text";
-    startInput.placeholder = "Optional";
-    startInput.value = typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() || "" : "";
+    startInput.placeholder = "All locales";
+    startInput.autocomplete = "off";
+    startInput.value = "";
 
     for (const choice of getParallelLocalizedScreenshotModeChoices()) {
       const button = createButton("", () => selectMode(choice.mode));
@@ -183,6 +200,7 @@ function getParallelLocalizedScreenshotUploadOptions(panel, status) {
       const description = document.createElement("span");
       button.className = "storepilot-parallel-mode-choice";
       button.dataset.mode = choice.mode;
+      button.title = `${choice.label}: ${choice.description}`;
       button.setAttribute("aria-pressed", choice.mode === selectedMode ? "true" : "false");
       label.className = "storepilot-parallel-mode-choice-label";
       description.className = "storepilot-parallel-mode-choice-description";
@@ -195,9 +213,9 @@ function getParallelLocalizedScreenshotUploadOptions(panel, status) {
     actions.append(startButton, cancelButton);
     form.append(workerLabel, workerInput, startLabel, startInput);
     picker.append(titleElement, form, choices, actions);
-    panel.insertBefore(picker, status);
+    panel.insertBefore(picker, panel.querySelector(".storepilot-parallel-board") || status);
     document.addEventListener("keydown", onKeyDown);
-    workerInput.focus();
+    window.requestAnimationFrame(focusPicker);
   });
 }
 

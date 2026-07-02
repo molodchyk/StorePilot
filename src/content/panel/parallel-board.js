@@ -5,6 +5,7 @@ function getParallelLocaleStatusLabel(status) {
     pendingUpload: "pending upload",
     clearing: "clearing",
     cleared: "cleared",
+    auditing: "auditing",
     uploading: "uploading",
     replacing: "replacing",
     running: "running",

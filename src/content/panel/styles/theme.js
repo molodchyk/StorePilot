@@ -103,6 +103,12 @@
         color: #a5f3fc;
       }
 
+      #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="auditing"] {
+        border-color: #c084fc;
+        background: #2e1065;
+        color: #e9d5ff;
+      }
+
       #${panelId}[data-theme="dark"] .storepilot-locale-status[data-status="completed"] {
         border-color: #2dd4bf;
         background: #042f2e;
@@ -251,6 +257,12 @@
           border-color: #22d3ee;
           background: #083344;
           color: #a5f3fc;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="auditing"] {
+          border-color: #c084fc;
+          background: #2e1065;
+          color: #e9d5ff;
         }
 
         #${panelId}:not([data-theme="light"]) .storepilot-locale-status[data-status="completed"] {

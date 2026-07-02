@@ -59,6 +59,11 @@
         color: #064e3b;
       }
 
+      #${panelId} .storepilot-parallel-mode-choice[aria-pressed="false"] {
+        gap: 0;
+        padding: 5px 8px;
+      }
+
       #${panelId} .storepilot-parallel-mode-choice-label {
         font-weight: 700;
       }
@@ -68,6 +73,10 @@
         font-size: 11px;
         font-weight: 400;
         line-height: 1.25;
+      }
+
+      #${panelId} .storepilot-parallel-mode-choice[aria-pressed="false"] .storepilot-parallel-mode-choice-description {
+        display: none;
       }
 
       #${panelId} .storepilot-parallel-mode-actions {
@@ -231,6 +240,12 @@
         border-color: #0891b2;
         background: #ecfeff;
         color: #0e7490;
+      }
+
+      #${panelId} .storepilot-locale-status[data-status="auditing"] {
+        border-color: #7c3aed;
+        background: #f5f3ff;
+        color: #6d28d9;
       }
 
       #${panelId} .storepilot-locale-status[data-status="completed"] {
