@@ -493,6 +493,13 @@ const inferredClearedNeedsUpload = context.storePilotGetParallelLocalizedScreens
       phase: "auditing persisted localized screenshot count (0 expected)",
       message: "auditing persisted localized screenshot count (0 expected)"
     },
+    ca: {
+      locale: "ca",
+      status: "clearedAudited",
+      operation: "clearOnly",
+      phase: "clearing",
+      message: "localized screenshots audited"
+    },
     bg: {
       locale: "bg",
       status: "clearing",
@@ -514,8 +521,18 @@ const inferredClearedNeedsUpload = context.storePilotGetParallelLocalizedScreens
 });
 assert.deepEqual(
   hostValue(inferredClearedNeedsUpload),
-  ["am", "ar", "az"],
+  ["am", "ar", "az", "ca"],
   "coordinated resume preserves clear-progress and audit-progress locales as upload-only work"
+);
+assert.equal(
+  context.getParallelLocalizedScreenshotCompletedLocaleStatus({
+    mode: "clearThenUpload",
+    phase: "clearing"
+  }, {
+    operation: "clearOnly"
+  }, true),
+  "clearedAudited",
+  "coordinated clear-phase audit completion keeps a durable audit-verified locale state"
 );
 
 const parallelLocalizedScreenshotAsyncTests = (async () => {

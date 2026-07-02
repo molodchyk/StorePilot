@@ -194,7 +194,7 @@ function markParallelLocalizedScreenshotWorkerAbortedForResume(run, worker, mess
       existingStatus &&
       isClearOnlyStatusThatNeedsUpload(existingStatus);
     updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
-      status: keepCleared ? "cleared" : "aborted",
+      status: keepCleared ? getParallelLocalizedScreenshotClearNeedsUploadStatusName(existingStatus) : "aborted",
       operation: keepCleared ? "clearOnly" : worker.operation || "",
       workerId: worker.workerId,
       phase: run.phase || "",
@@ -409,15 +409,11 @@ async function runParallelLocalizedScreenshotWorker(run, worker, files, projectN
       worker.failedLocales = worker.failedLocaleList.length;
     }
 
-    const completedStatus = worker.operation === "clearOnly" &&
-      run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD &&
-      run.phase === "clearing"
-      ? "cleared"
-      : "completed";
     const auditedSet = new Set(worker.auditedLocaleList || []);
 
     if (shouldRestartParallelLocalizedScreenshotWorker(run, worker, result)) {
       for (const locale of worker.completedLocaleList) {
+        const completedStatus = getParallelLocalizedScreenshotCompletedLocaleStatus(run, worker, auditedSet.has(locale));
         updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
           status: completedStatus,
           operation: worker.operation || "",
@@ -442,6 +438,7 @@ async function runParallelLocalizedScreenshotWorker(run, worker, files, projectN
     }
 
     for (const locale of worker.completedLocaleList) {
+      const completedStatus = getParallelLocalizedScreenshotCompletedLocaleStatus(run, worker, auditedSet.has(locale));
       updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
         status: completedStatus,
         operation: worker.operation || "",

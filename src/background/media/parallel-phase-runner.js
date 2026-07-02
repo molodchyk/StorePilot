@@ -240,7 +240,7 @@ async function continueParallelLocalizedScreenshotUpload(run, requestAccess, opt
       const contextStatus = contextStatusSource[locale] || null;
       if (!contextStatus) continue;
       const shouldPreserve = !planLocaleSet.has(locale) ||
-        ["completed", "cleared", "skipped"].includes(contextStatus.status);
+        ["completed", "cleared", PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED, "skipped"].includes(contextStatus.status);
       if (!shouldPreserve) continue;
       updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
         ...contextStatus,
@@ -251,7 +251,8 @@ async function continueParallelLocalizedScreenshotUpload(run, requestAccess, opt
       .filter(locale => run.localeStatuses[locale] && run.localeStatuses[locale].status === "completed")
       .length;
     run.initialClearedLocales = run.localeStatusOrder
-      .filter(locale => run.localeStatuses[locale] && run.localeStatuses[locale].status === "cleared")
+      .filter(locale => run.localeStatuses[locale] &&
+        isParallelLocalizedScreenshotClearedStatusName(run.localeStatuses[locale].status))
       .length;
     for (const locale of run.preClearedLocales) {
       updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
@@ -263,7 +264,8 @@ async function continueParallelLocalizedScreenshotUpload(run, requestAccess, opt
       });
     }
     run.initialClearedLocales = run.localeStatusOrder
-      .filter(locale => run.localeStatuses[locale] && run.localeStatuses[locale].status === "cleared")
+      .filter(locale => run.localeStatuses[locale] &&
+        isParallelLocalizedScreenshotClearedStatusName(run.localeStatuses[locale].status))
       .length;
 
     if (run.abortRequested) {

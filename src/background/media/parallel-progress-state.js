@@ -107,9 +107,36 @@ function isCoordinatedClearWorker(run, worker) {
     worker.operation === "clearOnly");
 }
 
+function isParallelLocalizedScreenshotClearedStatusName(statusName) {
+  return statusName === "cleared" ||
+    statusName === PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED;
+}
+
+function getParallelLocalizedScreenshotClearNeedsUploadStatusName(status) {
+  if (!status) return "cleared";
+  if (status.status === PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED) {
+    return PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED;
+  }
+  if (status.status === "auditing") {
+    return PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED;
+  }
+  return "cleared";
+}
+
+function getParallelLocalizedScreenshotCompletedLocaleStatus(run, worker, audited) {
+  if (worker &&
+      worker.operation === "clearOnly" &&
+      run &&
+      run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD &&
+      run.phase === "clearing") {
+    return audited ? PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED : "cleared";
+  }
+  return "completed";
+}
+
 function isClearOnlyStatusThatNeedsUpload(status) {
   if (!status || status.operation !== "clearOnly") return false;
-  if (["cleared", "completed"].includes(status.status)) return true;
+  if (["cleared", PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED, "completed"].includes(status.status)) return true;
 
   const phase = String(status.phase || "").toLowerCase();
   const message = String(status.message || "").toLowerCase();
@@ -272,7 +299,8 @@ function getParallelLocalizedScreenshotTimelineCounts(run, totals, localeStatuse
       run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD &&
       run.phase === "clearing";
     const completedLocales = statuses.filter(item => (
-      item.status === "completed" || (countClearedAsComplete && item.status === "cleared")
+      item.status === "completed" ||
+        (countClearedAsComplete && isParallelLocalizedScreenshotClearedStatusName(item.status))
     )).length;
     const failedLocales = statuses.filter(item => item.status === "failed" || item.status === "aborted").length;
     const skippedLocales = statuses.filter(item => item.status === "skipped").length;

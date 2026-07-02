@@ -248,6 +248,12 @@
         color: #6d28d9;
       }
 
+      #${panelId} .storepilot-locale-status[data-status="clearedAudited"] {
+        border-color: #9333ea;
+        background: #faf5ff;
+        color: #7e22ce;
+      }
+
       #${panelId} .storepilot-locale-status[data-status="completed"] {
         border-color: #0f766e;
         background: #ecfdf5;

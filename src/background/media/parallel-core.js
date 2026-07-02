@@ -13,6 +13,7 @@ const PARALLEL_LOCALIZED_SCREENSHOT_ABORT_GRACE_MS = 30000;
 const PARALLEL_LOCALIZED_SCREENSHOT_STALE_WORKER_RESTART_LIMIT = 2;
 const PARALLEL_LOCALIZED_SCREENSHOT_LOG_STORAGE_KEY = "storePilotParallelLocalizedScreenshotLogs";
 const PARALLEL_LOCALIZED_SCREENSHOT_STORED_LOG_LIMIT = 5;
+const PARALLEL_LOCALIZED_SCREENSHOT_STATUS_CLEARED_AUDITED = "clearedAudited";
 const localizedScreenshotParallelRuns = new Map();
 
 function text(key, fallback, substitutions) {
