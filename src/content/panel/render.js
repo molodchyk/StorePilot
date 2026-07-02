@@ -381,6 +381,7 @@ function renderPanel(locales) {
     }
   );
   uploadLocalizedScreenshotsParallelButton.dataset.storepilotAction = "upload-localizedScreenshotsParallel";
+  const uploadGlobalPromoVideoButton = createMediaUploadButton("globalPromoVideo", "uploadGlobalPromoVideo", "Paste global promo video");
   const uploadSmallPromoButton = createMediaUploadButton("smallPromo", "uploadSmallPromo", "Upload small promo");
   const uploadMarqueePromoButton = createMediaUploadButton("marqueePromo", "uploadMarqueePromo", "Upload marquee promo");
   const clearScreenshotsButton = createMediaClearButton("screenshots", "clearScreenshots", "Clear screenshots");
@@ -391,11 +392,16 @@ function renderPanel(locales) {
 
   actions.append(
     createPanelActionGroup(fillCurrentButton, fillAllButton, selectCategoryButton),
+    createPanelActionGroup(uploadStoreIconButton),
     createPanelActionGroup(
-      uploadStoreIconButton,
-      uploadScreenshotsButton,
       uploadLocalizedScreenshotsButton,
-      uploadLocalizedScreenshotsParallelButton,
+      uploadLocalizedScreenshotsParallelButton
+    ),
+    createPanelActionGroup(
+      uploadGlobalPromoVideoButton,
+      uploadScreenshotsButton
+    ),
+    createPanelActionGroup(
       uploadSmallPromoButton,
       uploadMarqueePromoButton
     ),

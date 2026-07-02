@@ -220,6 +220,7 @@ async function updateMediaActionState() {
   const screenshotsLimitReached = Boolean(result.media.screenshotsLimitReached);
   const maxScreenshots = String(result.media.maxScreenshots || 5);
   const localizedScreenshotTargetFound = Boolean(result.media.localizedScreenshotTargetFound);
+  const globalPromoVideoTargetFound = Boolean(result.media.globalPromoVideoTargetFound);
   const storeIconPresent = Boolean(result.media.storeIconPresent || Number(result.media.storeIcon || 0) > 0);
   const smallPromoPresent = Boolean(result.media.smallPromoPresent || Number(result.media.smallPromo || 0) > 0);
   const marqueePromoPresent = Boolean(result.media.marqueePromoPresent || Number(result.media.marqueePromo || 0) > 0);
@@ -232,6 +233,14 @@ async function updateMediaActionState() {
   elements.uploadLocalizedScreenshots.title = localizedScreenshotTargetFound
     ? ""
     : t("localizedScreenshotTargetNotFound", "Localized screenshots upload target not found on this page.");
+  elements.uploadLocalizedScreenshotsParallel.disabled = !localizedScreenshotTargetFound;
+  elements.uploadLocalizedScreenshotsParallel.title = localizedScreenshotTargetFound
+    ? ""
+    : t("localizedScreenshotTargetNotFound", "Localized screenshots upload target not found on this page.");
+  elements.uploadGlobalPromoVideo.disabled = !globalPromoVideoTargetFound;
+  elements.uploadGlobalPromoVideo.title = globalPromoVideoTargetFound
+    ? ""
+    : t("globalPromoVideoTargetNotFound", "Global promo video field not found on this page.");
   elements.uploadStoreIcon.disabled = storeIconPresent;
   elements.uploadStoreIcon.title = storeIconPresent
     ? t("mediaAlreadyPresentOrProcessing", "$1 already present or processing.", [t("storeIcon", "Store icon")])

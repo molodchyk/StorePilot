@@ -27,6 +27,8 @@ const elements = {
   uploadStoreIcon: document.getElementById("uploadStoreIcon"),
   uploadScreenshots: document.getElementById("uploadScreenshots"),
   uploadLocalizedScreenshots: document.getElementById("uploadLocalizedScreenshots"),
+  uploadLocalizedScreenshotsParallel: document.getElementById("uploadLocalizedScreenshotsParallel"),
+  uploadGlobalPromoVideo: document.getElementById("uploadGlobalPromoVideo"),
   uploadSmallPromo: document.getElementById("uploadSmallPromo"),
   uploadMarqueePromo: document.getElementById("uploadMarqueePromo"),
   clearStoreIcon: document.getElementById("clearStoreIcon"),
@@ -80,6 +82,8 @@ function getPopupMediaButtons() {
     elements.uploadStoreIcon,
     elements.uploadScreenshots,
     elements.uploadLocalizedScreenshots,
+    elements.uploadLocalizedScreenshotsParallel,
+    elements.uploadGlobalPromoVideo,
     elements.uploadSmallPromo,
     elements.uploadMarqueePromo,
     elements.clearStoreIcon,
@@ -98,6 +102,8 @@ function getPopupListingActionControls() {
     elements.uploadStoreIcon,
     elements.uploadScreenshots,
     elements.uploadLocalizedScreenshots,
+    elements.uploadLocalizedScreenshotsParallel,
+    elements.uploadGlobalPromoVideo,
     elements.uploadSmallPromo,
     elements.uploadMarqueePromo,
     elements.clearStoreIcon,
@@ -390,6 +396,47 @@ function getLocalizedScreenshotUploadOptions() {
   };
 }
 
+function getParallelLocalizedScreenshotUploadOptions() {
+  if (typeof window.prompt !== "function") {
+    return {
+      workerCount: 2,
+      parallelMode: "coordinated",
+      localizedScreenshotsStartLocale: "",
+      closeSuccessfulWorkers: true
+    };
+  }
+
+  const workerCountInput = window.prompt(
+    t("parallelLocalizedScreenshotsWorkerCountPrompt", "Worker count (1-6; default 2)."),
+    "2"
+  );
+  if (workerCountInput === null) return null;
+
+  const startLocale = window.prompt(
+    t("parallelLocalizedScreenshotsStartLocalePrompt", "Start locale (optional; leave empty for all locales)."),
+    ""
+  );
+  if (startLocale === null) return null;
+
+  return {
+    workerCount: Math.min(Math.max(Number.parseInt(workerCountInput, 10) || 2, 1), 6),
+    parallelMode: "coordinated",
+    localizedScreenshotsStartLocale: startLocale.trim(),
+    closeSuccessfulWorkers: true
+  };
+}
+
+async function startParallelLocalizedScreenshotsFromPopup(options) {
+  const injection = await sendToActiveTab("storepilot-reload");
+  if (!injection.ok) return injection;
+
+  return storePilotRuntimeSendMessage({
+    type: "storepilot-start-localized-screenshot-parallel-upload",
+    requestAccess: true,
+    options
+  });
+}
+
 function bindMediaUploadButton(button, kind) {
   button.addEventListener("click", async () => {
     if (isPopupMediaRunning || isPopupFillAllRunning || button.disabled) return;
@@ -399,7 +446,9 @@ function bindMediaUploadButton(button, kind) {
 
     const uploadMessage = kind === "localizedScreenshots"
       ? t("uploadingLocalizedScreenshots", "Uploading localized screenshots...")
-      : t("uploadingMedia", "Uploading media...");
+      : kind === "globalPromoVideo"
+        ? t("pastingGlobalPromoVideo", "Pasting global promo video...")
+        : t("uploadingMedia", "Uploading media...");
     setPopupMediaRunning(true, uploadMessage);
     setStatus(uploadMessage);
 
@@ -415,9 +464,34 @@ function bindMediaUploadButton(button, kind) {
   });
 }
 
+function bindParallelLocalizedScreenshotsButton(button) {
+  button.addEventListener("click", async () => {
+    if (isPopupMediaRunning || isPopupFillAllRunning || button.disabled) return;
+
+    const options = getParallelLocalizedScreenshotUploadOptions();
+    if (options === null) return;
+
+    const message = t("parallelLocalizedScreenshotsStarting", "Starting parallel localized screenshot upload...");
+    setPopupMediaRunning(true, message);
+    setStatus(message);
+
+    try {
+      showActionResult(await startParallelLocalizedScreenshotsFromPopup(options));
+    } catch (error) {
+      setStatus(t("mediaUploadFailed", "Media upload failed: $1", [formatError(error)]), true);
+    } finally {
+      await updateMediaActionState().catch(() => {
+        setPopupMediaRunning(false);
+      });
+    }
+  });
+}
+
 bindMediaUploadButton(elements.uploadStoreIcon, "storeIcon");
-bindMediaUploadButton(elements.uploadScreenshots, "screenshots");
 bindMediaUploadButton(elements.uploadLocalizedScreenshots, "localizedScreenshots");
+bindParallelLocalizedScreenshotsButton(elements.uploadLocalizedScreenshotsParallel);
+bindMediaUploadButton(elements.uploadGlobalPromoVideo, "globalPromoVideo");
+bindMediaUploadButton(elements.uploadScreenshots, "screenshots");
 bindMediaUploadButton(elements.uploadSmallPromo, "smallPromo");
 bindMediaUploadButton(elements.uploadMarqueePromo, "marqueePromo");
 

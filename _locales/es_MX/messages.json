@@ -1180,5 +1180,29 @@
   },
   "mediaPromoVideoCandidateCountsValue": {
     "message": "Global promo video: $1; localized promo videos: $2."
+  },
+  "uploadLocalizedScreenshotsParallel": {
+    "message": "Upload localized screenshots in parallel"
+  },
+  "uploadGlobalPromoVideo": {
+    "message": "Paste global promo video"
+  },
+  "pastingGlobalPromoVideo": {
+    "message": "Pasting global promo video..."
+  },
+  "globalPromoVideoTargetNotFound": {
+    "message": "Global promo video field not found on this page."
+  },
+  "globalPromoVideoDidNotAcceptValue": {
+    "message": "Global promo video field did not accept the URL."
+  },
+  "globalPromoVideoPasted": {
+    "message": "Pasted global promo video URL."
+  },
+  "parallelLocalizedScreenshotsWorkerCountPrompt": {
+    "message": "Worker count (1-6; default 2)."
+  },
+  "parallelLocalizedScreenshotsStartLocalePrompt": {
+    "message": "Start locale (optional; leave empty for all locales)."
   }
 }

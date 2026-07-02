@@ -193,6 +193,9 @@ function getDashboardMediaState() {
   const marqueePromoPresent = hasExistingOrProcessingMedia("marqueePromo");
   const localizedScreenshotTargetFound = getMediaUploadWidgets("localizedScreenshots").length > 0 ||
     hasClearableMedia("localizedScreenshots");
+  const globalPromoVideoState = typeof getDashboardGlobalPromoVideoState === "function"
+    ? getDashboardGlobalPromoVideoState()
+    : { targetFound: false, value: "" };
 
   return {
     screenshots: screenshotCount,
@@ -207,6 +210,9 @@ function getDashboardMediaState() {
     screenshotsLimitReached: screenshotCount >= MAX_DASHBOARD_SCREENSHOTS,
     maxScreenshots: MAX_DASHBOARD_SCREENSHOTS,
     localizedScreenshotTargetFound,
+    globalPromoVideoTargetFound: Boolean(globalPromoVideoState.targetFound),
+    globalPromoVideoValue: globalPromoVideoState.value || "",
+    globalPromoVideoPresent: Boolean(globalPromoVideoState.value),
     currentLocale: typeof getCurrentDashboardLocale === "function" ? getCurrentDashboardLocale() : "",
     storeIconPresent,
     smallPromoPresent,
@@ -223,6 +229,7 @@ function getPanelMediaButtons(panel = document.getElementById(PANEL_ID)) {
     "[data-storepilot-action='upload-screenshots']",
     "[data-storepilot-action='upload-localizedScreenshots']",
     "[data-storepilot-action='upload-localizedScreenshotsParallel']",
+    "[data-storepilot-action='upload-globalPromoVideo']",
     "[data-storepilot-action='upload-smallPromo']",
     "[data-storepilot-action='upload-marqueePromo']",
     "[data-storepilot-action='clear-screenshots']",
@@ -363,6 +370,17 @@ function updatePanelMediaUi() {
   if (uploadLocalizedScreenshotsParallelButton) {
     uploadLocalizedScreenshotsParallelButton.disabled = false;
     uploadLocalizedScreenshotsParallelButton.title = "";
+  }
+
+  const uploadGlobalPromoVideoButton = panel.querySelector("[data-storepilot-action='upload-globalPromoVideo']");
+  if (uploadGlobalPromoVideoButton) {
+    const promoVideoState = typeof getDashboardGlobalPromoVideoState === "function"
+      ? getDashboardGlobalPromoVideoState()
+      : { targetFound: false };
+    uploadGlobalPromoVideoButton.disabled = !promoVideoState.targetFound;
+    uploadGlobalPromoVideoButton.title = promoVideoState.targetFound
+      ? ""
+      : localize("globalPromoVideoTargetNotFound", "Global promo video field not found on this page.");
   }
 
   renderParallelLocalizedScreenshotBoard(panel);

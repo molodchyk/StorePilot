@@ -54,7 +54,7 @@ function filterLocalizedScreenshotFilesForProject(files, project) {
   };
 }
 
-async function resolveMediaFilesForActiveProject(requestAccess = false, kind = "", dashboardUrl = "") {
+async function resolveActiveMediaProject(dashboardUrl = "") {
   const state = await storePilotGetProjectsState();
   const resolved = typeof storePilotResolveProjectForDashboard === "function"
     ? await storePilotResolveProjectForDashboard({ url: dashboardUrl })
@@ -71,6 +71,43 @@ async function resolveMediaFilesForActiveProject(requestAccess = false, kind = "
   if (!project.mediaAssets) {
     return { ok: false, message: text("mediaAssetsNotScanned", "Not scanned") };
   }
+
+  return {
+    ok: true,
+    project,
+    projectName: project.name
+  };
+}
+
+async function resolveGlobalPromoVideoForActiveProject(dashboardUrl = "") {
+  const resolvedProject = await resolveActiveMediaProject(dashboardUrl);
+  if (!resolvedProject.ok) return resolvedProject;
+
+  const asset = resolvedProject.project.mediaAssets.globalPromoVideo || null;
+  const url = asset && String(asset.url || "").trim();
+  if (!url) {
+    return { ok: false, message: text("promoVideoMissing", "No promo video URL found.") };
+  }
+
+  return {
+    ok: true,
+    projectName: resolvedProject.projectName,
+    files: {
+      globalPromoVideo: {
+        type: "globalPromoVideo",
+        url,
+        path: asset.path || "",
+        issues: asset.issues || []
+      }
+    }
+  };
+}
+
+async function resolveMediaFilesForActiveProject(requestAccess = false, kind = "", dashboardUrl = "") {
+  const resolvedProject = await resolveActiveMediaProject(dashboardUrl);
+  if (!resolvedProject.ok) return resolvedProject;
+
+  const project = resolvedProject.project;
 
   const storedMediaFiles = typeof storePilotGetProjectMediaFiles === "function"
     ? await storePilotGetProjectMediaFiles(project.id)
@@ -138,7 +175,7 @@ async function resolveMediaFilesForActiveProject(requestAccess = false, kind = "
 
   return {
     ok: true,
-    projectName: project.name,
+    projectName: resolvedProject.projectName,
     files: {
       storeIcon,
       screenshots,
@@ -164,7 +201,9 @@ async function storePilotUploadMediaToDashboard(sender, requestAccess = false, k
     return { ok: false, message: text("noActiveTab", "No active tab.") };
   }
 
-  const resolved = await resolveMediaFilesForActiveProject(requestAccess, kind, tab.url || "");
+  const resolved = kind === "globalPromoVideo"
+    ? await resolveGlobalPromoVideoForActiveProject(tab.url || "")
+    : await resolveMediaFilesForActiveProject(requestAccess, kind, tab.url || "");
   if (!resolved.ok) return resolved;
 
   return storePilotTabsSendMessage(tab.id, {
