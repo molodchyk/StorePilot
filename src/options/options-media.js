@@ -375,6 +375,139 @@ function createMediaCard(typeLabel, asset, stateLabel = "", file = null, reviewP
   return card;
 }
 
+function createPromoVideoLink(url) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = url;
+  return link;
+}
+
+function getPromoVideoIssueLabel(asset) {
+  const issues = Array.from(asset && asset.issues || []);
+  return issues.length
+    ? t("localizedPromoVideoIssueCount", "$1 issue(s): $2", [String(issues.length), issues.slice(0, 2).join("; ")])
+    : t("noIssues", "No issues");
+}
+
+function createPromoVideoCard(typeLabel, asset, stateLabel = "") {
+  const card = document.createElement("article");
+  const header = document.createElement("div");
+  const type = document.createElement("div");
+  const label = document.createElement("div");
+  const urlBox = document.createElement("div");
+  const path = document.createElement("div");
+  const status = document.createElement("div");
+
+  card.className = "media-card promo-video-card";
+  header.className = "media-card-header";
+  type.className = "media-type";
+  label.className = "media-dimensions";
+  urlBox.className = "media-thumb promo-video-url-box";
+  path.className = "media-path";
+  status.className = "count";
+
+  type.textContent = typeLabel;
+  label.textContent = t("promoVideoUrl", "YouTube URL");
+  path.textContent = asset ? asset.path : stateLabel || t("missing", "Missing");
+  status.textContent = asset ? getPromoVideoIssueLabel(asset) : "";
+
+  if (asset && asset.url) {
+    urlBox.append(createPromoVideoLink(asset.url));
+  } else {
+    urlBox.textContent = stateLabel || t("promoVideoMissing", "No promo video URL found.");
+  }
+
+  header.append(type, label);
+  card.append(header, urlBox, path, status);
+  return card;
+}
+
+function getLocalizedPromoVideoEntries(mediaAssets) {
+  return Object.entries(mediaAssets && mediaAssets.localizedPromoVideos || {})
+    .map(([locale, asset]) => ({
+      locale,
+      asset
+    }))
+    .filter(entry => entry.asset && entry.asset.url)
+    .sort((a, b) => a.locale.localeCompare(b.locale));
+}
+
+function createLocalizedPromoVideoHeader() {
+  const row = document.createElement("div");
+  row.className = "localized-promo-video-row localized-promo-video-row-header";
+  [
+    t("localizedPromoVideoLocale", "Locale"),
+    t("localizedPromoVideoUrl", "URL"),
+    t("localizedPromoVideoStatus", "Status"),
+    t("localizedPromoVideoSourcePath", "Source path")
+  ].forEach(label => {
+    const cell = document.createElement("div");
+    cell.textContent = label;
+    row.append(cell);
+  });
+  return row;
+}
+
+function createLocalizedPromoVideoRow(entry) {
+  const row = document.createElement("div");
+  const locale = document.createElement("div");
+  const url = document.createElement("div");
+  const status = document.createElement("div");
+  const source = document.createElement("div");
+
+  row.className = "localized-promo-video-row";
+  locale.className = "locale";
+  url.className = "promo-video-url";
+  status.className = "preview";
+  source.className = "media-path";
+
+  locale.textContent = entry.locale;
+  url.append(createPromoVideoLink(entry.asset.url));
+  status.textContent = getPromoVideoIssueLabel(entry.asset);
+  source.textContent = entry.asset.path;
+
+  row.append(locale, url, status, source);
+  return row;
+}
+
+function createLocalizedPromoVideoSection(mediaAssets) {
+  const section = document.createElement("section");
+  const heading = document.createElement("div");
+  const title = document.createElement("h3");
+  const summary = document.createElement("p");
+  const table = document.createElement("div");
+  const entries = getLocalizedPromoVideoEntries(mediaAssets);
+  const stats = mediaAssets.localizedPromoVideoStats || {};
+
+  section.className = "localized-screenshot-section localized-promo-video-section";
+  heading.className = "localized-screenshot-heading";
+  table.className = "localized-screenshot-table localized-promo-video-table";
+
+  title.textContent = t("localizedPromoVideos", "Localized promo videos");
+  summary.textContent = t("localizedPromoVideoSummary", "$1 locale(s), $2 issue(s).", [
+    String(stats.localeCount || entries.length),
+    String(stats.issueCount || entries.reduce((count, entry) => count + (entry.asset.issues || []).length, 0))
+  ]);
+  heading.append(title, summary);
+
+  if (entries.length) {
+    table.append(
+      createLocalizedPromoVideoHeader(),
+      ...entries.map(createLocalizedPromoVideoRow)
+    );
+  } else {
+    const empty = document.createElement("div");
+    empty.className = "localized-screenshot-empty";
+    empty.textContent = t("localizedPromoVideoNoFiles", "No localized promo video URLs found.");
+    table.append(empty);
+  }
+
+  section.append(heading, table);
+  return section;
+}
+
 function getLocalizedScreenshotEntries(mediaAssets) {
   return Object.entries(mediaAssets && mediaAssets.localizedScreenshots || {})
     .map(([locale, assets]) => ({
@@ -551,6 +684,10 @@ async function renderMediaAssets(project) {
       "",
       getStoredMediaFile(mediaFiles, "storeIcon")
     ),
+    createPromoVideoCard(
+      t("globalPromoVideo", "Global promo video"),
+      mediaAssets.globalPromoVideo
+    ),
     ...(screenshots.length ? screenshots.map((asset, index) => createMediaCard(
       t("screenshotNumber", "Screenshot $1", [String(index + 1)]),
       asset,
@@ -569,17 +706,24 @@ async function renderMediaAssets(project) {
       "",
       getStoredMediaFile(mediaFiles, "marqueePromo")
     ),
+    createLocalizedPromoVideoSection(mediaAssets),
     createLocalizedScreenshotSection(mediaAssets, mediaFiles),
     createMediaCard(
       t("mediaCandidateCounts", "Candidates"),
       {
-        path: t("mediaCandidateCountsValue", "Icon: $1; global screenshots: $2; localized screenshots: $3; small promo: $4; marquee promo: $5.", [
-          String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.storeIcon || 0),
-          String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.screenshots || 0),
-          String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.localizedScreenshots || 0),
-          String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.smallPromo || 0),
-          String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.marqueePromo || 0)
-        ]),
+        path: [
+          t("mediaCandidateCountsValue", "Icon: $1; global screenshots: $2; localized screenshots: $3; small promo: $4; marquee promo: $5.", [
+            String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.storeIcon || 0),
+            String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.screenshots || 0),
+            String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.localizedScreenshots || 0),
+            String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.smallPromo || 0),
+            String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.marqueePromo || 0)
+          ]),
+          t("mediaPromoVideoCandidateCountsValue", "Global promo video: $1; localized promo videos: $2.", [
+            String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.globalPromoVideo || 0),
+            String(mediaAssets.candidateCounts && mediaAssets.candidateCounts.localizedPromoVideos || 0)
+          ])
+        ].join(" "),
         width: "",
         height: "",
         size: 0

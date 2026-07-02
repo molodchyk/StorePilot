@@ -177,12 +177,15 @@ function updateStatusCards(projects, activeProject) {
 
   if (mediaAssets) {
     const localizedStats = mediaAssets.localizedScreenshotStats || {};
+    const localizedPromoStats = mediaAssets.localizedPromoVideoStats || {};
     elements.mediaCardValue.textContent = t("mediaCardValueWithLocalizedScreenshots", "$1/5 global, $2 localized locale(s)", [
       String((mediaAssets.screenshots || []).length),
       String(localizedStats.localeCount || Object.keys(mediaAssets.localizedScreenshots || {}).length)
     ]);
     elements.mediaCardMeta.textContent = [
       `${t("storeIcon", "Store icon")}: ${formatFoundMissing(mediaAssets.storeIcon)}`,
+      `${t("globalPromoVideo", "Global promo video")}: ${formatFoundMissing(mediaAssets.globalPromoVideo)}`,
+      `${t("localizedPromoVideos", "Localized promo videos")}: ${String(localizedPromoStats.localeCount || Object.keys(mediaAssets.localizedPromoVideos || {}).length)}`,
       `${t("localizedScreenshots", "Localized screenshots")}: ${String(localizedStats.screenshotCount || 0)}`,
       `${t("smallPromoTile", "Small promo tile")}: ${formatFoundMissing(mediaAssets.smallPromo)}`,
       `${t("marqueePromoTile", "Marquee promo tile")}: ${formatFoundMissing(mediaAssets.marqueePromo)}`

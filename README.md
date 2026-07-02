@@ -14,7 +14,7 @@ StorePilot is a local-first Firefox extension for automating Chrome extension st
 - Can expose an advanced Fill current language action for debugging or one-off manual fills.
 - Selects the Chrome Web Store category from a detected project category document.
 - Fills Chrome Web Store Additional fields values such as Homepage URL, Support URL, Official URL, and Mature content from a detected project document.
-- Uploads discovered graphic assets for global screenshots, localized screenshots, icon, small promo, and marquee promo where the dashboard allows it, with preview navigation through arrow buttons or A/D.
+- Reviews discovered graphic assets, including global screenshots, localized screenshots, icon, promo video URLs, small promo, and marquee promo; media upload automation is implemented for the image assets.
 - Fills Chrome Web Store privacy-form text from a detected project privacy document.
 - Fills Chrome Web Store Data usage disclosure checkboxes from explicit yes values in a detected privacy document.
 
@@ -125,7 +125,7 @@ Alternative single-draft import: StorePilot also accepts `docs/chrome-web-store.
 
 Fields not imported from `listing/en.txt`: name, summary, category, homepage URL, support URL, official URL, mature content, and privacy fields. These belong in the Chrome Web Store dashboard or in dedicated automation documents, not in locale listing files.
 
-Graphic assets should use `.png`, `.jpg`, or `.jpeg`: icon `128 x 128`, direct files under `media/screenshots/` are global screenshots `1280 x 800` or `640 x 400` up to five files, `media/screenshots/<locale>/01-name.png` files are localized screenshots up to five per locale, small promo `440 x 280`, and marquee promo `1400 x 560`. `media/screenshots/en/` is English localized screenshots only, not a global fallback.
+Graphic assets should use `.png`, `.jpg`, or `.jpeg`: icon `128 x 128`, direct files under `media/screenshots/` are global screenshots `1280 x 800` or `640 x 400` up to five files, `media/screenshots/<locale>/01-name.png` files are localized screenshots up to five per locale, small promo `440 x 280`, and marquee promo `1400 x 560`. Promo video metadata uses text files: `media/promo-videos/global.txt` for the global YouTube URL and `media/promo-videos/localized/<locale>.txt` for localized YouTube URLs. `media/screenshots/en/` and `media/promo-videos/localized/en.txt` are English localized assets only, not global fallbacks.
 
 Category automation uses `docs/chrome-web-store-category.md` with an explicit selected category line:
 

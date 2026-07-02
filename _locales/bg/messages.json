@@ -1135,5 +1135,50 @@
   },
   "parallelLocalizedScreenshotsAbortTimeout": {
     "message": "Abort completed after waiting for worker tabs."
+  },
+  "mediaAssetsPromoVideoSummarySuffix": {
+    "message": " Promo video: $1; localized promo videos: $2."
+  },
+  "globalPromoVideo": {
+    "message": "Global promo video"
+  },
+  "localizedPromoVideos": {
+    "message": "Localized promo videos"
+  },
+  "promoVideoUrl": {
+    "message": "YouTube URL"
+  },
+  "promoVideoMissing": {
+    "message": "No promo video URL found."
+  },
+  "localizedPromoVideoLocale": {
+    "message": "Locale"
+  },
+  "localizedPromoVideoUrl": {
+    "message": "URL"
+  },
+  "localizedPromoVideoStatus": {
+    "message": "Status"
+  },
+  "localizedPromoVideoSourcePath": {
+    "message": "Source path"
+  },
+  "localizedPromoVideoSummary": {
+    "message": "$1 locale(s), $2 issue(s)."
+  },
+  "localizedPromoVideoNoFiles": {
+    "message": "No localized promo video URLs found."
+  },
+  "localizedPromoVideoIssueCount": {
+    "message": "$1 issue(s): $2"
+  },
+  "localizedPromoVideoMissingListing": {
+    "message": "Localized promo video has no matching imported listing text."
+  },
+  "promoVideoDuplicateCandidates": {
+    "message": "Multiple promo video URL candidates found; highest-scoring file was selected."
+  },
+  "mediaPromoVideoCandidateCountsValue": {
+    "message": "Global promo video: $1; localized promo videos: $2."
   }
 }

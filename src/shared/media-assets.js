@@ -40,6 +40,21 @@ const STOREPILOT_NON_UPLOAD_SCREENSHOT_FOLDERS = new Set([
   "render-preview",
   "templates"
 ]);
+const STOREPILOT_PROMO_VIDEO_TEXT_EXTENSIONS = new Set([
+  ".txt",
+  ".md",
+  ".markdown",
+  ".text",
+  ".json",
+  ".yaml",
+  ".yml",
+  ".csv",
+  ".tsv",
+  ".properties",
+  ".url"
+]);
+const STOREPILOT_PROMO_VIDEO_MAX_TEXT_BYTES = 512 * 1024;
+const STOREPILOT_PROMO_VIDEO_URL_PATTERN = /\bhttps?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?[^ \t\r\n"'<>]+|shorts\/[^ \t\r\n"'<>]+)|youtu\.be\/[^ \t\r\n"'<>]+)\b/i;
 
 function storePilotReadUint32(bytes, offset) {
   return ((bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3]) >>> 0;
@@ -158,6 +173,128 @@ function storePilotIsPotentialMediaAsset(fileName, size = 0) {
   return STOREPILOT_MEDIA_ASSET_EXTENSIONS.has(extension) && (!size || size <= 15 * 1024 * 1024);
 }
 
+function storePilotIsPotentialPromoVideoFile(fileName, size = 0) {
+  const extension = storePilotGetFileExtension(fileName);
+  return STOREPILOT_PROMO_VIDEO_TEXT_EXTENSIONS.has(extension) &&
+    (!size || size <= STOREPILOT_PROMO_VIDEO_MAX_TEXT_BYTES);
+}
+
+function storePilotNormalizeMediaPathPart(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/\.[^.]+$/i, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function storePilotPathHasPromoVideoContext(normalizedParts) {
+  return normalizedParts.some(part => /^promo-videos?$/.test(part)) ||
+    normalizedParts.some(part => /^localized-promo-videos?$|^localised-promo-videos?$/.test(part)) ||
+    (normalizedParts.some(part => /promo/.test(part)) &&
+      normalizedParts.some(part => /video|youtube|yt/.test(part)));
+}
+
+function storePilotIsStrongPromoVideoPath(normalizedParts) {
+  const fileBase = normalizedParts[normalizedParts.length - 1] || "";
+  return /promo.*video|video.*promo|promo.*youtube|youtube.*promo/.test(fileBase) ||
+    normalizedParts.some(part => /^promo-videos?$|^localized-promo-videos?$|^localised-promo-videos?$/.test(part));
+}
+
+function storePilotIsDocumentationLikePromoVideoPath(normalizedParts) {
+  const fileBase = normalizedParts[normalizedParts.length - 1] || "";
+  if (/^(readme|changelog|project-status|privacy|license|copy|source|template|example|examples)$/.test(fileBase)) {
+    return true;
+  }
+  return normalizedParts.some(part => /^(reference|playbook|specifications?|roadmap)$/.test(part)) ||
+    (normalizedParts.some(part => /^(docs?|documentation)$/.test(part)) && !storePilotIsStrongPromoVideoPath(normalizedParts));
+}
+
+function storePilotExtractPromoVideoUrl(text) {
+  const normalizedText = String(text || "").replace(/\r\n?/g, "\n");
+  const lines = normalizedText.split("\n");
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const match = trimmed.match(STOREPILOT_PROMO_VIDEO_URL_PATTERN);
+    if (match) return storePilotCleanPromoVideoUrl(match[0]);
+    break;
+  }
+
+  const fallbackMatch = normalizedText.match(STOREPILOT_PROMO_VIDEO_URL_PATTERN);
+  return fallbackMatch ? storePilotCleanPromoVideoUrl(fallbackMatch[0]) : "";
+}
+
+function storePilotCleanPromoVideoUrl(value) {
+  return String(value || "")
+    .trim()
+    .replace(/[)\].,;]+$/g, "");
+}
+
+function storePilotGetPromoVideoCandidateInfo(pathParts) {
+  const parts = Array.from(pathParts || []).map(part => String(part || ""));
+  if (!parts.length) return null;
+
+  const normalizedParts = parts.map(storePilotNormalizeMediaPathPart);
+  const fileBase = normalizedParts[normalizedParts.length - 1] || "";
+  const parentParts = normalizedParts.slice(0, -1);
+  if (!storePilotPathHasPromoVideoContext(normalizedParts)) return null;
+  if (storePilotIsDocumentationLikePromoVideoPath(normalizedParts)) return null;
+
+  const fileLocale = storePilotGetLocaleFromFileName(parts[parts.length - 1]);
+  if (fileLocale) {
+    return {
+      type: "localizedPromoVideo",
+      locale: fileLocale
+    };
+  }
+
+  for (let index = parentParts.length - 1; index >= 0; index--) {
+    const locale = storePilotGetLocaleFromPathPart(parts[index]);
+    if (!locale) continue;
+    if (/^(global|default|promo-video|promo-videos|youtube|video)$/.test(fileBase) || /promo|video|youtube|yt/.test(fileBase)) {
+      return {
+        type: "localizedPromoVideo",
+        locale
+      };
+    }
+  }
+
+  if (/^(global|default|promo-video|promo-videos|youtube|video)$/.test(fileBase) ||
+      /global.*promo.*video|promo.*video.*global|youtube.*promo|promo.*youtube/.test(fileBase) ||
+      parentParts.some(part => /^(global|default)$/.test(part))) {
+    return {
+      type: "globalPromoVideo",
+      locale: ""
+    };
+  }
+
+  return null;
+}
+
+function storePilotScorePromoVideoAsset(pathParts, type, locale = "") {
+  const normalizedParts = pathParts.map(storePilotNormalizeMediaPathPart);
+  const fileBase = normalizedParts[normalizedParts.length - 1] || "";
+  let score = 0;
+
+  if (normalizedParts.some(part => /^(media|assets|store-assets)$/.test(part))) score += 25;
+  if (normalizedParts.some(part => /^(chrome-web-store|web-store|store-listing|store-listings|metadata)$/.test(part))) score += 25;
+  if (normalizedParts.some(part => /^promo-videos?$/.test(part))) score += 90;
+  if (normalizedParts.some(part => /^localized-promo-videos?$|^localised-promo-videos?$/.test(part))) score += 85;
+  if (normalizedParts.some(part => /^(localized|localised|localizations?)$/.test(part))) score += type === "localizedPromoVideo" ? 35 : -20;
+  if (normalizedParts.some(part => /promo/.test(part)) && normalizedParts.some(part => /video|youtube|yt/.test(part))) score += 45;
+  if (type === "globalPromoVideo" && /^(global|default)$/.test(fileBase)) score += 45;
+  if (type === "globalPromoVideo" && /global.*promo.*video|promo.*video.*global/.test(fileBase)) score += 40;
+  if (type === "localizedPromoVideo" && locale) {
+    if (storePilotGetLocaleFromFileName(pathParts[pathParts.length - 1] || "") === locale) score += 50;
+    if (pathParts.slice(0, -1).some(part => storePilotGetLocaleFromPathPart(part) === locale)) score += 35;
+  }
+  if (normalizedParts.some(part => /^(screenshots?|icons?|promo|small-promo|marquee-promo)$/.test(part)) && !normalizedParts.some(part => /video|youtube|yt/.test(part))) score -= 60;
+  if (normalizedParts.some(part => /^(dist|build|release|releases|artifacts?)$/.test(part))) score -= 60;
+
+  return score;
+}
+
 function storePilotScoreMediaAsset(pathParts, type) {
   const names = pathParts.map(part => String(part || "").toLowerCase());
   const fileName = names[names.length - 1] || "";
@@ -190,8 +327,9 @@ function storePilotScoreMediaAsset(pathParts, type) {
   return score;
 }
 
-function storePilotCreateMediaSummary(candidates) {
+function storePilotCreateMediaSummary(candidates, promoVideoCandidates = []) {
   const sorted = [...candidates].sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
+  const sortedPromoVideos = [...promoVideoCandidates].sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
   const screenshots = sorted
     .filter(asset => asset.type === "screenshots" && !asset.locale)
     .slice(0, STOREPILOT_MEDIA_ASSET_TYPES.screenshots.maxCount)
@@ -201,21 +339,29 @@ function storePilotCreateMediaSummary(candidates) {
   const marqueePromo = sorted.find(asset => asset.type === "marqueePromo") || null;
   const localizedScreenshots = storePilotCreateLocalizedScreenshotSummary(sorted);
   const localizedScreenshotStats = storePilotCalculateLocalizedScreenshotStats(localizedScreenshots);
+  const globalPromoVideo = storePilotSelectGlobalPromoVideo(sortedPromoVideos);
+  const localizedPromoVideos = storePilotCreateLocalizedPromoVideoSummary(sortedPromoVideos);
+  const localizedPromoVideoStats = storePilotCalculateLocalizedPromoVideoStats(localizedPromoVideos);
 
   return {
     screenshots,
     localizedScreenshots,
     storeIcon,
+    globalPromoVideo,
+    localizedPromoVideos,
     smallPromo,
     marqueePromo,
     candidateCounts: {
       storeIcon: candidates.filter(asset => asset.type === "storeIcon").length,
       screenshots: candidates.filter(asset => asset.type === "screenshots" && !asset.locale).length,
       localizedScreenshots: candidates.filter(asset => asset.type === "localizedScreenshots").length,
+      globalPromoVideo: promoVideoCandidates.filter(asset => asset.type === "globalPromoVideo").length,
+      localizedPromoVideos: promoVideoCandidates.filter(asset => asset.type === "localizedPromoVideo").length,
       smallPromo: candidates.filter(asset => asset.type === "smallPromo").length,
       marqueePromo: candidates.filter(asset => asset.type === "marqueePromo").length
     },
     localizedScreenshotStats,
+    localizedPromoVideoStats,
     discoveredAt: storePilotFormatTimestamp()
   };
 }
@@ -283,46 +429,118 @@ function storePilotCreateLocalizedScreenshotSummary(sortedCandidates) {
   return grouped;
 }
 
+function storePilotClonePromoVideoAsset(asset) {
+  return asset ? {
+    ...asset,
+    issues: Array.from(asset.issues || [])
+  } : null;
+}
+
+function storePilotSelectGlobalPromoVideo(sortedCandidates) {
+  const candidates = sortedCandidates.filter(asset => asset.type === "globalPromoVideo");
+  const selected = storePilotClonePromoVideoAsset(candidates[0] || null);
+  if (selected && candidates.length > 1) {
+    selected.issues.push(storePilotText("promoVideoDuplicateCandidates", "Multiple promo video URL candidates found; highest-scoring file was selected."));
+  }
+  return selected;
+}
+
+function storePilotCreateLocalizedPromoVideoSummary(sortedCandidates) {
+  const grouped = {};
+  sortedCandidates
+    .filter(asset => asset.type === "localizedPromoVideo" && asset.locale)
+    .sort((a, b) => (
+      a.locale.localeCompare(b.locale) ||
+      b.score - a.score ||
+      a.path.localeCompare(b.path, undefined, { numeric: true, sensitivity: "base" })
+    ))
+    .forEach(asset => {
+      grouped[asset.locale] = grouped[asset.locale] || [];
+      grouped[asset.locale].push(asset);
+    });
+
+  return Object.fromEntries(Object.entries(grouped)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([locale, assets]) => {
+      const selected = storePilotClonePromoVideoAsset(assets[0]);
+      if (selected && assets.length > 1) {
+        selected.issues.push(storePilotText("promoVideoDuplicateCandidates", "Multiple promo video URL candidates found; highest-scoring file was selected."));
+      }
+      return [locale, selected];
+    }));
+}
+
+function storePilotCalculateLocalizedPromoVideoStats(localizedPromoVideos) {
+  const groups = localizedPromoVideos || {};
+  const issueCount = Object.values(groups)
+    .reduce((count, asset) => count + (asset && asset.issues || []).length, 0);
+
+  return {
+    localeCount: Object.keys(groups).length,
+    issueCount
+  };
+}
+
 function storePilotFormatMediaSummary(mediaAssets) {
   if (!mediaAssets) return storePilotText("mediaAssetsNone", "No graphic assets found");
   const localizedStats = mediaAssets.localizedScreenshotStats || {};
+  const localizedPromoStats = mediaAssets.localizedPromoVideoStats || {};
 
-  return storePilotText("mediaAssetsSummary", "$1 global screenshot(s), $2 localized screenshot locale(s), icon: $3, small promo: $4, marquee promo: $5", [
+  const baseSummary = storePilotText("mediaAssetsSummary", "$1 global screenshot(s), $2 localized screenshot locale(s), icon: $3, small promo: $4, marquee promo: $5.", [
     String((mediaAssets.screenshots || []).length),
     String(localizedStats.localeCount || Object.keys(mediaAssets.localizedScreenshots || {}).length),
     mediaAssets.storeIcon ? storePilotText("yes", "yes") : storePilotText("no", "no"),
     mediaAssets.smallPromo ? storePilotText("yes", "yes") : storePilotText("no", "no"),
     mediaAssets.marqueePromo ? storePilotText("yes", "yes") : storePilotText("no", "no")
   ]);
+  const promoSummary = storePilotText("mediaAssetsPromoVideoSummarySuffix", " Promo video: $1; localized promo videos: $2.", [
+    mediaAssets.globalPromoVideo ? storePilotText("yes", "yes") : storePilotText("no", "no"),
+    String(localizedPromoStats.localeCount || Object.keys(mediaAssets.localizedPromoVideos || {}).length)
+  ]);
+
+  return `${baseSummary}${promoSummary}`;
 }
 
 function storePilotAddLocalizedScreenshotListingWarnings(mediaAssets, listings) {
-  if (!mediaAssets || !mediaAssets.localizedScreenshots) return mediaAssets;
+  if (!mediaAssets || (!mediaAssets.localizedScreenshots && !mediaAssets.localizedPromoVideos)) return mediaAssets;
 
   const listingLocales = new Set(Object.keys(listings || {})
     .map(locale => typeof storePilotNormalizeLocaleCode === "function" ? storePilotNormalizeLocaleCode(locale) : String(locale || ""))
     .filter(Boolean));
   if (!listingLocales.size) return mediaAssets;
 
+  const screenshotWarning = storePilotText("localizedScreenshotMissingListing", "Localized screenshot folder has no matching imported listing text.");
   const localizedScreenshots = Object.fromEntries(Object.entries(mediaAssets.localizedScreenshots || {}).map(([locale, assets]) => {
     const clonedAssets = (assets || []).map(asset => ({
       ...asset,
       issues: Array.from(asset.issues || [])
     }));
     const normalizedLocale = typeof storePilotNormalizeLocaleCode === "function" ? storePilotNormalizeLocaleCode(locale) : locale;
-    const warning = storePilotText("localizedScreenshotMissingListing", "Localized screenshot folder has no matching imported listing text.");
 
-    if (!listingLocales.has(normalizedLocale) && clonedAssets[0] && !clonedAssets[0].issues.includes(warning)) {
-      clonedAssets[0].issues.push(warning);
+    if (!listingLocales.has(normalizedLocale) && clonedAssets[0] && !clonedAssets[0].issues.includes(screenshotWarning)) {
+      clonedAssets[0].issues.push(screenshotWarning);
     }
 
     return [locale, clonedAssets];
+  }));
+  const promoWarning = storePilotText("localizedPromoVideoMissingListing", "Localized promo video has no matching imported listing text.");
+  const localizedPromoVideos = Object.fromEntries(Object.entries(mediaAssets.localizedPromoVideos || {}).map(([locale, asset]) => {
+    const clonedAsset = storePilotClonePromoVideoAsset(asset);
+    const normalizedLocale = typeof storePilotNormalizeLocaleCode === "function" ? storePilotNormalizeLocaleCode(locale) : locale;
+
+    if (clonedAsset && !listingLocales.has(normalizedLocale) && !clonedAsset.issues.includes(promoWarning)) {
+      clonedAsset.issues.push(promoWarning);
+    }
+
+    return [locale, clonedAsset];
   }));
 
   return {
     ...mediaAssets,
     localizedScreenshots,
-    localizedScreenshotStats: storePilotCalculateLocalizedScreenshotStats(localizedScreenshots)
+    localizedScreenshotStats: storePilotCalculateLocalizedScreenshotStats(localizedScreenshots),
+    localizedPromoVideos,
+    localizedPromoVideoStats: storePilotCalculateLocalizedPromoVideoStats(localizedPromoVideos)
   };
 }
 
@@ -344,8 +562,40 @@ function storePilotCreateMediaAssetCandidate(pathParts, file, dimensions, type, 
   };
 }
 
+function storePilotCreatePromoVideoCandidate(pathParts, file, url, info) {
+  return {
+    type: info.type,
+    locale: info.locale || "",
+    path: pathParts.join("/"),
+    name: file.name,
+    url,
+    size: file.size,
+    lastModified: file.lastModified || 0,
+    score: storePilotScorePromoVideoAsset(pathParts, info.type, info.locale || ""),
+    issues: []
+  };
+}
+
+async function storePilotMaybeAddPromoVideoCandidate(candidates, pathParts, file) {
+  if (!storePilotIsPotentialPromoVideoFile(file.name, file.size)) return;
+
+  const info = storePilotGetPromoVideoCandidateInfo(pathParts);
+  if (!info) return;
+
+  const text = typeof file.text === "function"
+    ? await file.text().catch(() => "")
+    : "";
+  const url = storePilotExtractPromoVideoUrl(text);
+  if (!url) return;
+
+  const candidate = storePilotCreatePromoVideoCandidate(pathParts, file, url, info);
+  if (candidate.score < 70) return;
+  candidates.push(candidate);
+}
+
 async function storePilotDiscoverMediaAssetsFromDirectory(directoryHandle) {
   const candidates = [];
+  const promoVideoCandidates = [];
 
   async function walk(handle, pathParts) {
     for await (const entry of handle.values()) {
@@ -359,6 +609,7 @@ async function storePilotDiscoverMediaAssetsFromDirectory(directoryHandle) {
       }
 
       const file = await entry.getFile();
+      await storePilotMaybeAddPromoVideoCandidate(promoVideoCandidates, nextPathParts, file);
       if (!storePilotIsPotentialMediaAsset(file.name, file.size)) continue;
 
       const dimensions = await storePilotGetImageDimensions(file).catch(() => null);
@@ -382,15 +633,17 @@ async function storePilotDiscoverMediaAssetsFromDirectory(directoryHandle) {
   }
 
   await walk(directoryHandle, [directoryHandle.name]);
-  return storePilotCreateMediaSummary(candidates);
+  return storePilotCreateMediaSummary(candidates, promoVideoCandidates);
 }
 
 async function storePilotDiscoverMediaAssetsFromFileList(files) {
   const candidates = [];
+  const promoVideoCandidates = [];
 
   for (const file of Array.from(files)) {
     const pathParts = storePilotGetRelativePathParts(file);
     if (!pathParts.length || storePilotHasSkippedPathPart(pathParts.slice(0, -1))) continue;
+    await storePilotMaybeAddPromoVideoCandidate(promoVideoCandidates, pathParts, file);
     if (!storePilotIsPotentialMediaAsset(file.name, file.size)) continue;
 
     const dimensions = await storePilotGetImageDimensions(file).catch(() => null);
@@ -412,5 +665,5 @@ async function storePilotDiscoverMediaAssetsFromFileList(files) {
     candidates.push(storePilotCreateMediaAssetCandidate(pathParts, file, dimensions, type));
   }
 
-  return storePilotCreateMediaSummary(candidates);
+  return storePilotCreateMediaSummary(candidates, promoVideoCandidates);
 }

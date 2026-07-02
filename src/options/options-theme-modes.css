@@ -58,6 +58,7 @@
 :root[data-theme="dark"] .additional-fields-row,
 :root[data-theme="dark"] .project-row,
 :root[data-theme="dark"] .localized-screenshot-row,
+:root[data-theme="dark"] .localized-promo-video-row,
 :root[data-theme="dark"] .media-card {
   border-top-color: #292f3b;
 }

@@ -34,6 +34,8 @@
 :root[data-theme-style="high-contrast"] .additional-fields-table,
 :root[data-theme-style="high-contrast"] .project-table,
 :root[data-theme-style="high-contrast"] .media-card,
+:root[data-theme-style="high-contrast"] .localized-screenshot-section,
+:root[data-theme-style="high-contrast"] .localized-screenshot-table,
 :root[data-theme-style="high-contrast"] .reference-content section {
   background: #ffffff;
   border-color: #000000;
@@ -46,6 +48,8 @@
 :root[data-theme-style="high-contrast"] .privacy-row,
 :root[data-theme-style="high-contrast"] .additional-fields-row,
 :root[data-theme-style="high-contrast"] .project-row,
+:root[data-theme-style="high-contrast"] .localized-screenshot-row,
+:root[data-theme-style="high-contrast"] .localized-promo-video-row,
 :root[data-theme-style="high-contrast"] .media-card,
 :root[data-theme-style="high-contrast"] .detail-tabs,
 :root[data-theme-style="high-contrast"] .tab-toolbar {
@@ -129,6 +133,8 @@
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .additional-fields-table,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .project-table,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .media-card,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .localized-screenshot-section,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .localized-screenshot-table,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .reference-content section,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .media-thumb,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .localized-screenshot-preview,
@@ -147,6 +153,8 @@
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .privacy-row,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .additional-fields-row,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .project-row,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .localized-screenshot-row,
+  :root:not([data-theme="light"])[data-theme-style="high-contrast"] .localized-promo-video-row,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .media-card,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .detail-tabs,
   :root:not([data-theme="light"])[data-theme-style="high-contrast"] .tab-toolbar {
@@ -205,6 +213,8 @@
 :root[data-theme="dark"][data-theme-style="high-contrast"] .additional-fields-table,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .project-table,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .media-card,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .localized-screenshot-section,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .localized-screenshot-table,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .reference-content section,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .media-thumb,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .localized-screenshot-preview,
@@ -223,6 +233,8 @@
 :root[data-theme="dark"][data-theme-style="high-contrast"] .privacy-row,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .additional-fields-row,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .project-row,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .localized-screenshot-row,
+:root[data-theme="dark"][data-theme-style="high-contrast"] .localized-promo-video-row,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .media-card,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .detail-tabs,
 :root[data-theme="dark"][data-theme-style="high-contrast"] .tab-toolbar {

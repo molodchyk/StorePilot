@@ -57,8 +57,27 @@ function createFakeImage(relativePath, width, height, hasAlpha = false) {
   };
 }
 
+function createFakeText(relativePath, text) {
+  const encoded = Buffer.from(text, "utf8");
+  return {
+    name: path.basename(relativePath),
+    webkitRelativePath: relativePath.replace(/\\/g, "/"),
+    size: encoded.byteLength,
+    lastModified: 1,
+    async text() {
+      return text;
+    }
+  };
+}
+
 (async () => {
   const files = [
+    createFakeText("demo/store-listing/chrome-web-store/media/promo-videos/global.txt", "https://www.youtube.com/watch?v=nFYpu2wlTmg\n"),
+    createFakeText("demo/store-listing/chrome-web-store/media/promo-videos/localized/en.txt", "https://www.youtube.com/watch?v=enpromo1234\n"),
+    createFakeText("demo/store-listing/chrome-web-store/media/localized-promo-videos/de.txt", "https://youtu.be/depromo1234\n"),
+    createFakeText("demo/store-listing/chrome-web-store/media/promo-videos/localized/fr.txt", "https://example.com/not-youtube\n"),
+    createFakeText("demo/store-listing/chrome-web-store/README.md", "Reference: https://www.youtube.com/watch?v=ignored0000\n"),
+    createFakeText("demo/docs/promo-videos/localized/es.txt", "Promo video\nhttps://youtu.be/espromo1234\n"),
     createFakeImage("demo/store-listing/chrome-web-store/media/screenshots/01-global.png", 1280, 800),
     createFakeImage("demo/store-listing/chrome-web-store/media/screenshots/en/01-first.png", 1280, 800),
     createFakeImage("demo/store-listing/chrome-web-store/media/screenshots/en/02-second.png", 640, 400),
@@ -84,6 +103,15 @@ function createFakeImage(relativePath, width, height, hasAlpha = false) {
   assert.equal(summary.candidateCounts.localizedScreenshots, 9);
   assert.equal(summary.localizedScreenshotStats.localeCount, 2);
   assert.equal(summary.localizedScreenshotStats.screenshotCount, 8);
+  assert.equal(summary.globalPromoVideo.url, "https://www.youtube.com/watch?v=nFYpu2wlTmg");
+  assert.deepEqual(Object.keys(summary.localizedPromoVideos), ["de", "en", "es"]);
+  assert.equal(summary.localizedPromoVideos.en.url, "https://www.youtube.com/watch?v=enpromo1234");
+  assert.equal(summary.localizedPromoVideos.de.url, "https://youtu.be/depromo1234");
+  assert.equal(summary.localizedPromoVideos.es.url, "https://youtu.be/espromo1234");
+  assert.equal(summary.localizedPromoVideoStats.localeCount, 3);
+  assert.equal(summary.localizedPromoVideoStats.issueCount, 0);
+  assert.equal(summary.candidateCounts.globalPromoVideo, 1);
+  assert.equal(summary.candidateCounts.localizedPromoVideos, 3);
   assert.ok(
     summary.localizedScreenshots.de.some(asset => (asset.issues || []).some(issue => /Extra localized screenshot/.test(issue))),
     "Extra localized screenshot files should be reported as an issue."
@@ -93,12 +121,21 @@ function createFakeImage(relativePath, width, height, hasAlpha = false) {
     annotated.localizedScreenshots.de[0].issues.some(issue => /no matching imported listing text/.test(issue)),
     "Localized screenshot folders without imported listing text should be reported as an issue."
   );
+  assert.ok(
+    annotated.localizedPromoVideos.de.issues.some(issue => /no matching imported listing text/.test(issue)),
+    "Localized promo videos without imported listing text should be reported as an issue."
+  );
   assert.ok(summary.smallPromo);
   assert.ok(summary.marqueePromo);
 
   const entries = context.storePilotGetMediaAssetEntries(summary, "localizedScreenshots");
   assert.equal(entries.length, 8);
   assert.ok(entries.every(entry => entry.kind === "localizedScreenshots" && entry.locale));
+  assert.equal(
+    context.storePilotGetMediaAssetEntries(summary).some(entry => /PromoVideo/.test(entry.kind)),
+    false,
+    "Promo video URLs are metadata, not upload File entries."
+  );
 
   const filtered = context.storePilotFilterMediaFilesByKind({
     storeIcon: "icon",
@@ -135,6 +172,17 @@ function createFakeImage(relativePath, width, height, hasAlpha = false) {
   assert.equal(largeSummary.localizedScreenshotStats.screenshotCount, 198);
   assert.equal(largeSummary.candidateCounts.localizedScreenshots, 198);
   assert.equal(context.storePilotGetMediaAssetEntries(largeSummary, "localizedScreenshots").length, 198);
+
+  const largePromoFiles = localeCodes.map(locale => createFakeText(
+    `demo/store-listing/chrome-web-store/media/promo-videos/localized/${locale}.txt`,
+    `https://www.youtube.com/watch?v=${locale.replace(/_/g, "").padEnd(11, "0")}\n`
+  ));
+  const largePromoSummary = await context.storePilotDiscoverMediaAssetsFromFileList(largePromoFiles);
+
+  assert.equal(Object.keys(largePromoSummary.localizedPromoVideos).length, 66);
+  assert.equal(largePromoSummary.localizedPromoVideoStats.localeCount, 66);
+  assert.equal(largePromoSummary.localizedPromoVideoStats.issueCount, 0);
+  assert.equal(largePromoSummary.candidateCounts.localizedPromoVideos, 66);
 
   console.log("Media asset tests passed.");
 })().catch(error => {

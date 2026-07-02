@@ -7,7 +7,7 @@ This file tracks plausible next automation steps that are not implemented yet. T
 Observed follow-up ideas:
 
 - Remote code answer helper: detect a project privacy document value for `remote_code`, choose `No, I am not using remote code` when the value is negative, or choose `Yes, I am using remote code` and paste the justification when the value is positive. This should remain an explicit user-triggered action because the answer is policy-sensitive.
-- Localised graphic assets follow-up: optionally paste localised promo video URLs when a project has language-specific asset folders or a structured asset document. Localised screenshot scanning/review/upload is implemented in StorePilot and should stay CWS-specific.
+- Localised graphic assets follow-up: paste global and localised promo video URLs into the CWS dashboard fields. Promo video URL scanning/review is implemented in StorePilot; localised screenshot scanning/review/upload is implemented and should stay CWS-specific.
 - Additional fields refinements: support localized additional-field values, stronger Official URL diagnostics, and better handling when the desired official site is not already present in the dashboard dropdown.
 
 Likely next implementation:

@@ -86,7 +86,7 @@ Project fields currently include:
 - `projectRootPath`: canonical root when known.
 - `listingPath`: detected folder that contains locale listing files.
 - `listingSignature`: stable signature of imported locale text, used to merge duplicates.
-- `mediaAssets`: detected store icon, global screenshots, localized screenshots, small promo, and marquee promo.
+- `mediaAssets`: detected store icon, global screenshots, localized screenshots, global promo video URL, localized promo video URLs, small promo, and marquee promo.
 - `privacyDoc`: detected privacy document summary and parsed fields.
 - `categoryDoc`: detected Chrome Web Store category decision summary.
 - `additionalFieldsDoc`: detected Chrome Web Store Additional fields summary and parsed values.
@@ -194,9 +194,11 @@ Media rules:
 - Store icon: 128 x 128.
 - Global screenshots: direct files under `media/screenshots/`, 1280 x 800 or 640 x 400, maximum five, ordered by filename.
 - Localized screenshots: files under `media/screenshots/<locale>/01-name.png`, 1280 x 800 or 640 x 400, maximum five per locale, ordered by filename. `media/screenshots/en/` is English localized screenshots only, not a global fallback.
+- Global promo video: plain text URL metadata under `media/promo-videos/global.txt`.
+- Localized promo videos: plain text URL metadata under `media/promo-videos/localized/<locale>.txt`. `media/promo-videos/localized/en.txt` is English localized promo video only, not a global fallback.
 - Small promo tile: 440 x 280.
 - Marquee promo tile: 1400 x 560.
-- Helpful folder/file names include `media`, `screenshots`, `promo`, `assets`, `store-assets`, `icons`, `icon`, `logo`, `small`, `tile`, `marquee`, `large`, and `banner`.
+- Helpful folder/file names include `media`, `screenshots`, `promo-videos`, `localized-promo-videos`, `promo`, `video`, `youtube`, `assets`, `store-assets`, `icons`, `icon`, `logo`, `small`, `tile`, `marquee`, `large`, and `banner`.
 
 Privacy rules:
 
@@ -350,6 +352,8 @@ StorePilot detects Chrome Web Store graphic assets during project import/re-impo
 - store icon: 128 x 128
 - global screenshots: direct files under `media/screenshots/`, 1280 x 800 or 640 x 400, ordered by filename
 - localized screenshots: files under `media/screenshots/<locale>/`, 1280 x 800 or 640 x 400, ordered by filename per locale
+- global promo video: first non-empty YouTube URL from `media/promo-videos/global.txt`
+- localized promo videos: first non-empty YouTube URL from `media/promo-videos/localized/<locale>.txt`
 - small promo tile: 440 x 280
 - marquee promo tile: 1400 x 560
 
@@ -359,6 +363,8 @@ Rules:
 - Never upload more than five global screenshots or five localized screenshots per locale.
 - `mediaAssets.screenshots` contains only direct global screenshot files.
 - `mediaAssets.localizedScreenshots` is keyed by normalized locale and contains ordered asset metadata arrays.
+- `mediaAssets.globalPromoVideo` contains the selected global promo video URL metadata, or `null`.
+- `mediaAssets.localizedPromoVideos` is keyed by normalized locale and contains selected localized promo video URL metadata.
 - `mediaFiles.localizedScreenshots` is keyed by locale and contains resolved `File[]` values for upload.
 - Localized screenshot upload uses replace semantics per locale: select the dashboard language, clear only the localized screenshot field, upload that locale's files in order, and continue through the intersection of imported listing locales and localized screenshot folders.
 - Localized screenshot field detection must use Graphic assets section and label context such as `Localized screenshots`, `Localised screenshots`, `Localized assets`, or `Localised assets`; it must not choose the Global screenshots field.

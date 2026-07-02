@@ -555,6 +555,19 @@ select {
   object-fit: contain;
 }
 
+.promo-video-url-box {
+  justify-items: start;
+  min-height: 96px;
+  padding: 12px;
+  text-align: left;
+}
+
+.promo-video-url-box a,
+.promo-video-url a {
+  color: #2563eb;
+  overflow-wrap: anywhere;
+}
+
 .media-thumb-button {
   width: 100%;
   padding: 0;
@@ -634,6 +647,35 @@ select {
 }
 
 .localized-screenshot-row > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.localized-promo-video-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.35fr) minmax(280px, 1.2fr) minmax(180px, 0.8fr) minmax(240px, 1fr);
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 780px;
+  padding: 10px 12px;
+  border: 0;
+  border-top: 1px solid #edf0f5;
+  background: transparent;
+}
+
+.localized-promo-video-row:first-child {
+  border-top: 0;
+}
+
+.localized-promo-video-row-header {
+  color: #5d6472;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.localized-promo-video-row > * {
   min-width: 0;
   overflow-wrap: anywhere;
 }
