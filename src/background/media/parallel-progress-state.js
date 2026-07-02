@@ -93,6 +93,39 @@ function uniqueLocales(values) {
     .filter(Boolean)));
 }
 
+function getParallelLocalizedScreenshotWorkerDoneLocaleList(worker) {
+  if (!worker) return [];
+
+  const locales = new Set([
+    ...(worker.carriedCompletedLocaleList || []),
+    ...(worker.completedLocaleList || []),
+    ...(worker.auditedLocaleList || [])
+  ].map(parseLocalizedResultLocale).filter(Boolean));
+  const completedPrefixCount = Math.max(
+    0,
+    Number(worker.completedLocales || 0),
+    Number(worker.auditedLocales || 0)
+  );
+
+  for (const locale of (worker.assignedLocales || []).slice(0, completedPrefixCount)) {
+    const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
+    if (normalizedLocale) locales.add(normalizedLocale);
+  }
+
+  return Array.from(locales);
+}
+
+function getParallelLocalizedScreenshotCarriedCompletedLocaleList(worker, nextAssignedLocales = []) {
+  if (!worker) return [];
+
+  const nextAssignedSet = new Set((nextAssignedLocales || [])
+    .map(normalizeParallelLocalizedScreenshotLocale)
+    .filter(Boolean));
+
+  return getParallelLocalizedScreenshotWorkerDoneLocaleList(worker)
+    .filter(locale => locale && !nextAssignedSet.has(locale));
+}
+
 function countParallelSkippedLocales(skipped) {
   return (skipped || []).reduce((count, item) => {
     const match = String(item || "").match(/^(\d+) locale\(s\) before start locale\b/);
@@ -447,6 +480,12 @@ function createParallelLocalizedScreenshotRunSnapshot(run) {
       : progressIsAudit
         ? Number(progress.totalLocales || 0)
         : auditedLocales ? completedLocales : 0;
+    const carriedCompletedLocaleList = Array.isArray(worker.carriedCompletedLocaleList)
+      ? worker.carriedCompletedLocaleList
+      : [];
+    const carriedCompletedLocales = Number.isFinite(worker.carriedCompletedLocales)
+      ? worker.carriedCompletedLocales
+      : carriedCompletedLocaleList.length;
 
     const snapshotWorker = {
       workerId: worker.workerId,
@@ -459,6 +498,8 @@ function createParallelLocalizedScreenshotRunSnapshot(run) {
       assignedLocales: worker.assignedLocales,
       assignedCount: worker.assignedLocales.length,
       totalScreenshots: worker.totalScreenshots,
+      carriedCompletedLocaleList,
+      carriedCompletedLocales,
       currentLocale: progress.locale || worker.currentLocale || "",
       phase: progress.phase || worker.phase || "",
       completedLocales,

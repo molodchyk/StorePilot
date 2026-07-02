@@ -716,6 +716,18 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
     ["ar", "az"],
     "visible worker retry sends only unfinished locales back to the existing worker tab"
   );
+  const partialRetryRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 88,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, partialFailure.run.runId).run;
+  assert.deepEqual(
+    hostValue(partialRetryRun.workers[0].carriedCompletedLocaleList),
+    ["am"],
+    "visible worker retry preserves completed locales as carried context instead of losing them"
+  );
+  assert.equal(partialRetryRun.workers[0].carriedCompletedLocales, 1);
 
   const staleRemovedTabs = [];
   const staleWorkerMessages = [];
@@ -783,6 +795,12 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
   );
   assert.ok(staleRemovedTabs.includes(staleWorkerMessages[0].tabId), "stale worker tab is closed before fresh retry");
   assert.equal(staleRestartRun.workers[0].staleRestartCount, 1);
+  assert.deepEqual(
+    hostValue(staleRestartRun.workers[0].carriedCompletedLocaleList),
+    ["am"],
+    "stale worker restart keeps completed locales visible as carried context"
+  );
+  assert.equal(staleRestartRun.workers[0].carriedCompletedLocales, 1);
 
   const removedTabs = [];
   const freshRetryMessages = [];

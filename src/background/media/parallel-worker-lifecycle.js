@@ -280,6 +280,7 @@ async function restartParallelLocalizedScreenshotWorkerInFreshTab(run, worker, f
   const retryOperation = getParallelLocalizedScreenshotWorkerRetryOperation(run, worker);
   const retryLocales = getParallelLocalizedScreenshotWorkerRetryLocales(worker, run, retryOperation);
   if (!retryLocales.length) return false;
+  const carriedCompletedLocaleList = getParallelLocalizedScreenshotCarriedCompletedLocaleList(worker, retryLocales);
 
   const restartCount = Number(worker.staleRestartCount || 0) + 1;
   const previousTabId = worker.tabId;
@@ -294,6 +295,8 @@ async function restartParallelLocalizedScreenshotWorkerInFreshTab(run, worker, f
   worker.operation = retryOperation;
   worker.assignedLocales = retryLocales;
   worker.totalScreenshots = countParallelLocalizedScreenshotFiles(files, retryLocales);
+  worker.carriedCompletedLocaleList = carriedCompletedLocaleList;
+  worker.carriedCompletedLocales = carriedCompletedLocaleList.length;
   worker.progress = null;
   worker.currentLocale = "";
   worker.phase = "recovering stale worker in a fresh tab";

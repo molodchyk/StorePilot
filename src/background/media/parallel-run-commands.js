@@ -216,6 +216,7 @@ async function storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, runId
       run: createParallelLocalizedScreenshotRunSnapshot(run)
     };
   }
+  const carriedCompletedLocaleList = getParallelLocalizedScreenshotCarriedCompletedLocaleList(worker, retryLocales);
 
   const resolved = await resolveMediaFilesForActiveProject(false, "localizedScreenshots", run.parentUrl || "");
   if (!resolved.ok) {
@@ -242,6 +243,8 @@ async function storePilotRetryParallelLocalizedScreenshotWorkerTab(sender, runId
   worker.operation = retryOperation;
   worker.assignedLocales = retryLocales;
   worker.totalScreenshots = countParallelLocalizedScreenshotFiles(resolved.files, retryLocales);
+  worker.carriedCompletedLocaleList = carriedCompletedLocaleList;
+  worker.carriedCompletedLocales = carriedCompletedLocaleList.length;
   worker.progress = null;
   worker.currentLocale = "";
   worker.phase = "retrying unfinished locales";

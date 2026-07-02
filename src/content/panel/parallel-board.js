@@ -103,6 +103,17 @@ function getParallelWorkerCurrentText(worker) {
   return worker.phase || worker.message || "";
 }
 
+function getParallelWorkerCarriedText(worker, workerClearProgress) {
+  const carriedCompletedLocales = Number(worker && worker.carriedCompletedLocales || 0);
+  if (!carriedCompletedLocales) return "";
+
+  const localeLabel = carriedCompletedLocales === 1 ? "locale" : "locales";
+  const carriedState = workerClearProgress
+    ? "already cleared before retry"
+    : "already completed before retry";
+  return `; ${carriedCompletedLocales} ${localeLabel} ${carriedState}`;
+}
+
 function updateParallelLocalizedScreenshotRenderTimer() {
   const active = isParallelLocalizedScreenshotRunActive();
   if (active && !parallelLocalizedScreenshotRenderTimerId) {
@@ -215,6 +226,7 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     const workerAuditText = workerAuditTotal
       ? `; audit ${worker.auditedLocales || 0}/${workerAuditTotal}`
       : "";
+    const carriedText = getParallelWorkerCarriedText(worker, workerClearProgress);
     const visualState = getParallelWorkerVisualState(worker);
     const currentText = getParallelWorkerCurrentText(worker);
     const workerIdLabel = getParallelWorkerCompactId(worker);
@@ -222,8 +234,8 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     const closedLabel = worker.closed ? "closed" : "";
     const statusLabel = [worker.status || "pending", closedLabel].filter(Boolean).join(", ");
     const countText = workerClearProgress
-      ? `${worker.completedLocales || 0}/${worker.assignedCount || 0} locales cleared${workerAuditText}`
-      : `${worker.completedLocales || 0}/${worker.assignedCount || 0} locales; ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0} screenshots${workerAuditText}`;
+      ? `${worker.completedLocales || 0}/${worker.assignedCount || 0} locales cleared${workerAuditText}${carriedText}`
+      : `${worker.completedLocales || 0}/${worker.assignedCount || 0} locales; ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0} screenshots${workerAuditText}${carriedText}`;
 
     row.className = "storepilot-parallel-worker";
     row.dataset.state = visualState;
