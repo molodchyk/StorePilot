@@ -234,6 +234,11 @@ store-listing/
       promo/
         small-promo.png
         marquee-promo.png
+      promo-videos/
+        global.txt
+        localized/
+          en.txt
+          de.txt
 docs/
   chrome-web-store-additional-fields.md
   chrome-web-store-category.md
@@ -262,9 +267,12 @@ Use a website, local HTML file, browser page, or a quiet blank page.</code></pre
                 <li><code>screenshots/&lt;locale&gt;/01-name.png</code>: localized screenshot, 1280 x 800 or 640 x 400, up to 5 per locale</li>
                 <li><code>promo/small-promo.png</code>: 440 x 280</li>
                 <li><code>promo/marquee-promo.png</code>: 1400 x 560</li>
+                <li><code>promo-videos/global.txt</code>: global promo video URL, one YouTube URL</li>
+                <li><code>promo-videos/localized/&lt;locale&gt;.txt</code>: localized promo video URL, one YouTube URL per locale</li>
                 <li>Accepted image files: <code>.png</code>, <code>.jpg</code>, <code>.jpeg</code></li>
               </ul>
               <p>Direct files under <code>media/screenshots/</code> are global screenshots. Locale folders under <code>media/screenshots/&lt;locale&gt;/</code> are localized screenshots only; <code>media/screenshots/en/</code> is English localized screenshots, not a global fallback.</p>
+              <p>Promo video files are plain text metadata files, not downloaded video assets. Put the YouTube URL on the first non-empty line, for example <code>https://www.youtube.com/watch?v=nFYpu2wlTmg</code>. The global promo video and localized promo videos are independent CWS fields: <code>media/promo-videos/localized/en.txt</code> is English localized promo video, not a global fallback. Missing promo video files mean StorePilot should leave that dashboard field unchanged.</p>
             </div>
           </section>
           <section class="reference-grid" aria-label="Single draft and fields not imported">

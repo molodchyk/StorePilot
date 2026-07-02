@@ -29,6 +29,11 @@ store-listing/
       promo/
         small-promo.png
         marquee-promo.png
+      promo-videos/
+        global.txt
+        localized/
+          en.txt
+          de.txt
 docs/
   chrome-web-store-additional-fields.md
   chrome-web-store-category.md
@@ -98,15 +103,19 @@ These fields belong in the Chrome Web Store dashboard or in dedicated automation
 
 ## Graphic Assets
 
-Use `.png`, `.jpg`, or `.jpeg` files.
+Use `.png`, `.jpg`, or `.jpeg` files for image assets. Use `.txt` files for promo video URLs.
 
 - `icon-128.png` or `icon128.png`: 128 x 128
 - `screenshots/01-name.png`: global screenshot, 1280 x 800 or 640 x 400, up to 5 direct files
 - `screenshots/<locale>/01-name.png`: localized screenshot, 1280 x 800 or 640 x 400, up to 5 per locale
 - `promo/small-promo.png`: 440 x 280
 - `promo/marquee-promo.png`: 1400 x 560
+- `promo-videos/global.txt`: global promo video URL, one YouTube URL
+- `promo-videos/localized/<locale>.txt`: localized promo video URL, one YouTube URL per locale
 
 Direct files under `media/screenshots/` are global screenshots. Locale folders under `media/screenshots/<locale>/` are localized screenshots only; `media/screenshots/en/` is English localized screenshots, not a global fallback.
+
+Promo video files are plain text metadata files, not downloaded video assets. Put the YouTube URL on the first non-empty line, for example `https://www.youtube.com/watch?v=nFYpu2wlTmg`. The global promo video and localized promo videos are independent CWS fields: `media/promo-videos/localized/en.txt` is English localized promo video, not a global fallback. Missing promo video files mean StorePilot should leave that dashboard field unchanged.
 
 ## Additional Fields Document Reference
 
