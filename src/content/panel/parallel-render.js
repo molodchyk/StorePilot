@@ -236,7 +236,7 @@ function createParallelLocalizedScreenshotBoard() {
     if (typeof window.confirm === "function") {
       const confirmed = window.confirm(localize(
         "abortParallelLocalizedScreenshotsConfirm",
-        "Abort the parallel localized screenshot run? Worker tabs finish the current dashboard action, then StorePilot can resume unfinished locales."
+        "Abort the parallel localized screenshot run? Worker tabs are stopped and unfinished locales stay resumable."
       ));
       if (!confirmed) return;
     }

@@ -249,6 +249,76 @@ async function forceStopParallelLocalizedScreenshotRunForResume(run) {
   await persistParallelLocalizedScreenshotLog(run);
 }
 
+function shouldRestartParallelLocalizedScreenshotWorker(run, worker, result) {
+  if (!run || !worker || run.abortRequested) return false;
+  if (!result || !result.hiddenTimeout) return false;
+  const restartCount = Number(worker.staleRestartCount || 0);
+  return restartCount < PARALLEL_LOCALIZED_SCREENSHOT_STALE_WORKER_RESTART_LIMIT;
+}
+
+async function restartParallelLocalizedScreenshotWorkerInFreshTab(run, worker, files, projectName, result) {
+  const retryOperation = getParallelLocalizedScreenshotWorkerRetryOperation(run, worker);
+  const retryLocales = getParallelLocalizedScreenshotWorkerRetryLocales(worker, run, retryOperation);
+  if (!retryLocales.length) return false;
+
+  const restartCount = Number(worker.staleRestartCount || 0) + 1;
+  const previousTabId = worker.tabId;
+  if (previousTabId && !worker.closed) {
+    await storePilotTabsRemove(previousTabId).catch(() => null);
+  }
+
+  const workerTab = await storePilotTabsCreate({ url: run.parentUrl, active: false });
+  worker.tabId = workerTab && workerTab.id;
+  worker.closed = false;
+  worker.status = "opening";
+  worker.operation = retryOperation;
+  worker.assignedLocales = retryLocales;
+  worker.totalScreenshots = countParallelLocalizedScreenshotFiles(files, retryLocales);
+  worker.progress = null;
+  worker.currentLocale = "";
+  worker.phase = "recovering stale worker in a fresh tab";
+  worker.completedLocaleList = [];
+  worker.failedLocaleList = [];
+  worker.skippedLocaleList = [];
+  worker.auditedLocaleList = [];
+  worker.completedLocales = 0;
+  worker.failedLocales = 0;
+  worker.skippedLocales = 0;
+  worker.auditedLocales = 0;
+  worker.uploadedScreenshots = 0;
+  worker.startedAt = 0;
+  worker.finishedAt = 0;
+  worker.elapsedMs = 0;
+  worker.currentMutationLease = null;
+  worker.mutationGateWaiting = false;
+  worker.mutationGateRequest = null;
+  worker.staleRestartCount = restartCount;
+  worker.message = [
+    "Dashboard tab became stale after being hidden/minimized.",
+    `Restarting unfinished locales in a fresh worker tab (${restartCount}/${PARALLEL_LOCALIZED_SCREENSHOT_STALE_WORKER_RESTART_LIMIT}).`,
+    result && result.message ? result.message : ""
+  ].filter(Boolean).join(" ");
+
+  for (const locale of retryLocales) {
+    updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
+      status: retryOperation === "clearOnly" ? "pendingClear" : retryOperation === "uploadOnly" ? "pendingUpload" : "pending",
+      operation: retryOperation,
+      workerId: worker.workerId,
+      phase: "staleWorkerRestart",
+      message: "retrying unfinished localized screenshots in a fresh worker tab"
+    });
+  }
+
+  run.status = "running";
+  run.abortRequested = false;
+  run.fatalError = false;
+  run.finishedAt = 0;
+  run.message = worker.message;
+  await sendParallelLocalizedScreenshotRunUpdate(run);
+  await runParallelLocalizedScreenshotWorker(run, worker, files, projectName);
+  return true;
+}
+
 async function runParallelLocalizedScreenshotWorker(run, worker, files, projectName) {
   worker.status = "running";
   worker.startedAt = Date.now();
@@ -325,6 +395,32 @@ async function runParallelLocalizedScreenshotWorker(run, worker, files, projectN
       ? "cleared"
       : "completed";
     const auditedSet = new Set(worker.auditedLocaleList || []);
+
+    if (shouldRestartParallelLocalizedScreenshotWorker(run, worker, result)) {
+      for (const locale of worker.completedLocaleList) {
+        updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
+          status: completedStatus,
+          operation: worker.operation || "",
+          workerId: worker.workerId,
+          phase: run.phase || "",
+          message: auditedSet.has(locale)
+            ? "localized screenshots audited"
+            : worker.operation === "clearOnly" ? "localized screenshots cleared" : "localized screenshots uploaded"
+        });
+      }
+      for (const locale of worker.skippedLocaleList) {
+        updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
+          status: "skipped",
+          operation: worker.operation || "",
+          workerId: worker.workerId,
+          phase: run.phase || "",
+          message: worker.message || "skipped"
+        });
+      }
+      const restarted = await restartParallelLocalizedScreenshotWorkerInFreshTab(run, worker, files, projectName, result);
+      if (restarted) return;
+    }
+
     for (const locale of worker.completedLocaleList) {
       updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
         status: completedStatus,

@@ -1122,7 +1122,7 @@
     "message": "Localized screenshot log downloaded."
   },
   "abortParallelLocalizedScreenshotsConfirm": {
-    "message": "Abort the parallel localized screenshot run? Worker tabs finish the current dashboard action, then StorePilot can resume unfinished locales."
+    "message": "Abort the parallel localized screenshot run? Worker tabs are stopped and unfinished locales stay resumable."
   },
   "resumeLocalizedScreenshotsRun": {
     "message": "Resume run"

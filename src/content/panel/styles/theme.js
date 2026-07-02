@@ -49,6 +49,32 @@
         background: rgba(32, 38, 51, 0.78);
       }
 
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker[data-state="active"] {
+        border-left-color: #22d3ee;
+        background: rgba(8, 47, 73, 0.72);
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker[data-state="queued"] {
+        border-left-color: #818cf8;
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker[data-state="paused"] {
+        border-left-color: #f59e0b;
+        background: rgba(69, 26, 3, 0.55);
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker[data-state="failed"],
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker[data-state="aborted"] {
+        border-left-color: #fb7185;
+        background: rgba(63, 17, 26, 0.7);
+      }
+
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker[data-state="completed"],
+      #${panelId}[data-theme="dark"] .storepilot-parallel-worker[data-state="finished"] {
+        border-left-color: #2dd4bf;
+        background: rgba(4, 47, 46, 0.62);
+      }
+
       #${panelId}[data-theme="dark"] .storepilot-parallel-chart {
         border-color: #343b4a;
         background: rgba(17, 24, 39, 0.72);
@@ -203,6 +229,32 @@
         #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker {
           border-color: #343b4a;
           background: rgba(32, 38, 51, 0.78);
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker[data-state="active"] {
+          border-left-color: #22d3ee;
+          background: rgba(8, 47, 73, 0.72);
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker[data-state="queued"] {
+          border-left-color: #818cf8;
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker[data-state="paused"] {
+          border-left-color: #f59e0b;
+          background: rgba(69, 26, 3, 0.55);
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker[data-state="failed"],
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker[data-state="aborted"] {
+          border-left-color: #fb7185;
+          background: rgba(63, 17, 26, 0.7);
+        }
+
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker[data-state="completed"],
+        #${panelId}:not([data-theme="light"]) .storepilot-parallel-worker[data-state="finished"] {
+          border-left-color: #2dd4bf;
+          background: rgba(4, 47, 46, 0.62);
         }
 
         #${panelId}:not([data-theme="light"]) .storepilot-parallel-chart {

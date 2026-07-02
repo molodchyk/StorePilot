@@ -427,6 +427,7 @@ function createParallelLocalizedScreenshotRunSnapshot(run) {
       status: worker.status,
       closed: Boolean(worker.closed),
       closeable: worker.status === "completed",
+      staleRestartCount: Number(worker.staleRestartCount || 0),
       assignedLocales: worker.assignedLocales,
       assignedCount: worker.assignedLocales.length,
       totalScreenshots: worker.totalScreenshots,

@@ -66,49 +66,11 @@ async function storePilotAbortParallelLocalizedScreenshotUpload(sender, runId = 
     return { ok: false, message: text("parallelLocalizedScreenshotsNoRun", "No parallel localized screenshot run found.") };
   }
 
-  run.abortRequested = true;
-  run.manualAbortRequested = true;
-  run.status = "aborting";
-  run.message = text("operationStopped", "Stopped.");
-  abortParallelLocalizedScreenshotMutationGate(run);
-  run.resumeLocaleList = getParallelLocalizedScreenshotResumeLocales(run);
-  scheduleParallelLocalizedScreenshotAbortFinalizer(run);
-
-  for (const worker of run.workers || []) {
-    if (isParallelWorkerTerminal(worker)) continue;
-    worker.status = "aborting";
-    worker.message = text("fillAllAbortRequested", "Abort requested. StorePilot stops after the current dashboard step.");
-    const resumeSet = new Set(getParallelLocalizedScreenshotWorkerRetryLocales(worker, run));
-    worker.failedLocaleList = Array.from(resumeSet);
-    worker.failedLocales = worker.failedLocaleList.length;
-  }
-  for (const locale of run.resumeLocaleList) {
-    const normalizedLocale = normalizeParallelLocalizedScreenshotLocale(locale);
-    const existingStatus = run.localeStatuses && run.localeStatuses[normalizedLocale];
-    const keepCleared = run.mode === PARALLEL_LOCALIZED_SCREENSHOT_MODE_CLEAR_THEN_UPLOAD &&
-      existingStatus &&
-      isClearOnlyStatusThatNeedsUpload(existingStatus);
-    updateParallelLocalizedScreenshotLocaleStatus(run, locale, {
-      status: keepCleared ? "cleared" : "aborted",
-      operation: keepCleared ? "clearOnly" : "",
-      workerId: keepCleared ? existingStatus.workerId || "" : "",
-      phase: run.phase || "",
-      message: keepCleared
-        ? "localized screenshots cleared; upload still needed"
-        : text("fillAllAbortRequested", "Abort requested. StorePilot stops after the current dashboard step.")
-    });
-  }
-
-  await Promise.all(run.workers
-    .filter(worker => !isParallelWorkerTerminal(worker) && worker.tabId)
-    .map(worker => storePilotTabsSendMessage(worker.tabId, {
-      type: "storepilot-abort-operation"
-    }).catch(() => null)));
-  await sendParallelLocalizedScreenshotRunUpdate(run);
+  await forceStopParallelLocalizedScreenshotRunForResume(run);
 
   return {
     ok: true,
-    message: text("fillAllAbortRequested", "Abort requested. StorePilot stops after the current dashboard step."),
+    message: text("parallelLocalizedScreenshotsAborted", "Parallel localized screenshot upload stopped."),
     run: createParallelLocalizedScreenshotRunSnapshot(run)
   };
 }

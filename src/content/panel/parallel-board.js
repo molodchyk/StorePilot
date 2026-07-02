@@ -45,6 +45,63 @@ function renderParallelLocaleStatuses(container, run) {
   container.hidden = false;
 }
 
+function getParallelWorkerCompactId(worker) {
+  const id = String(worker && worker.workerId || "");
+  const match = id.match(/(\d+)$/);
+  return match ? `#${match[1]}` : id || "#?";
+}
+
+function getParallelWorkerOperationLabel(operation) {
+  const labels = {
+    clearOnly: "clear",
+    uploadOnly: "upload",
+    replace: "replace"
+  };
+  return labels[operation] || operation || "replace";
+}
+
+function getParallelWorkerMutationText(action, locale, slot) {
+  return [
+    action || "media",
+    locale || "",
+    slot ? `#${slot}` : ""
+  ].filter(Boolean).join(" ");
+}
+
+function getParallelWorkerVisualState(worker) {
+  if (!worker) return "idle";
+  if (worker.currentMutationLease) return "active";
+  if (worker.mutationGateWaiting) return "queued";
+  if (worker.status === "failed" || Number(worker.failedLocales || 0) > 0) return "failed";
+  if (worker.status === "aborted") return "aborted";
+  if (worker.status === "completed" || worker.status === "finished") return "completed";
+  const phase = String(worker.phase || "").toLowerCase();
+  if (phase.includes("hidden") || phase.includes("paused") || phase.includes("minimized")) return "paused";
+  return worker.status || "running";
+}
+
+function getParallelWorkerCurrentText(worker) {
+  if (!worker) return "";
+  if (worker.currentMutationLease) {
+    return `active: ${getParallelWorkerMutationText(
+      worker.currentMutationLease.action,
+      worker.currentMutationLease.locale,
+      worker.currentMutationLease.screenshotSlot
+    )}`;
+  }
+  if (worker.mutationGateWaiting && worker.mutationGateRequest) {
+    return `queued: ${getParallelWorkerMutationText(
+      worker.mutationGateRequest.action,
+      worker.mutationGateRequest.locale,
+      worker.mutationGateRequest.screenshotSlot
+    )}`;
+  }
+  if (worker.currentLocale) {
+    return `${worker.currentLocale}${worker.phase ? ` - ${worker.phase}` : ""}`;
+  }
+  return worker.phase || worker.message || "";
+}
+
 function updateParallelLocalizedScreenshotRenderTimer() {
   const active = isParallelLocalizedScreenshotRunActive();
   if (active && !parallelLocalizedScreenshotRenderTimerId) {
@@ -157,27 +214,32 @@ function renderParallelLocalizedScreenshotBoard(panel = document.getElementById(
     const workerAuditText = workerAuditTotal
       ? `; audit ${worker.auditedLocales || 0}/${workerAuditTotal}`
       : "";
-    const gateText = worker.mutationGateWaiting && worker.mutationGateRequest
-      ? `waiting for media gate: ${worker.mutationGateRequest.action || "media"} ${worker.mutationGateRequest.locale || ""}${worker.mutationGateRequest.screenshotSlot ? ` #${worker.mutationGateRequest.screenshotSlot}` : ""}`
-      : worker.currentMutationLease
-        ? `media gate active: ${worker.currentMutationLease.action || "media"} ${worker.currentMutationLease.locale || ""}${worker.currentMutationLease.screenshotSlot ? ` #${worker.currentMutationLease.screenshotSlot}` : ""}`
-        : "";
-    const currentText = gateText || (worker.currentLocale
-      ? `${worker.currentLocale}${worker.phase ? ` - ${worker.phase}` : ""}`
-      : (worker.phase || worker.message || ""));
+    const visualState = getParallelWorkerVisualState(worker);
+    const currentText = getParallelWorkerCurrentText(worker);
+    const workerIdLabel = getParallelWorkerCompactId(worker);
+    const operationLabel = getParallelWorkerOperationLabel(worker.operation);
+    const closedLabel = worker.closed ? "closed" : "";
+    const statusLabel = [worker.status || "pending", closedLabel].filter(Boolean).join(", ");
+    const countText = workerClearProgress
+      ? `${worker.completedLocales || 0}/${worker.assignedCount || 0} locales cleared${workerAuditText}`
+      : `${worker.completedLocales || 0}/${worker.assignedCount || 0} locales; ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0} screenshots${workerAuditText}`;
 
     row.className = "storepilot-parallel-worker";
+    row.dataset.state = visualState;
     title.className = "storepilot-parallel-worker-title";
     counts.className = "storepilot-parallel-worker-counts";
     current.className = "storepilot-parallel-worker-current";
     workerActions.className = "storepilot-parallel-worker-actions";
     retryWorkerButton.dataset.storepilotAction = "retry-localizedScreenshotsParallelWorker";
     const showWorkerRetry = isParallelWorkerRetryVisibleOnMaster(run, worker);
-    title.textContent = `${worker.workerId}: ${worker.operation || "replace"} - ${worker.status}${worker.closed ? " (closed)" : ""}`;
-    counts.textContent = workerClearProgress
-      ? `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; clear-only${workerAuditText}; elapsed ${elapsedLabel}`
-      : `Locales ${worker.completedLocales || 0}/${worker.assignedCount || 0}; screenshots ${worker.uploadedScreenshots || 0}/${worker.totalScreenshots || 0}${workerAuditText}; elapsed ${elapsedLabel}`;
+    title.textContent = `${workerIdLabel} · ${operationLabel} · ${statusLabel}`;
+    counts.textContent = countText;
     current.textContent = currentText || "Waiting for progress.";
+    row.title = [
+      `${worker.workerId || workerIdLabel}: ${worker.operation || "replace"} - ${worker.status || "pending"}`,
+      `Elapsed ${elapsedLabel}`,
+      currentText
+    ].filter(Boolean).join("\n");
     if (showWorkerRetry) {
       workerActions.append(retryWorkerButton);
     }

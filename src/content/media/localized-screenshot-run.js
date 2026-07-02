@@ -275,6 +275,7 @@ async function performUploadLocalizedScreenshots(files, options = {}) {
   return {
     ok: failed.length === 0 && (completed.length > 0 || uploaded.length > 0 || skipped.length > 0),
     aborted,
+    hiddenTimeout: stopAfterVisibilityTimeout,
     message: messageParts.join(" "),
     uploaded,
     skipped,

@@ -700,6 +700,73 @@ const parallelLocalizedScreenshotAsyncTests = (async () => {
     "visible worker retry sends only unfinished locales back to the existing worker tab"
   );
 
+  const staleRemovedTabs = [];
+  const staleWorkerMessages = [];
+  let staleUploadAttempt = 0;
+  context.storePilotTabsCreate = () => Promise.resolve({ id: 170 + openedTabs++ });
+  context.storePilotTabsRemove = tabId => {
+    staleRemovedTabs.push(tabId);
+    return Promise.resolve();
+  };
+  context.storePilotTabsSendMessage = (tabId, message) => {
+    if (message && message.type === "storepilot-upload-media-assets") {
+      staleUploadAttempt++;
+      const assignedLocales = message.options && message.options.assignedLocales || [];
+      staleWorkerMessages.push({ tabId, assignedLocales });
+      if (staleUploadAttempt === 1) {
+        return Promise.resolve({
+          ok: false,
+          hiddenTimeout: true,
+          completed: ["am"],
+          failed: ["ar: dashboard tab stayed hidden/minimized"],
+          skipped: [],
+          uploaded: ["am: 3"],
+          elapsedMs: 45000,
+          message: "dashboard tab stayed hidden/minimized"
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        completed: assignedLocales,
+        failed: [],
+        skipped: [],
+        uploaded: assignedLocales.map(locale => `${locale}: 3`),
+        elapsedMs: 700
+      });
+    }
+    return Promise.resolve({ ok: true });
+  };
+
+  const staleRestartRunStart = await context.storePilotStartParallelLocalizedScreenshotUpload({
+    tab: {
+      id: 96,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, false, {
+    assignedLocales: ["am", "ar"],
+    workerCount: 1,
+    parallelMode: "upload",
+    closeSuccessfulWorkers: false
+  });
+  assert.equal(staleRestartRunStart.ok, true);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise(resolve => setTimeout(resolve, 0));
+  const staleRestartRun = context.storePilotGetParallelLocalizedScreenshotRun({
+    tab: {
+      id: 96,
+      url: "https://chrome.google.com/webstore/devconsole/item/edit"
+    }
+  }, staleRestartRunStart.run.runId).run;
+  assert.equal(staleRestartRun.status, "completed");
+  assert.deepEqual(
+    hostValue(staleWorkerMessages.map(message => message.assignedLocales)),
+    [["am", "ar"], ["ar"]],
+    "hidden/minimized worker recovery retries only unfinished locales in a fresh tab"
+  );
+  assert.ok(staleRemovedTabs.includes(staleWorkerMessages[0].tabId), "stale worker tab is closed before fresh retry");
+  assert.equal(staleRestartRun.workers[0].staleRestartCount, 1);
+
   const removedTabs = [];
   const freshRetryMessages = [];
   let activeClearWorker2Resolve = null;

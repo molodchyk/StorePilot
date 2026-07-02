@@ -46,6 +46,9 @@ async function requestMediaAutomationFocus() {
 
 async function waitForMediaAutomationVisible(progress = null) {
   const hiddenStartedAt = Date.now();
+  const maxHiddenWaitMs = progress && progress.mutationGateEnabled
+    ? MEDIA_PARALLEL_VISIBILITY_MAX_HIDDEN_WAIT_MS
+    : MEDIA_VISIBILITY_MAX_HIDDEN_WAIT_MS;
 
   while (!isDashboardPageVisibleForMediaAutomation()) {
     if (mediaOperationState.abortRequested) {
@@ -53,7 +56,7 @@ async function waitForMediaAutomationVisible(progress = null) {
     }
 
     const hiddenElapsedMs = Date.now() - hiddenStartedAt;
-    if (hiddenElapsedMs >= MEDIA_VISIBILITY_MAX_HIDDEN_WAIT_MS) {
+    if (hiddenElapsedMs >= maxHiddenWaitMs) {
       const timeoutMessage = `dashboard tab stayed hidden/minimized for ${formatLocalizedScreenshotElapsedTime(hiddenElapsedMs)}; retry unfinished locale(s) when visible`;
       if (progress) {
         setLocalizedScreenshotProgress(progress, timeoutMessage);

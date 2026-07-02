@@ -281,8 +281,35 @@
         gap: 2px;
         padding: 6px;
         border: 1px solid rgba(148, 163, 184, 0.35);
+        border-left-width: 3px;
         border-radius: 5px;
         background: rgba(248, 250, 252, 0.8);
+      }
+
+      #${panelId} .storepilot-parallel-worker[data-state="active"] {
+        border-left-color: #0891b2;
+        background: #ecfeff;
+      }
+
+      #${panelId} .storepilot-parallel-worker[data-state="queued"] {
+        border-left-color: #6366f1;
+      }
+
+      #${panelId} .storepilot-parallel-worker[data-state="paused"] {
+        border-left-color: #d97706;
+        background: #fff7ed;
+      }
+
+      #${panelId} .storepilot-parallel-worker[data-state="failed"],
+      #${panelId} .storepilot-parallel-worker[data-state="aborted"] {
+        border-left-color: #dc2626;
+        background: #fef2f2;
+      }
+
+      #${panelId} .storepilot-parallel-worker[data-state="completed"],
+      #${panelId} .storepilot-parallel-worker[data-state="finished"] {
+        border-left-color: #0f766e;
+        background: #ecfdf5;
       }
 
       #${panelId} .storepilot-parallel-worker-title {

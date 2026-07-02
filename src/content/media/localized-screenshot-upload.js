@@ -397,6 +397,7 @@ async function uploadLocalizedScreenshotLocale(entry, localeIndex, total, locale
       return {
         ok: false,
         aborted: Boolean(uploadResult.aborted),
+        hiddenTimeout: Boolean(uploadResult.hiddenTimeout),
         uploadedCount: uploadedForLocale,
         completed: false,
         message: uploadResult.message
